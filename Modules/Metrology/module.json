@@ -1,0 +1,11 @@
+{
+    "name": "Metrology",
+    "alias": "metrology",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Metrology\\Providers\\MetrologyServiceProvider"
+    ],
+    "files": []
+}
