@@ -45,6 +45,8 @@ RUN if [ ! -f .env ]; then cp .env.example .env; fi
 # Finish composer install & generate APP_KEY
 RUN composer install && php artisan key:generate
 
+RUN npm run build
+
 # Expose port 9000 for PHP-FPM
 EXPOSE 9000
 
