@@ -23,7 +23,7 @@ class CalibrationResource extends Resource
 {
     protected static ?string $model = Calibration::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentCheck;
 
     protected static ?string $cluster = MetrologyCluster::class;
 
