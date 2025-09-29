@@ -7,6 +7,8 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Modules\Metrology\Filament\Clusters\Metrology\MetrologyCluster;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\Pages\CreateReferenceStandard;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\Pages\EditReferenceStandard;
@@ -21,7 +23,7 @@ class ReferenceStandardResource extends Resource
 {
     protected static ?string $model = ReferenceStandard::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedScale;
 
     protected static ?string $cluster = MetrologyCluster::class;
 
@@ -55,5 +57,14 @@ class ReferenceStandardResource extends Resource
             'view' => ViewReferenceStandard::route('/{record}'),
             'edit' => EditReferenceStandard::route('/{record}/edit'),
         ];
+    }
+
+    public static function getRecordRouteBindingEloquentQuery(): Builder
+    {
+        return parent::getRecordRouteBindingEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
+
     }
 }

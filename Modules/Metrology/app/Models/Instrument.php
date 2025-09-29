@@ -18,7 +18,18 @@ class Instrument extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['name', 'serial_number', 'type', 'precision', 'location', 'acquisition_date', 'calibration_due', 'status'];
+    protected $fillable = [
+        'name',
+        'serial_number',
+        'type',
+        'precision',
+        'location',
+        'acquisition_date',
+        'calibration_due',
+        'status',
+        'nfc_tag',
+        'current_station_id'
+    ];
 
     public function calibrations(): HasMany
     {
