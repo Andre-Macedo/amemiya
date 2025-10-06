@@ -25,6 +25,8 @@ class AccessLogResource extends Resource
 
     protected static ?string $cluster = MetrologyCluster::class;
 
+    protected static string|null|\UnitEnum $navigationGroup = 'Operações';
+
     public static function form(Schema $schema): Schema
     {
         return AccessLogForm::configure($schema);
