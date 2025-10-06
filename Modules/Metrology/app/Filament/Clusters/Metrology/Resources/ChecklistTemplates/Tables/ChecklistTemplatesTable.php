@@ -1,27 +1,26 @@
 <?php
 
-namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\Checklists\Tables;
+namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\ChecklistTemplates\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteBulkAction;
+use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
-class ChecklistsTable
+class ChecklistTemplatesTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('calibration.id')->label('Calibration ID'),
-                TextColumn::make('steps')->formatStateUsing(fn($state) => implode(', ', array_column($state, 'step'))),
-                IconColumn::make('completed')->boolean(),
+                //
             ])
             ->filters([
-                //
+                TrashedFilter::make(),
             ])
             ->recordActions([
                 ViewAction::make(),
@@ -30,6 +29,8 @@ class ChecklistsTable
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
+                    ForceDeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
                 ]),
             ]);
     }

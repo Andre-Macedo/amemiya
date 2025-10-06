@@ -22,6 +22,11 @@ class ChecklistTemplate extends Model
         return $this->hasMany(Checklist::class);
     }
 
+    public function items(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ChecklistTemplateItem::class);
+    }
+
     // protected static function newFactory(): ChecklistTemplateFactory
     // {
     //     // return ChecklistTemplateFactory::new();

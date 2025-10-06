@@ -27,6 +27,8 @@ class ReferenceStandardResource extends Resource
 
     protected static ?string $cluster = MetrologyCluster::class;
 
+    protected static string|null|\UnitEnum $navigationGroup = 'Instrumentos';
+
     public static function form(Schema $schema): Schema
     {
         return ReferenceStandardForm::configure($schema);
