@@ -27,6 +27,7 @@ class ChecklistTemplateResource extends Resource
 
     protected static ?string $cluster = MetrologyCluster::class;
 
+    protected static ?string $navigationLabel = 'Checklists';
     protected static string|null|\UnitEnum $navigationGroup = 'Calibrações';
 
     public static function form(Schema $schema): Schema
