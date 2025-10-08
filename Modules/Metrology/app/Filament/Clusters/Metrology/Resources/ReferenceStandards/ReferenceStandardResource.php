@@ -29,6 +29,8 @@ class ReferenceStandardResource extends Resource
 
     protected static string|null|\UnitEnum $navigationGroup = 'Instrumentos';
 
+    protected static ?string $navigationLabel = 'Blocos de Referencia';
+
     public static function form(Schema $schema): Schema
     {
         return ReferenceStandardForm::configure($schema);

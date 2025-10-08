@@ -10,6 +10,8 @@ class MetrologyCluster extends Cluster
 {
     protected static string|null|BackedEnum $navigationIcon = 'heroicon-o-wrench-screwdriver';
 
+    protected static ?string $navigationLabel = 'Metrologia';
+
     protected static ?string $slug = 'metrology';
 
     public static function getPages(): array

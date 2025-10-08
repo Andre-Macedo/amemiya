@@ -29,6 +29,8 @@ class CalibrationResource extends Resource
 
     protected static string|null|\UnitEnum $navigationGroup = 'Calibrações';
 
+    protected static ?string $navigationLabel = 'Calibrações';
+
     public static function form(Schema $schema): Schema
     {
         return CalibrationForm::configure($schema);

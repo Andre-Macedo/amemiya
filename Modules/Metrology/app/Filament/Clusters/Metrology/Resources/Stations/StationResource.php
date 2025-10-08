@@ -27,6 +27,8 @@ class StationResource extends Resource
 
     protected static string|null|\UnitEnum $navigationGroup = 'Operações';
 
+    protected static ?string $navigationLabel = 'Estações de Trabalho';
+
 
     public static function form(Schema $schema): Schema
     {
