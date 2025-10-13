@@ -38,6 +38,10 @@ class Instrument extends Model
         return $this->hasMany(Calibration::class);
     }
 
+    public function station(): BelongsTo
+    {
+        return $this->belongsTo(Station::class, "current_station_id");
+    }
 
     protected static function factory(): InstrumentFactory
     {
