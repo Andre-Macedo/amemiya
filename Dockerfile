@@ -1,7 +1,10 @@
-# Use official PHP 8.2 FPM image
-FROM php:8.2-fpm
+# STAGE 1: Builder - Instala todas as dependências de build e compila os assets
+FROM php:8.2-fpm AS builder
 
-# Install system dependencies
+# Evita perguntas interativas durante a instalação de pacotes
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Instala dependências do sistema + Node.js
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpng-dev \
@@ -18,36 +21,62 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip intl opcache sodium
 
-# Install Composer
-COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
-
-# Install Node.js & npm
+# Instala Node.js v20
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
-# Set working directory
+# Instala o Composer
+COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
+
 WORKDIR /var/www/html
 
-# Copy composer files first for caching
+# Instala dependências do PHP e Node (em camadas para otimizar o cache)
 COPY composer.json composer.lock ./
-RUN composer install --no-scripts --no-autoloader --prefer-dist
+RUN composer install --no-scripts --no-autoloader --no-dev --prefer-dist
 
-# Copy package.json for Node deps
 COPY package.json package-lock.json* ./
 RUN npm install
 
-# Copy rest of the app
+# Copia o restante do código da aplicação
 COPY . .
 
-# Copy .env example if .env does not exist
-RUN if [ ! -f .env ]; then cp .env.example .env; fi
-
-# Finish composer install & generate APP_KEY
-RUN composer install && php artisan key:generate
-
+ENV COMPOSER_ALLOW_SUPERUSER=1
+# Gera o autoloader e compila os assets
+RUN composer dump-autoload --optimize
 RUN npm run build
 
-# Expose port 9000 for PHP-FPM
+
+# STAGE 2: App - A imagem final, mais leve e pronta para produção/desenvolvimento
+FROM php:8.2-fpm AS app
+
+# Instala apenas as extensões PHP necessárias para rodar a aplicação
+RUN apt-get update && apt-get install -y \
+    libicu-dev \
+    libsodium-dev \
+    zip \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip intl opcache sodium
+
+# Copia o composer para podermos usar `docker-compose exec`
+COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/html
+
+# Copia os arquivos da aplicação já "buildados" do stage anterior
+COPY --from=builder /var/www/html .
+
+# Ajusta permissões para o usuário do PHP-FPM
+RUN chown -R www-data:www-data /var/www/html
+
+USER www-data
+
 EXPOSE 9000
 
 CMD ["php-fpm"]
