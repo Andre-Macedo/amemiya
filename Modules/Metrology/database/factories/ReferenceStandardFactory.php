@@ -3,6 +3,7 @@
 namespace Modules\Metrology\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Metrology\Models\ReferenceStandardType;
 
 class ReferenceStandardFactory extends Factory
 {
@@ -19,13 +20,12 @@ class ReferenceStandardFactory extends Factory
         return [
             'name' => $this->faker->words(3, true) . ' Standard',
             'serial_number' => $this->faker->unique()->numerify('STD-#####'),
-            'type' => $this->faker->randomElement(['bloco_padrao', 'calibrador', 'peso_padrao']),
+            'reference_standard_type_id' => ReferenceStandardType::factory(),
             'calibration_date' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'calibration_due' => $this->faker->dateTimeBetween('now', '+2 years'),
             'traceability' => $this->faker->randomElement(['INMETRO #123', 'RBC Lab X', 'NIST Traceable']),
-            'certificate_path' => $this->faker->optional()->filePath('pdf'),
+            'certificate_path' => null, // Normalmente gerado em outro processo
             'description' => $this->faker->sentence,
         ];
     }
 }
-

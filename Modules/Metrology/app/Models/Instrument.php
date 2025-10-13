@@ -20,15 +20,17 @@ class Instrument extends Model
      */
     protected $fillable = [
         'name',
+        'stock_number',
         'serial_number',
-        'type',
+        'instrument_type_id',
         'precision',
         'location',
         'acquisition_date',
         'calibration_due',
         'status',
         'nfc_tag',
-        'current_station_id'
+        'current_station_id',
+        'image_path',
     ];
 
     public function calibrations(): HasMany
@@ -40,5 +42,10 @@ class Instrument extends Model
     protected static function factory(): InstrumentFactory
     {
         return InstrumentFactory::new();
+    }
+
+    public function instrumentType(): BelongsTo
+    {
+        return $this->belongsTo(InstrumentType::class);
     }
 }

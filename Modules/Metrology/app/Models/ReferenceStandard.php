@@ -25,7 +25,7 @@ class ReferenceStandard extends Model
         return $this->belongsToMany(Calibration::class, 'calibration_reference_standard');
     }
 
-    protected static function factory(): ReferenceStandardFactory
+    public static function factory(): ReferenceStandardFactory
     {
         return ReferenceStandardFactory::new();
     }

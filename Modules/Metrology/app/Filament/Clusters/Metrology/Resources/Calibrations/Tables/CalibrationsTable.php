@@ -23,23 +23,12 @@ class CalibrationsTable
     {
         return $table
             ->columns([
-                TextColumn::make('instrument.name')
-                    ->searchable(),
-                TextColumn::make('referenceStandards.name')
-                    ->listWithLineBreaks()
-                    ->limitList(2)
-                    ->searchable(),
-                TextColumn::make('calibration_date')
-                    ->date(),
-                TextColumn::make('type')
-                    ->formatStateUsing(fn($state) => ucfirst(str_replace('_', ' ', $state))),
-                TextColumn::make('result')
-                    ->formatStateUsing(fn($state) => ucfirst($state ?? '')),
-                TextColumn::make('deviation')
-                    ->suffix(' mm'),
-                TextColumn::make('uncertainty')
-                    ->suffix(' mm'),
-//                TextColumn::make('performedBy.name'),
+                TextColumn::make('instrument.name')->searchable()->sortable(),
+                TextColumn::make('referenceStandards.name')->searchable(),
+                TextColumn::make('calibration_date')->date()->sortable(),
+                TextColumn::make('type')->formatStateUsing(fn (string $state): string => ucfirst(str_replace('_', ' ', $state))),
+                TextColumn::make('result')->formatStateUsing(fn (?string $state): string => ucfirst($state ?? 'N/A')),
+                TextColumn::make('performedBy.name')->searchable()->sortable(),
             ])
             ->filters([
                 TrashedFilter::make(),
@@ -54,12 +43,19 @@ class CalibrationsTable
                         'rejected' => 'Rejeitado',
                     ]),
             ])
-            ->toolbarActions([
+            ->actions([
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                    DeleteAction::make(),
+                ]),
+            ])
+            ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                     RestoreBulkAction::make(),
                     ForceDeleteBulkAction::make(),
-                ])
+                ]),
             ]);
     }
 }
