@@ -4,7 +4,7 @@ namespace Modules\Metrology\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-// use Modules\Metrology\Database\Factories\AccessLogFactory;
+ use Modules\Metrology\Database\Factories\AccessLogFactory;
 
 class AccessLog extends Model
 {
@@ -15,8 +15,8 @@ class AccessLog extends Model
      */
     protected $fillable = [];
 
-    // protected static function newFactory(): AccessLogFactory
-    // {
-    //     // return AccessLogFactory::new();
-    // }
+     public static function factory(): AccessLogFactory
+     {
+          return AccessLogFactory::new();
+     }
 }

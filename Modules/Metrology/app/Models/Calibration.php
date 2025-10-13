@@ -2,6 +2,7 @@
 
 namespace Modules\Metrology\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -46,6 +47,11 @@ class Calibration extends Model
     public function checklist(): BelongsTo
     {
         return $this->belongsTo(Checklist::class);
+    }
+
+    public function performedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'performed_by');
     }
 
     // Accessor for next_calibration_due (computed from interval)

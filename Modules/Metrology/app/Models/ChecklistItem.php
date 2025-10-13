@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-// use Modules\Metrology\Database\Factories\ChecklistItemFactory;
+ use Modules\Metrology\Database\Factories\ChecklistItemFactory;
 
 class ChecklistItem extends Model
 {
@@ -39,8 +39,8 @@ class ChecklistItem extends Model
         return $this->belongsTo(Checklist::class);
     }
 
-    // protected static function newFactory(): ChecklistItemFactory
-    // {
-    //     // return ChecklistItemFactory::new();
-    // }
+     public static function factory(): ChecklistItemFactory
+     {
+          return ChecklistItemFactory::new();
+     }
 }

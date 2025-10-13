@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-// use Modules\Metrology\Database\Factories\ChecklistFactory;
+ use Modules\Metrology\Database\Factories\ChecklistFactory;
 
 class Checklist extends Model
 {
@@ -43,8 +43,8 @@ class Checklist extends Model
         return $this->hasMany(ChecklistItem::class);
     }
 
-    // protected static function newFactory(): ChecklistFactory
-    // {
-    //     // return ChecklistFactory::new();
-    // }
+     public static function factory(): ChecklistFactory
+     {
+          return ChecklistFactory::new();
+     }
 }

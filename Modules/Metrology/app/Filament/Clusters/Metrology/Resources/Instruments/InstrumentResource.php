@@ -14,6 +14,7 @@ use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Pages\Cr
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Pages\EditInstrument;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Pages\ListInstruments;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Pages\ViewInstrument;
+use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\RelationManagers\CalibrationRelationManager;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Schemas\InstrumentForm;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Schemas\InstrumentInfolist;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Tables\InstrumentsTable;
@@ -49,7 +50,8 @@ class InstrumentResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            CalibrationRelationManager::class,
+
         ];
     }
 

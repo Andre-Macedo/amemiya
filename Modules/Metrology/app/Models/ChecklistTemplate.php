@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-// use Modules\Metrology\Database\Factories\ChecklistTemplateFactory;
+ use Modules\Metrology\Database\Factories\ChecklistTemplateFactory;
 
 class ChecklistTemplate extends Model
 {
@@ -27,8 +27,8 @@ class ChecklistTemplate extends Model
         return $this->hasMany(ChecklistTemplateItem::class);
     }
 
-    // protected static function newFactory(): ChecklistTemplateFactory
-    // {
-    //     // return ChecklistTemplateFactory::new();
-    // }
+     public static function factory(): ChecklistTemplateFactory
+     {
+          return ChecklistTemplateFactory::new();
+     }
 }
