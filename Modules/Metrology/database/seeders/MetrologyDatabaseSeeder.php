@@ -70,14 +70,14 @@ class MetrologyDatabaseSeeder extends Seeder
         $checklistPaquimetro->items()->createMany([
             ['step' => 'Verificação visual do instrumento', 'question_type' => 'boolean', 'order' => 1],
             ['step' => 'Limpeza das faces de medição', 'question_type' => 'boolean', 'order' => 2],
-            ['step' => 'Medição do bloco de 25mm', 'question_type' => 'numeric', 'order' => 3, 'required_readings' => 3, 'reference_standard_type' => 'Bloco Padrão'],
+            ['step' => 'Medição do bloco de 25mm', 'question_type' => 'numeric', 'order' => 3, 'required_readings' => 3, 'reference_standard_type_id' => $refTypeBlock->id],
         ]);
 
         $checklistMicrometro = ChecklistTemplate::factory()->create(['name' => 'Checklist Padrão para Micrômetro', 'instrument_type_id' => $typeMicrometro->id]);
         $checklistMicrometro->items()->createMany([
             ['step' => 'Verificação visual do instrumento', 'question_type' => 'boolean', 'order' => 1],
             ['step' => 'Zerar o instrumento', 'question_type' => 'boolean', 'order' => 2],
-            ['step' => 'Medição do bloco de 50mm', 'question_type' => 'numeric', 'order' => 3, 'required_readings' => 5, 'reference_standard_type' => 'Bloco Padrão'],
+            ['step' => 'Medição do bloco de 50mm', 'question_type' => 'numeric', 'order' => 3, 'required_readings' => 5, 'reference_standard_type_id' => $refTypeBlock->id],
         ]);
 
         // -- 6. Create Instruments --
