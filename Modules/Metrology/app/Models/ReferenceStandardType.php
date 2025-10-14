@@ -23,6 +23,11 @@ class ReferenceStandardType extends Model
         return $this->hasMany(ReferenceStandard::class);
     }
 
+    public function checklistTemplateItems(): HasMany
+    {
+        return $this->hasMany(ChecklistTemplateItem::class);
+    }
+
     protected static function factory(): ReferenceStandardTypeFactory
      {
           return ReferenceStandardTypeFactory::new();
