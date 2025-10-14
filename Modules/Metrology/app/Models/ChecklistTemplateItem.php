@@ -33,6 +33,12 @@ class ChecklistTemplateItem extends Model
         return $this->belongsTo(ChecklistTemplate::class);
     }
 
+    public function referenceStandardType(): BelongsTo
+    {
+        return $this->belongsTo(ReferenceStandardType::class);
+    }
+
+
     // protected static function newFactory(): ChecklistTemplateItemFactory
     // {
     //     // return ChecklistTemplateItemFactory::new();

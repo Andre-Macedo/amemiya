@@ -27,6 +27,11 @@ class ChecklistTemplate extends Model
         return $this->hasMany(ChecklistTemplateItem::class);
     }
 
+    public function instrumentType(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(InstrumentType::class);
+    }
+
      public static function factory(): ChecklistTemplateFactory
      {
           return ChecklistTemplateFactory::new();
