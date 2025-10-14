@@ -93,10 +93,6 @@ class MetrologyDatabaseSeeder extends Seeder
                 'performed_by' => $users->random()->id,
             ])
                 ->each(function (Calibration $calibration) use ($referenceStandards) {
-                    // Attach reference standards
-                    $calibration->referenceStandards()->attach(
-                        $referenceStandards->random(rand(1, 3))->pluck('id')->toArray()
-                    );
 
                     // **NEW: Create a filled checklist for internal calibrations**
                     if ($calibration->type === 'internal' && $calibration->instrument->instrumentType) {

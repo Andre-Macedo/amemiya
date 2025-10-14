@@ -33,13 +33,5 @@ class CalibrationFactory extends Factory
         ];
     }
 
-    public function withReferenceStandards(int $count = 2): self
-    {
-        return $this->afterCreating(function (Calibration $calibration) use ($count) {
-            $standards = ReferenceStandard::factory($count)->create();
-            $calibration->referenceStandards()->attach($standards->pluck('id'));
-        });
-    }
-
 }
 

@@ -17,6 +17,7 @@ use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
 use Modules\Metrology\Models\ChecklistTemplate;
 use Modules\Metrology\Models\Instrument;
+use Modules\Metrology\Models\ReferenceStandard;
 
 class CalibrationForm
 {
@@ -34,9 +35,9 @@ class CalibrationForm
                                     ->searchable()
                                     ->required()
                                     ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
-//                                        if (!$state) {
-//                                            return;
-//                                        }
+                                        if (!$state) {
+                                            return;
+                                        }
                                         $instrument = Instrument::find($state);
                                         $template = ChecklistTemplate::where('instrument_type_id', $instrument->instrument_type_id)->first();
                                         if ($template) {
@@ -44,6 +45,7 @@ class CalibrationForm
                                                 'step' => $item->step,
                                                 'question_type' => $item->question_type,
                                                 'required_readings' => $item->required_readings,
+                                                'reference_standard_type_id' => $item->reference_standard_type_id,
                                             ])->toArray();
                                             $set('checklist_items', $items);
                                         }
@@ -77,6 +79,24 @@ class CalibrationForm
                                             'text' => 'Text',
                                         ])->disabled(),
                                     Toggle::make('completed')->visible(fn (Get $get) => $get('question_type') === 'boolean'),
+                                    Select::make('reference_standard_id')
+                                        ->label('Padrão Utilizado')
+                                        ->options(function (Get $get) {
+                                            // $get('reference_standard_type_id') virá dos dados que carregamos
+                                            // do template.
+                                            $typeId = $get('reference_standard_type_id');
+                                            if (!$typeId) {
+                                                return [];
+                                            }
+                                            return ReferenceStandard::where('reference_standard_type_id', $typeId)
+                                                ->pluck('name', 'id');
+                                        })
+                                        ->searchable()
+                                        ->required()
+                                        // Mostra este campo apenas se o tipo de questão for numérico
+                                        // e se o template item tiver um tipo de padrão associado.
+                                        ->visible(fn (Get $get) => $get('question_type') === 'numeric' && !empty($get('reference_standard_type_id'))),
+
                                     Repeater::make('readings')
                                         ->schema([
                                             TextInput::make('value')->numeric()->required(),
