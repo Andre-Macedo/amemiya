@@ -33,6 +33,7 @@ class CreateCalibration extends CreateRecord
                     'uncertainty' => $item['uncertainty'] ?? null,
                     'result' => $item['result'] ?? null,
                     'notes' => $item['notes'] ?? null,
+                    'reference_standard_type_id' => $item['reference_standard_type_id'] ?? null,
                 ];
             }, $data['checklist_items']);
 

@@ -41,6 +41,7 @@ class EditCalibration extends EditRecord
                     'completed' => $item->completed,
                     'readings' => $readings,
                     'notes' => $item->notes,
+                    'reference_standard_type_id' => $item->reference_standard_type_id,
                 ];
             })->toArray();
 
@@ -68,6 +69,8 @@ class EditCalibration extends EditRecord
                     'uncertainty' => $item['uncertainty'] ?? null,
                     'result' => $item['result'] ?? null,
                     'notes' => $item['notes'] ?? null,
+                    'reference_standard_type_id' => $item['reference_standard_type_id'] ?? null,
+
                 ];
             }, $data['checklist_items']);
             ChecklistItem::insert($items);

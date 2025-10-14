@@ -4,6 +4,7 @@ namespace Modules\Metrology\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
  use Modules\Metrology\Database\Factories\ChecklistItemFactory;
@@ -34,12 +35,17 @@ class ChecklistItem extends Model
         'question_type' => 'string',
     ];
 
-    public function checklist(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function checklist(): BelongsTo
     {
         return $this->belongsTo(Checklist::class);
     }
 
-     public static function factory(): ChecklistItemFactory
+    public function referenceStandard(): BelongsTo
+    {
+        return $this->belongsTo(ReferenceStandard::class);
+    }
+
+    public static function factory(): ChecklistItemFactory
      {
           return ChecklistItemFactory::new();
      }

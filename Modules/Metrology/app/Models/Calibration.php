@@ -34,11 +34,6 @@ class Calibration extends Model
         return $this->belongsTo(Instrument::class);
     }
 
-    public function referenceStandards(): BelongsToMany
-    {
-        return $this->belongsToMany(ReferenceStandard::class, 'calibration_reference_standard');
-    }
-
     protected static function factory(): CalibrationFactory
     {
         return CalibrationFactory::new();
