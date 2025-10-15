@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\InstrumentTypes\Schemas;
+namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandardTypes\Schemas;
 
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
-class InstrumentTypeForm
+class ReferenceStandardTypeForm
 {
     public static function configure(Schema $schema): Schema
     {
@@ -15,6 +15,7 @@ class InstrumentTypeForm
                     ->required()
                     ->unique(ignoreRecord: true)
                     ->maxLength(255),
+
             ]);
     }
 }
