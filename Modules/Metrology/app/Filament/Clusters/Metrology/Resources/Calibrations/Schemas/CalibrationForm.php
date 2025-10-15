@@ -15,6 +15,7 @@ use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Collection;
 use Modules\Metrology\Models\ChecklistTemplate;
 use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\ReferenceStandard;
@@ -26,116 +27,106 @@ class CalibrationForm
         return $schema
             ->components([
                 Wizard::make([
-                    Step::make('Calibration Details')
+                    Wizard\Step::make('Detalhes da Calibração')
                         ->schema([
-                            Section::make()->schema([
-                                Select::make('instrument_id')
-                                    ->relationship('instrument', 'name')
-                                    ->live()
-                                    ->searchable()
-                                    ->required()
-                                    ->afterStateUpdated(function (Get $get, Set $set, ?string $state) {
-                                        if (!$state) {
-                                            return;
-                                        }
-                                        $instrument = Instrument::find($state);
-                                        $template = ChecklistTemplate::where('instrument_type_id', $instrument->instrument_type_id)->first();
-                                        if ($template) {
-                                            $items = $template->items->map(fn ($item) => [
-                                                'step' => $item->step,
-                                                'question_type' => $item->question_type,
-                                                'required_readings' => $item->required_readings,
-                                                'reference_standard_type_id' => $item->reference_standard_type_id,
-                                            ])->toArray();
-                                            $set('checklist_items', $items);
-                                        }
-                                    }),
-                                DatePicker::make('calibration_date')
-                                    ->required()
-                                    ->default(now()),
-                                Select::make('type')
-                                    ->options([
-                                        'internal' => 'Interna',
-                                        'external_rbc' => 'Externa RBC',
-                                    ])
-                                    ->default('internal')
-                                    ->live()
-                                    ->required(),
-                                Select::make('performed_by_id')
-                                    ->relationship('performedBy', 'name')
-                                    ->searchable()
-                                    ->required(),
-                            ])->columns(2),
-                        ]),
-                    Step::make('Checklist')
+                            Select::make('instrument_id')
+                                ->relationship('instrument', 'name')
+                                ->live()
+                                ->searchable()
+                                ->required(),
+                            DatePicker::make('calibration_date')
+                                ->required()
+                                ->default(now()),
+                            Select::make('type')
+                                ->options([
+                                    'internal' => 'Interna',
+                                    'external_rbc' => 'Externa RBC',
+                                ])
+                                ->default('internal')
+                                ->live()
+                                ->required(),
+                            Select::make('performed_by_id')
+                                ->relationship('performedBy', 'name')
+                                ->searchable()
+                                ->required(),
+                        ])->columns(2),
+
+                    Wizard\Step::make('Seleção do Checklist')
+                        ->description('Escolha o procedimento de calibração a ser seguido.')
+                        ->schema([
+                            Select::make('checklist_template_id')
+                                ->label('Procedimento / Checklist')
+                                ->options(function (Get $get): Collection {
+                                    $instrumentId = $get('instrument_id');
+                                    if (!$instrumentId) {
+                                        return collect();
+                                    }
+                                    $instrumentTypeId = Instrument::find($instrumentId)?->instrument_type_id;
+                                    return ChecklistTemplate::where('instrument_type_id', $instrumentTypeId)->pluck('name', 'id');
+                                })
+                                ->live()
+                                ->required()
+                                ->afterStateUpdated(function (Set $set, ?string $state) {
+                                    if (!$state) {
+                                        return;
+                                    }
+                                    $template = ChecklistTemplate::with('items')->find($state);
+                                    if ($template) {
+                                        $items = $template->items->map(fn ($item) => [
+                                            'step' => $item->step,
+                                            'question_type' => $item->question_type,
+                                            'required_readings' => $item->required_readings,
+                                            'reference_standard_type_id' => $item->reference_standard_type_id,
+                                        ])->toArray();
+                                        $set('checklist_items', $items);
+                                    }
+                                }),
+                        ])
+                        ->visible(fn (Get $get) => $get('type') === 'internal'),
+
+                    Wizard\Step::make('Execução do Checklist')
                         ->schema([
                             Repeater::make('checklist_items')
                                 ->schema([
                                     TextInput::make('step')->disabled(),
-                                    Select::make('question_type')
-                                        ->options([
-                                            'boolean' => 'Boolean',
-                                            'numeric' => 'Numeric',
-                                            'text' => 'Text',
-                                        ])->disabled(),
+                                    Select::make('question_type')->disabled()->options(['boolean' => 'Sim/Não', 'numeric' => 'Numérico', 'text' => 'Texto']),
                                     Toggle::make('completed')->visible(fn (Get $get) => $get('question_type') === 'boolean'),
-                                    Select::make('reference_standard_id')
-                                        ->label('Padrão Utilizado')
-                                        ->options(function (Get $get) {
-                                            // $get('reference_standard_type_id') virá dos dados que carregamos
-                                            // do template.
-                                            $typeId = $get('reference_standard_type_id');
-                                            if (!$typeId) {
-                                                return [];
-                                            }
-                                            return ReferenceStandard::where('reference_standard_type_id', $typeId)
-                                                ->pluck('name', 'id');
-                                        })
-                                        ->searchable()
-                                        ->required()
-                                        // Mostra este campo apenas se o tipo de questão for numérico
-                                        // e se o template item tiver um tipo de padrão associado.
-                                        ->visible(fn (Get $get) => $get('question_type') === 'numeric' && !empty($get('reference_standard_type_id'))),
-
                                     Repeater::make('readings')
                                         ->schema([
                                             TextInput::make('value')->numeric()->required(),
                                         ])
                                         ->minItems(fn (Get $get) => $get('required_readings') ?: 1)
                                         ->maxItems(fn (Get $get) => $get('required_readings') ?: 1)
-                                        ->visible(fn (Get $get) => $get('question_type') === 'numeric'),
+                                        ->visible(function (Get $get) {return $get('question_type') === 'numeric';
+                                        }),
+                                    Select::make('reference_standard_id')
+                                        ->label('Padrão Utilizado')
+                                        ->options(function (Get $get) {
+                                            $typeId = $get('reference_standard_type_id');
+                                            if (!$typeId) return [];
+                                            return ReferenceStandard::where('reference_standard_type_id', $typeId)->pluck('name', 'id');
+                                        })
+                                        ->searchable()
+                                        ->required()
+                                        ->visible(fn (Get $get) => $get('question_type') === 'numeric' && !empty($get('reference_standard_type_id'))),
                                     Textarea::make('notes')->visible(fn (Get $get) => $get('question_type') === 'text'),
                                 ])
-                                ->addable(false)
-                                ->deletable(false)
-                                ->reorderable(false)
-                                ->columnSpanFull(),
+                                ->addable(false)->deletable(false)->reorderable(false)->columnSpanFull(),
                         ])
-                        ->visible(fn (Get $get) => $get('type') === 'internal' && !empty($get('instrument_id'))),
-                    Step::make('Results and Notes')
+                        ->visible(fn (Get $get) => $get('type') === 'internal' && !empty($get('checklist_template_id'))),
+
+                    Wizard\Step::make('Resultados e Conclusão')
                         ->schema([
-                            Section::make()->schema([
-                                Select::make('result')
-                                    ->options([
-                                        'approved' => 'Aprovado',
-                                        'rejected' => 'Rejeitado',
-                                    ]),
-                                TextInput::make('deviation')->numeric()->suffix('mm'),
-                                TextInput::make('uncertainty')->numeric()->suffix('mm'),
-                                Select::make('calibration_interval')
-                                    ->label('Intervalo até Próxima Calibração (meses)')
-                                    ->options([
-                                        6 => '6 meses',
-                                        12 => '12 meses',
-                                        18 => '18 meses',
-                                        24 => '24 meses',
-                                    ])
-                                    ->default(12)
-                                    ->required(),
-                                Textarea::make('notes')->columnSpanFull(),
-                            ])->columns(2),
+                            Select::make('result')->options(['approved' => 'Aprovado', 'rejected' => 'Rejeitado']),
+                            TextInput::make('deviation')->numeric()->suffix('mm'),
+                            TextInput::make('uncertainty')->numeric()->suffix('mm'),
+                            Select::make('calibration_interval')
+                                ->label('Intervalo Próxima Calibração (meses)')
+                                ->options([6 => '6 meses', 12 => '12 meses', 18 => '18 meses', 24 => '24 meses'])
+                                ->default(12)->required(),
+                            Textarea::make('notes')->columnSpanFull(),
                         ]),
-                    Step::make('Certificate')
+                    Wizard\Step::make('Certificado')
                         ->schema([
                             FileUpload::make('certificate_path')
                                 ->directory('calibration-certificates')

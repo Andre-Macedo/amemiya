@@ -21,7 +21,7 @@ class ChecklistTemplateItem extends Model
         'question_type',
         'order',
         'required_readings',
-        'reference_standard_type',
+        'reference_standard_type_id',
     ];
 
     protected $casts = [

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\InstrumentTypes\Tables;
+namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandardTypes\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -9,7 +9,7 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class InstrumentTypesTable
+class ReferenceStandardTypesTable
 {
     public static function configure(Table $table): Table
     {
@@ -18,9 +18,9 @@ class InstrumentTypesTable
                 TextColumn::make('name')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('instruments_count')
-                    ->counts('instruments')
-                    ->label('Nº de Instrumentos')
+                TextColumn::make('reference_standards_count')
+                    ->counts('referenceStandards')
+                    ->label('Nº de Padrões')
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime('d/m/Y')

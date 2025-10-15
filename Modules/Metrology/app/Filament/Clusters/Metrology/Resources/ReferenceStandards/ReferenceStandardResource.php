@@ -27,7 +27,7 @@ class ReferenceStandardResource extends Resource
 
     protected static ?string $cluster = MetrologyCluster::class;
 
-    protected static string|null|\UnitEnum $navigationGroup = 'Instrumentos';
+    protected static string|null|\UnitEnum $navigationGroup = "Blocos de Refêrencia";
 
     protected static ?string $navigationLabel = 'Blocos de Referencia';
 

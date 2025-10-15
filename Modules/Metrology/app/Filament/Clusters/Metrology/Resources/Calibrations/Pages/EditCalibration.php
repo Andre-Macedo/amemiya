@@ -25,23 +25,33 @@ class EditCalibration extends EditRecord
     }
 
     /**
-     * Prepare the data to fill the form.
+     * Prepare the data to fill the form when editing a record.
      */
     protected function mutateFormDataBeforeFill(array $data): array
     {
-        // Check if there is a checklist associated with this calibration
         if ($this->record->checklist) {
-            // Load the items and format them for the 'checklist_items' repeater
-            $checklistItems = $this->record->checklist->items->map(function ($item) {
-                $readings = is_array($item->readings) ? array_map(fn ($value) => ['value' => $value], $item->readings) : [];
+            $template = $this->record->checklist->checklistTemplate;
+            $templateItems = $template->items->keyBy('step');
+
+            $data['checklist_template_id'] = $this->record->checklist->checklist_template_id;
+
+            $checklistItems = $this->record->checklist->items->map(function ($savedItem) use ($templateItems) {
+                $templateItem = $templateItems->get($savedItem->step);
+
+                $readings = is_array($savedItem->readings) ? array_map(fn ($value) => ['value' => $value], $savedItem->readings) : [];
+
                 return [
-                    'step' => $item->step,
-                    'question_type' => $item->question_type,
-                    'required_readings' => $item->required_readings,
-                    'completed' => $item->completed,
+                    'step' => $savedItem->step,
+                    'question_type' => $savedItem->question_type,
+
+                    'required_readings' => $templateItem ? $templateItem->required_readings : 0,
+                    'reference_standard_type_id' => $templateItem ? $templateItem->reference_standard_type_id : null,
+                    'order' => $templateItem ? $templateItem->order : 0,
+
+                    'completed' => $savedItem->completed,
                     'readings' => $readings,
-                    'notes' => $item->notes,
-                    'reference_standard_type_id' => $item->reference_standard_type_id,
+                    'notes' => $savedItem->notes,
+                    'reference_standard_id' => $savedItem->reference_standard_id,
                 ];
             })->toArray();
 
@@ -63,15 +73,14 @@ class EditCalibration extends EditRecord
                     'question_type' => $item['question_type'],
                     'order' => $item['order'] ?? 0,
                     'required_readings' => $item['required_readings'],
-                    'reference_standard_type' => $item['reference_standard_type'] ?? null,
                     'completed' => $item['completed'] ?? false,
                     'readings' => isset($item['readings']) ? array_column($item['readings'], 'value') : null,
                     'uncertainty' => $item['uncertainty'] ?? null,
                     'result' => $item['result'] ?? null,
                     'notes' => $item['notes'] ?? null,
-                    'reference_standard_type_id' => $item['reference_standard_type_id'] ?? null,
-
+                    'reference_standard_id' => $item['reference_standard_id'] ?? null,
                 ];
+
             }, $data['checklist_items']);
             ChecklistItem::insert($items);
             $checklist->update(['completed' => !in_array(false, array_column($data['checklist_items'], 'completed'))]);
