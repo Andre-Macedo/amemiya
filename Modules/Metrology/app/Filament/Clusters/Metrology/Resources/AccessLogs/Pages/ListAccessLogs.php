@@ -10,6 +10,27 @@ class ListAccessLogs extends ListRecords
 {
     protected static string $resource = AccessLogResource::class;
 
+
+
+//    public static function getCluster(): ?string
+//    {
+//        return static::getResource()::getCluster();
+//    }
+//
+//    public function getSubNavigation(): array
+//    {
+//        if (filled($cluster = static::getCluster())) {
+//            return $this->generateNavigationItems($cluster::getClusteredComponents());
+//        }
+//
+//        return [];
+//    }
+
+    public function getHeader(): ?\Illuminate\Contracts\View\View
+    {
+        return null;
+    }
+
     protected function getHeaderActions(): array
     {
         return [

@@ -162,6 +162,9 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/wikimedia/composer-merge-plugin" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/coolsam/modules" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/flowframe/laravel-trend" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/bezhansalleh/filament-plugin-essentials" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/bezhansalleh/filament-shield" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-permission" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
