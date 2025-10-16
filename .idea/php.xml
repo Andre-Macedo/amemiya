@@ -168,6 +168,9 @@
       <path value="$PROJECT_DIR$/vendor/coolsam/modules" />
       <path value="$PROJECT_DIR$/vendor/flowframe/laravel-trend" />
       <path value="$PROJECT_DIR$/vendor/laravel/sanctum" />
+      <path value="$PROJECT_DIR$/vendor/spatie/laravel-permission" />
+      <path value="$PROJECT_DIR$/vendor/bezhansalleh/filament-plugin-essentials" />
+      <path value="$PROJECT_DIR$/vendor/bezhansalleh/filament-shield" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2" />
