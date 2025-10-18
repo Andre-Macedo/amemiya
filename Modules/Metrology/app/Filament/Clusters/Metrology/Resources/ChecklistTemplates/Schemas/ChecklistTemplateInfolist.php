@@ -19,18 +19,15 @@ class ChecklistTemplateInfolist
                     ->tabs([
                         Tabs\Tab::make('Informações Gerais')
                             ->schema([
-                                Section::make()
-                                    ->schema([
-                                        TextEntry::make('name')->label('Nome do Checklist'),
-                                        TextEntry::make('instrumentType.name')->label('Aplicável ao Tipo de Instrumento'),
-                                        TextEntry::make('items_count')
-                                            ->label('Número de Passos')
-                                            ->counts('items'),
-                                        TextEntry::make('created_at')
-                                            ->label('Data de Criação')
-                                            ->dateTime('d/m/Y H:i'),
-                                    ])->columns(2),
-                            ]),
+                                TextEntry::make('name')->label('Nome do Checklist'),
+                                TextEntry::make('instrumentType.name')->label('Aplicável ao Tipo de Instrumento'),
+                                TextEntry::make('items_count')
+                                    ->label('Número de Passos')
+                                    ->counts('items'),
+                                TextEntry::make('created_at')
+                                    ->label('Data de Criação')
+                                    ->dateTime('d/m/Y H:i'),
+                            ])->columns(2),
 
                         Tabs\Tab::make('Passos do Checklist')
                             ->schema([
@@ -46,7 +43,7 @@ class ChecklistTemplateInfolist
                                                 ->columnSpan(3),
                                             TextEntry::make('question_type')
                                                 ->label('Tipo de Resposta')
-                                                ->formatStateUsing(fn (string $state): string => match ($state) {
+                                                ->formatStateUsing(fn(string $state): string => match ($state) {
                                                     'boolean' => 'Sim / Não',
                                                     'numeric' => 'Leitura Numérica',
                                                     'text' => 'Anotação',
@@ -55,7 +52,8 @@ class ChecklistTemplateInfolist
                                             TextEntry::make('referenceStandardType.name')
                                                 ->label('Padrão de Referência')
                                                 ->placeholder('N/A')
-                                                ->columnSpan(2),
+                                                ->columnSpan(2)
+                                                ->visible(fn($record) => $record->question_type === 'numeric'),
                                         ]),
                                     ]),
                             ]),

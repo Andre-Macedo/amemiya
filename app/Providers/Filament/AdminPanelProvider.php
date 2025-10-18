@@ -27,7 +27,8 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            ->brandName('Amemyia')
+            ->spa()
+            ->brandName('Lean Tech')
             ->id('admin')
             ->path('admin')
             ->login()

@@ -8,10 +8,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Modules\Metrology\Filament\Clusters\Metrology\MetrologyCluster;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\InstrumentTypes\Pages\CreateInstrumentType;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\InstrumentTypes\Pages\EditInstrumentType;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\InstrumentTypes\Pages\ListInstrumentTypes;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\InstrumentTypes\Pages\ViewInstrumentType;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\InstrumentTypes\Schemas\InstrumentTypeForm;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\InstrumentTypes\Schemas\InstrumentTypeInfolist;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\InstrumentTypes\Tables\InstrumentTypesTable;
@@ -55,9 +52,9 @@ class InstrumentTypeResource extends Resource
     {
         return [
             'index' => ListInstrumentTypes::route('/'),
-            'create' => CreateInstrumentType::route('/create'),
-            'view' => ViewInstrumentType::route('/{record}'),
-            'edit' => EditInstrumentType::route('/{record}/edit'),
+//            'create' => CreateInstrumentType::route('/create'),
+//            'view' => ViewInstrumentType::route('/{record}'),
+//            'edit' => EditInstrumentType::route('/{record}/edit'),
         ];
     }
 }
