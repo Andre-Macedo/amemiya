@@ -8,10 +8,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Modules\Metrology\Filament\Clusters\Metrology\MetrologyCluster;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandardTypes\Pages\CreateReferenceStandardType;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandardTypes\Pages\EditReferenceStandardType;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandardTypes\Pages\ListReferenceStandardTypes;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandardTypes\Pages\ViewReferenceStandardType;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandardTypes\Schemas\ReferenceStandardTypeForm;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandardTypes\Schemas\ReferenceStandardTypeInfolist;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandardTypes\Tables\ReferenceStandardTypesTable;
@@ -53,9 +50,9 @@ class ReferenceStandardTypeResource extends Resource
     {
         return [
             'index' => ListReferenceStandardTypes::route('/'),
-            'create' => CreateReferenceStandardType::route('/create'),
-            'view' => ViewReferenceStandardType::route('/{record}'),
-            'edit' => EditReferenceStandardType::route('/{record}/edit'),
+//            'create' => CreateReferenceStandardType::route('/create'),
+//            'view' => ViewReferenceStandardType::route('/{record}'),
+//            'edit' => EditReferenceStandardType::route('/{record}/edit'),
         ];
     }
 }

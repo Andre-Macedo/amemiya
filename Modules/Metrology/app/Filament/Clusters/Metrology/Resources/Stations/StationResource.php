@@ -8,10 +8,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Modules\Metrology\Filament\Clusters\Metrology\MetrologyCluster;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\Stations\Pages\CreateStation;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\Stations\Pages\EditStation;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Stations\Pages\ListStations;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\Stations\Pages\ViewStation;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Stations\Schemas\StationForm;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Stations\Schemas\StationInfolist;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Stations\Tables\StationsTable;
@@ -56,9 +53,9 @@ class StationResource extends Resource
     {
         return [
             'index' => ListStations::route('/'),
-            'create' => CreateStation::route('/create'),
-            'view' => ViewStation::route('/{record}'),
-            'edit' => EditStation::route('/{record}/edit'),
+//            'create' => CreateStation::route('/create'),
+//            'view' => ViewStation::route('/{record}'),
+//            'edit' => EditStation::route('/{record}/edit'),
         ];
     }
 }

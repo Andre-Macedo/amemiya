@@ -3,6 +3,7 @@
 namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\Calibrations\Pages;
 
 use Filament\Resources\Pages\CreateRecord;
+use Modules\Metrology\Filament\Clusters\Metrology\MetrologyCluster;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Calibrations\CalibrationResource;
 use Modules\Metrology\Models\Checklist;
 use Modules\Metrology\Models\ChecklistItem;
@@ -10,6 +11,21 @@ use Modules\Metrology\Models\ChecklistItem;
 class CreateCalibration extends CreateRecord
 {
     protected static string $resource = CalibrationResource::class;
+
+    public static function getCluster(): ?string
+    {
+        return MetrologyCluster::class;
+    }
+
+    public function getSubNavigation(): array
+    {
+        if (filled($cluster = static::getCluster())) {
+            return $this->generateNavigationItems($cluster::getClusteredComponents());
+        }
+
+        return [];
+    }
+
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
@@ -46,7 +62,6 @@ class CreateCalibration extends CreateRecord
 
     protected function afterCreate(): void
     {
-        // Update checklist with calibration_id
         if ($this->record->checklist_id) {
             $checklist = Checklist::find($this->record->checklist_id);
             $checklist->update(['calibration_id' => $this->record->id]);

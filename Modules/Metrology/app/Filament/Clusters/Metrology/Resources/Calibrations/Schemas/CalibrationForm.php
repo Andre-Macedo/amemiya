@@ -9,11 +9,9 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Components\Wizard;
-use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Collection;
 use Modules\Metrology\Models\ChecklistTemplate;
@@ -30,14 +28,17 @@ class CalibrationForm
                     Wizard\Step::make('Detalhes da Calibração')
                         ->schema([
                             Select::make('instrument_id')
+                                ->label('Instrumento')
                                 ->relationship('instrument', 'name')
                                 ->live()
                                 ->searchable()
                                 ->required(),
                             DatePicker::make('calibration_date')
+                                ->label('Data')
                                 ->required()
                                 ->default(now()),
                             Select::make('type')
+                                ->label('Tipo')
                                 ->options([
                                     'internal' => 'Interna',
                                     'external_rbc' => 'Externa RBC',
@@ -46,6 +47,7 @@ class CalibrationForm
                                 ->live()
                                 ->required(),
                             Select::make('performed_by_id')
+                                ->label('Usuario')
                                 ->relationship('performedBy', 'name')
                                 ->searchable()
                                 ->required(),
@@ -87,18 +89,31 @@ class CalibrationForm
                     Wizard\Step::make('Execução do Checklist')
                         ->schema([
                             Repeater::make('checklist_items')
+                                ->label('Procedimento')
                                 ->schema([
-                                    TextInput::make('step')->disabled(),
-                                    Select::make('question_type')->disabled()->options(['boolean' => 'Sim/Não', 'numeric' => 'Numérico', 'text' => 'Texto']),
-                                    Toggle::make('completed')->visible(fn (Get $get) => $get('question_type') === 'boolean'),
+                                    TextInput::make('step')
+                                        ->label('Passo')
+                                        ->disabled(),
+                                    Select::make('question_type')
+                                        ->disabled()
+                                        ->options(['boolean' => 'Sim/Não', 'numeric' => 'Numérico', 'text' => 'Texto'])
+                                        ->label('Tipo')
+                                        ->hidden(),
+                                    Toggle::make('completed')
+                                        ->label('Completo')
+                                        ->visible(fn (Get $get) => $get('question_type') === 'boolean'),
                                     Repeater::make('readings')
+                                        ->label('Leituras')
                                         ->schema([
-                                            TextInput::make('value')->numeric()->required(),
+                                            TextInput::make('value')
+                                                ->label('Valor')
+                                                ->numeric()
+                                                ->required(),
                                         ])
                                         ->minItems(fn (Get $get) => $get('required_readings') ?: 1)
                                         ->maxItems(fn (Get $get) => $get('required_readings') ?: 1)
-                                        ->visible(function (Get $get) {return $get('question_type') === 'numeric';
-                                        }),
+                                        ->visible(function (Get $get) {return $get('question_type') === 'numeric';})
+                                        ->reorderable(false),
                                     Select::make('reference_standard_id')
                                         ->label('Padrão Utilizado')
                                         ->options(function (Get $get) {
@@ -109,7 +124,9 @@ class CalibrationForm
                                         ->searchable()
                                         ->required()
                                         ->visible(fn (Get $get) => $get('question_type') === 'numeric' && !empty($get('reference_standard_type_id'))),
-                                    Textarea::make('notes')->visible(fn (Get $get) => $get('question_type') === 'text'),
+                                    Textarea::make('notes')
+                                        ->label('Observações')
+                                        ->visible(fn (Get $get) => $get('question_type') === 'text'),
                                 ])
                                 ->addable(false)->deletable(false)->reorderable(false)->columnSpanFull(),
                         ])
@@ -117,18 +134,28 @@ class CalibrationForm
 
                     Wizard\Step::make('Resultados e Conclusão')
                         ->schema([
-                            Select::make('result')->options(['approved' => 'Aprovado', 'rejected' => 'Rejeitado']),
-                            TextInput::make('deviation')->numeric()->suffix('mm'),
-                            TextInput::make('uncertainty')->numeric()->suffix('mm'),
+                            Select::make('result')
+                                ->label('Resultado')
+                                ->options(['approved' => 'Aprovado', 'rejected' => 'Rejeitado']),
+                            TextInput::make('deviation')
+                                ->label('Desvio')
+                                ->numeric()->suffix('mm'),
+                            TextInput::make('uncertainty')
+                                ->label('Incerteza')
+                                ->numeric()->suffix('mm'),
                             Select::make('calibration_interval')
-                                ->label('Intervalo Próxima Calibração (meses)')
+                                ->label('Intervalo para Próxima Calibração (meses)')
                                 ->options([6 => '6 meses', 12 => '12 meses', 18 => '18 meses', 24 => '24 meses'])
                                 ->default(12)->required(),
-                            Textarea::make('notes')->columnSpanFull(),
+                            Textarea::make('notes')
+                                ->label('Observações')
+                                ->columnSpanFull(),
                         ]),
                     Wizard\Step::make('Certificado')
                         ->schema([
                             FileUpload::make('certificate_path')
+                                ->label('Certificado')
+                                ->helperText('Upload certificado externo')
                                 ->directory('calibration-certificates')
                                 ->acceptedFileTypes(['application/pdf'])
                                 ->required(),

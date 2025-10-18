@@ -12,6 +12,7 @@ class InstrumentTypeForm
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->label('Nome')
                     ->required()
                     ->unique(ignoreRecord: true)
                     ->maxLength(255),

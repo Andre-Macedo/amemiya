@@ -16,6 +16,7 @@ class InstrumentTypesTable
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label('Nome')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('instruments_count')
@@ -23,6 +24,7 @@ class InstrumentTypesTable
                     ->label('Nº de Instrumentos')
                     ->sortable(),
                 TextColumn::make('created_at')
+                    ->label('Criado em')
                     ->dateTime('d/m/Y')
                     ->sortable(),
 
@@ -31,8 +33,8 @@ class InstrumentTypesTable
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
+                ViewAction::make()->modal(),
+                EditAction::make()->modal(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

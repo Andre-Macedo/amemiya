@@ -8,10 +8,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Modules\Metrology\Filament\Clusters\Metrology\MetrologyCluster;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\AccessLogs\Pages\CreateAccessLog;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\AccessLogs\Pages\EditAccessLog;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\AccessLogs\Pages\ListAccessLogs;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\AccessLogs\Pages\ViewAccessLog;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\AccessLogs\Schemas\AccessLogForm;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\AccessLogs\Schemas\AccessLogInfolist;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\AccessLogs\Tables\AccessLogsTable;
@@ -53,9 +50,9 @@ class AccessLogResource extends Resource
     {
         return [
             'index' => ListAccessLogs::route('/'),
-            'create' => CreateAccessLog::route('/create'),
-            'view' => ViewAccessLog::route('/{record}'),
-            'edit' => EditAccessLog::route('/{record}/edit'),
+//            'create' => CreateAccessLog::route('/create'),
+//            'view' => ViewAccessLog::route('/{record}'),
+//            'edit' => EditAccessLog::route('/{record}/edit'),
         ];
     }
 }
