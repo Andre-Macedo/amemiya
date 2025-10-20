@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('instruments', function (Blueprint $table) {
             $table->string('nfc_tag')->nullable()->unique();
-            $table->foreignId('current_station_id')->nullable();
+            $table->foreignId('current_station_id')->nullable()->constrained('stations');
             $table->string('status_stock')->default('available'); // available, in_use
         });
     }
@@ -24,6 +24,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('instruments', function (Blueprint $table) {
+            $table->dropForeign(['current_station_id']);
             $table->dropColumn(['nfc_tag', 'current_station_id', 'status_stock']);
         });
     }

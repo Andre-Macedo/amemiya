@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void {
         Schema::table('calibrations', function (Blueprint $table) {
-            $table->foreignId('checklist_id')->nullable()->after('instrument_id');
+            $table->foreignId('checklist_id')->nullable()->after('instrument_id')->constrained();
             $table->integer('calibration_interval')->nullable()->after('type')->after('checklist_id')
                 ->comment('Intervalo de calibracao, em meses');
         });
@@ -22,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void {
         Schema::table('calibrations', function (Blueprint $table) {
-            $table->dropForeign('calibrations_checklist_id_foreign');
+            $table->dropForeign(['checklist_id']);
             $table->dropColumn('calibration_interval');
         });
     }

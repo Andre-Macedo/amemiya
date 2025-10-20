@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('calibrations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('instrument_id');
+            $table->foreignId('instrument_id')->constrained();;
             $table->date('calibration_date');
             $table->string('type')->default('internal');
             $table->string('result')->nullable();
@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->decimal('uncertainty', 8, 4)->nullable();
             $table->text('notes')->nullable();
             $table->string('certificate_path')->nullable();
-            $table->foreignId('performed_by');
+            $table->foreignId('performed_by_id')->constrained('users');
             $table->timestamps();
             $table->softDeletes();
         });

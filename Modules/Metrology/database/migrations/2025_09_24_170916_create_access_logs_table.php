@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('access_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('instrument_id');
-            $table->foreignId('user_id');
-            $table->foreignId('station_id')->nullable();
-            $table->string('action'); // check_in, check_out
+            $table->foreignId('instrument_id')->constrained();
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('station_id')->nullable()->constrained();
+            $table->string('action');
             $table->timestamps();
             $table->softDeletes();
         });
