@@ -18,6 +18,7 @@ use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Relation
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Schemas\InstrumentForm;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Schemas\InstrumentInfolist;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Tables\InstrumentsTable;
+use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Widgets\InstrumentStatsWidget;
 use Modules\Metrology\Models\Instrument;
 
 class InstrumentResource extends Resource
@@ -71,5 +72,24 @@ class InstrumentResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            InstrumentStatsWidget::class,
+        ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        $count = Instrument::where('status', 'expired')->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'danger';
     }
 }
