@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void {
         Schema::table('instruments', function (Blueprint $table) {
             $table->dropColumn('type');
-            $table->foreignId('instrument_type_id')->after('serial_number')->nullable();
+            $table->foreignId('instrument_type_id')->after('serial_number')->nullable()->constrained();
             $table->string('stock_number')->after('name')->nullable();
             $table->string('image_path')->after('current_station_id')->nullable();
         });

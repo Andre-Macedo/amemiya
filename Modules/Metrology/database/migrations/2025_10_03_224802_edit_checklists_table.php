@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void {
         Schema::table('checklists', function (Blueprint $table) {
-            $table->foreignId('checklist_template_id')->after('calibration_id');
+            $table->foreignId('checklist_template_id')->after('calibration_id')->constrained();
             $table->dropColumn('steps');
             $table->softDeletes();
         });
@@ -22,10 +22,10 @@ return new class extends Migration
      */
     public function down(): void {
         Schema::table('checklists', function (Blueprint $table) {
-            $table->dropForeign('checklists_checklist_template_id_foreign');
+            $table->dropForeign(['checklist_template_id']);
             $table->dropColumn('checklist_template_id');
             $table->dropSoftDeletes();
-            $table->integer('steps')->after('calibration_id');
+            $table->json('steps')->after('calibration_id');
         });
     }
 };
