@@ -20,8 +20,13 @@ class CalibrationFactory extends Factory
      */
     public function definition(): array
     {
+        $calibratable = $this->faker->randomElement([
+            Instrument::class,
+            ReferenceStandard::class,
+        ]);
         return [
-            'instrument_id' => Instrument::factory(),
+            'calibrated_item_id' => $calibratable::factory(),
+            'calibrated_item_type' => $calibratable,
             'calibration_date' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'type' => $this->faker->randomElement(['internal', 'external_rbc']),
             'result' => $this->faker->randomElement(['approved', 'rejected']),
@@ -29,7 +34,7 @@ class CalibrationFactory extends Factory
             'uncertainty' => $this->faker->randomFloat(4, 0, 0.05),
             'notes' => $this->faker->sentence,
             'certificate_path' => $this->faker->optional()->filePath('pdf'),
-            'performed_by' => User::factory(),
+            'performed_by_id' => User::factory(),
         ];
     }
 

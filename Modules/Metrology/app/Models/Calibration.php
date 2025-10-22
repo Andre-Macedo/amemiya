@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Modules\Metrology\Database\Factories\CalibrationFactory;
@@ -29,9 +30,9 @@ class Calibration extends Model
         'performed_by',
     ];
 
-    public function instrument(): BelongsTo
+    public function calibratedItem(): MorphTo
     {
-        return $this->belongsTo(Instrument::class);
+        return $this->morphTo('calibrated_item');
     }
 
     protected static function factory(): CalibrationFactory
@@ -46,7 +47,7 @@ class Calibration extends Model
 
     public function performedBy(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'performed_by');
+        return $this->belongsTo(User::class, 'performed_by_id');
     }
 
     // Accessor for next_calibration_due (computed from interval)
