@@ -16,6 +16,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Modules\Metrology\Models\Instrument;
+use Modules\Metrology\Models\ReferenceStandard;
 
 class CalibrationsTable
 {
@@ -23,26 +25,41 @@ class CalibrationsTable
     {
         return $table
             ->columns([
-                TextColumn::make('instrument.name')->searchable()->sortable(),
-                TextColumn::make('referenceStandards.name')->searchable(),
-                TextColumn::make('calibration_date')->date()->sortable(),
-                TextColumn::make('type')->formatStateUsing(fn (string $state): string => ucfirst(str_replace('_', ' ', $state))),
-                TextColumn::make('result')->formatStateUsing(fn (?string $state): string => ucfirst($state ?? 'N/A')),
-                TextColumn::make('performedBy.name')->searchable()->sortable(),
-            ])
+                TextColumn::make('calibratedItem.name')
+                ->label('Item Calibrado')
+                    ->searchable(query: function ($query, string $search) {
+                        $query->whereHasMorph('calibratedItem', [Instrument::class, ReferenceStandard::class], function ($q) use ($search) {
+                            $q->where('name', 'like', "%{$search}%");
+                        });
+                    })
+                    ->sortable(),
+
+                TextColumn::make('calibrated_item_type')
+                    ->label('Tipo de Item')
+                    ->formatStateUsing(fn (string $state): string => class_basename($state)) // Mostra 'Instrument' ou 'ReferenceStandard'
+                    ->badge()
+                    ->color(fn (string $state): string => $state === Instrument::class ? 'info' : 'warning'),
+
+                TextColumn::make('calibration_date')->label('Data')->date('d/m/Y')->sortable(),
+                TextColumn::make('type')->label('Tipo Cal.')
+                    ->formatStateUsing(fn (string $state): string => $state === 'internal' ? 'Interna' : 'Externa')
+                    ->badge(),
+                TextColumn::make('result')->label('Resultado')
+                    ->formatStateUsing(fn (?string $state): string => match($state) {'approved'=>'Aprovado','rejected'=>'Reprovado', default => 'N/A'})
+                    ->badge()->color(fn(?string $state) => match($state){'approved'=>'success','rejected'=>'danger',default=>'gray'}),
+                TextColumn::make('performedBy.name')->label('Executado Por')->searchable()->sortable(),            ])
             ->filters([
                 TrashedFilter::make(),
-                SelectFilter::make('type')
+                SelectFilter::make('type')->label('Tipo Calibração')
+                    ->options(['internal' => 'Interna', 'external_rbc' => 'Externa']),
+                SelectFilter::make('result')->label('Resultado')
+                    ->options(['approved' => 'Aprovado', 'rejected' => 'Reprovado']),
+                SelectFilter::make('calibrated_item_type')->label('Tipo de Item')
                     ->options([
-                        'internal' => 'Interna',
-                        'external_rbc' => 'Externa RBC',
+                        Instrument::class => 'Instrumento',
+                        ReferenceStandard::class => 'Padrão de Referência',
                     ]),
-                SelectFilter::make('result')
-                    ->options([
-                        'approved' => 'Aprovado',
-                        'rejected' => 'Rejeitado',
-                    ]),
-            ])
+                ])
             ->actions([
                 ActionGroup::make([
                     ViewAction::make(),

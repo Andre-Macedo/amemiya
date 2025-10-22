@@ -18,14 +18,10 @@ class ReferenceStandardFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->words(3, true) . ' Standard',
-            'serial_number' => $this->faker->unique()->numerify('STD-#####'),
+            'name' => $this->faker->words(3, true) . ' Padrão',
+            'serial_number' => $this->faker->unique()->numerify('SN-######'),
+            'asset_tag' => $this->faker->unique()->numerify('PAT-#####'),
             'reference_standard_type_id' => ReferenceStandardType::factory(),
-            'calibration_date' => $this->faker->dateTimeBetween('-1 year', 'now'),
-            'calibration_due' => $this->faker->dateTimeBetween('now', '+2 years'),
-            'traceability' => $this->faker->randomElement(['INMETRO #123', 'RBC Lab X', 'NIST Traceable']),
-            'certificate_path' => null, // Normalmente gerado em outro processo
-            'description' => $this->faker->sentence,
-        ];
+            'description' => $this->faker->sentence,        ];
     }
 }
