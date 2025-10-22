@@ -33,13 +33,10 @@ class CalibrationForm
                                     Instrument::class => 'Instrumento',
                                     ReferenceStandard::class => 'Padrão de Referência',
                                 ])
-                                ->live() // Essencial para a reatividade
+                                ->live()
                                 ->required()
-                                // A LÓGICA DINÂMICA ESTÁ AQUI:
                                 ->afterStateUpdated(function (Set $set, ?string $state) {
-                                    // Limpa a seleção do item específico ao mudar o tipo
                                     $set('calibrated_item_id', null);
-                                    // Se for Padrão, força o tipo de calibração para externa
                                     if ($state === ReferenceStandard::class) {
                                         $set('type', 'external_rbc');
                                     } else {
@@ -53,7 +50,6 @@ class CalibrationForm
                                 ->options(Instrument::query()->pluck('name', 'id'))
                                 ->searchable()->preload()->required()
                                 ->visible(fn (Get $get) => $get('calibrated_item_type') === Instrument::class),
-                            // Remover afterStateUpdated daqui se não precisar carregar checklist automaticamente
 
                             Select::make('calibrated_item_id')
                                 ->label('Padrão de Referência')
@@ -62,9 +58,13 @@ class CalibrationForm
                                 ->visible(fn (Get $get) => $get('calibrated_item_type') === ReferenceStandard::class),
 
                             DatePicker::make('calibration_date')->label('Data da Calibração')->required()->default(now()),
-                            Select::make('performed_by_id')->label('Executado Por')->relationship('performedBy', 'name')->searchable()->required(),
+                            Select::make('performed_by_id')
+                                ->label('Executado Por')
+                                ->relationship('performedBy', 'name')
+                                ->searchable()
+                                ->preload()
+                                ->required(),
 
-                            // AJUSTE NO TIPO DE CALIBRAÇÃO:
                             Select::make('type')->label('Tipo de Calibração')
                                 ->options([
                                     'internal' => 'Interna (Checklist)',
@@ -72,9 +72,7 @@ class CalibrationForm
                                 ])
                                 ->live()
                                 ->required()
-                                // Desabilita o campo se for um Padrão (só pode ser externo)
                                 ->disabled(fn (Get $get) => $get('calibrated_item_type') === ReferenceStandard::class)
-                        // Garante que o default correto é aplicado mesmo quando desabilitado
                         ->default(function (Get $get) {
                             return $get('calibrated_item_type') === ReferenceStandard::class ? 'external_rbc' : 'internal';
                         }),
@@ -86,7 +84,7 @@ class CalibrationForm
                             Select::make('checklist_template_id')
                                 ->label('Procedimento / Checklist')
                                 ->options(function (Get $get): Collection {
-                                    $instrumentId = $get('instrument_id');
+                                    $instrumentId = $get('calibrated_item_id');
                                     if (!$instrumentId) {
                                         return collect();
                                     }
@@ -111,7 +109,7 @@ class CalibrationForm
                                     }
                                 }),
                         ])
-                        ->visible(fn (Get $get) => $get('type') === 'internal'),
+                        ->visible(fn (Get $get) => $get('type') === 'internal' && $get('calibrated_item_type') === Instrument::class),
 
                     Wizard\Step::make('Execução do Checklist')
                         ->schema([
