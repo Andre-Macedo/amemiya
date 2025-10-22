@@ -92,6 +92,8 @@ class CalibrationForm
                                     return ChecklistTemplate::where('instrument_type_id', $instrumentTypeId)->pluck('name', 'id');
                                 })
                                 ->live()
+                                ->searchable()
+                                ->preload()
                                 ->required()
                                 ->afterStateUpdated(function (Set $set, ?string $state) {
                                     if (!$state) {

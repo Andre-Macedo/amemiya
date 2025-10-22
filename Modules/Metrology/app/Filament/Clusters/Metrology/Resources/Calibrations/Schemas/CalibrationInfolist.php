@@ -18,35 +18,28 @@ class CalibrationInfolist
                 ->tabs([
                     Tabs\Tab::make('Informações Gerais')
                         ->schema([
-                            TextEntry::make('instrument.name')
-                                ->label('Instrumento'),
-                            TextEntry::make('calibration_date')
-                                ->label('Data da Calibração')
-                                ->date('d/m/Y'),
-                            TextEntry::make('type')
-                                ->label('Tipo')
-                                ->formatStateUsing(fn(string $state): string => $state === 'internal' ? 'Interna' : 'Externa RBC'),
-                            TextEntry::make('result')
-                                ->label('Resultado')
-                                ->formatStateUsing(fn(?string $state): string => ucfirst($state ?? 'N/A'))
-                                ->badge()
-                                ->color(fn(?string $state): string => match ($state) {
-                                    'approved' => 'success',
-                                    'rejected' => 'danger',
-                                    default => 'gray',
-                                }),
-                            TextEntry::make('deviation')
-                                ->label('Desvio')
-                                ->suffix(' mm'),
-                            TextEntry::make('uncertainty')
-                                ->label('Incerteza')
-                                ->suffix(' mm'),
-                            TextEntry::make('performedBy.name')
-                                ->label('Executado Por'),
-                            TextEntry::make('notes')
-                                ->label('Observações')
-                                ->columnSpanFull(),
-                        ])->columns(2),
+                            Grid::make(2)->schema([
+                                TextEntry::make('calibratedItem.name') // Usa a relação polimórfica
+                                ->label('Item Calibrado'),
+                                TextEntry::make('calibrated_item_type')
+                                    ->label('Tipo de Item')
+                                    ->formatStateUsing(fn (string $state): string => class_basename($state))
+                                    ->badge()
+                                    ->color(fn (string $state): string => $state === Instrument::class ? 'info' : 'warning'),
+                                TextEntry::make('calibration_date')->label('Data da Calibração')->date('d/m/Y'),
+                                TextEntry::make('type')->label('Tipo Cal.')
+                                    ->formatStateUsing(fn (string $state): string => $state === 'internal' ? 'Interna' : 'Externa RBC'),
+                                TextEntry::make('result')->label('Resultado')
+                                    ->formatStateUsing(fn (?string $state): string => match($state) {'approved'=>'Aprovado','rejected'=>'Reprovado', default => 'N/A'})
+                                    ->badge()->color(fn(?string $state) => match($state){'approved'=>'success','rejected'=>'danger',default=>'gray'}),
+                                TextEntry::make('deviation')->label('Desvio')->suffix(' mm'),
+                                TextEntry::make('uncertainty')->label('Incerteza')->suffix(' mm'),
+                                TextEntry::make('performedBy.name')->label('Executado Por'),
+                                TextEntry::make('notes')->label('Observações')->columnSpanFull(),
+                                // Adicionar link/visualização para certificado se for externo?
+                                // FileEntry::make('certificate_path')->visible(fn($record)=>$record->type == 'external_rbc'),
+                            ])->columnSpanFull()->contained(false),
+                    ]),
 
                     Tabs\Tab::make('Checklist Executado')
                         ->schema([
