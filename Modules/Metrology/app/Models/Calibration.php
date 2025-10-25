@@ -32,9 +32,8 @@ class Calibration extends Model
 
     public function calibratedItem(): MorphTo
     {
-        return $this->morphTo('calibrated_item');
+        return $this->morphTo();
     }
-
     protected static function factory(): CalibrationFactory
     {
         return CalibrationFactory::new();

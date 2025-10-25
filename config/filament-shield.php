@@ -1,6 +1,6 @@
 <?php
 
-use Modules\Metrology\Filament\Clusters\Metrology\MetrologyCluster;
+use App\Filament\Clusters\System\SystemCluster;
 
 return [
 
@@ -18,7 +18,7 @@ return [
     'shield_resource' => [
         'slug' => 'shield/roles',
         'show_model_path' => true,
-        'cluster' => MetrologyCluster::class,
+        'cluster' => SystemCluster::class,
         'tabs' => [
             'pages' => true,
             'widgets' => true,
