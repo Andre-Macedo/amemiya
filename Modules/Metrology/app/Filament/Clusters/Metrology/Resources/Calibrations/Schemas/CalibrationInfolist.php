@@ -38,7 +38,7 @@ class CalibrationInfolist
                                 TextEntry::make('notes')->label('Observações')->columnSpanFull(),
                                 // Adicionar link/visualização para certificado se for externo?
                                 // FileEntry::make('certificate_path')->visible(fn($record)=>$record->type == 'external_rbc'),
-                            ])->columnSpanFull()->contained(false),
+                            ])->columnSpanFull(),
                     ]),
 
                     Tabs\Tab::make('Checklist Executado')
