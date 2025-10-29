@@ -30,7 +30,7 @@ jobs:
               cd /var/www/amemiya
 
               echo '==> 2. A puxar o código mais recente...'
-              git pull origin trunk
+              git pull origin main
 
               echo '==> 3. A construir a nova imagem da aplicação...'
               # (Construímos a imagem primeiro)
