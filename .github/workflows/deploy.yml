@@ -22,7 +22,6 @@ jobs:
       - name: SSH into VPS and Deploy
         run: |
             # Adiciona o host da VPS ao known_hosts
-            ssh-add -D
             ssh-keyscan -H "${{ secrets.VPS_SSH_HOST }}" >> ~/.ssh/known_hosts
 
             # --- MUDANÇA AQUI: Adicionámos o -vvv para depuração máxima ---
