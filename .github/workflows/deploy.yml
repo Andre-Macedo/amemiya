@@ -3,7 +3,7 @@ name: Deploy to Production
 on:
   push:
     branches:
-      - trunk
+      - main
   workflow_dispatch:
 
 jobs:
@@ -21,37 +21,33 @@ jobs:
 
       - name: SSH into VPS and Deploy
         run: |
-          # Adiciona o host da VPS
-          ssh-add -D
-          ssh-keyscan -H "${{ secrets.VPS_SSH_HOST }}" >> ~/.ssh/known_hosts
+            # Adiciona o host da VPS ao known_hosts
+            ssh-add -D
+            ssh-keyscan -H "${{ secrets.VPS_SSH_HOST }}" >> ~/.ssh/known_hosts
 
-          # Conecta-se à VPS e executa todo o roteiro de deploy
-          ssh ${{ secrets.VPS_SSH_USER }}@${{ secrets.VPS_SSH_HOST }} "
-            echo '==> 1. A ligar! A aceder ao diretório do projeto...'
-            cd /var/www/amemiya
+            # --- MUDANÇA AQUI: Adicionámos o -vvv para depuração máxima ---
+            ssh -vvv ${{ secrets.VPS_SSH_USER }}@${{ secrets.VPS_SSH_HOST }} "
+              echo '==> 1. Conectado! A aceder ao diretório do projeto...'
+              cd /var/www/amemiya
 
-            echo '==> 2. A puxar o código mais recente...'
-            git pull origin trunk
+              echo '==> 2. A puxar o código mais recente...'
+              git pull origin trunk
 
-            echo '==> 3. A garantir que o container está a correr e atualizado (se o Dockerfile mudou)...'
-            # (Usamos o -f para apontar para o ficheiro de produção)
-            docker-compose -f docker-compose.prod.yml up -d --build
+              echo '==> 3. A garantir que o container está a correr...'
+              docker-compose -f docker-compose.prod.yml up -d --build
 
-            echo '==> 4. A instalar dependências do PHP (Composer)...'
-            # Usamos '--no-dev' e '--optimize-autoloader' para produção
-            docker-compose -f docker-compose.prod.yml exec app composer install --no-dev --optimize-autoloader
+              echo '==> 4. A instalar dependências do PHP (Composer)...'
+              docker-compose -f docker-compose.prod.yml exec app composer install --no-dev --optimize-autoloader
 
-            echo '==> 5. A instalar dependências do Node (NPM)...'
-            # 'npm ci' é melhor para CI/CD: apaga 'node_modules' e instala exatamente a partir do package-lock.json
-            docker-compose -f docker-compose.prod.yml exec app npm ci
+              echo '==> 5. A instalar dependências do Node (NPM)...'
+              docker-compose -f docker-compose.prod.yml exec app npm ci
 
-            echo '==> 6. A compilar os ficheiros CSS/JS (Vite)...'
-            # Este é o passo que corrige a 'página esquisita'
-            docker-compose -f docker-compose.prod.yml exec app npm run build
+              echo '==> 6. A compilar os ficheiros CSS/JS (Vite)...'
+              docker-compose -f docker-compose.prod.yml exec app npm run build
 
-            echo '==> 7. A executar os comandos finais do Laravel (Migrate & Optimize)...'
-            docker-compose -f docker-compose.prod.yml exec app php artisan migrate --force
-            docker-compose -f docker-compose.prod.yml exec app php artisan optimize
+              echo '==> 7. A executar os comandos finais do Laravel (Migrate & Optimize)...'
+              docker-compose -f docker-compose.prod.yml exec app php artisan migrate --force
+              docker-compose -f docker-compose.prod.yml exec app php artisan optimize
 
-            echo '==> DEPLOY AUTOMÁTICO CONCLUÍDO!'
-          "
+              echo '==> DEPLOY AUTOMÁTICO CONCLUÍDO!'
+            "
