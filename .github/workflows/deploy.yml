@@ -32,21 +32,30 @@ jobs:
               echo '==> 2. A puxar o código mais recente...'
               git pull origin trunk
 
-              echo '==> 3. A garantir que o container está a correr...'
-              docker-compose -f docker-compose.prod.yml up -d --build
+              echo '==> 3. A construir a nova imagem da aplicação...'
+              # (Construímos a imagem primeiro)
+              docker-compose -f docker-compose.prod.yml build
 
-              echo '==> 4. A instalar dependências do PHP (Composer)...'
+              echo '==> 4. A parar e remover os containers antigos (para evitar o bug ContainerConfig)...'
+              # (Esta é a correção crucial)
+              docker-compose -f docker-compose.prod.yml down --remove-orphans
+
+              echo '==> 5. A iniciar os novos containers a partir da imagem construída...'
+              docker-compose -f docker-compose.prod.yml up -d
+              # --- FIM DAS MUDANÇAS ---
+
+              echo '==> 6. A instalar dependências do PHP (Composer)...'
               docker-compose -f docker-compose.prod.yml exec app composer install --no-dev --optimize-autoloader
 
-              echo '==> 5. A instalar dependências do Node (NPM)...'
+              echo '==> 7. A instalar dependências do Node (NPM)...'
               docker-compose -f docker-compose.prod.yml exec app npm ci
 
-              echo '==> 6. A compilar os ficheiros CSS/JS (Vite)...'
+              echo '==> 8. A compilar os ficheiros CSS/JS (Vite)...'
               docker-compose -f docker-compose.prod.yml exec app npm run build
 
-              echo '==> 7. A executar os comandos finais do Laravel (Migrate & Optimize)...'
+              echo '==> 9. A executar os comandos finais do Laravel (Migrate & Optimize)...'
               docker-compose -f docker-compose.prod.yml exec app php artisan migrate --force
               docker-compose -f docker-compose.prod.yml exec app php artisan optimize
 
               echo '==> DEPLOY AUTOMÁTICO CONCLUÍDO!'
-            "
+              "
