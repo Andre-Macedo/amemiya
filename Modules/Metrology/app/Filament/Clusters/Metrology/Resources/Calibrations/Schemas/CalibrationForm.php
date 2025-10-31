@@ -9,6 +9,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Components\Wizard;
@@ -61,8 +62,8 @@ class CalibrationForm
                             Select::make('performed_by_id')
                                 ->label('Executado Por')
                                 ->relationship('performedBy', 'name')
-                                ->searchable()
                                 ->preload()
+                                ->searchable()
                                 ->required(),
 
                             Select::make('type')->label('Tipo de Calibração')
@@ -106,6 +107,9 @@ class CalibrationForm
                                             'question_type' => $item->question_type,
                                             'required_readings' => $item->required_readings,
                                             'reference_standard_type_id' => $item->reference_standard_type_id,
+                                            'readings' => collect(range(1, $item->required_readings))
+                                                ->map(fn () => ['value' => '']) // ou '0.00'
+                                                ->toArray(),
                                         ])->toArray();
                                         $set('checklist_items', $items);
                                     }
@@ -117,6 +121,8 @@ class CalibrationForm
                         ->schema([
                             Repeater::make('checklist_items')
                                 ->label('Procedimento')
+                                ->live()
+                                ->key('checklist_item_repeater')
                                 ->schema([
                                     TextInput::make('step')
                                         ->label('Passo')
@@ -129,31 +135,46 @@ class CalibrationForm
                                     Toggle::make('completed')
                                         ->label('Completo')
                                         ->visible(fn (Get $get) => $get('question_type') === 'boolean'),
+                                    Select::make('reference_standard_id')
+                                        ->label('Padrão Utilizado')
+                                        ->hint(fn (Get $get) => 'Val: ' . ($get('reference_standard_id') ?? 'null') . 'Reqs: ' . $get('required_readings'))
+                                        ->options(function (Get $get) {
+                                            $typeId = $get('reference_standard_type_id');
+                                            if (!$typeId) return [];
+
+                                            return ReferenceStandard::where('reference_standard_type_id', $typeId)
+                                                ->pluck('name', 'id');
+                                        })
+                                        ->preload()
+                                        ->live(true)
+                                        ->required()
+                                        ->dehydrated(fn (Get $get) =>
+                                            $get('question_type') === 'numeric' && !empty($get('reference_standard_type_id'))
+                                        )
+                                        ->visible(fn (Get $get) => $get('question_type') === 'numeric' && !empty($get('reference_standard_type_id'))),
                                     Repeater::make('readings')
                                         ->label('Leituras')
+                                        ->key('reading_repeater_' . md5(uniqid('', true)))                                         ->hint(fn (Get $get) =>'Type: ' . $get('question_type') === 'numeric' . 'Req: ' . $get('required_readings'))
+                                        ->required()
                                         ->schema([
                                             TextInput::make('value')
                                                 ->label('Valor')
                                                 ->numeric()
+                                                ->placeholder(fn (Get $get, $state, $context) =>
+                                                $context === 'create' ? 'Digite o valor...' : ''
+                                                )
                                                 ->required(),
                                         ])
-                                        ->minItems(fn (Get $get) => $get('required_readings') ?: 1)
-                                        ->maxItems(fn (Get $get) => $get('required_readings') ?: 1)
+                                        ->addable(false)
+                                        ->deletable(false)
                                         ->visible(function (Get $get) {return $get('question_type') === 'numeric';})
                                         ->reorderable(false),
-                                    Select::make('reference_standard_id')
-                                        ->label('Padrão Utilizado')
-                                        ->options(function (Get $get) {
-                                            $typeId = $get('reference_standard_type_id');
-                                            if (!$typeId) return [];
-                                            return ReferenceStandard::where('reference_standard_type_id', $typeId)->pluck('name', 'id');
-                                        })
-                                        ->searchable()
-                                        ->required()
-                                        ->visible(fn (Get $get) => $get('question_type') === 'numeric' && !empty($get('reference_standard_type_id'))),
                                     Textarea::make('notes')
                                         ->label('Observações')
                                         ->visible(fn (Get $get) => $get('question_type') === 'text'),
+                                    TextInput::make('required_readings')->hidden(),
+                                    TextInput::make('reference_standard_type_id')->hidden(),
+                                    TextInput::make('order')->hidden(),
                                 ])
                                 ->addable(false)->deletable(false)->reorderable(false)->columnSpanFull(),
                         ])
