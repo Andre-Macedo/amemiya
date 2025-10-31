@@ -47,7 +47,6 @@ class InstrumentForm
                         ])
                         ->columnSpan(2),
 
-                    // Coluna lateral para informações secundárias (ocupa 1/3 do espaço)
                     Grid::make(1)
                         ->schema([
                             Section::make('Imagem')
@@ -64,8 +63,7 @@ class InstrumentForm
                     ->schema([
                         Section::make('Detalhes e Datas')
                             ->schema([
-                                Select::make('precision')->label('Precisão')
-                                    ->options(['centesimal' => 'Centesimal', 'milesimal' => 'Milesimal'])
+                                TextInput::make('precision')->label('Incerteza')
                                     ->required(),
                                 TextInput::make('location')->label('Localização')->maxLength(255),
                                 DatePicker::make('acquisition_date')->label('Data de Aquisição')->required(),

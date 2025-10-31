@@ -101,7 +101,7 @@ class InstrumentInfolist
                                             }),
                                         TextEntry::make('performedBy.name')->label('Executado Por')->getStateUsing(fn() => $latestCalibration->performedBy->name ?? 'N/A'),
                                         TextEntry::make('notes')->label('Observações')->getStateUsing(fn() => $latestCalibration->notes)->placeholder('N/A')->columnSpanFull(),
-                                    ])->columnSpanFull(), // `contained(false)` ajuda a remover espaçamento extra
+                                    ])->columnSpanFull(),
                             ];
 
                             if ($latestCalibration->checklist && $latestCalibration->checklist->items->isNotEmpty()) {

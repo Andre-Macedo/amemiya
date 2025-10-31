@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Metrology\Database\Factories\InstrumentFactory;
 
@@ -33,9 +34,9 @@ class Instrument extends Model
         'image_path',
     ];
 
-    public function calibrations(): HasMany
+    public function calibrations(): MorphMany
     {
-        return $this->hasMany(Calibration::class);
+        return $this->morphMany(Calibration::class, 'calibrated_item');
     }
 
     public function station(): BelongsTo
