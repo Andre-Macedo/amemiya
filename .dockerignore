@@ -7,4 +7,5 @@ yarn-error.log
 .gitignore
 docker-compose.yml
 Dockerfile
-.docker/
+public/storage
+

@@ -31,7 +31,6 @@ class CreateCalibration extends CreateRecord
     {
         if (isset($data['checklist_template_id']) && !empty($data['checklist_items'])) {
             $checklist = Checklist::create([
-                'calibration_id' => null, // Will be set after calibration is created
                 'checklist_template_id' => $data['checklist_template_id'],
                 'completed' => false,
             ]);
