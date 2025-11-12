@@ -32,7 +32,7 @@ WORKDIR /var/www/html
 
 # Instala dependências do PHP e Node (em camadas para otimizar o cache)
 COPY composer.json composer.lock ./
-RUN composer install --no-scripts --no-autoloader --no-dev --prefer-dist
+RUN composer install --no-scripts --no-autoloader --prefer-dist
 
 COPY package.json package-lock.json* ./
 RUN npm install
@@ -48,6 +48,9 @@ RUN npm run build
 
 # STAGE 2: App - A imagem final, mais leve e pronta para produção/desenvolvimento
 FROM php:8.2-fpm AS app
+
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
 
 # Instala apenas as extensões PHP necessárias para rodar a aplicação
 RUN apt-get update && apt-get install -y \
@@ -66,6 +69,8 @@ RUN apt-get update && apt-get install -y \
 
 # Copia o composer para podermos usar `docker-compose exec`
 COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
+
+COPY .docker/php/opcache.ini /usr/local/etc/php/conf.d/opcache-custom.ini
 
 WORKDIR /var/www/html
 
