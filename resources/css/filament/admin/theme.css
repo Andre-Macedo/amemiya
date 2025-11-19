@@ -1,0 +1,65 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+@layer base {
+    :root {
+        /* LEAN BLUE #1A365D - Base (700) */
+        --primary-color: 26, 54, 93;
+
+        /* LEAN GREEN #00A86B - Base (500) */
+        --secondary-color: 0, 168, 107;
+
+        /* BACKGROUND #F7FAFC */
+        --bg-app: 247, 250, 252;
+
+        /* TEXT #1A202C */
+        --text-main: 26, 32, 44;
+
+    }
+
+    body {
+        background-color: rgb(var(--bg-app));
+        color: rgb(var(--text-main));
+    }
+}
+
+
+.fi-topbar {
+    background-color: white !important;
+    border-bottom: 1px solid rgba(var(--primary-color), 0.1);
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.fi-topbar nav {
+    background-color: transparent;
+    border: none;
+}
+
+
+.fi-logo {
+    background-color: transparent;
+    color: rgb(var(--primary-color));
+    font-weight: 800;
+}
+
+
+.fi-btn {
+    border-radius: 12px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.fi-ta-header-cell {
+    color: rgb(var(--text-main));
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background-color: transparent;
+}
+
+.fi-ta-row:hover {
+    background-color: rgba(var(--primary-color), 0.02);
+}
