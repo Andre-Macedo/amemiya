@@ -33,8 +33,13 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'success' => Color::hex('#00A86B'), // Verde Lean Tech
+                'warning' => Color::Orange,
+                'danger'  => Color::Red,
+                'gray'    => Color::Slate,
+                'info'    => Color::Blue,
             ])
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->discoverClusters(
                 in: app_path('Filament/Clusters/'),for: 'App\Filament\Clusters'
             )
