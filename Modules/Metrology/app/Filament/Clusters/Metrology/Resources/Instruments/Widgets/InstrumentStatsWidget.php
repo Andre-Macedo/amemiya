@@ -18,8 +18,10 @@ class InstrumentStatsWidget extends BaseWidget
                 ->description('Instrumentos prontos para uso')
                 ->color('success'),
             Stat::make('Calibrações Vencidas', Instrument::where('status', 'expired')->count())
-                ->description('Instrumentos que precisam de calibração')
-                ->color('danger'),
+                ->description('Precisam de atenção imediata')
+                ->color('danger')
+                ->icon('heroicon-m-exclamation-triangle'),
+
             Stat::make('Em Calibração', Instrument::where('status', 'in_calibration')->count())
                 ->description('Instrumentos em processo de calibração')
                 ->color('warning'),

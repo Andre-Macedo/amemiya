@@ -2,8 +2,8 @@
 
 namespace Modules\Metrology\Database\Factories;
 
+use App\Models\Station;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Metrology\Models\Station;
 
 class StationFactory extends Factory
 {

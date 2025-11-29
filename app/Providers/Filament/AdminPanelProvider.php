@@ -27,7 +27,7 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            ->spa()
+            ->spa(hasPrefetching: true)
             ->brandName('Lean Tech')
             ->id('admin')
             ->path('admin')
@@ -62,7 +62,9 @@ class AdminPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->plugins([
-                FilamentShieldPlugin::make(),
+                FilamentShieldPlugin::make()
+                ->navigationGroup('Segurança e Acessos')
+                    ->navigationSort(4),
             ])
             ->authMiddleware([
                 Authenticate::class,

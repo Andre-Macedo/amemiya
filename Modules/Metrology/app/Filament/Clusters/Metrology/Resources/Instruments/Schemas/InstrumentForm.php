@@ -26,7 +26,6 @@ class InstrumentForm
         return $schema
             ->components([
                 Grid::make(3)->schema([
-                    // Coluna principal para os campos mais importantes (ocupa 2/3 do espaço)
                     Grid::make(1)
                         ->schema([
                             Section::make('Identificação do Instrumento')
@@ -39,9 +38,18 @@ class InstrumentForm
                                         ->createOptionForm([
                                             TextInput::make('name')->required()->unique(),
                                         ]),
-                                    TextInput::make('serial_number')->label('Número de Série')->required()->unique(Instrument::class, 'serial_number', ignoreRecord: true)->maxLength(255),
-                                    TextInput::make('asset_tag')->label('Nº Patrimônio (Asset Tag)')->unique(Instrument::class, 'asset_tag', ignoreRecord: true)->maxLength(255)->nullable(),
-                                ])->columns(2),
+                                    TextInput::make('manufacturer')
+                                        ->label('Fabricante'),
+                                    TextInput::make('serial_number')
+                                        ->label('Número de Série')
+                                        ->required()
+                                        ->unique(Instrument::class, 'serial_number', ignoreRecord: true)
+                                        ->maxLength(255),
+                                    TextInput::make('stock_number')
+                                        ->label('Código (Ex: PQ-001)')
+                                        ->required()
+                                        ->unique(ignoreRecord: true),
+                                    ])->columns(2),
 
 
                         ])
@@ -63,8 +71,19 @@ class InstrumentForm
                     ->schema([
                         Section::make('Detalhes e Datas')
                             ->schema([
-                                TextInput::make('precision')->label('Incerteza')
-                                    ->required(),
+                                TextInput::make('uncertainty')
+                                    ->label('Erro Máximo Admissível (Critério)')
+                                    ->required()
+                                    ->placeholder('Ex: 0.02 mm')
+                                    ->helperText('Se o erro na calibração superar este valor, o instrumento será considerado reprovado.'),
+
+                                Grid::make(2)->schema([
+                                    TextInput::make('measuring_range')->label('Faixa de Medição (ex: 0-150mm)'),
+                                    TextInput::make('resolution')
+                                        ->label('Resolução (Menor Divisão)')
+                                        ->placeholder('Ex: 0.01 mm')
+                                        ->helperText('O menor valor que o instrumento consegue indicar.'),
+                                    ]),
                                 TextInput::make('location')->label('Localização')->maxLength(255),
                                 DatePicker::make('acquisition_date')->label('Data de Aquisição')->required(),
                                 DatePicker::make('calibration_due')->label('Venc. da Calibração')->required(),

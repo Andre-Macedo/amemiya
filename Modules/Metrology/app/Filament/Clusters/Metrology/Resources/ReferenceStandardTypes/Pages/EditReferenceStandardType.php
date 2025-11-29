@@ -2,6 +2,7 @@
 
 namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandardTypes\Pages;
 
+use App\Filament\Concerns\InteractsWithCluster;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
@@ -10,6 +11,8 @@ use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandardTyp
 
 class EditReferenceStandardType extends EditRecord
 {
+    use InteractsWithCluster;
+
     protected static string $resource = ReferenceStandardTypeResource::class;
 
     public static function getCluster(): ?string

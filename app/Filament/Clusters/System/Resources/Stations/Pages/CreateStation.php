@@ -1,13 +1,12 @@
 <?php
 
-namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\Stations\Pages;
+namespace App\Filament\Clusters\System\Resources\Stations\Pages;
 
-use Filament\Actions\EditAction;
-use Filament\Resources\Pages\ViewRecord;
+use App\Filament\Clusters\System\Resources\Stations\StationResource;
+use Filament\Resources\Pages\CreateRecord;
 use Modules\Metrology\Filament\Clusters\Metrology\MetrologyCluster;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\Stations\StationResource;
 
-class ViewStation extends ViewRecord
+class CreateStation extends CreateRecord
 {
     protected static string $resource = StationResource::class;
 
@@ -23,12 +22,5 @@ class ViewStation extends ViewRecord
         }
 
         return [];
-    }
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            EditAction::make(),
-        ];
     }
 }

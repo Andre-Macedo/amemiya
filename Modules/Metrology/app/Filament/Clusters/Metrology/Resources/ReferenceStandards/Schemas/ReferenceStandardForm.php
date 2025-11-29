@@ -7,6 +7,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 
 class ReferenceStandardForm
@@ -22,9 +23,9 @@ class ReferenceStandardForm
                     ->required()
                     ->maxLength(255),
                 TextInput::make('serial_number')
-                    ->required()
-                    ->unique()
-                    ->maxLength(255),
+                    ->label('Número de Série')
+                    ->required(fn (Get $get) => $get('parent_id') === null)
+                    ->unique(ignoreRecord: true),
                 TextInput::make('type')
                     ->required()
                     ->maxLength(255),

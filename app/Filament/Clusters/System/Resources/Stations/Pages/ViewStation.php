@@ -1,14 +1,13 @@
 <?php
 
-namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\Stations\Pages;
+namespace App\Filament\Clusters\System\Resources\Stations\Pages;
 
-use Filament\Actions\DeleteAction;
-use Filament\Actions\ViewAction;
-use Filament\Resources\Pages\EditRecord;
+use App\Filament\Clusters\System\Resources\Stations\StationResource;
+use Filament\Actions\EditAction;
+use Filament\Resources\Pages\ViewRecord;
 use Modules\Metrology\Filament\Clusters\Metrology\MetrologyCluster;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\Stations\StationResource;
 
-class EditStation extends EditRecord
+class ViewStation extends ViewRecord
 {
     protected static string $resource = StationResource::class;
 
@@ -29,8 +28,7 @@ class EditStation extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            ViewAction::make(),
-            DeleteAction::make(),
+            EditAction::make(),
         ];
     }
 }

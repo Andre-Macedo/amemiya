@@ -2,9 +2,10 @@
 
 namespace Modules\Metrology\Models;
 
+use App\Models\Station;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Metrology\Database\Factories\AccessLogFactory;
 

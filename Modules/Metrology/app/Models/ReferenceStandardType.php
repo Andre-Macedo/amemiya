@@ -16,7 +16,10 @@ class ReferenceStandardType extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'name',
+        'calibration_frequency_months'
+    ];
 
     public function referenceStandards(): HasMany
     {
@@ -29,7 +32,7 @@ class ReferenceStandardType extends Model
     }
 
     protected static function factory(): ReferenceStandardTypeFactory
-     {
-          return ReferenceStandardTypeFactory::new();
-     }
+    {
+        return ReferenceStandardTypeFactory::new();
+    }
 }

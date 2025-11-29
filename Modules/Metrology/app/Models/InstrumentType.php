@@ -12,7 +12,7 @@ class InstrumentType extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'calibration_frequency_months'];
 
     public function instruments(): HasMany
     {

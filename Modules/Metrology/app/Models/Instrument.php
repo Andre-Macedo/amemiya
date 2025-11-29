@@ -2,10 +2,11 @@
 
 namespace Modules\Metrology\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Station;
+use App\Models\Supplier;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Metrology\Database\Factories\InstrumentFactory;
@@ -24,24 +25,23 @@ class Instrument extends Model
         'stock_number',
         'serial_number',
         'instrument_type_id',
-        'precision',
+        'uncertainty',
+        'measuring_range',
+        'resolution',
+        'manufacturer',
         'location',
         'acquisition_date',
         'calibration_due',
         'status',
         'nfc_tag',
         'current_station_id',
+        'current_supplier_id',
         'image_path',
     ];
 
     public function calibrations(): MorphMany
     {
         return $this->morphMany(Calibration::class, 'calibrated_item');
-    }
-
-    public function station(): BelongsTo
-    {
-        return $this->belongsTo(Station::class, "current_station_id");
     }
 
     protected static function factory(): InstrumentFactory
@@ -52,5 +52,17 @@ class Instrument extends Model
     public function instrumentType(): BelongsTo
     {
         return $this->belongsTo(InstrumentType::class);
+    }
+
+    public function manufacturer(): BelongsTo {
+        return $this->belongsTo(Supplier::class, 'manufacturer_id');
+    }
+    public function station(): BelongsTo {
+        return $this->belongsTo(Station::class, 'current_station_id');
+    }
+
+    public function currentSupplier(): BelongsTo
+    {
+        return $this->belongsTo(Supplier::class, 'current_supplier_id');
     }
 }

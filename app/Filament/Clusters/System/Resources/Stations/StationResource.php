@@ -1,18 +1,19 @@
 <?php
 
-namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\Stations;
+namespace App\Filament\Clusters\System\Resources\Stations;
 
+use App\Filament\Clusters\System\Resources\Stations\Pages\ListStations;
+use App\Filament\Clusters\System\Resources\Stations\Schemas\StationForm;
+use App\Filament\Clusters\System\Resources\Stations\Schemas\StationInfolist;
+use App\Filament\Clusters\System\Resources\Stations\Tables\StationsTable;
+use App\Filament\Clusters\System\SystemCluster;
+use App\Models\Station;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Modules\Metrology\Filament\Clusters\Metrology\MetrologyCluster;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\Stations\Pages\ListStations;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\Stations\Schemas\StationForm;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\Stations\Schemas\StationInfolist;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\Stations\Tables\StationsTable;
-use Modules\Metrology\Models\Station;
 
 class StationResource extends Resource
 {
@@ -20,12 +21,12 @@ class StationResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMapPin;
 
-    protected static ?string $cluster = MetrologyCluster::class;
+    protected static ?string $cluster = SystemCluster::class;
 
-    protected static string|null|\UnitEnum $navigationGroup = 'Operações';
+    protected static string|null|\UnitEnum $navigationGroup = 'Corporativo';
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $navigationLabel = 'Estações de Trabalho';
-
 
     public static function form(Schema $schema): Schema
     {

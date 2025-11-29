@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\Stations\Pages;
+namespace App\Filament\Clusters\System\Resources\Stations\Pages;
 
+use App\Filament\Clusters\System\Resources\Stations\StationResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\Stations\StationResource;
 
 class ListStations extends ListRecords
 {

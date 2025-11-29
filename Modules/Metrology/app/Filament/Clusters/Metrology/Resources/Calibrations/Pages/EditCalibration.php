@@ -7,6 +7,7 @@ use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Facades\Notification;
 use Modules\Metrology\Filament\Clusters\Metrology\MetrologyCluster;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Calibrations\CalibrationResource;
 use Modules\Metrology\Models\ChecklistItem;
@@ -103,6 +104,18 @@ class EditCalibration extends EditRecord
         }
         unset($data['checklist_template_id'], $data['checklist_items']);
         return $data;
+    }
+
+    protected function afterSave(): void
+    {
+        if ($this->record->result === 'rejected') {
+            Notification::make()
+                ->warning()
+                ->title('Instrumento Reprovado Automaticamente')
+                ->body('Com base nos novos valores inseridos, o desvio superou o limite permitido.')
+                ->persistent()
+                ->send();
+        }
     }
 
 }
