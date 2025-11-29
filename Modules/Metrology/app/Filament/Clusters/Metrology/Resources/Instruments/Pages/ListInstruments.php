@@ -35,15 +35,25 @@ class ListInstruments extends ListRecords
     public function getTabs(): array
     {
         return [
-            'all' => Tab::make('Todos os Instrumentos'),
-            'active' => Tab::make('Ativos')
+            'active' => Tab::make('Em Uso')
+                ->icon('heroicon-m-check-circle')
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'active')),
-            'expired' => Tab::make('Vencidos')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'expired'))
-                ->badge(Instrument::where('status', 'expired')->count())
+
+            'action_needed' => Tab::make('Atenção / Parados')
+                ->icon('heroicon-m-exclamation-triangle')
+                ->modifyQueryUsing(fn (Builder $query) => $query->whereIn('status', ['expired', 'rejected']))
+                ->badge(Instrument::whereIn('status', ['expired', 'rejected'])->count())
                 ->badgeColor('danger'),
-            'in_calibration' => Tab::make('Em Calibração')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'in_calibration')),
+
+            'processing' => Tab::make('Em Processo Ext.')
+                ->icon('heroicon-m-clock')
+                ->modifyQueryUsing(fn (Builder $query) => $query->whereIn('status', ['in_calibration', 'maintenance']))
+                ->badge(Instrument::whereIn('status', ['in_calibration', 'maintenance'])->count())
+                ->badgeColor('warning'),
+
+            'scrapped' => Tab::make('Baixados / Sucata')
+                ->icon('heroicon-m-archive-box')
+                ->modifyQueryUsing(fn (Builder $query) => $query->whereIn('status', ['scrapped', 'lost'])),
         ];
     }
 }

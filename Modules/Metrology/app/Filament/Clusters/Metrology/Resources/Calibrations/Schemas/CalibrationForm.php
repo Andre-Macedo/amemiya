@@ -2,14 +2,19 @@
 
 namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\Calibrations\Schemas;
 
+use App\Models\Supplier;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Components\Wizard;
@@ -26,189 +31,296 @@ class CalibrationForm
         return $schema
             ->components([
                 Wizard::make([
-                    Wizard\Step::make('Item a Calibrar')
+                    // --- PASSO 1: IDENTIFICAÇÃO ---
+                    Wizard\Step::make('Dados Iniciais')
                         ->schema([
-                            Select::make('calibrated_item_type')
-                                ->label('Tipo de Item a Calibrar')
-                                ->options([
-                                    Instrument::class => 'Instrumento',
-                                    ReferenceStandard::class => 'Padrão de Referência',
-                                ])
-                                ->live()
-                                ->required()
-                                ->afterStateUpdated(function (Set $set, ?string $state) {
-                                    $set('calibrated_item_id', null);
-                                    if ($state === ReferenceStandard::class) {
-                                        $set('type', 'external_rbc');
-                                    } else {
-                                        // Se for Instrumento, volta ao default (ou mantém o valor atual)
-                                        // $set('type', 'internal'); // Pode descomentar para forçar interna por default
-                                    }
-                                }),
+                            Grid::make(2)->schema([
+                                Select::make('calibrated_item_type')
+                                    ->label('Tipo de Item')
+                                    ->options([
+                                        Instrument::class => 'Instrumento',
+                                        ReferenceStandard::class => 'Padrão de Referência',
+                                    ])
+                                    ->live()
+                                    ->required()
+                                    ->afterStateUpdated(function (Set $set, ?string $state) {
+                                        $set('calibrated_item_id', null);
+                                        // Padrões são sempre calibrados fora (regra geral)
+                                        if ($state === ReferenceStandard::class) {
+                                            $set('type', 'external_rbc');
+                                        }
+                                    }),
 
-                            Select::make('calibrated_item_id')
-                                ->label('Instrumento')
-                                ->options(Instrument::query()->pluck('name', 'id'))
-                                ->searchable()->preload()->required()
-                                ->visible(fn (Get $get) => $get('calibrated_item_type') === Instrument::class),
+                                Select::make('calibrated_item_id')
+                                    ->label('Selecione o Item')
+                                    ->options(function (Get $get) {
+                                        $type = $get('calibrated_item_type');
+                                        if ($type === Instrument::class) {
+                                            return Instrument::query()->where('status',"=", 'in_calibration')->pluck('name', 'id');
+                                        }
+                                        if ($type === ReferenceStandard::class) {
+                                            return ReferenceStandard::query()->pluck('name', 'id');
+                                        }
+                                        return [];
+                                    })
+                                    ->searchable()
+                                    ->preload()
+                                    ->required()
+                                    ->live() // Live para puxar o fornecedor atual
+                                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                        // Se for instrumento e estiver num fornecedor, já sugere ele
+                                        if ($get('calibrated_item_type') === Instrument::class && $state) {
+                                            $instrument = Instrument::find($state);
+                                            if ($instrument?->current_supplier_id) {
+                                                $set('type', 'external_rbc');
+                                                $set('provider_id', $instrument->current_supplier_id);
+                                            }
+                                        }
+                                    }),
+                            ]),
 
-                            Select::make('calibrated_item_id')
-                                ->label('Padrão de Referência')
-                                ->options(ReferenceStandard::query()->pluck('name', 'id'))
-                                ->searchable()->preload()->required()
-                                ->visible(fn (Get $get) => $get('calibrated_item_type') === ReferenceStandard::class),
+                            Grid::make(2)->schema([
+                                Select::make('type')
+                                    ->label('Tipo de Calibração')
+                                    ->options([
+                                        'internal' => 'Interna (Laboratório Próprio)',
+                                        'external_rbc' => 'Externa (Certificado Fornecedor)',
+                                    ])
+                                    ->live()
+                                    ->required()
+                                    ->disabled(fn (Get $get) => $get('calibrated_item_type') === ReferenceStandard::class),
 
-                            DatePicker::make('calibration_date')->label('Data da Calibração')->required()->default(now()),
-                            Select::make('performed_by_id')
-                                ->label('Executado Por')
-                                ->relationship('performedBy', 'name')
-                                ->preload()
-                                ->searchable()
-                                ->required(),
+                                Select::make('provider_id')
+                                    ->label('Laboratório Fornecedor')
+                                    ->options(Supplier::where('is_calibration_provider', true)->pluck('name', 'id'))
+                                    ->searchable()
+                                    ->preload()
+                                    ->required(fn (Get $get) => $get('type') === 'external_rbc')
+                                    ->visible(fn (Get $get) => $get('type') === 'external_rbc'),
+                            ]),
 
-                            Select::make('type')->label('Tipo de Calibração')
-                                ->options([
-                                    'internal' => 'Interna (Checklist)',
-                                    'external_rbc' => 'Externa (Certificado)',
-                                ])
-                                ->live()
-                                ->required()
-                                ->disabled(fn (Get $get) => $get('calibrated_item_type') === ReferenceStandard::class)
-                        ->default(function (Get $get) {
-                            return $get('calibrated_item_type') === ReferenceStandard::class ? 'external_rbc' : 'internal';
-                        }),
-                ])->columns(2),
+                            Grid::make(2)->schema([
+                                DatePicker::make('calibration_date')
+                                    ->label('Data Realizada')
+                                    ->required()
+                                    ->default(now())
+                                    ->maxDate(now()),
 
-                    Wizard\Step::make('Seleção do Checklist')
-                        ->description('Escolha o procedimento de calibração a ser seguido.')
+                                Select::make('performed_by_id')
+                                    ->label('Registrado Por')
+                                    ->relationship('performedBy', 'name')
+                                    ->default(auth()->id())
+                                    ->searchable()
+                                    ->required(),
+                            ]),
+                        ]),
+
+                    // --- PASSO 2: CHECKLIST (Só Interna) ---
+                    Wizard\Step::make('Checklist Técnico')
+                        ->description('Execução do procedimento interno.')
                         ->schema([
+
                             Select::make('checklist_template_id')
-                                ->label('Procedimento / Checklist')
+                                ->label('Carregar Procedimento')
                                 ->options(function (Get $get): Collection {
-                                    $instrumentId = $get('calibrated_item_id');
-                                    if (!$instrumentId) {
-                                        return collect();
-                                    }
-                                    $instrumentTypeId = Instrument::find($instrumentId)?->instrument_type_id;
-                                    return ChecklistTemplate::where('instrument_type_id', $instrumentTypeId)->pluck('name', 'id');
+                                    $itemId = $get('calibrated_item_id');
+                                    if (!$itemId || $get('calibrated_item_type') !== Instrument::class) return collect();
+
+                                    $typeId = Instrument::find($itemId)?->instrument_type_id;
+                                    return ChecklistTemplate::where('instrument_type_id', $typeId)->pluck('name', 'id');
                                 })
                                 ->live()
-                                ->searchable()
-                                ->preload()
-                                ->required()
                                 ->afterStateUpdated(function (Set $set, ?string $state) {
-                                    if (!$state) {
-                                        return;
-                                    }
+                                    if (!$state) return;
                                     $template = ChecklistTemplate::with('items')->find($state);
                                     if ($template) {
+                                        // Preenche o Repeater com os itens do template
                                         $items = $template->items->map(fn ($item) => [
                                             'step' => $item->step,
                                             'question_type' => $item->question_type,
                                             'required_readings' => $item->required_readings,
                                             'reference_standard_type_id' => $item->reference_standard_type_id,
-                                            'readings' => collect(range(1, $item->required_readings))
-                                                ->map(fn () => ['value' => '']) // ou '0.00'
-                                                ->toArray(),
+                                            'nominal_value' => $item->nominal_value ?? (float) preg_replace('/[^0-9.]/', '', $item->step),
+                                            'order' => $item->order, // Importante para ordenação
+                                            'readings' => array_fill(0, $item->required_readings, ['value' => null]),
                                         ])->toArray();
                                         $set('checklist_items', $items);
                                     }
                                 }),
-                        ])
-                        ->visible(fn (Get $get) => $get('type') === 'internal' && $get('calibrated_item_type') === Instrument::class),
 
-                    Wizard\Step::make('Execução do Checklist')
-                        ->schema([
-                            Repeater::make('checklist_items')
-                                ->label('Procedimento')
+                            Select::make('primary_kit_id')
+                                ->label('Jogo de Blocos Utilizado (Sugestão Inteligente)')
+                                ->helperText('Selecione um kit para preencher automaticamente os padrões nas linhas abaixo.')
+                                ->options(\Modules\Metrology\Models\ReferenceStandard::whereNull('parent_id')->pluck('name', 'id'))
+                                ->searchable()
+                                ->preload()
                                 ->live()
-                                ->key('checklist_item_repeater')
+                                ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                    if (!$state) return;
+
+                                    $kitChildren = \Modules\Metrology\Models\ReferenceStandard::where('parent_id', $state)->get();
+
+                                    $currentItems = $get('checklist_items') ?? [];
+
+                                    $updatedItems = collect($currentItems)->map(function ($item) use ($kitChildren) {
+                                        $nominalRequired = $item['nominal_value'] ?? null;
+
+                                        if (!empty($item['reference_standard_type_id']) && $nominalRequired) {
+
+                                            $matchingChild = $kitChildren->filter(function ($child) use ($nominalRequired) {
+                                                return abs($child->nominal_value - $nominalRequired) < 0.001;
+                                            })->first();
+
+                                            if ($matchingChild) {
+                                                $item['reference_standard_id'] = $matchingChild->id;
+                                            }
+                                        }
+                                        return $item;
+                                    })->toArray();
+
+                                    $set('checklist_items', $updatedItems);
+                                })
+                                ->visible(fn (Get $get) => collect($get('checklist_items'))->contains('question_type', 'numeric')),
+
+                            Repeater::make('checklist_items')
+                                ->label('Itens de Verificação')
+                                ->key('checklist_repeater')
+                                ->addable(false)
+                                ->deletable(false)
+                                ->reorderable(false)
                                 ->schema([
-                                    TextInput::make('step')
-                                        ->label('Passo')
-                                        ->disabled(),
-                                    Select::make('question_type')
-                                        ->disabled()
-                                        ->options(['boolean' => 'Sim/Não', 'numeric' => 'Numérico', 'text' => 'Texto'])
-                                        ->label('Tipo')
-                                        ->hidden(),
-                                    Toggle::make('completed')
-                                        ->label('Completo')
-                                        ->visible(fn (Get $get) => $get('question_type') === 'boolean'),
-                                    Select::make('reference_standard_id')
-                                        ->label('Padrão Utilizado')
-                                        ->hint(fn (Get $get) => 'Val: ' . ($get('reference_standard_id') ?? 'null') . 'Reqs: ' . $get('required_readings'))
-                                        ->options(function (Get $get) {
-                                            $typeId = $get('reference_standard_type_id');
-                                            if (!$typeId) return [];
+                                    Grid::make(12)->schema([
+                                        TextInput::make('step')
+                                            ->disabled()
+                                            ->dehydrated()
+                                            ->columnSpan(6),
 
-                                            return ReferenceStandard::where('reference_standard_type_id', $typeId)
-                                                ->pluck('name', 'id');
-                                        })
-                                        ->preload()
-                                        ->live(true)
+                                        Grid::make(1)->schema([
+                                            ToggleButtons::make('result')
+                                                ->label('Resultado')
+                                                ->options(['approved' => 'OK', 'rejected' => 'NOK'])
+                                                ->colors(['approved' => 'success', 'rejected' => 'danger'])
+                                                ->icons(['approved' => 'heroicon-m-check', 'rejected' => 'heroicon-m-x-mark'])
+                                                ->inline()
+                                                ->required()
+                                                ->visible(fn (Get $get) => $get('question_type') === 'boolean'),
+
+                                            Select::make('reference_standard_id')
+                                                ->label('Padrão Usado')
+                                                ->options(fn (Get $get) => ReferenceStandard::where('reference_standard_type_id', $get('reference_standard_type_id'))->pluck('name', 'id'))
+                                                ->required()
+                                                ->visible(fn (Get $get) => $get('question_type') === 'numeric'),
+
+                                            Repeater::make('readings')
+                                                ->label('Leituras')
+                                                ->schema([
+                                                    TextInput::make('value')->numeric()->required()
+                                                ])
+                                                ->reorderable(false)
+                                                ->addable(false)->deletable(false)
+                                                ->visible(fn (Get $get) => $get('question_type') === 'numeric'),
+                                        ])->columnSpan(6),
+
+                                        Textarea::make('notes')->columnSpanFull()
+                                            ->visible(fn (Get $get) => $get('question_type') === 'text'),
+
+                                        Hidden::make('nominal_value'),
+                                        Hidden::make('question_type'),
+                                        Hidden::make('required_readings'),
+                                        Hidden::make('reference_standard_type_id'),
+                                        Hidden::make('order'),
+                                    ]),
+                                ])->visible(fn (Get $get) => $get('checklist_template_id') !== null),
+                        ])
+                        ->visible(fn (Get $get) =>
+                            $get('type') === 'internal'
+                            && $get('calibrated_item_type') === Instrument::class),
+
+                    Wizard\Step::make('Resultados do Kit')
+                        ->schema([
+                            Repeater::make('kit_items_results')
+                                ->label('Valores Reais das Peças do Kit')
+                                ->helperText('Digite o novo valor verdadeiro ou o desvio conforme o certificado.')
+
+                                ->formatStateUsing(function (Get $get) {
+                                    $kitId = $get('calibrated_item_id');
+                                    if (!$kitId) return [];
+
+                                    $children = \Modules\Metrology\Models\ReferenceStandard::where('parent_id', $kitId)->get();
+
+                                    return $children->map(fn ($child) => [
+                                        'child_id' => $child->id,
+                                        'name' => $child->name,
+                                        'nominal_value' => $child->nominal_value,
+                                        'new_actual_value' => $child->actual_value, // Valor atual como padrão
+                                    ])->toArray();
+                                })
+                                ->schema([
+                                    TextInput::make('name')->label('Peça')->disabled()->dehydrated(),
+                                    TextInput::make('nominal_value')->label('Nominal')->disabled()->dehydrated(),
+                                    Hidden::make('child_id'),
+
+                                    TextInput::make('new_actual_value')
+                                        ->label('Novo Valor Verdadeiro')
+                                        ->numeric()
                                         ->required()
-                                        ->dehydrated(fn (Get $get) =>
-                                            $get('question_type') === 'numeric' && !empty($get('reference_standard_type_id'))
-                                        )
-                                        ->visible(fn (Get $get) => $get('question_type') === 'numeric' && !empty($get('reference_standard_type_id'))),
-                                    Repeater::make('readings')
-                                        ->label('Leituras')
-                                        ->key('reading_repeater_' . md5(uniqid('', true)))                                         ->hint(fn (Get $get) =>'Type: ' . $get('question_type') === 'numeric' . 'Req: ' . $get('required_readings'))
-                                        ->required()
-                                        ->schema([
-                                            TextInput::make('value')
-                                                ->label('Valor')
-                                                ->numeric()
-                                                ->placeholder(fn (Get $get, $state, $context) =>
-                                                $context === 'create' ? 'Digite o valor...' : ''
-                                                )
-                                                ->required(),
-                                        ])
-                                        ->addable(false)
-                                        ->deletable(false)
-                                        ->visible(function (Get $get) {return $get('question_type') === 'numeric';})
-                                        ->reorderable(false),
-                                    Textarea::make('notes')
-                                        ->label('Observações')
-                                        ->visible(fn (Get $get) => $get('question_type') === 'text'),
-                                    TextInput::make('required_readings')->hidden(),
-                                    TextInput::make('reference_standard_type_id')->hidden(),
-                                    TextInput::make('order')->hidden(),
+                                        ->suffix('mm'),
                                 ])
-                                ->addable(false)->deletable(false)->reorderable(false)->columnSpanFull(),
+                                ->addable(false)
+                                ->deletable(false)
+                                ->reorderable(false)
+                                ->columns(3),
                         ])
-                        ->visible(fn (Get $get) => $get('type') === 'internal' && !empty($get('checklist_template_id'))),
 
-                    Wizard\Step::make('Resultados e Conclusão')
+                        ->visible(function (Get $get) {
+                            $itemId = $get('calibrated_item_id');
+                            if (!$itemId) return false;
+                            return \Modules\Metrology\Models\ReferenceStandard::where('id', $itemId)->whereHas('children')->exists();
+                        }),
+
+                    Wizard\Step::make('Resultados e Certificado')
                         ->schema([
+                            Grid::make(2)->schema([
+                                TextInput::make('temperature')->label('Temperatura')->numeric()->suffix('°C'),
+                                TextInput::make('humidity')->label('Umidade')->numeric()->suffix('%'),
+                            ]),
+
+
+                            Grid::make(2)->schema([
+                                TextInput::make('deviation')
+                                    ->label('Maior Desvio Encontrado')
+                                    ->numeric()
+                                    ->suffix('mm')
+                                    ->required()
+                                    ->helperText('Valor numérico para aprovação automática.'),
+
+                                TextInput::make('uncertainty')
+                                    ->label('Incerteza Expandida')
+                                    ->numeric()
+                                    ->suffix('mm'),
+                            ]),
+
                             Select::make('result')
-                                ->label('Resultado')
-                                ->options(['approved' => 'Aprovado', 'rejected' => 'Rejeitado']),
-                            TextInput::make('deviation')
-                                ->label('Desvio')
-                                ->numeric()->suffix('mm'),
-                            TextInput::make('uncertainty')
-                                ->label('Incerteza')
-                                ->numeric()->suffix('mm'),
-                            Select::make('calibration_interval')
-                                ->label('Intervalo para Próxima Calibração (meses)')
-                                ->options([6 => '6 meses', 12 => '12 meses', 18 => '18 meses', 24 => '24 meses'])
-                                ->default(12)->required(),
+                                ->label('Decisão Final')
+                                ->options([
+                                    'approved' => 'Aprovado',
+                                    'rejected' => 'Rejeitado',
+                                    'approved_with_restrictions' => 'Aprovado com Restrições'
+                                ])
+                                ->required()
+                                ->default('approved'),
+
                             Textarea::make('notes')
-                                ->label('Observações')
-                                ->columnSpanFull(),
-                        ]),
-                    Wizard\Step::make('Certificado')
-                        ->schema([
+                                ->label('Observações Gerais'),
+
                             FileUpload::make('certificate_path')
-                                ->label('Certificado')
-                                ->helperText('Upload certificado externo')
-                                ->directory('calibration-certificates')
+                                ->label('Arquivo do Certificado (PDF)')
+                                ->directory('certificates/' . date('Y'))
                                 ->acceptedFileTypes(['application/pdf'])
-                                ->required(),
-                        ])
-                        ->visible(fn (Get $get) => $get('type') === 'external_rbc'),
+                                ->required(fn (Get $get) => $get('type') === 'external_rbc')
+                                ->openable()
+                                ->downloadable(),
+                        ]),
                 ])->columnSpanFull(),
             ]);
     }

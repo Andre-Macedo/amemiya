@@ -18,10 +18,11 @@ class ReferenceStandardFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->words(3, true) . ' Padrão',
-            'serial_number' => $this->faker->unique()->numerify('SN-######'),
-            'asset_tag' => $this->faker->unique()->numerify('PAT-#####'),
+            'name' => $this->faker->words(1, true) . ' Padrão',
+            'serial_number' => $this->faker->unique()->bothify('SN-######'),
+            'stock_number' => $this->faker->unique()->bothify('PDR-###'),
             'reference_standard_type_id' => ReferenceStandardType::factory(),
-            'description' => $this->faker->sentence,        ];
+            'description' => $this->faker->sentence,
+            ];
     }
 }

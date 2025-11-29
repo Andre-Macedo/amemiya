@@ -2,11 +2,11 @@
 
 namespace Modules\Metrology\Database\Factories;
 
+use App\Models\Station;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Modules\Metrology\Models\AccessLog;
 use Modules\Metrology\Models\Instrument;
-use Modules\Metrology\Models\Station;
 
 class AccessLogFactory extends Factory
 {

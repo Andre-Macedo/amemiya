@@ -14,6 +14,7 @@ use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\P
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\Pages\EditReferenceStandard;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\Pages\ListReferenceStandards;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\Pages\ViewReferenceStandard;
+use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\RelationManagers\ChildrenRelationManager;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\Schemas\ReferenceStandardForm;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\Schemas\ReferenceStandardInfolist;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\Tables\ReferenceStandardsTable;
@@ -27,9 +28,9 @@ class ReferenceStandardResource extends Resource
 
     protected static ?string $cluster = MetrologyCluster::class;
 
-    protected static string|null|\UnitEnum $navigationGroup = "Blocos de Refêrencia";
+    protected static string|null|\UnitEnum $navigationGroup = "Padrões de Refêrencia";
 
-    protected static ?string $navigationLabel = 'Blocos de Referencia';
+    protected static ?string $navigationLabel = 'Padrões de Referencia';
 
     public static function form(Schema $schema): Schema
     {
@@ -49,7 +50,7 @@ class ReferenceStandardResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ChildrenRelationManager::class, // Lista os itens do kit
         ];
     }
 

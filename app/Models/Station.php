@@ -1,10 +1,11 @@
 <?php
 
-namespace Modules\Metrology\Models;
+namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
- use Modules\Metrology\Database\Factories\StationFactory;
+use Illuminate\Database\Eloquent\Model;
+use Modules\Metrology\Database\Factories\StationFactory;
+use Modules\Metrology\Models\Instrument;
 
 class Station extends Model
 {

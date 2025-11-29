@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\Stations\Tables;
+namespace App\Filament\Clusters\System\Resources\Stations\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;

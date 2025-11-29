@@ -22,7 +22,9 @@ class ReferenceStandardTypeResource extends Resource
 
     protected static ?string $cluster = MetrologyCluster::class;
 
-    protected static string|null|\UnitEnum $navigationGroup = "Blocos de Refêrencia";
+    protected static ?string $navigationLabel = 'Tipos de Padrões de Refêrencia';
+
+    protected static string|null|\UnitEnum $navigationGroup = "Padrões de Refêrencia";
 
     public static function form(Schema $schema): Schema
     {

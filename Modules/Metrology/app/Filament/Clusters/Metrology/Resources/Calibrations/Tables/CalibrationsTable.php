@@ -2,6 +2,7 @@
 
 namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\Calibrations\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -16,6 +17,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Modules\Metrology\Models\Calibration;
 use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\ReferenceStandard;
 
@@ -65,6 +67,12 @@ class CalibrationsTable
                     ViewAction::make(),
                     EditAction::make(),
                     DeleteAction::make(),
+                    Action::make('pdf')
+                        ->label('Certificado')
+                        ->icon('heroicon-o-document-arrow-down')
+                        ->url(fn (Calibration $record) => route('calibration.certificate.download', $record))
+                        ->openUrlInNewTab()
+                        ->visible(fn (Calibration $record) => $record->type === 'internal' && $record->result === 'approved'),
                 ]),
             ])
             ->bulkActions([

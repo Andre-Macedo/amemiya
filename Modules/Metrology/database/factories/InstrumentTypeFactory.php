@@ -19,6 +19,7 @@ class InstrumentTypeFactory extends Factory
     {
         return [
             'name' => $this->faker->unique()->word(),
+            'calibration_frequency_months' => $this->faker->randomDigit(),
         ];
     }
 }

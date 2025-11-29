@@ -2,6 +2,7 @@
 
 namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandardTypes\Pages;
 
+use App\Filament\Concerns\InteractsWithCluster;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 use Modules\Metrology\Filament\Clusters\Metrology\MetrologyCluster;
@@ -9,6 +10,8 @@ use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandardTyp
 
 class ViewReferenceStandardType extends ViewRecord
 {
+    use InteractsWithCluster;
+
     protected static string $resource = ReferenceStandardTypeResource::class;
 
     public static function getCluster(): ?string

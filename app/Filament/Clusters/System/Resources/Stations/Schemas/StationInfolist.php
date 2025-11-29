@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\Stations\Schemas;
+namespace App\Filament\Clusters\System\Resources\Stations\Schemas;
 
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
