@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      target: app 
+    container_name: amemiya-app
+    restart: unless-stopped
+    volumes:
+      # --- MUDANÇA AQUI ---
+      # Montamos APENAS o .env e o storage, não o código
+     # - ./.env:/var/www/amemiya/.env:ro
+     # - ./storage:/var/www/amemiya/storage
+      - ./:/var/www/amemiya
+      # --- FIM DA MUDANÇA ---
+    networks:
+      - proxy-network
+
+networks:
+  proxy-network:
+    external: true
