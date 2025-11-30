@@ -83,7 +83,7 @@ class InstrumentResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $count = Instrument::where('status', 'expired')->count();
+        $count = Instrument::where('status', 'expired')->orWhere('status', 'rejected')->count();
 
         return $count > 0 ? (string) $count : null;
     }

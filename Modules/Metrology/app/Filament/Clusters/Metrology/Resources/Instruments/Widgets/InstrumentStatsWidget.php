@@ -17,7 +17,7 @@ class InstrumentStatsWidget extends BaseWidget
             Stat::make('Instrumentos Ativos', Instrument::where('status', 'active')->count())
                 ->description('Instrumentos prontos para uso')
                 ->color('success'),
-            Stat::make('Calibrações Vencidas', Instrument::where('status', 'expired')->count())
+            Stat::make('Instrumentos Vencidos ou Rejeitados', Instrument::where('status', 'expired')->orWhere('status', 'rejected')->count())
                 ->description('Precisam de atenção imediata')
                 ->color('danger')
                 ->icon('heroicon-m-exclamation-triangle'),
