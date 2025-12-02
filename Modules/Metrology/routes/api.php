@@ -16,6 +16,7 @@ use Modules\Metrology\Http\Controllers\MetrologyController;
 Route::apiResource('metrologies', MetrologyController::class)->names('metrology');
 Route::apiResource('instruments', InstrumentApiController::class);
 Route::get('/calibrations/{calibration}/pdf', [CalibrationPdfController::class, 'download']);
+Route::get('/instruments/{instrument}/checklists', [InstrumentChecklistController::class, 'index']);
 Route::get('/instruments/{instrument}/checklist', [InstrumentChecklistController::class, 'show']);
 Route::get('/calibrations/{calibration}', [CalibrationApiController::class, 'show']);
 Route::get('/checklists/{checklistTemplate}', [InstrumentChecklistController::class, 'show']);
