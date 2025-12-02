@@ -3,7 +3,7 @@
 namespace Modules\Metrology\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use \Illuminate\Http\Request;
+use Illuminate\Http\Request;
 
 class InstrumentApiResource extends JsonResource
 {
@@ -16,20 +16,19 @@ class InstrumentApiResource extends JsonResource
     public function toArray(Request $request)
     {
         return [
-            'id' => $this->id,
+            'id' => (string) $this->id,
             'name' => $this->name,
             'serial_number' => $this->serial_number,
-            'type' => $this->type,
+            'instrument_type' => $this->instrumentType ? $this->instrumentType->name : 'N/A',
             'status' => $this->status,
             'location' => $this->location,
-            'precision' => $this->precision,
+            'precision' => $this->resolution ?? 'N/A',
             'acquisition_date' => $this->acquisition_date,
             'calibration_due' => $this->calibration_due,
             'nfc_tag' => $this->nfc_tag,
             'current_station_id' => $this->current_station_id,
 
             'station' => new StationApiResource($this->whenLoaded('station')),
-
             'calibrations' => CalibrationApiResource::collection($this->whenLoaded('calibrations')),
         ];
     }
