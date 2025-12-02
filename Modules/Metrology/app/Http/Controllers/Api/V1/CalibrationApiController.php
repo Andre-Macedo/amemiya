@@ -16,7 +16,6 @@ class CalibrationApiController extends Controller
      */
     public function show($id)
     {
-        // Busca a calibração e carrega o relacionamento 'performedBy' (usuário) e 'calibratedItem'
         $calibration = Calibration::with(['performedBy', 'calibratedItem'])->findOrFail($id);
 
         return new CalibrationApiResource($calibration);
