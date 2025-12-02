@@ -23,9 +23,9 @@ class Dashboard extends BaseDashboard
     public function getWidgets(): array
     {
         return [
-            OverdueCalibrationsWidget::class,
-            RecentCalibrationsWidget::class,
-            ComplianceRateWidget::class,
+//            OverdueCalibrationsWidget::class,
+//            RecentCalibrationsWidget::class,
+//            ComplianceRateWidget::class,
         ];
     }
 

@@ -50,9 +50,13 @@ class InstrumentApiController extends Controller
      */
     public function show(Instrument $instrument)
     {
-        $instrument->load(['station', 'calibrations' => function ($query) {
-            $query->latest('calibration_date');
-        }]);
+        $instrument->load([
+            'station',
+            'instrumentType', // Sem função aqui!
+            'calibrations' => function ($query) {
+                $query->latest('calibration_date'); // Ordena APENAS as calibrações
+            }
+        ]);
 
         return new InstrumentApiResource($instrument);
     }
