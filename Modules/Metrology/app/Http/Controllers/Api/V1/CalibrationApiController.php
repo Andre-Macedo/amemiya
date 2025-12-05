@@ -3,7 +3,7 @@
 namespace Modules\Metrology\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Client\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Modules\Metrology\Http\Resources\CalibrationApiResource;
