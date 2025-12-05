@@ -20,5 +20,8 @@ Route::get('/instruments/{instrument}/checklists', [InstrumentChecklistControlle
 Route::get('/instruments/{instrument}/checklist', [InstrumentChecklistController::class, 'show']);
 Route::get('/calibrations/{calibration}', [CalibrationApiController::class, 'show']);
 Route::get('/checklists/{checklistTemplate}', [InstrumentChecklistController::class, 'show']);
+Route::get('/metrology/options', [CalibrationApiController::class, 'options']);
+
+Route::post('/metrology/calibrations', [CalibrationApiController::class, 'store']);
 Route::get('/dashboard/stats', [DashboardApiController::class, 'stats']);
 Route::post('/access-logs', [AccessLogApiController::class, 'store']);
