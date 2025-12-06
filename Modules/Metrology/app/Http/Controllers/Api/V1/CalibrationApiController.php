@@ -35,35 +35,48 @@ class CalibrationApiController extends Controller
      */
     public function options()
     {
-        // 1. Busca Instrumentos "Em Calibração" ou que precisam calibrar
+        // 1. Instrumentos (Mantido)
         $instruments = Instrument::query()
-            // Se quiser filtrar por status: ->where('status', 'in_calibration')
-            ->select('id', 'name', 'serial_number', 'instrument_type_id')
+            ->select('id', 'name', 'serial_number', 'instrument_type_id', 'status')
             ->get();
 
-        // 2. Busca Kits de Padrão (Pais que têm filhos)
-        // Carrega os filhos para o App fazer o "Auto-Match" localmente
+        // 2. KITS (Pais com Filhos)
+        // Precisamos carregar o 'parent' nos filhos para o cálculo do effective funcionar?
+        // Não, porque aqui estamos carregando o PAI ($kits) e os filhos dele.
+        // O filho já tem acesso ao pai via relação inversa se o Model estiver correto,
+        // mas no eager loading do 'with', o objeto filho vem "limpo".
+
         $kits = ReferenceStandard::query()
-            ->whereNull('parent_id') // Apenas pais
-            ->whereHas('children')   // Que têm filhos (Kits)
+            ->whereNull('parent_id')
+            ->whereHas('children')
             ->with(['children' => function ($query) {
-                $query->select('id', 'parent_id', 'name','serial_number','stock_number', 'nominal_value', 'actual_value', 'uncertainty');
+                // Carregamos 'parent_id' para o Laravel saber vincular
+                $query->select('id', 'parent_id', 'name', 'serial_number', 'stock_number', 'nominal_value', 'actual_value', 'uncertainty');
             }])
-            ->select('id', 'name', 'serial_number')
-            ->get();
+            // Selecionamos campos necessários do Pai para passar para os filhos via PHP se necessário,
+            // ou confiamos no $appends se carregarmos 'children.parent'.
+            // Para performance, vamos carregar children.parent
+            ->with('children.parent')
+            ->select('id', 'name', 'serial_number', 'stock_number')
+            ->get()
+            // Transformamos para garantir que o append funcione
+            ->map(function ($kit) {
+                // Força o append nos filhos
+                $kit->children->each->setAppends(['effective_serial_number', 'effective_stock_number']);
+                return $kit;
+            });
 
+        // 3. Padrões Individuais (Soltos)
         $allStandards = ReferenceStandard::query()
-//            ->whereNotNull('nominal_value')
-             ->where('status', 'active')
-            ->select('id', 'name', 'serial_number', 'stock_number','nominal_value', 'parent_id')
+            ->where('status', 'active')
+            // Importante: Carregar 'parent' se existirem itens filhos soltos nessa lista
+            ->with('parent')
+            ->select('id', 'name', 'serial_number', 'stock_number', 'nominal_value', 'parent_id')
             ->orderBy('nominal_value')
-            ->get();
+            ->get()
+            ->each->setAppends(['effective_serial_number', 'effective_stock_number']); // Força o append
 
-        $allStandardsCount = ReferenceStandard::query()
-//            ->whereNotNull('nominal_value')
-             ->where('status', 'active')
-            ->select('id', 'name', 'serial_number', 'nominal_value', 'parent_id')
-            ->orderBy('nominal_value')->count();
+        $allStandardsCount = $allStandards->count();
 
         return response()->json([
             'instruments' => $instruments,
@@ -72,6 +85,7 @@ class CalibrationApiController extends Controller
             'count' => $allStandardsCount
         ]);
     }
+
 
     /**
      * Salva a calibração completa
