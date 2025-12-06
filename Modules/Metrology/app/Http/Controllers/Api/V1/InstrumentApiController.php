@@ -25,7 +25,8 @@ class InstrumentApiController extends Controller
 
             $query->where(function (Builder $q) use ($searchTerm) {
                 $q->where('name', 'like', "%{$searchTerm}%")
-                    ->orWhere('serial_number', 'like', "%{$searchTerm}%");
+                    ->orWhere('serial_number', 'like', "%{$searchTerm}%")
+                    ->orWhere('stock_number', 'like', "%{$searchTerm}%");
             });
         }
 
