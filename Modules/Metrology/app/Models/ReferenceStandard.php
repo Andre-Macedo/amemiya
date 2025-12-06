@@ -37,6 +37,11 @@ class ReferenceStandard extends Model
         'calibration_due' => 'date',
     ];
 
+    protected $appends = [
+        'effective_serial_number',
+        'effective_stock_number',
+    ];
+
 
     public function referenceStandardType(): BelongsTo
     {
@@ -104,5 +109,19 @@ class ReferenceStandard extends Model
         }
 
         return 'S/N';
+    }
+
+    public function getEffectiveStockNumberAttribute(): string
+    {
+        if (!empty($this->stock_number)) {
+            return $this->stock_number;
+        }
+
+        if ($this->parent_id && $this->parent) {
+            // Retorna o do Pai indicando vínculo
+            return $this->parent->stock_number . ' (Kit)';
+        }
+
+        return 'N/A';
     }
 }
