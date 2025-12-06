@@ -2,11 +2,13 @@
 
 namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\RelationManagers;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
@@ -14,9 +16,14 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Components\Form;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Modules\Metrology\Models\Calibration;
 
 class CalibrationRelationManager extends RelationManager
 {
@@ -28,84 +35,137 @@ class CalibrationRelationManager extends RelationManager
     {
         return $schema
             ->schema([
-                Select::make('reference_standards')
-                    ->relationship('referenceStandards', 'name')
-                    ->multiple()
-                    ->preload()
-                    ->required(),
-                DatePicker::make('calibration_date')
-                    ->required(),
-                Select::make('type')
-                    ->options([
-                        'internal' => 'Interna',
-                        'external_rbc' => 'Externa RBC',
-                    ])
-                    ->default('internal')
-                    ->required(),
-                Select::make('result')
-                    ->options([
-                        'approved' => 'Aprovado',
-                        'rejected' => 'Rejeitado',
-                    ])
-                    ->nullable(),
-                TextInput::make('deviation')
-                    ->numeric()
-                    ->suffix('mm')
-                    ->nullable(),
-                TextInput::make('uncertainty')
-                    ->numeric()
-                    ->suffix('mm')
-                    ->nullable(),
-                Select::make('performed_by_id')
-                    ->relationship('performedBy', 'name')
-                    ->required()
-                    ->searchable(),
-                Select::make('calibration_interval')
-                    ->label('Intervalo até Próxima Calibração (meses)')
-                    ->options([
-                        6 => '6 meses',
-                        12 => '12 meses',
-                        18 => '18 meses',
-                        24 => '24 meses',
-                    ])
-                    ->default(12)
-                    ->required(),
+                Grid::make(2)->schema([
+                    DatePicker::make('calibration_date')
+                        ->label('Data')
+                        ->required(),
+
+                    Select::make('type')
+                        ->label('Tipo')
+                        ->options([
+                            'internal' => 'Interna',
+                            'external_rbc' => 'Externa',
+                        ])
+                        ->required(),
+
+                    Select::make('result')
+                        ->label('Resultado')
+                        ->options([
+                            'approved' => 'Aprovado',
+                            'rejected' => 'Rejeitado',
+                            'approved_with_restrictions' => 'Aprovado c/ Restrições',
+                        ])
+                        ->required(),
+
+                    Select::make('provider_id')
+                        ->label('Fornecedor')
+                        ->relationship('provider', 'name')
+                        ->searchable()
+                        ->preload()
+                        ->visible(fn (Get $get) => $get('type') === 'external_rbc'),
+                ]),
+
                 FileUpload::make('certificate_path')
+                    ->label('Certificado (PDF)')
                     ->directory('calibration-certificates')
                     ->acceptedFileTypes(['application/pdf'])
-                    ->required(fn ($get) => $get('type') === 'external_rbc')
-                    ->nullable(fn ($get) => $get('type') !== 'external_rbc'),
+                    ->openable()
+                    ->downloadable()
+                    ->columnSpanFull(),
             ]);
+
     }
 
     public function table(Table $table): Table
     {
         return $table
+            ->recordTitleAttribute('calibration_date')
+            ->defaultSort('calibration_date', 'desc')
             ->columns([
-                Tables\Columns\TextColumn::make('calibration_date')
-                    ->date(),
-//                Tables\Columns\TextColumn::make('type')
-//                    ->formatStateUsing(fn($state) => ucfirst(str_replace('_', ' ', $state))),
-                Tables\Columns\TextColumn::make('result')
-                    ->formatStateUsing(fn($state) => ucfirst($state ?? '-')),
-                Tables\Columns\TextColumn::make('uncertainty')
-                    ->suffix(' mm')
-                    ->default('-'),
-                Tables\Columns\TextColumn::make('performedBy.name')
-                    ->label('Performed By')
-                    ->default('-'),
+                TextColumn::make('calibration_date')
+                    ->label('Data')
+                    ->date('d/m/Y')
+                    ->sortable(),
+
+                TextColumn::make('type')
+                    ->label('Tipo')
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'internal' => 'Interna',
+                        'external_rbc' => 'Externa',
+                        default => $state,
+                    })
+                    ->color(fn (string $state): string => match ($state) {
+                        'internal' => 'info',
+                        'external_rbc' => 'warning',
+                        default => 'gray',
+                    }),
+
+                Tables\Columns\TextColumn::make('executor') // Nome virtual
+                ->label('Executado Por / Fornecedor')
+                    ->getStateUsing(function (Calibration $record) {
+                        // Lógica: Se Interna -> Técnico. Se Externa -> Fornecedor.
+                        if ($record->type === 'internal') {
+                            return $record->performedBy?->name ?? 'Técnico Interno';
+                        }
+                        return $record->provider?->name ?? 'Fornecedor Externo';
+                    })
+                    ->icon(fn (Calibration $record) =>
+                    $record->type === 'internal' ? 'heroicon-o-user' : 'heroicon-o-building-office'
+                    )
+                    ->description(fn (Calibration $record) =>
+                    $record->type === 'internal' ? 'Laboratório Interno' : 'Serviço Terceirizado'
+                    ),
+
+
+                TextColumn::make('result')
+                    ->label('Resultado')
+                    ->badge()
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'approved' => 'Aprovado',
+                        'rejected' => 'Reprovado',
+                        'approved_with_restrictions' => 'Com Restrições',
+                        default => $state,
+                    })
+                    ->color(fn (string $state): string => match ($state) {
+                        'approved' => 'success',
+                        'rejected' => 'danger',
+                        'approved_with_restrictions' => 'warning',
+                        default => 'gray',
+                    }),
+
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('type')
+                SelectFilter::make('type')
+                    ->label('Tipo')
                     ->options([
                         'internal' => 'Interna',
-                        'external_rbc' => 'Externa RBC',
+                        'external_rbc' => 'Externa',
+                    ]),
+                SelectFilter::make('result')
+                    ->label('Resultado')
+                    ->options([
+                        'approved' => 'Aprovado',
+                        'rejected' => 'Reprovado',
                     ]),
             ])
             ->headerActions([
-                CreateAction::make(),
+//                CreateAction::make()->label('Nova Calibração'),
             ])
             ->actions([
+                // AÇÃO DE CERTIFICADO (A mesma da tabela principal)
+               Action::make('certificate')
+                    ->label('Certificado')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->color('gray')
+                    ->url(fn (Calibration $record) => route('calibration.certificate.download', $record))
+                    ->openUrlInNewTab()
+                    ->visible(fn (Calibration $record) =>
+                        ($record->type === 'internal' && $record->result === 'approved') ||
+                        ($record->type === 'external_rbc' && $record->certificate_path)
+                    ),
+
+                ViewAction::make(),
                 EditAction::make(),
                 DeleteAction::make(),
             ])
