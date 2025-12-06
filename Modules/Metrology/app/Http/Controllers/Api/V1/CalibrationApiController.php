@@ -53,15 +53,15 @@ class CalibrationApiController extends Controller
             ->get();
 
         $allStandards = ReferenceStandard::query()
-            ->whereNotNull('nominal_value')
-//             ->where('status', 'active')
+//            ->whereNotNull('nominal_value')
+             ->where('status', 'active')
             ->select('id', 'name', 'serial_number', 'nominal_value', 'parent_id')
             ->orderBy('nominal_value')
             ->get();
 
         $allStandardsCount = ReferenceStandard::query()
-            ->whereNotNull('nominal_value')
-//             ->where('status', 'active')
+//            ->whereNotNull('nominal_value')
+             ->where('status', 'active')
             ->select('id', 'name', 'serial_number', 'nominal_value', 'parent_id')
             ->orderBy('nominal_value')->count();
 
