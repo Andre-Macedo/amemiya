@@ -20,7 +20,6 @@ class ReferenceStandardForm
     {
         return $schema
             ->components([
-                Grid::make(3)->schema([
                     // COLUNA 1 & 2: Dados Principais
                     Grid::make(1)->schema([
                         Section::make('Identificação')
@@ -111,7 +110,6 @@ class ReferenceStandardForm
                                     ->downloadable(),
                             ]),
                     ])->columnSpan(1),
-                ]),
 
                 Section::make('Observações')
                     ->schema([

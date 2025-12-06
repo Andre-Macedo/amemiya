@@ -27,6 +27,7 @@ class ChecklistItem extends Model
         'uncertainty',
         'result',
         'notes',
+        'reference_standard_id'
     ];
 
     protected $casts = [

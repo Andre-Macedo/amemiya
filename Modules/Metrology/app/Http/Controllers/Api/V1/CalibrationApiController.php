@@ -150,23 +150,39 @@ class CalibrationApiController extends Controller
             $checklistItemsData = [];
 
             foreach ($templateItems as $templateItem) {
-                // Tenta achar a resposta enviada pelo App
+                // Busca o input correspondente enviado pelo App
                 $appResponse = $appItemsMap->get($templateItem->id);
 
-                // Prepara leituras
+                // --- PROCESSAMENTO DINÂMICO ---
                 $readingsJson = null;
+                $resultItem = null;
+                $notesItem = null;
+                $standardId = null;
                 $isCompleted = false;
 
-                if ($appResponse && !empty($appResponse['readings'])) {
-                    $rawReadings = is_array($appResponse['readings']) ? $appResponse['readings'] : [$appResponse['readings']];
-                    $readingsJson = json_encode($rawReadings);
-                    $isCompleted = true;
-                }
-
-                $standardId = $appResponse['reference_standard_id'] ?? null;
-                // Verificação simples se o ID é numérico (para evitar erro de SQL com string de mock)
-                if (!is_numeric($standardId)) {
-                    $standardId = null;
+                if ($appResponse) {
+                    // TIPO NUMÉRICO -> Salva readings e standard
+                    if ($templateItem->question_type === 'numeric') {
+                        if (!empty($appResponse['readings'])) {
+                            $rawReadings = is_array($appResponse['readings']) ? $appResponse['readings'] : [$appResponse['readings']];
+                            $readingsJson = json_encode($rawReadings);
+                            $isCompleted = true;
+                        }
+                        // Validação do ID do padrão (evita erro de string)
+                        if (isset($appResponse['reference_standard_id']) && is_numeric($appResponse['reference_standard_id'])) {
+                            $standardId = $appResponse['reference_standard_id'];
+                        }
+                    }
+                    // TIPO BOOLEANO -> Salva result
+                    elseif ($templateItem->question_type === 'boolean') {
+                        $resultItem = $appResponse['result'] ?? null;
+                        if ($resultItem) $isCompleted = true;
+                    }
+                    // TIPO TEXTO -> Salva notes
+                    elseif ($templateItem->question_type === 'text') {
+                        $notesItem = $appResponse['notes'] ?? null;
+                        if ($notesItem) $isCompleted = true;
+                    }
                 }
 
                 $checklistItemsData[] = [
@@ -176,10 +192,14 @@ class CalibrationApiController extends Controller
                     'order' => $templateItem->order,
                     'required_readings' => $templateItem->required_readings,
                     'completed' => $isCompleted,
+
+                    // Campos mapeados corretamente agora:
                     'readings' => $readingsJson,
-                    'result' => null,
-                    'notes' => null,
+                    'result' => $resultItem,
+                    'notes' => $notesItem,
                     'reference_standard_id' => $standardId,
+
+                    'uncertainty' => null,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
