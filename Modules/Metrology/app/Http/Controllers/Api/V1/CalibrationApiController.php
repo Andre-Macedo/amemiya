@@ -47,7 +47,7 @@ class CalibrationApiController extends Controller
             ->whereNull('parent_id') // Apenas pais
             ->whereHas('children')   // Que têm filhos (Kits)
             ->with(['children' => function ($query) {
-                $query->select('id', 'parent_id', 'name', 'nominal_value', 'actual_value', 'uncertainty');
+                $query->select('id', 'parent_id', 'name','serial_number','stock_number', 'nominal_value', 'actual_value', 'uncertainty');
             }])
             ->select('id', 'name', 'serial_number')
             ->get();
