@@ -31,6 +31,10 @@ class CalibrationResource extends Resource
 
     protected static ?string $navigationLabel = 'Calibrações';
 
+    protected static ?string $modelLabel = 'Calibração';
+    protected static ?string $pluralModelLabel = 'Calibrações';
+
+
     public static function form(Schema $schema): Schema
     {
         return CalibrationForm::configure($schema);

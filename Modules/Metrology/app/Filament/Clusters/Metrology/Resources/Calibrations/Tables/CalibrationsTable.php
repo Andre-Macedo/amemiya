@@ -33,8 +33,7 @@ class CalibrationsTable
                         $query->whereHasMorph('calibratedItem', [Instrument::class, ReferenceStandard::class], function ($q) use ($search) {
                             $q->where('name', 'like', "%{$search}%");
                         });
-                    })
-                    ->sortable(),
+                    }),
 
                 TextColumn::make('calibrated_item_type')
                     ->label('Tipo de Item')
