@@ -19,6 +19,7 @@ class InstrumentApiResource extends JsonResource
             'id' => (string) $this->id,
             'name' => $this->name,
             'serial_number' => $this->serial_number,
+            'stock_number' => $this->stock_number,
             'instrument_type' => $this->instrumentType ? $this->instrumentType->name : 'N/A',
             'status' => $this->status,
             'location' => $this->location,
