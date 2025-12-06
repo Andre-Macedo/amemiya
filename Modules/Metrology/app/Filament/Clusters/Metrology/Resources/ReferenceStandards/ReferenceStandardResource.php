@@ -31,6 +31,8 @@ class ReferenceStandardResource extends Resource
     protected static string|null|\UnitEnum $navigationGroup = "Padrões de Refêrencia";
 
     protected static ?string $navigationLabel = 'Padrões de Referencia';
+    protected static ?string $pluralModelLabel = 'Padrões de Referencia';
+    protected static ?string $modelLabel = 'Padrão de Referencia';
 
     public static function form(Schema $schema): Schema
     {

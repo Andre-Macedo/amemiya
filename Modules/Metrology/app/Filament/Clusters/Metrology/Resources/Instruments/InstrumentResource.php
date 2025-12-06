@@ -32,6 +32,8 @@ class InstrumentResource extends Resource
     protected static string|null|\UnitEnum $navigationGroup = 'Instrumentos';
 
     protected static ?string $navigationLabel = 'Instrumentos';
+    protected static ?string $pluralModelLabel = 'Instrumentos';
+    protected static ?string $modelLabel = 'Instrumento';
 
     public static function form(Schema $schema): Schema
     {
