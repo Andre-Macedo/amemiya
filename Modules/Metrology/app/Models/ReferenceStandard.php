@@ -16,6 +16,7 @@ class ReferenceStandard extends Model
 {
     protected $fillable = [
         'name',
+        'parent_id',
         'serial_number',
         'stock_number',
         'reference_standard_type_id',

@@ -9,6 +9,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Resources\Pages\ListRecords;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
@@ -22,7 +23,16 @@ class ReferenceStandardsTable
     {
         return $table
             // Mostra apenas Pais (Kits ou Peças Soltas), esconde os filhos
-            ->modifyQueryUsing(fn (Builder $query) => $query->whereNull('parent_id'))
+            ->modifyQueryUsing(function (Builder $query) use ($table) {
+                // Pega o componente que está renderizando a tabela
+                $livewire = $table->getLivewire();
+
+                // Se for a Página de Listagem Principal (ListReferenceStandards), aplica o filtro.
+                // Se for um Relation Manager, o $livewire será outra classe e o filtro NÃO será aplicado.
+                if ($livewire instanceof ListRecords) {
+                    $query->whereNull('parent_id');
+                }
+            })
             ->defaultSort('calibration_due', 'asc')
 
             ->columns([
@@ -41,13 +51,6 @@ class ReferenceStandardsTable
                         : ($record->nominal_value ? "Nominal: {$record->nominal_value} {$record->unit}" : 'Item individual')
                     )
                     ->wrap(),
-
-                // Mostra se é Kit, Régua ou Peça Única
-                TextColumn::make('type_label')
-                    ->label('Estrutura')
-                    ->badge()
-                    ->color(fn (ReferenceStandard $record) => $record->children()->exists() ? 'info' : 'gray')
-                    ->formatStateUsing(fn (ReferenceStandard $record) => $record->children()->exists() ? 'KIT / JOGO' : 'PEÇA ÚNICA'),
 
                 TextColumn::make('referenceStandardType.name')
                     ->label('Tipo')

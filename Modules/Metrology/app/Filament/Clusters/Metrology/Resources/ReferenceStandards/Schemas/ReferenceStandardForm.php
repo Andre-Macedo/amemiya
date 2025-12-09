@@ -7,10 +7,12 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Fieldset;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Modules\Metrology\Models\ReferenceStandardType;
 
@@ -31,9 +33,32 @@ class ReferenceStandardForm
 
                                 Select::make('reference_standard_type_id')
                                     ->label('Tipo de Padrão')
-                                    ->options(ReferenceStandardType::pluck('name', 'id'))
+                                    ->relationship('referenceStandardType', 'name')
+                                    ->live()
+                                    ->afterStateUpdated(function (Get $get, Set $set, $state) {
+                                        if (!$state) return;
+                                        $type = \Modules\Metrology\Models\ReferenceStandardType::find($state);
+                                        if ($type) {
+                                            $set('is_kit', $type->is_kit);
+                                            // Se virou Kit, limpa o pai (Kit não tem pai)
+                                            if ($type->is_kit) $set('parent_id', null);
+                                        }
+                                    })
+                                    ->required(),
+
+                                // 2. Flag Manual (caso queira criar um kit customizado)
+                                Toggle::make('is_kit')
+                                    ->label('É um Kit/Jogo/Régua?')
+                                    ->helperText('Habilita a adição de peças filhas.')
+                                    ->live(),
+
+                                // 3. Filtro Inteligente: Só mostra Kits na lista de Pais
+                                Select::make('parent_id')
+                                    ->label('Pertence ao Kit/Jogo/Regua')
+                                    ->relationship('parent', 'name', fn ($query) => $query->where('is_kit', true))
                                     ->searchable()
                                     ->preload()
+                                    ->visible(fn (Get $get) => ! $get('is_kit')) // Se eu sou um Kit, não tenho pai
                                     ->required(),
 
                                 // Dados de Identificação (Opcionais se for Filho)
@@ -50,7 +75,7 @@ class ReferenceStandardForm
                                             ->placeholder(fn (Get $get) => $get('parent_id') ? 'Usa o do Kit (Pai)' : '')
                                             ->required(fn (Get $get) => $get('parent_id') === null)
                                             ->maxLength(255),
-                                    ])->columns(2),
+                                    ])->columns(2)->visible(fn (Get $get) => !$get('parent_id') || $get('is_kit')),
                             ]),
 
                         Section::make('Dados Metrológicos')

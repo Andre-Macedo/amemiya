@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Modules\Metrology\Filament\Clusters\Metrology\MetrologyCluster;
+use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\RelationManagers\CalibrationRelationManager;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\Pages\CreateReferenceStandard;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\Pages\EditReferenceStandard;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\Pages\ListReferenceStandards;
@@ -52,7 +53,8 @@ class ReferenceStandardResource extends Resource
     public static function getRelations(): array
     {
         return [
-            ChildrenRelationManager::class, // Lista os itens do kit
+            ChildrenRelationManager::class,
+            CalibrationRelationManager::class,
         ];
     }
 

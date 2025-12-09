@@ -16,6 +16,15 @@ class InstrumentTypeForm
                     ->required()
                     ->unique(ignoreRecord: true)
                     ->maxLength(255),
+
+                TextInput::make('calibration_frequency_months')
+                    ->label('Frequência Padrão (Meses)')
+                    ->numeric()
+                    ->minValue(1)
+                    ->maxValue(120)
+                    ->default(12)
+                    ->required()
+                    ->helperText('Define o intervalo padrão para calcular o vencimento de novos instrumentos.'),
             ]);
     }
 }
