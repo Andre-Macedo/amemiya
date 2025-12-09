@@ -24,6 +24,9 @@ class InstrumentTypeResource extends Resource
 
     protected static string|null|\UnitEnum $navigationGroup = 'Instrumentos';
 
+    protected static ?string $modelLabel = 'Tipo de Instrumento';
+    protected static ?string $pluralLabel = 'Tipos de Instrumentos';
+
     protected static ?string $navigationLabel = 'Tipos de Instrumentos';
 
     public static function form(Schema $schema): Schema

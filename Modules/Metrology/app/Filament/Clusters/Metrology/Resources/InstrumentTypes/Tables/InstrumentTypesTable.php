@@ -19,10 +19,19 @@ class InstrumentTypesTable
                     ->label('Nome')
                     ->searchable()
                     ->sortable(),
+
+                TextColumn::make('calibration_frequency_months')
+                    ->label('Frequência')
+                    ->suffix(' meses')
+                    ->sortable()
+                    ->badge()
+                    ->color('info'), // Azulzinho para destacar
+
                 TextColumn::make('instruments_count')
                     ->counts('instruments')
                     ->label('Nº de Instrumentos')
                     ->sortable(),
+
                 TextColumn::make('created_at')
                     ->label('Criado em')
                     ->dateTime('d/m/Y')

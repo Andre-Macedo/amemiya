@@ -23,7 +23,9 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Modules\Metrology\Models\Calibration;
+use Modules\Metrology\Models\ReferenceStandard;
 
 class CalibrationRelationManager extends RelationManager
 {
@@ -80,6 +82,18 @@ class CalibrationRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('calibration_date')
+            ->modifyQueryUsing(function (Builder $query) {
+                $owner = $this->getOwnerRecord();
+
+                // Se for um Padrão e tiver um Pai (for filho)
+                if ($owner instanceof ReferenceStandard && $owner->parent_id) {
+                    $query->orWhere(function (Builder $q) use ($owner) {
+                        $q->where('calibrated_item_type', ReferenceStandard::class)
+                            ->where('calibrated_item_id', $owner->parent_id);
+                    });
+                }
+                return $query;
+            })
             ->defaultSort('calibration_date', 'desc')
             ->columns([
                 TextColumn::make('calibration_date')
@@ -87,6 +101,18 @@ class CalibrationRelationManager extends RelationManager
                     ->date('d/m/Y')
                     ->sortable(),
 
+                Tables\Columns\TextColumn::make('source_label')
+                    ->label('Origem')
+                    ->badge()
+                    ->getStateUsing(function ($record) {
+                        $owner = $this->getOwnerRecord();
+                        // Se o ID do item calibrado for diferente do dono da página, é herdado
+                        return $record->calibrated_item_id !== $owner->id
+                            ? 'Herdado do Kit'
+                            : 'Própria';
+                    })
+                    ->color(fn (string $state) => $state === 'Própria' ? 'success' : 'info')
+                    ->visible(fn () => $this->getOwnerRecord() instanceof ReferenceStandard && $this->getOwnerRecord()->parent_id),
                 TextColumn::make('type')
                     ->label('Tipo')
                     ->badge()

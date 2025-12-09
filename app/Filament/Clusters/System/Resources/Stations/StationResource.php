@@ -28,6 +28,9 @@ class StationResource extends Resource
 
     protected static ?string $navigationLabel = 'Estações de Trabalho';
 
+    protected static ?string $pluralModelLabel = 'Estações de Trabalho';
+    protected static ?string $modelLabel = 'Estação de Trabalho';
+
     public static function form(Schema $schema): Schema
     {
         return StationForm::configure($schema);
