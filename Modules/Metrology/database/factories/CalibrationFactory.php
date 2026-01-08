@@ -34,7 +34,7 @@ class CalibrationFactory extends Factory
             'uncertainty' => $this->faker->randomFloat(4, 0, 0.05),
             'notes' => $this->faker->sentence,
             'certificate_path' => $this->faker->optional()->filePath('pdf'),
-            'performed_by_id' => User::factory(),
+            'performed_by_id' => 1,
         ];
     }
 

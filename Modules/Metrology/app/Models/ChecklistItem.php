@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Metrology\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -9,6 +11,22 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
  use Modules\Metrology\Database\Factories\ChecklistItemFactory;
 
+/**
+ * @property int $id
+ * @property int $checklist_id
+ * @property string $step
+ * @property string $question_type
+ * @property int $order
+ * @property int $required_readings
+ * @property bool $completed
+ * @property array|null $readings
+ * @property string|null $uncertainty
+ * @property string|null $result
+ * @property string|null $notes
+ * @property int|null $reference_standard_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ */
 class ChecklistItem extends Model
 {
     use HasFactory, SoftDeletes;

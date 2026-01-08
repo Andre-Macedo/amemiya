@@ -106,7 +106,6 @@ class CalibrationRelationManager extends RelationManager
                     ->badge()
                     ->getStateUsing(function ($record) {
                         $owner = $this->getOwnerRecord();
-                        // Se o ID do item calibrado for diferente do dono da página, é herdado
                         return $record->calibrated_item_id !== $owner->id
                             ? 'Herdado do Kit'
                             : 'Própria';
@@ -176,7 +175,7 @@ class CalibrationRelationManager extends RelationManager
                     ]),
             ])
             ->headerActions([
-//                CreateAction::make()->label('Nova Calibração'),
+                // Botão de criar removido por regra de negócio (criar via página do instrumento)
             ])
             ->actions([
                 // AÇÃO DE CERTIFICADO (A mesma da tabela principal)

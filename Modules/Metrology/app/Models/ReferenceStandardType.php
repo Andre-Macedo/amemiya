@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Metrology\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -9,6 +11,13 @@ use Modules\Metrology\Database\Factories\ReferenceStandardTypeFactory;
 
 // use Modules\Metrology\Database\Factories\ReferenceStandardTypeFactory;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property int|null $calibration_frequency_months
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ */
 class ReferenceStandardType extends Model
 {
     use HasFactory;

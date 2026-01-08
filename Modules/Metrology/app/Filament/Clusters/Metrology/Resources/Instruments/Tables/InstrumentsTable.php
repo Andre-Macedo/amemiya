@@ -86,14 +86,53 @@ class InstrumentsTable
 // ---------------------------------------------------------------
                     // 1. ENVIAR PARA CALIBRAÇÃO (Fluxo Normal)
                     // ---------------------------------------------------------------
+                    // ---------------------------------------------------------------
+                    // 1. REGISTRAR MOVIMENTAÇÃO (Custódia) - NOVO RECURSO
+                    // ---------------------------------------------------------------
+                    Action::make('register_movement')
+                        ->label('Registrar Movimentação')
+                        ->icon('heroicon-o-arrows-right-left')
+                        ->color('primary')
+                        ->form([
+                            Select::make('station_id')
+                                ->label('Destino (Setor/Estação)')
+                                ->options(Station::pluck('name', 'id')) // Mostra todas as estações
+                                ->required()
+                                ->searchable(),
+                            Textarea::make('notes')
+                                ->label('Motivo / Justificativa')
+                                ->required(),
+                        ])
+                        ->action(function (Instrument $record, array $data) {
+                            $station = Station::find($data['station_id']);
+                            
+                            // 1. Atualizar Localização Atual
+                            $record->update([
+                                'current_station_id' => $station->id,
+                                'location' => $station->name, // Mantém o texto simples syncado
+                            ]);
+
+                            // 2. Criar Log de Acesso (Histórico)
+                            \Modules\Metrology\Models\AccessLog::create([
+                                'instrument_id' => $record->id,
+                                'user_id' => auth()->id(),
+                                'station_id' => $station->id,
+                                'action' => 'moved: ' . ($data['notes'] ?? 'Sem justificativa'),
+                            ]);
+
+                            Notification::make()->success()->title('Movimentação Registrada')->send();
+                        }),
+
+                    // ---------------------------------------------------------------
+                    // 2. ENVIAR PARA CALIBRAÇÃO (Fluxo Normal)
+                    // ---------------------------------------------------------------
                     Action::make('send_calibration')
                         ->label('Enviar p/ Calibrar')
-                        ->icon('heroicon-o-beaker') // Ícone de laboratório
+                        ->icon('heroicon-o-beaker')
                         ->color('info')
-                        // Visível se estiver Ativo, Vencido ou se acabou de ser Reprovado (e decidiram re-testar)
                         ->visible(fn (Instrument $record) => in_array($record->status, ['active', 'expired']))
                         ->form([
-                            \Filament\Forms\Components\Select::make('type')
+                            Select::make('type')
                                 ->label('Onde será realizada?')
                                 ->options([
                                     'internal' => 'Interna (Laboratório Próprio)',
@@ -107,14 +146,12 @@ class InstrumentsTable
                                 })
                                 ->required(),
 
-                            // Lógica de Estação Interna
                             Select::make('station_id')
                                 ->label('Laboratório Interno')
-                                ->options(\App\Models\Station::where('type', 'internal_lab')->pluck('name', 'id'))
+                                ->options(Station::where('type', 'internal_lab')->pluck('name', 'id'))
                                 ->required(fn (Get $get) => $get('type') === 'internal')
                                 ->visible(fn (Get $get) => $get('type') === 'internal'),
 
-                            // Lógica de Fornecedor Externo
                             Select::make('supplier_id')
                                 ->label('Fornecedor / Laboratório Externo')
                                 ->options(\App\Models\Supplier::where('is_calibration_provider', true)->pluck('name', 'id'))
@@ -126,54 +163,67 @@ class InstrumentsTable
                         ])
                         ->action(function (Instrument $record, array $data) {
                             $updateData = ['status' => 'in_calibration'];
+                            $logAction = 'sent_to_calibration';
+                            $destinationStationId = null;
 
                             if ($data['type'] === 'internal') {
                                 $updateData['current_station_id'] = $data['station_id'];
                                 $updateData['current_supplier_id'] = null;
+                                $destinationStationId = $data['station_id'];
                             } else {
-                                $externalStation = \App\Models\Station::where('type', 'external_provider')->first();
+                                $externalStation = Station::where('type', 'external_provider')->first();
                                 $updateData['current_station_id'] = $externalStation?->id;
                                 $updateData['current_supplier_id'] = $data['supplier_id'];
+                                $destinationStationId = $externalStation?->id;
+                                $logAction .= ' (External: ' . $data['supplier_id'] . ')';
                             }
 
                             $record->update($updateData);
 
-                            \Filament\Notifications\Notification::make()
-                                ->success()
-                                ->title('Enviado para Calibração')
-                                ->body("O instrumento foi movido para o fluxo de calibração.")
-                                ->send();
+                            // Log Custody Change
+                            if ($destinationStationId) {
+                                \Modules\Metrology\Models\AccessLog::create([
+                                    'instrument_id' => $record->id,
+                                    'user_id' => auth()->id(),
+                                    'station_id' => $destinationStationId,
+                                    'action' => $logAction,
+                                ]);
+                            }
+
+                            Notification::make()->success()->title('Enviado para Calibração')->send();
                         }),
 
                     // ---------------------------------------------------------------
-                    // 2. ENVIAR PARA MANUTENÇÃO (Se quebrou ou reprovou)
+                    // 3. ENVIAR PARA MANUTENÇÃO
                     // ---------------------------------------------------------------
                     Action::make('send_maintenance')
                         ->label('Enviar p/ Manutenção')
                         ->icon('heroicon-o-wrench')
                         ->color('warning')
                         ->requiresConfirmation()
-                        // Visível se estiver Ativo (quebrou na linha) ou Reprovado (falhou no teste)
                         ->visible(fn (Instrument $record) => in_array($record->status, ['active', 'rejected', 'expired']))
                         ->form([
-                            \Filament\Forms\Components\Textarea::make('problem_description')
-                                ->label('Descrição do Problema')
-                                ->required(),
+                            Textarea::make('problem_description')->label('Descrição do Problema')->required(),
                         ])
                         ->action(function (Instrument $record, array $data) {
-                            // Aqui você poderia mover para uma estação "Oficina" se tiver
-                            $record->update([
-                                'status' => 'maintenance',
-                                // 'current_station_id' => ... (opcional)
-                            ]);
+                            $record->update(['status' => 'maintenance']);
+                            
+                            // Log Maintenance
+                            // Ideally maintenance is a "Station" too, checking if exists
+                            $maintStation = Station::where('type', 'maintenance')->first();
+                            if ($maintStation) {
+                                \Modules\Metrology\Models\AccessLog::create([
+                                    'instrument_id' => $record->id,
+                                    'user_id' => auth()->id(),
+                                    'station_id' => $maintStation->id,
+                                    'action' => 'maintenance: ' . $data['problem_description'],
+                                ]);
+                            }
 
-                            \Filament\Notifications\Notification::make()
-                                ->warning()
-                                ->title('Enviado para Manutenção')
-                                ->send();
+                            Notification::make()->warning()->title('Enviado para Manutenção')->send();
                         }),
 
-                    // Ação: Retorno da Manutenção (Libera para Calibrar)
+                    // Ação: Retorno da Manutenção
                     Action::make('return_maintenance')
                         ->label('Retornou (Calibrar)')
                         ->icon('heroicon-o-arrow-path')
@@ -183,8 +233,14 @@ class InstrumentsTable
                             TextInput::make('repair_notes')->label('O que foi feito?')->required(),
                         ])
                         ->action(function (Instrument $record, array $data) {
-                            // Aqui você poderia salvar um log de manutenção em outra tabela
                             $record->update(['status' => 'in_calibration']);
+                            // Log
+                             \Modules\Metrology\Models\AccessLog::create([
+                                'instrument_id' => $record->id,
+                                'user_id' => auth()->id(),
+                                'station_id' => $record->current_station_id ?? 0, // Keeps same station or default
+                                'action' => 'returned_from_maintenance: ' . $data['repair_notes'],
+                            ]);
                         }),
 
                     // Ação: Descarte

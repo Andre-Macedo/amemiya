@@ -69,8 +69,23 @@ class CalibrationsTable
                     Action::make('pdf')
                         ->label('Certificado')
                         ->icon('heroicon-o-document-arrow-down')
-                        ->url(fn (Calibration $record) => route('calibration.certificate.download', $record))
-                        ->openUrlInNewTab()
+                        ->action(function (Calibration $record) {
+                            $instrument = $record->calibratedItem;
+                            
+                            $data = (new \Modules\Metrology\Actions\PrepareCertificateDataAction())->execute($record);
+                            
+                            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('metrology::pdf.certificate', [
+                                'calibration' => $record,
+                                'instrument' => $instrument,
+                                'results' => $data['results'],
+                                'standards' => $data['standards'],
+                            ]);
+                            
+                            return response()->streamDownload(
+                                fn () => print($pdf->output()),
+                                "certificado-{$record->certificate_code}.pdf"
+                            );
+                        })
                         ->visible(fn (Calibration $record) => $record->type === 'internal' && $record->result === 'approved'),
                 ]),
             ])

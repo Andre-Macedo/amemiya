@@ -50,6 +50,7 @@ class MetrologyDatabaseSeeder extends Seeder
         // -- 2. FORNECEDORES (Suppliers) --
         $mitutoyo = Supplier::create([
             'name' => 'Mitutoyo Sul Americana',
+            'trade_name' => 'Mitutoyo',
             'is_manufacturer' => true,
             'is_calibration_provider' => true, // Eles também calibram
             'is_maintenance_provider' => true,

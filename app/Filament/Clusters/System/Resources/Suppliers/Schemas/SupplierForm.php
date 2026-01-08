@@ -57,6 +57,14 @@ class SupplierForm
                             DatePicker::make('accreditation_valid_until')
                                 ->label('Validade da Acreditação (ISO 17025)')
                                 ->native(false),
+                            
+                            \Filament\Forms\Components\FileUpload::make('accreditation_certificate')
+                                ->label('Certificado de Acreditação (PDF)')
+                                ->directory('supplier-certificates')
+                                ->acceptedFileTypes(['application/pdf'])
+                                ->openable()
+                                ->downloadable()
+                                ->columnSpanFull(),
                         ])
                             ->columns(2)
                             ->visible(fn (Get $get) => $get('is_calibration_provider')),

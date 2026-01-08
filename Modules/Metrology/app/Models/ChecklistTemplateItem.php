@@ -1,13 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Metrology\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Metrology\Database\Factories\ChecklistTemplateItemFactory;
 
 // use Modules\Metrology\Database\Factories\ChecklistTemplateItemFactory;
 
+/**
+ * @property int $id
+ * @property int $checklist_template_id
+ * @property string $step
+ * @property string $question_type
+ * @property int $order
+ * @property int $required_readings
+ * @property int|null $reference_standard_type_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ */
 class ChecklistTemplateItem extends Model
 {
     use HasFactory;
@@ -39,8 +53,8 @@ class ChecklistTemplateItem extends Model
     }
 
 
-    // protected static function newFactory(): ChecklistTemplateItemFactory
-    // {
-    //     // return ChecklistTemplateItemFactory::new();
-    // }
+    protected static function newFactory(): ChecklistTemplateItemFactory
+    {
+        return ChecklistTemplateItemFactory::new();
+    }
 }

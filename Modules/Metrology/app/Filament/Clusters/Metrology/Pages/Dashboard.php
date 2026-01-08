@@ -4,6 +4,7 @@ namespace Modules\Metrology\Filament\Clusters\Metrology\Pages;
 
 use Filament\Pages\Page;
 use Modules\Metrology\Filament\Clusters\Metrology\MetrologyCluster;
+use Modules\Metrology\Filament\Clusters\Metrology\Widgets\UpcomingCalibrations;
 use Modules\Metrology\Filament\Widgets\ComplianceRateWidget;
 use Modules\Metrology\Filament\Widgets\OverdueCalibrationsWidget;
 use Modules\Metrology\Filament\Widgets\RecentCalibrationsWidget;
@@ -26,6 +27,7 @@ class Dashboard extends BaseDashboard
 //            OverdueCalibrationsWidget::class,
 //            RecentCalibrationsWidget::class,
 //            ComplianceRateWidget::class,
+            UpcomingCalibrations::class,
         ];
     }
 
