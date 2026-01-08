@@ -3,8 +3,11 @@
 namespace Modules\Metrology\Providers;
 
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schedule;
 use Illuminate\Support\ServiceProvider;
+use Modules\Metrology\Events\CalibrationSaved;
+use Modules\Metrology\Listeners\ProcessCalibrationListener;
 use Modules\Metrology\Console\CheckInstrumentStatus;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\InstrumentResource;
 use Nwidart\Modules\Traits\PathNamespace;
@@ -31,6 +34,10 @@ class MetrologyServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
 
+        Event::listen(
+            CalibrationSaved::class,
+            ProcessCalibrationListener::class
+        );
     }
 
     /**

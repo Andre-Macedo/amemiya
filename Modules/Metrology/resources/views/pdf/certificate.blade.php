@@ -39,10 +39,8 @@
 <div class="section">
     <h3>Padrões Utilizados</h3>
     <ul>
-        @foreach($record->checklist->items->unique('reference_standard_id') as $item)
-            @if($item->referenceStandard)
-                <li>{{ $item->referenceStandard->name }} ({{ $item->referenceStandard->stock_number }}) - Val: {{ $item->referenceStandard->calibration_due?->format('d/m/Y') }}</li>
-            @endif
+        @foreach($standards as $std)
+            <li>{{ $std->name }} ({{ $std->stock_number }}) - Val: {{ $std->calibration_due?->format('d/m/Y') }}</li>
         @endforeach
     </ul>
 </div>
@@ -53,30 +51,20 @@
         <thead>
         <tr>
             <th>Ponto Nominal</th>
-            <th>Leituras</th>
-            <th>Média</th>
+            <th>Valor Medido (Média)</th>
             <th>Erro (Desvio)</th>
-            <th>Incerteza</th>
+            <th>Incerteza (k=2)</th>
+            <th>Resultado</th>
         </tr>
         </thead>
         <tbody>
-        @foreach($record->checklist->items->where('question_type', 'numeric') as $item)
-            @php
-                $readings = is_string($item->readings) ? json_decode($item->readings) : $item->readings;
-                $avg = collect($readings)->avg();
-
-                // 1. Nominal: Vem do template (se existir) ou fallback no step
-                $nominal = $item->nominal_value ?? (float) preg_replace('/[^0-9.]/', '', $item->step);
-
-                // 2. Valor Verdadeiro: Idealmente viria do Padrão ($item->referenceStandard->actual_value)
-                // Se não tiver o valor exato cadastrado, assumimos que o padrão é nominalmente perfeito (simplificação)
-                $refValue = $nominal;
-
-                $error = $avg - $refValue;
-            @endphp
+        @foreach($results as $res)
             <tr>
-                <td>{{ number_format($nominal, 2) }} mm</td>
-                <td>{{ number_format($refValue, 3) }}</td> <td>{{ number_format($avg, 3) }}</td>      <td>{{ number_format($error, 4) }}</td>    <td>{{ $record->uncertainty }}</td>
+                <td>{{ number_format($res['nominal'], 4) }}</td>
+                <td>{{ number_format($res['average'], 4) }}</td>      
+                <td>{{ number_format($res['error'], 4) }}</td>    
+                <td>{{ $res['uncertainty'] }}</td>
+                <td>{{ $res['result'] }}</td>
             </tr>
         @endforeach
         </tbody>

@@ -23,7 +23,7 @@ class InstrumentFactory extends Factory
             'stock_number' => $this->faker->unique()->bothify('??-###'),
             'serial_number' => $this->faker->unique()->bothify('SRL-#####'),
             'instrument_type_id' => InstrumentType::factory(),
-            'uncertainty' => $this->faker->randomElement(['0.01mm', '0.02mm', '0.05mm', '0.001mm']),
+            'mpe' => $this->faker->randomElement(['0.01mm', '0.02mm', '0.05mm', '0.001mm']),
             'manufacturer' => $this->faker->company(),
             'measuring_range' => $this->faker->randomElement(['0-150mm', '0-25mm', '25-50mm', '0-12.7mm']),
             'resolution' => $this->faker->randomElement(['0.01mm', '0.001mm']),

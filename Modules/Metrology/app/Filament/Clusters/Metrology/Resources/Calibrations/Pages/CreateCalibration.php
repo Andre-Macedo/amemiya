@@ -47,64 +47,30 @@ class CreateCalibration extends CreateRecord
 
     protected function afterCreate(): void
     {
+        // 1. Processar Checklist
         if (!empty($this->checklistData)) {
-
-            $checklist = Checklist::create([
-                'calibration_id' => $this->record->id, // <--- AQUI ESTÁ A SOLUÇÃO
-                'checklist_template_id' => $this->checklistData['template_id'],
-                'completed' => false,
-            ]);
-
-            $items = array_map(function ($item) use ($checklist) {
-
-                $hasResult = !empty($item['result']);
-                $hasReadings = !empty($item['readings']) && isset($item['readings'][0]['value']);
-
-                $isCompleted = $hasResult || $hasReadings;
-
-                return [
-                    'checklist_id' => $checklist->id,
-                    'step' => $item['step'],
-                    'question_type' => $item['question_type'],
-                    'order' => $item['order'],
-                    'required_readings' => $item['required_readings'] ?? 0,
-//                    'reference_standard_type_id' => $item['reference_standard_type_id'] ?? null,
-                    'completed' => $isCompleted,
-                    'readings' => isset($item['readings']) ? json_encode(array_column($item['readings'], 'value')) : null,
-                    'uncertainty' => $item['uncertainty'] ?? null,
-                    'result' => $item['result'] ?? null, // Aqui vem o 'approved'/'rejected' do ToggleButtons
-                    'notes' => $item['notes'] ?? null,
-                    'reference_standard_id' => $item['reference_standard_id'] ?? null,
-                ];
-            }, $this->checklistData['items']);
-
-            ChecklistItem::insert($items);
-
-            $this->record->update(['checklist_id' => $checklist->id]);
+            (new \Modules\Metrology\Actions\CreateChecklistAction())->execute(
+                $this->record, 
+                $this->checklistData
+            );
         }
 
+        // 2. Processar Itens do Kit
         $kitItems = $this->data['kit_items_results'] ?? [];
-
         if (!empty($kitItems)) {
-            foreach ($kitItems as $itemData) {
-                $child = \Modules\Metrology\Models\ReferenceStandard::find($itemData['child_id']);
-                if ($child) {
-                    $child->update([
-                        'actual_value' => $itemData['new_actual_value'],
-                        // Opcional: Atualizar incerteza se tiver campo no repeater
-                        'calibration_due' => $this->record->calibration_date->copy()->addMonths(24), // Herda data
-                        'status' => 'active',
-                    ]);
-                }
-            }
+            (new \Modules\Metrology\Actions\UpdateReferenceStandardKitAction())->execute(
+                $this->record, 
+                $kitItems
+            );
         }
 
+        // 3. Notificação de Reprovação
         if ($this->record->result === 'rejected') {
             Notification::make()
                 ->warning()
                 ->title('Atenção: Instrumento Reprovado')
                 ->body('O desvio encontrado foi superior à incerteza/critério permitido. O status foi definido como "Reprovado" automaticamente.')
-                ->persistent() // O usuário precisa fechar o alerta
+                ->persistent()
                 ->send();
         }
     }

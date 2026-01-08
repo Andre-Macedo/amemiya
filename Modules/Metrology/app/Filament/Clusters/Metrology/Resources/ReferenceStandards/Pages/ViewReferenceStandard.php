@@ -19,4 +19,11 @@ class ViewReferenceStandard extends ViewRecord
             EditAction::make(),
         ];
     }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            \Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\Widgets\DriftChart::class,
+        ];
+    }
 }

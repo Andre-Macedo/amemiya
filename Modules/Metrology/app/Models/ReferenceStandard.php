@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Metrology\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +14,27 @@ use Illuminate\Support\Carbon;
 use Modules\Metrology\Database\Factories\CalibrationFactory;
 use Modules\Metrology\Database\Factories\ReferenceStandardFactory;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property int|null $parent_id
+ * @property string|null $serial_number
+ * @property string|null $stock_number
+ * @property int $reference_standard_type_id
+ * @property string|null $description
+ * @property \Illuminate\Support\Carbon|null $calibration_due
+ * @property string $status
+ * @property string|null $nominal_value
+ * @property string|null $unit
+ * @property string|null $actual_value
+ * @property string|null $uncertainty
+ * @property string|null $grade
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Modules\Metrology\Models\ReferenceStandard|null $parent
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Modules\Metrology\Models\ReferenceStandard> $children
+ * @property-read \Modules\Metrology\Models\Calibration|null $latestCalibration
+ */
 class ReferenceStandard extends Model
 {
     protected $fillable = [
@@ -89,14 +112,16 @@ class ReferenceStandard extends Model
     }
     public function getNextCalibrationDueAttribute(): ?Carbon
     {
-        $latestCalibration = $this->calibrations()->latest('calibration_date')->first();
+        /** @var Calibration|null $latestCalibration */
+        $latestCalibration = $this->latestCalibration;
 
-        if ($latestCalibration && $latestCalibration->calibration_interval) {
-            return Carbon::parse($latestCalibration->calibration_date)
-                ->addMonths($latestCalibration->calibration_interval);
+        if ($latestCalibration) {
+            $months = $this->referenceStandardType->calibration_frequency_months ?? 24;
+            
+            return $latestCalibration->calibration_date->copy()->addMonths($months);
         }
 
-        return null; // Retorna null se não houver histórico ou intervalo
+        return null; // Retorna null se não houver histórico
     }
 
     public function getEffectiveSerialNumberAttribute(): string

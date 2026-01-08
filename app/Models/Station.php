@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -7,6 +9,14 @@ use Illuminate\Database\Eloquent\Model;
 use Modules\Metrology\Database\Factories\StationFactory;
 use Modules\Metrology\Models\Instrument;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string|null $location
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \Modules\Metrology\Models\Instrument> $instruments
+ */
 class Station extends Model
 {
     use HasFactory;

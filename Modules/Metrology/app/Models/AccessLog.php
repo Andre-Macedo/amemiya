@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Metrology\Models;
 
 use App\Models\Station;
@@ -9,6 +11,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Metrology\Database\Factories\AccessLogFactory;
 
+/**
+ * @property int $id
+ * @property int $instrument_id
+ * @property int $user_id
+ * @property int $station_id
+ * @property string $action
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ */
 class AccessLog extends Model
 {
     use HasFactory;
