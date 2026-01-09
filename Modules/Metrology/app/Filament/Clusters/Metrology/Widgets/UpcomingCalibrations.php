@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Metrology\Filament\Clusters\Metrology\Widgets;
 
 use Filament\Actions\Action;
@@ -20,7 +22,7 @@ class UpcomingCalibrations extends BaseWidget
             ->query(
                 Instrument::query()
                     ->where('calibration_due', '<=', now()->addDays(30))
-                    ->where('status', '!=', 'scrapped')
+                    ->where('status', '!=', \Modules\Metrology\Enums\ItemStatus::Scrapped)
                     ->orderBy('calibration_due')
             )
             ->heading('Próximas Calibrações (30 Dias)')

@@ -47,7 +47,8 @@ class CreateChecklistAction
 
         ChecklistItem::insert($items);
 
-        $calibration->update(['checklist_id' => $checklist->id]);
+        $calibration->checklist_id = $checklist->id;
+        $calibration->saveQuietly();
 
         return $checklist;
     }

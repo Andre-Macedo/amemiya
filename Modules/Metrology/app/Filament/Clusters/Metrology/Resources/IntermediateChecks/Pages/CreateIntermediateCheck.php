@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\IntermediateChecks\Pages;
 
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\IntermediateCheckResource;

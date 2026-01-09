@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Schemas;
 
 use Filament\Forms\Components\DatePicker;
@@ -81,8 +83,9 @@ class InstrumentForm
                                 DatePicker::make('acquisition_date')->label('Data de Aquisição')->required(),
                                 DatePicker::make('calibration_due')->label('Venc. da Calibração')->required(),
                                 Select::make('status')->label('Status')
-                                    ->options(['active' => 'Ativo', 'in_calibration' => 'Em Calibração', 'expired' => 'Vencido'])
-                                    ->default('active')->required(),
+                                    ->options(\Modules\Metrology\Enums\ItemStatus::class)
+                                    ->default(\Modules\Metrology\Enums\ItemStatus::Active)
+                                    ->required(),
                                 RichEditor::make('notes')->label('')
                                     ->columnSpanFull(),
 

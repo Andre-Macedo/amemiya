@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandardTypes\Tables;
 
 use Filament\Actions\BulkActionGroup;

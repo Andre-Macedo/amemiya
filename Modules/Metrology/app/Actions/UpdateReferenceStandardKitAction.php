@@ -24,7 +24,7 @@ class UpdateReferenceStandardKitAction
                 $child->update([
                     'actual_value' => $itemData['new_actual_value'],
                     'calibration_due' => $calibration->calibration_date->copy()->addMonths(24),
-                    'status' => 'active',
+                    'status' => \Modules\Metrology\Enums\ItemStatus::Active,
                 ]);
             }
         }

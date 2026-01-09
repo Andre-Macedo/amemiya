@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\Calibrations\Schemas;
 
 use App\Models\Supplier;
@@ -60,7 +62,7 @@ class CalibrationForm
                                     ->options(function (Get $get) {
                                         $type = $get('calibrated_item_type');
                                         if ($type === Instrument::class) {
-                                            return Instrument::query()->where('status', "=", 'in_calibration')->pluck('name', 'id');
+                                            return Instrument::query()->where('status', "=", \Modules\Metrology\Enums\ItemStatus::Active)->pluck('name', 'id');
                                         }
                                         if ($type === ReferenceStandard::class) {
                                             return ReferenceStandard::query()->pluck('name', 'id');
@@ -202,9 +204,7 @@ class CalibrationForm
                                         Grid::make(1)->schema([
                                             ToggleButtons::make('result')
                                                 ->label('Resultado')
-                                                ->options(['approved' => 'OK', 'rejected' => 'NOK'])
-                                                ->colors(['approved' => 'success', 'rejected' => 'danger'])
-                                                ->icons(['approved' => 'heroicon-m-check', 'rejected' => 'heroicon-m-x-mark'])
+                                                ->options(\Modules\Metrology\Enums\CalibrationResult::class)
                                                 ->inline()
                                                 ->required()
                                                 ->visible(fn(Get $get) => $get('question_type') === 'boolean'),
@@ -439,11 +439,7 @@ class CalibrationForm
 
                             Select::make('result')
                                 ->label('Decisão Final')
-                                ->options([
-                                    'approved' => 'Aprovado',
-                                    'rejected' => 'Rejeitado',
-                                    'approved_with_restrictions' => 'Aprovado com Restrições'
-                                ])
+                                ->options(\Modules\Metrology\Enums\CalibrationResult::class)
                                 ->required()
                                 ->default('approved'),
 

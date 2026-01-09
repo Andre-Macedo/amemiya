@@ -23,14 +23,14 @@ class InstrumentFactory extends Factory
             'stock_number' => $this->faker->unique()->bothify('??-###'),
             'serial_number' => $this->faker->unique()->bothify('SRL-#####'),
             'instrument_type_id' => InstrumentType::factory(),
-            'mpe' => $this->faker->randomElement(['0.01mm', '0.02mm', '0.05mm', '0.001mm']),
+            'mpe' => $this->faker->randomElement(['0.01', '0.02', '0.05', '0.001']),
             'manufacturer' => $this->faker->company(),
             'measuring_range' => $this->faker->randomElement(['0-150mm', '0-25mm', '25-50mm', '0-12.7mm']),
             'resolution' => $this->faker->randomElement(['0.01mm', '0.001mm']),
             'location' => $this->faker->city,
             'acquisition_date' => $this->faker->dateTimeBetween('-5 years', 'now'),
             'calibration_due' => $this->faker->dateTimeBetween('now', '+1 year'),
-            'status' => $this->faker->randomElement(['active', 'in_calibration', 'expired']),
+            'status' => $this->faker->randomElement(\Modules\Metrology\Enums\ItemStatus::cases())->value,
             'image_path' => null,
         ];
     }

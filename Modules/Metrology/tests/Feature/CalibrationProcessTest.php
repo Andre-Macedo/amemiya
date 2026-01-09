@@ -66,7 +66,8 @@ test('full calibration lifecycle approved via event listener', function () {
         'calibration_date' => now(),
         'performed_by_id' => $this->user->id,
         'type' => 'internal',
-        'status' => 'in_progress',
+        'type' => 'internal',
+        // 'status' is not correct for Calibration, checking create parameters
     ]);
 
     // 2. Create Checklist (Action)
@@ -107,15 +108,15 @@ test('full calibration lifecycle approved via event listener', function () {
     $calibration->update([
         'deviation' => $result['bias'],
         'uncertainty' => $result['expanded_uncertainty'],
-        'result' => 'approved', // Initial intent
+        'result' => \Modules\Metrology\Enums\CalibrationResult::Approved, // Initial intent
     ]);
 
     // 5. Verify Final State
     $this->instrument->refresh();
     $calibration->refresh();
 
-    expect($this->instrument->status)->toBe('active');
-    expect($calibration->result)->toBe('approved');
+    expect($this->instrument->status)->toBe(\Modules\Metrology\Enums\ItemStatus::Active);
+    expect($calibration->result)->toBe(\Modules\Metrology\Enums\CalibrationResult::Approved);
     
     // Deviation 0.0123 < MPE 0.03 -> Approved
     expect($calibration->deviation)->toEqualWithDelta(0.0123, 0.001);
@@ -128,20 +129,20 @@ test('full calibration lifecycle rejected via event listener', function () {
         'calibration_date' => now(),
         'performed_by_id' => $this->user->id,
         'type' => 'internal',
-        'status' => 'in_progress',
+        'type' => 'internal',
     ]);
 
     // Simulate bad result
     $calibration->update([
         'deviation' => 0.05, // > MPE 0.03
         'uncertainty' => 0.005,
-        'result' => 'approved', // Try to approve
+        'result' => \Modules\Metrology\Enums\CalibrationResult::Approved, // Try to approve
     ]);
 
     // Listener should have flipped it to rejected
     $calibration->refresh();
     $this->instrument->refresh();
 
-    expect($calibration->result)->toBe('rejected');
-    expect($this->instrument->status)->toBe('rejected');
+    expect($calibration->result)->toBe(\Modules\Metrology\Enums\CalibrationResult::Rejected);
+    expect($this->instrument->status)->toBe(\Modules\Metrology\Enums\ItemStatus::Rejected);
 });
