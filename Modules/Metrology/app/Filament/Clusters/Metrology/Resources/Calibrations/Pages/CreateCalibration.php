@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\Calibrations\Pages;
 
 use Filament\Resources\Pages\CreateRecord;
@@ -33,6 +35,28 @@ class CreateCalibration extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
 //        dd($data);
+        // Domain Validation: Prevent calibrating items that require maintenance
+        $type = $data['calibrated_item_type'] ?? null;
+        $id = $data['calibrated_item_id'] ?? null;
+
+        if ($type && $id && class_exists($type)) {
+            $item = $type::find($id);
+            if ($item) {
+                try {
+                    (new \Modules\Metrology\Services\CalibrationValidator())->canBeCalibrated($item);
+                } catch (\Modules\Metrology\Exceptions\MetrologyException $e) {
+                    Notification::make()
+                        ->danger()
+                        ->title('Operação Inválida')
+                        ->body($e->getMessage())
+                        ->persistent()
+                        ->send();
+
+                    $this->halt();
+                }
+            }
+        }
+
         if (isset($data['checklist_template_id']) && !empty($data['checklist_items'])) {
             $this->checklistData = [
                 'template_id' => $data['checklist_template_id'],
@@ -45,34 +69,26 @@ class CreateCalibration extends CreateRecord
         return $data;
     }
 
-    protected function afterCreate(): void
+    protected function handleRecordCreation(array $data): \Illuminate\Database\Eloquent\Model
     {
-        // 1. Processar Checklist
-        if (!empty($this->checklistData)) {
-            (new \Modules\Metrology\Actions\CreateChecklistAction())->execute(
-                $this->record, 
-                $this->checklistData
-            );
-        }
+        $model = new ($this->getModel());
+        $model->fill($data);
 
-        // 2. Processar Itens do Kit
+        // Inject transient data for Listeners
+        if (! empty($this->checklistData)) {
+            $model->checklistInput = $this->checklistData;
+        }
+        
+        // Handle Kit Items if present (extracted in mutateFormData, likely same logic as checklist)
+        // Note: Previous code accessed $this->data directly in afterCreate.
+        // mutateFormDataBeforeCreate didn't extract kit_items_results. I need to do that.
         $kitItems = $this->data['kit_items_results'] ?? [];
-        if (!empty($kitItems)) {
-            (new \Modules\Metrology\Actions\UpdateReferenceStandardKitAction())->execute(
-                $this->record, 
-                $kitItems
-            );
+        if (! empty($kitItems)) {
+            $model->kitItemsInput = $kitItems;
         }
 
-        // 3. Notificação de Reprovação
-        if ($this->record->result === 'rejected') {
-            Notification::make()
-                ->warning()
-                ->title('Atenção: Instrumento Reprovado')
-                ->body('O desvio encontrado foi superior à incerteza/critério permitido. O status foi definido como "Reprovado" automaticamente.')
-                ->persistent()
-                ->send();
-        }
+        $model->save();
+
+        return $model;
     }
-
 }

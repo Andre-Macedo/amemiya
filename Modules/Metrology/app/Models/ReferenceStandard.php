@@ -11,8 +11,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Carbon;
+use Modules\Metrology\Contracts\CalibratableItem;
 use Modules\Metrology\Database\Factories\CalibrationFactory;
 use Modules\Metrology\Database\Factories\ReferenceStandardFactory;
+use Modules\Metrology\Services\DecisionRules\DecisionRuleStrategy;
+use Modules\Metrology\Services\DecisionRules\SimpleAcceptance;
 
 /**
  * @property int $id
@@ -35,7 +38,7 @@ use Modules\Metrology\Database\Factories\ReferenceStandardFactory;
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Modules\Metrology\Models\ReferenceStandard> $children
  * @property-read \Modules\Metrology\Models\Calibration|null $latestCalibration
  */
-class ReferenceStandard extends Model
+class ReferenceStandard extends Model implements CalibratableItem
 {
     protected $fillable = [
         'name',
@@ -59,6 +62,7 @@ class ReferenceStandard extends Model
         'actual_value' => 'decimal:6',
         'uncertainty' => 'decimal:6',
         'calibration_due' => 'date',
+        'status' => \Modules\Metrology\Enums\ItemStatus::class,
     ];
 
     protected $appends = [
@@ -149,5 +153,63 @@ class ReferenceStandard extends Model
         }
 
         return 'N/A';
+    }
+
+    public function getCalibrationFrequencyMonths(): int
+    {
+        return $this->referenceStandardType->calibration_frequency_months ?? 24;
+    }
+
+    public function getMaximumPermissibleError(): ?float
+    {
+        // Reference Standards usually don't have MPE in the same way instruments do for decision rules
+        // unless specified. Returning null skips the MPE evaluation logic in the Action.
+        return null; 
+    }
+
+    public function getDecisionRuleStrategy(): DecisionRuleStrategy
+    {
+        // Default strategy if none specified
+        return new SimpleAcceptance();
+    }
+
+    public function processCalibrationResult(Calibration $calibration, \Modules\Metrology\Enums\CalibrationResult $status): void
+    {
+        if (in_array($status, [\Modules\Metrology\Enums\CalibrationResult::Approved, \Modules\Metrology\Enums\CalibrationResult::ApprovedWithRestrictions])) {
+             // 1. Calculate Due Date
+             $months = $this->getCalibrationFrequencyMonths();
+             $nextDate = $calibration->calibration_date->copy()->addMonths($months);
+
+             // 2. Prepare Update Data
+             $updateData = [
+                 'calibration_due' => $nextDate,
+                 'status' => \Modules\Metrology\Enums\ItemStatus::Active,
+             ];
+
+             // 3. Update Actual Value & Uncertainty
+             if ($this->nominal_value && $calibration->deviation !== null) {
+                 $updateData['actual_value'] = (float) $this->nominal_value + (float) $calibration->deviation;
+             }
+             if ($calibration->uncertainty) {
+                 $updateData['uncertainty'] = $calibration->uncertainty;
+             }
+
+             $this->update($updateData);
+
+             // 4. Cascade to Children (Kits)
+             if ($this->children()->exists()) {
+                 $this->children()->update([
+                     'calibration_due' => $nextDate,
+                     'status' => \Modules\Metrology\Enums\ItemStatus::Active,
+                 ]);
+             }
+
+        } elseif ($status === \Modules\Metrology\Enums\CalibrationResult::Rejected) {
+            $this->update(['status' => \Modules\Metrology\Enums\ItemStatus::Rejected]);
+
+            if ($this->children()->exists()) {
+                $this->children()->update(['status' => \Modules\Metrology\Enums\ItemStatus::Rejected]);
+            }
+        }
     }
 }

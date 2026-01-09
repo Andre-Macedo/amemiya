@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments;
 
 use BackedEnum;
@@ -85,7 +87,7 @@ class InstrumentResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $count = Instrument::where('status', 'expired')->orWhere('status', 'rejected')->count();
+        $count = Instrument::where('status', \Modules\Metrology\Enums\ItemStatus::Rejected)->count();
 
         return $count > 0 ? (string) $count : null;
     }

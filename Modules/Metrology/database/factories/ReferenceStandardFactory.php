@@ -23,6 +23,7 @@ class ReferenceStandardFactory extends Factory
             'stock_number' => $this->faker->unique()->bothify('PDR-###'),
             'reference_standard_type_id' => ReferenceStandardType::factory(),
             'description' => $this->faker->sentence,
+            'status' => $this->faker->randomElement(\Modules\Metrology\Enums\ItemStatus::cases())->value,
             ];
     }
 }

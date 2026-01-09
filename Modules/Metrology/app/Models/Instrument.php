@@ -11,7 +11,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Metrology\Contracts\CalibratableItem;
 use Modules\Metrology\Database\Factories\InstrumentFactory;
+use Modules\Metrology\Services\DecisionRules\DecisionRuleStrategy;
+use Modules\Metrology\Services\DecisionRules\GuardBand;
+use Modules\Metrology\Services\DecisionRules\SimpleAcceptance;
+use Modules\Metrology\Services\DecisionRules\UncertaintyAccounted;
 
 // use Modules\Metrology\Database\Factories\InstrumentFactory;
 
@@ -36,7 +41,7 @@ use Modules\Metrology\Database\Factories\InstrumentFactory;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  */
-class Instrument extends Model
+class Instrument extends Model implements CalibratableItem
 {
     use HasFactory, SoftDeletes;
 
@@ -66,7 +71,7 @@ class Instrument extends Model
         'calibration_due' => 'datetime',
         'acquisition_date' => 'datetime',
         'next_calibration_date' => 'datetime',
-        'mpe' => 'decimal:4',
+        'status' => \Modules\Metrology\Enums\ItemStatus::class,
     ];
 
     public function calibrations(): MorphMany
@@ -102,20 +107,67 @@ class Instrument extends Model
             return 0.0;
         }
 
-        // Normalize comma to dot and remove non-numeric chars except dot
-        // Assuming mpe stores just the number or number+unit.
-        // Current logic was: preg_replace('/[^0-9.]/', '', str_replace(',', '.', (string)$item->mpe))
-        // We will keep similar robustness but encapsulated here.
-        
+        // Safety check for Relative/Percentage errors which are not supported yet as absolute limits
+        if (str_contains((string)$this->mpe, '%')) {
+            return 0.0; 
+        }
+
+        // Normalize comma to dot
         $normalized = str_replace(',', '.', (string) $this->mpe);
+        
+        // Remove everything that is NOT a digit or a dot (e.g. "0.05 mm" -> "0.05")
         $numericValue = preg_replace('/[^0-9.]/', '', $normalized);
 
-        return (float) $numericValue;
+        // Parse to float, verifying if it's a valid numeric string
+        return is_numeric($numericValue) ? (float) $numericValue : 0.0;
     }
 
     public function getDecisionRule(): string
     {
         // Default to 'simple' if type not found or not set
         return $this->instrumentType?->decision_rule ?? 'simple';
+    }
+
+    public function getCalibrationFrequencyMonths(): int
+    {
+        return $this->instrumentType?->calibration_frequency_months ?? 12; // Default 12 if missing
+    }
+
+    public function getMaximumPermissibleError(): ?float
+    {
+        // If the property itself is null, try to parse it.
+        // But getMpeValue() handles parsing logic.
+        return $this->getMpeValue();
+    }
+
+    public function getDecisionRuleStrategy(): DecisionRuleStrategy
+    {
+        $rule = $this->getDecisionRule();
+
+        return match ($rule) {
+            'guard_band' => new GuardBand(),
+            'uncertainty_accounted' => new UncertaintyAccounted(),
+            default => new SimpleAcceptance(),
+        };
+    }
+
+    public function processCalibrationResult(Calibration $calibration, \Modules\Metrology\Enums\CalibrationResult $status): void
+    {
+        if (in_array($status, [\Modules\Metrology\Enums\CalibrationResult::Approved, \Modules\Metrology\Enums\CalibrationResult::ApprovedWithRestrictions])) {
+             // 1. Calculate Due Date
+             $months = $this->getCalibrationFrequencyMonths();
+             $nextDate = $calibration->calibration_date->copy()->addMonths($months);
+
+             // 2. Update Data
+             $this->calibration_due = $nextDate;
+             $this->status = \Modules\Metrology\Enums\ItemStatus::Active;
+             $this->current_supplier_id = null; // Returned from calibration
+             
+             $this->save();
+             
+        } elseif ($status === \Modules\Metrology\Enums\CalibrationResult::Rejected) {
+             $this->status = \Modules\Metrology\Enums\ItemStatus::Rejected;
+             $this->save();
+        }
     }
 }

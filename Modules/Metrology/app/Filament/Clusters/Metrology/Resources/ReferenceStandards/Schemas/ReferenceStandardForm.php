@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\Schemas;
 
 use Filament\Forms\Components\DatePicker;
@@ -108,13 +110,8 @@ class ReferenceStandardForm
                         Section::make('Controle de Validade')
                             ->schema([
                                 Select::make('status')
-                                    ->options([
-                                        'active' => 'Ativo',
-                                        'expired' => 'Vencido',
-                                        'rejected' => 'Rejeitado',
-                                        'maintenance' => 'Em Manutenção'
-                                    ])
-                                    ->default('active')
+                                    ->options(\Modules\Metrology\Enums\ItemStatus::class)
+                                    ->default(\Modules\Metrology\Enums\ItemStatus::Active)
                                     ->required(),
 
                                 DatePicker::make('calibration_due')

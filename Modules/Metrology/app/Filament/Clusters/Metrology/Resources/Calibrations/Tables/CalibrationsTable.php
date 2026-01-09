@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\Calibrations\Tables;
 
 use Filament\Actions\Action;
@@ -46,15 +48,14 @@ class CalibrationsTable
                     ->formatStateUsing(fn (string $state): string => $state === 'internal' ? 'Interna' : 'Externa')
                     ->badge(),
                 TextColumn::make('result')->label('Resultado')
-                    ->formatStateUsing(fn (?string $state): string => match($state) {'approved'=>'Aprovado','rejected'=>'Reprovado', default => 'N/A'})
-                    ->badge()->color(fn(?string $state) => match($state){'approved'=>'success','rejected'=>'danger',default=>'gray'}),
+                    ->badge(),
                 TextColumn::make('performedBy.name')->label('Executado Por')->searchable()->sortable(),            ])
             ->filters([
                 TrashedFilter::make(),
                 SelectFilter::make('type')->label('Tipo Calibração')
                     ->options(['internal' => 'Interna', 'external_rbc' => 'Externa']),
                 SelectFilter::make('result')->label('Resultado')
-                    ->options(['approved' => 'Aprovado', 'rejected' => 'Reprovado']),
+                    ->options(\Modules\Metrology\Enums\CalibrationResult::class),
                 SelectFilter::make('calibrated_item_type')->label('Tipo de Item')
                     ->options([
                         Instrument::class => 'Instrumento',

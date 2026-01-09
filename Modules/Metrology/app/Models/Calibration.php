@@ -36,6 +36,10 @@ use Modules\Metrology\Database\Factories\CalibrationFactory;
 class Calibration extends Model
 {
     use SoftDeletes;
+    
+    // Transient properties for event processing
+    public ?array $checklistInput = null;
+    public ?array $kitItemsInput = null;
 
     protected $fillable = [
         'calibrated_item_id',
@@ -57,6 +61,17 @@ class Calibration extends Model
 
     protected $casts = [
         'calibration_date' => 'date',
+        'result' => \Modules\Metrology\Enums\CalibrationResult::class,
+    ];
+
+    /**
+     * Automação: Ao criar uma calibração, atualiza o vencimento do item.
+     */
+    /**
+     * Map of events to classes.
+     */
+    protected $dispatchesEvents = [
+        'saved' => \Modules\Metrology\Events\CalibrationSaved::class,
     ];
 
     /**
@@ -86,15 +101,4 @@ class Calibration extends Model
     {
         return CalibrationFactory::new();
     }
-
-    /**
-     * Automação: Ao criar uma calibração, atualiza o vencimento do item.
-     */
-    /**
-     * Map of events to classes.
-     */
-    protected $dispatchesEvents = [
-        'saved' => \Modules\Metrology\Events\CalibrationSaved::class,
-    ];
-
 }

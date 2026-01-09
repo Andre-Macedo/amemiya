@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\Tables;
 
 use Carbon\Carbon;
@@ -64,16 +66,10 @@ class ReferenceStandardsTable
                     ->toggleable(isToggledHiddenByDefault: true),
 
                 // Status calculado na hora (Visual)
-                TextColumn::make('status_label')
+                // Status standardized
+                TextColumn::make('status')
                     ->label('Status')
-                    ->badge()
-                    ->state(fn (ReferenceStandard $record) =>
-                    $record->calibration_due < now() ? 'VENCIDO' : 'VIGENTE'
-                    )
-                    ->color(fn (string $state) => match ($state) {
-                        'VENCIDO' => 'danger',
-                        'VIGENTE' => 'success',
-                    }),
+                    ->badge(),
 
                 TextColumn::make('calibration_due')
                     ->label('Vencimento')

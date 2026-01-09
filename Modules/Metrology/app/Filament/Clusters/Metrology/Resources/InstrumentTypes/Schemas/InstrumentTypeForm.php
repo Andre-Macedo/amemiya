@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\InstrumentTypes\Schemas;
 
 use Filament\Forms\Components\TextInput;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Metrology\Services;
 
 class MetrologyMath
@@ -19,7 +21,7 @@ class MetrologyMath
      */
     public static function calculateBias(float $average, float $standardActualValue): float
     {
-        return round($average - $standardActualValue, 5);
+        return $average - $standardActualValue;
     }
 
     /**
