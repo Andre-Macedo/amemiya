@@ -5,6 +5,7 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
+        image: amemiya-app:latest
         container_name: amemiya-app
         volumes:
             - ./:/var/www/html:cached
@@ -13,9 +14,11 @@ services:
         depends_on:
             db:
                 condition: service_healthy
-
+            redis:
+                condition: service_started
             mailhog:
                 condition: service_started
+
     nginx:
         image: nginx:1.25
         container_name: amemiya-nginx
@@ -46,6 +49,13 @@ services:
             timeout: 5s
             retries: 5
 
+    redis:
+        image: redis:7-alpine
+        container_name: amemiya-redis
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis_data:/data
 
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
@@ -55,7 +65,7 @@ services:
             PMA_HOST: db
             MYSQL_ROOT_PASSWORD: rootpass
         ports:
-            - "8080:80"
+            - "8081:80"
 
     mailhog:
         image: mailhog/mailhog
@@ -64,5 +74,53 @@ services:
             - "8025:8025" # UI
             - "1025:1025" # SMTP
 
+    mqtt:
+        image: eclipse-mosquitto
+        container_name: amemiya-mqtt
+        ports:
+            - "1883:1883"
+            - "9001:9001"
+        volumes:
+            - ./.docker/mosquitto/config:/mosquitto/config
+            - mqtt_data:/mosquitto/data
+            - mqtt_log:/mosquitto/log
+
+    ml-service:
+        build:
+            context: ./Modules/IoT/ml_service
+        container_name: amemiya-ml-service
+        ports:
+            - "8001:8000"
+        volumes:
+            - ./Modules/IoT/ml_service:/app
+        restart: unless-stopped
+
+    reverb:
+        image: amemiya-app:latest
+        container_name: amemiya-reverb
+        command: php artisan reverb:start --host=0.0.0.0 --port=8080
+        ports:
+            - "8080:8080" # Agora a porta estÃ¡ no container certo
+        volumes:
+            - ./:/var/www/html:cached
+        depends_on:
+            - app
+            - redis
+        restart: always
+
+    worker:
+        image: amemiya-app:latest
+        container_name: amemiya-worker
+        command: php artisan queue:work --tries=3
+        volumes:
+            - ./:/var/www/html:cached
+        depends_on:
+            - app
+            - redis
+        restart: always
+
 volumes:
     db_data:
+    redis_data:
+    mqtt_data:
+    mqtt_log:

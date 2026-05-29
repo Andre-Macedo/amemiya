@@ -15,7 +15,8 @@ return new class extends Migration
             // Tipos fixos para lógica do sistema
             $table->string('type')->default('general')->after('name')
                 ->comment('general, internal_lab, external_provider, storage');
-        });    }
+        });
+    }
 
     /**
      * Reverse the migrations.

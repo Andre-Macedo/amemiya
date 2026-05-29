@@ -12,10 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('suppliers', function (Blueprint $table) {
-            $table->id();
+            $table->ulid('id')->primary();
+            $table->foreignUlid('tenant_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('name'); // Razão Social
             $table->string('trade_name')->nullable();
-            $table->string('cnpj')->unique()->nullable();
+            $table->string('cnpj')->nullable();
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
 
@@ -30,6 +31,8 @@ return new class extends Migration
 
             $table->timestamps();
             $table->softDeletes();
+
+            $table->unique(['tenant_id', 'cnpj']);
         });
     }
 

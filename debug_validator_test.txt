@@ -1,0 +1,13 @@
+ERROR: Call to undefined method Modules\Metrology\Enums\ItemStatus::label()
+#0 C:\Users\andrl\OneDrive\Documentos\Projetos Pessoal\amemiya\Modules\Metrology\tests\Unit\CalibrationValidatorTest.php(36): Modules\Metrology\Services\CalibrationValidator->canBeCalibrated(Object(Modules\Metrology\Models\Instrument))
+#1 C:\Users\andrl\OneDrive\Documentos\Projetos Pessoal\amemiya\vendor\phpunit\phpunit\src\Framework\TestCase.php(1656): Modules\Metrology\Tests\Unit\CalibrationValidatorTest->it_prevents_rejected_items_from_being_calibrated()
+#2 C:\Users\andrl\OneDrive\Documentos\Projetos Pessoal\amemiya\vendor\phpunit\phpunit\src\Framework\TestCase.php(514): PHPUnit\Framework\TestCase->runTest()
+#3 C:\Users\andrl\OneDrive\Documentos\Projetos Pessoal\amemiya\vendor\phpunit\phpunit\src\Framework\TestRunner\TestRunner.php(87): PHPUnit\Framework\TestCase->runBare()
+#4 C:\Users\andrl\OneDrive\Documentos\Projetos Pessoal\amemiya\vendor\phpunit\phpunit\src\Framework\TestCase.php(361): PHPUnit\Framework\TestRunner->run(Object(Modules\Metrology\Tests\Unit\CalibrationValidatorTest))
+#5 C:\Users\andrl\OneDrive\Documentos\Projetos Pessoal\amemiya\vendor\phpunit\phpunit\src\Framework\TestSuite.php(369): PHPUnit\Framework\TestCase->run()
+#6 C:\Users\andrl\OneDrive\Documentos\Projetos Pessoal\amemiya\vendor\phpunit\phpunit\src\TextUI\TestRunner.php(64): PHPUnit\Framework\TestSuite->run()
+#7 C:\Users\andrl\OneDrive\Documentos\Projetos Pessoal\amemiya\vendor\phpunit\phpunit\src\TextUI\Application.php(211): PHPUnit\TextUI\TestRunner->run(Object(PHPUnit\TextUI\Configuration\Configuration), Object(PHPUnit\Runner\ResultCache\DefaultResultCache), Object(PHPUnit\Framework\TestSuite))
+#8 C:\Users\andrl\OneDrive\Documentos\Projetos Pessoal\amemiya\vendor\pestphp\pest\src\Kernel.php(103): PHPUnit\TextUI\Application->run(Array)
+#9 C:\Users\andrl\OneDrive\Documentos\Projetos Pessoal\amemiya\vendor\pestphp\pest\bin\pest(184): Pest\Kernel->handle(Array, Array)
+#10 C:\Users\andrl\OneDrive\Documentos\Projetos Pessoal\amemiya\vendor\pestphp\pest\bin\pest(192): {closure}()
+#11 {main}

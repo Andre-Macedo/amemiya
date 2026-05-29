@@ -1,3 +1,5 @@
 {
-    "Metrology": true
+    "Metrology": true,
+    "System": true,
+    "IoT": true
 }

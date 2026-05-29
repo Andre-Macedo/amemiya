@@ -2,18 +2,17 @@
 
 namespace App\Providers\Filament;
 
-use Coolsam\Modules\ModulesPlugin;
+use App\Filament\Widgets\AdminStatsOverview;
+use App\Filament\Widgets\TenantsChart;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Coolsam\Modules\ModulesPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -35,20 +34,24 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'success' => Color::hex('#00A86B'), // Verde Lean Tech
                 'warning' => Color::Orange,
-                'danger'  => Color::Red,
-                'gray'    => Color::Slate,
-                'info'    => Color::Blue,
+                'danger' => Color::Red,
+                'gray' => Color::Slate,
+                'info' => Color::Blue,
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
-            ->discoverClusters(
-                in: app_path('Filament/Clusters/'),for: 'App\Filament\Clusters'
-            )
+            ->discoverClusters(in: app_path('Filament/Clusters'), for: 'App\Filament\Clusters')
+            ->discoverClusters(in: base_path('Modules/Metrology/app/Filament/Clusters'), for: 'Modules\Metrology\Filament\Clusters')
+            ->discoverClusters(in: base_path('Modules/System/app/Filament/Clusters'), for: 'Modules\System\Filament\Clusters')
+            ->discoverClusters(in: base_path('Modules/IoT/app/Filament/Clusters'), for: 'Modules\IoT\Filament\Clusters')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
+            ->discoverResources(in: base_path('Modules/Metrology/app/Filament/Clusters/Metrology/Resources'), for: 'Modules\Metrology\Filament\Clusters\Metrology\Resources')
+            ->discoverResources(in: base_path('Modules/System/app/Filament/Clusters/System/Resources'), for: 'Modules\System\Filament\Clusters\System\Resources')
+            ->discoverResources(in: base_path('Modules/IoT/app/Filament/Clusters/IoT/Resources'), for: 'Modules\IoT\Filament\Clusters\IoT\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-//                AccountWidget::class,
-//                FilamentInfoWidget::class,
+                AdminStatsOverview::class,
+                TenantsChart::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -63,12 +66,12 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentShieldPlugin::make()
-                ->navigationGroup('Segurança e Acessos')
+                    ->navigationGroup('Segurança e Acessos')
                     ->navigationSort(4),
+                ModulesPlugin::make(),
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ])
-            ->plugin(ModulesPlugin::make());
+            ]);
     }
 }
