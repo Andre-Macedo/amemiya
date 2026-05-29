@@ -6,8 +6,6 @@
       <sourceFolder url="file://$MODULE_DIR$/database/factories" isTestSource="false" packagePrefix="Database\Factories\" />
       <sourceFolder url="file://$MODULE_DIR$/database/seeders" isTestSource="false" packagePrefix="Database\Seeders\" />
       <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" packagePrefix="Tests\" />
-      <sourceFolder url="file://$MODULE_DIR$/tests/Feature" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/tests/Unit" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/Modules/Metrology/app" isTestSource="false" packagePrefix="Modules\Metrology\" />
       <sourceFolder url="file://$MODULE_DIR$/Modules/Metrology/database/factories" isTestSource="false" packagePrefix="Modules\Metrology\Database\Factories\" />
       <sourceFolder url="file://$MODULE_DIR$/Modules/Metrology/database/seeders" isTestSource="false" packagePrefix="Modules\Metrology\Database\Seeders\" />
@@ -124,7 +122,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/tijsverkoyen/css-to-inline-styles" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/vlucas/phpdotenv" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/voku/portable-ascii" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/webmozart/assert" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/anourvalar/eloquent-serialize" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/blade-ui-kit/blade-heroicons" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/blade-ui-kit/blade-icons" />
@@ -170,7 +167,83 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/dompdf/php-font-lib" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/dompdf/php-svg-lib" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sabberworm/php-css-parser" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/filament/query-builder" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/laravel/boost" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/laravel/mcp" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/laravel/roster" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/thecodingmachine/safe" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/app" />
+      <excludeFolder url="file://$MODULE_DIR$/storage/framework" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/_laravel_idea" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/bacon/bacon-qr-code" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/brianium/paratest" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/dasprid/enum" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/deprecations" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/ezyang/htmlpurifier" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/fidry/cpu-core-counter" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/iamcal/sql-parser" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/jean85/pretty-package-versions" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/larastan/larastan" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/maatwebsite/excel" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/maennchen/zipstream-php" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/markbaker/complex" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/markbaker/matrix" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/pestphp/pest" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/pestphp/pest-plugin" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/pestphp/pest-plugin-arch" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/pestphp/pest-plugin-laravel" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/pestphp/pest-plugin-mutate" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpdocumentor/reflection-common" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpdocumentor/reflection-docblock" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpdocumentor/type-resolver" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpoffice/phpspreadsheet" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpstan/phpdoc-parser" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpstan/phpstan" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/setasign/fpdf" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/setasign/fpdi" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/simplesoftwareio/simple-qrcode" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/ta-tikoma/phpunit-architecture-test" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/webklex/laravel-pdfmerger" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/webmozart/assert" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/facade/ignition-contracts" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/stancl/jobpipeline" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/stancl/tenancy" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/stancl/virtualcolumn" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/tecnickcom/tcpdf" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/clue/redis-protocol" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/clue/redis-react" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/evenement/evenement" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/laravel/reverb" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/myclabs/php-enum" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/nyholm/psr7" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/opcodesio/log-viewer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/opcodesio/mail-parser" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/paragonie/sodium_compat" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/php-mqtt/client" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/php-mqtt/laravel-client" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/pusher/pusher-php-server" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/ratchet/rfc6455" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/react/cache" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/react/dns" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/react/event-loop" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/react/promise" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/react/promise-timer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/react/socket" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/react/stream" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/sentry/sentry" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/sentry/sentry-laravel" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/db-dumper" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/enum" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-activitylog" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-backup" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-health" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/laravel-signal-aware-command" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/regex" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/spatie/temporary-directory" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/options-resolver" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/psr-http-message-bridge" />
     </content>
+    <content url="file://$MODULE_DIR$/../metrology-sass-front" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>

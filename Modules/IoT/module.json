@@ -1,0 +1,11 @@
+{
+    "name": "IoT",
+    "alias": "iot",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\IoT\\Providers\\IoTServiceProvider"
+    ],
+    "files": []
+}

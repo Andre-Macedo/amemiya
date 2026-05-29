@@ -2,8 +2,6 @@
 
 namespace App\Filament\Concerns;
 
-use Filament\Resources\Pages\Concerns\CanAuthorizeResourceAccess;
-use Filament\Resources\Pages\Concerns\InteractsWithParentRecord;
 use Filament\Resources\Pages\Page;
 
 trait InteractsWithCluster

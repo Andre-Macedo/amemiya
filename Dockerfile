@@ -18,7 +18,10 @@ RUN apt-get update && apt-get install -y \
     vim unzip git curl \
     libonig-dev \
     libxml2-dev \
+    libxml2-dev \
     libzip-dev \
+    $PHPIZE_DEPS \
+    && pecl install redis && docker-php-ext-enable redis \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip intl opcache sodium
 
 # Instala Node.js v20
@@ -49,8 +52,7 @@ RUN npm run build
 # STAGE 2: App - A imagem final, mais leve e pronta para produção/desenvolvimento
 FROM php:8.2-fpm AS app
 
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -     && apt-get install -y nodejs
 
 # Instala apenas as extensões PHP necessárias para rodar a aplicação
 RUN apt-get update && apt-get install -y \
@@ -63,6 +65,8 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
+    $PHPIZE_DEPS \
+    && pecl install redis && docker-php-ext-enable redis \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip intl opcache sodium

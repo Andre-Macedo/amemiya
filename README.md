@@ -1,4 +1,4 @@
-# Sistema de Metrologia Lean ech
+# Sistema de Metrologia Lean Tech
 
 Repositório do Sistema de Metrologia Lean Tech, uma aplicação web desenvolvida em Laravel e Filament para gestão de instrumentos de medição, calibrações e processos metrológicos, assegurando conformidade e rastreabilidade.
 

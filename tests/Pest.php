@@ -1,45 +1,36 @@
 <?php
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
 |--------------------------------------------------------------------------
-|
-| The closure you provide to your test functions is always bound to a specific PHPUnit test
-| case class. By default, that class is "PHPUnit\Framework\TestCase". Of course, you may
-| need to change it using the "pest()" function to bind a different classes or traits.
-|
 */
 
-pest()->extend(Tests\TestCase::class)
-    ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
-    ->in('Feature', '../Modules/*/tests/Feature');
+pest()->extend(TestCase::class)
+    ->use(RefreshDatabase::class)
+    ->in('Feature', 'Unit', '../Modules/*/tests/Feature', '../Modules/*/tests/Unit');
 
 /*
 |--------------------------------------------------------------------------
 | Expectations
 |--------------------------------------------------------------------------
-|
-| When reference expectations are not enough, you can define custom
-| expectations here.
-|
 */
 
-// expect()->extend('toBeOne', function () {
-//    return $this->toBe(1);
-// });
+expect()->extend('toBeBetween', function (float $min, float $max) {
+    return $this->toBeGreaterThanOrEqual($min)->toBeLessThanOrEqual($max);
+});
 
 /*
 |--------------------------------------------------------------------------
-| Functions
+| Global Database Setup
 |--------------------------------------------------------------------------
-|
-| While global functions are not encouraged, if you need them, you can
-| define them here.
-|
 */
 
-function something()
-{
-    // ..
+// Use environment variables to force SQLite during tests safely
+if (env('APP_ENV') === 'testing') {
+    config(['database.default' => 'sqlite']);
+    config(['database.connections.sqlite.database' => ':memory:']);
 }

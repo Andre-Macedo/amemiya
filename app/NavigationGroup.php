@@ -5,7 +5,7 @@ namespace App;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 
-enum NavigationGroup: string implements HasLabel, HasIcon
+enum NavigationGroup: string implements HasIcon, HasLabel
 {
     case Corporate = 'corporate';
     case Security = 'security';

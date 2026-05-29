@@ -16,9 +16,22 @@
         "filament/filament": "^4.0",
         "flowframe/laravel-trend": "^0.4.0",
         "laravel/framework": "^12.0",
+        "laravel/reverb": "^1.10",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
-        "nwidart/laravel-modules": "^12.0"
+        "maatwebsite/excel": "^3.1",
+        "nwidart/laravel-modules": "^12.0",
+        "opcodesio/log-viewer": "^3.24",
+        "php-mqtt/laravel-client": "^1.8",
+        "sentry/sentry-laravel": "^4.24",
+        "setasign/fpdi": "^2.6",
+        "simplesoftwareio/simple-qrcode": "*",
+        "spatie/laravel-activitylog": "^4.12",
+        "spatie/laravel-backup": "^9.3",
+        "spatie/laravel-health": "*",
+        "stancl/tenancy": "^3.9",
+        "tecnickcom/tcpdf": "^6.10",
+        "webklex/laravel-pdfmerger": "^1.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
