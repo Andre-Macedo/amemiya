@@ -4,10 +4,10 @@ namespace Modules\Metrology\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\Calibration;
-use Modules\Metrology\Models\ReferenceStandard;
+use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\NonConformity;
+use Modules\Metrology\Models\ReferenceStandard;
 
 class GlobalSearchController extends Controller
 {
@@ -35,7 +35,7 @@ class GlobalSearchController extends Controller
                 'title' => $item->name,
                 'subtitle' => "SN: {$item->serial_number}",
                 'url' => "/dashboard/metrology/instruments/{$item->id}",
-                'icon' => 'Gauge'
+                'icon' => 'Gauge',
             ];
         }
 
@@ -52,7 +52,7 @@ class GlobalSearchController extends Controller
                 'title' => $item->name,
                 'subtitle' => "SN: {$item->serial_number}",
                 'url' => "/dashboard/metrology/standards/{$item->id}",
-                'icon' => 'Ruler'
+                'icon' => 'Ruler',
             ];
         }
 
@@ -68,9 +68,9 @@ class GlobalSearchController extends Controller
                 'type' => 'calibration',
                 'id' => $item->id,
                 'title' => "Calibration #{$item->id}",
-                'subtitle' => $item->calibration_date->format('d/m/Y') . " - " . ucfirst($item->result->value ?? $item->result),
+                'subtitle' => $item->calibration_date->format('d/m/Y').' - '.ucfirst($item->result->value ?? $item->result),
                 'url' => "/dashboard/metrology/calibrations/{$item->id}",
-                'icon' => 'FileText'
+                'icon' => 'FileText',
             ];
         }
 
@@ -85,9 +85,9 @@ class GlobalSearchController extends Controller
                 'type' => 'nc',
                 'id' => $item->id,
                 'title' => "NC #{$item->id}: {$item->title}",
-                'subtitle' => "Status: " . ucfirst($item->status),
+                'subtitle' => 'Status: '.ucfirst($item->status),
                 'url' => "/dashboard/metrology/non-conformities/{$item->id}",
-                'icon' => 'AlertTriangle'
+                'icon' => 'AlertTriangle',
             ];
         }
 

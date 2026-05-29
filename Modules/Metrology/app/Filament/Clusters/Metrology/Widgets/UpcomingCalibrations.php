@@ -8,11 +8,13 @@ use Filament\Actions\Action;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
+use Modules\Metrology\Enums\ItemStatus;
+use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Pages\ViewInstrument;
 use Modules\Metrology\Models\Instrument;
 
 class UpcomingCalibrations extends BaseWidget
 {
-    protected int | string | array $columnSpan = 'full';
+    protected int|string|array $columnSpan = 'full';
 
     protected static ?int $sort = 2;
 
@@ -22,7 +24,7 @@ class UpcomingCalibrations extends BaseWidget
             ->query(
                 Instrument::query()
                     ->where('calibration_due', '<=', now()->addDays(30))
-                    ->where('status', '!=', \Modules\Metrology\Enums\ItemStatus::Scrapped)
+                    ->where('status', '!=', ItemStatus::Scrapped)
                     ->orderBy('calibration_due')
             )
             ->heading('Próximas Calibrações (30 Dias)')
@@ -43,7 +45,7 @@ class UpcomingCalibrations extends BaseWidget
             ->actions([
                 Action::make('view')
                     ->label('Ver')
-                    ->url(fn (Instrument $record): string => \Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Pages\ViewInstrument::getUrl(['record' => $record])),
+                    ->url(fn (Instrument $record): string => ViewInstrument::getUrl(['record' => $record])),
             ]);
     }
 }

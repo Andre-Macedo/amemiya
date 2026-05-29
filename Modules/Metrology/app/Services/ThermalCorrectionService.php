@@ -34,9 +34,9 @@ class ThermalCorrectionService
      *
      * Fórmula: L20 = L * [1 - alpha * (T - 20)]
      *
-     * @param float $measuredLength O valor lido (em mm, polegadas, etc).
-     * @param float $temperature A temperatura da peça no momento da medição (°C).
-     * @param float $cte O coeficiente de expansão térmica do material (em 10^-6/°C). Ex: Aço = 11.5
+     * @param  float  $measuredLength  O valor lido (em mm, polegadas, etc).
+     * @param  float  $temperature  A temperatura da peça no momento da medição (°C).
+     * @param  float  $cte  O coeficiente de expansão térmica do material (em 10^-6/°C). Ex: Aço = 11.5
      * @return float O valor corrigido.
      */
     public function correctLength(float $measuredLength, float $temperature, float $cte): float
@@ -61,11 +61,11 @@ class ThermalCorrectionService
      * 1. Incerteza da medição de temperatura (uT).
      * 2. Incerteza do coeficiente de expansão (uAlpha).
      *
-     * @param float $length Comprimento nominal.
-     * @param float $temperature Temperatura média.
-     * @param float $uTemperature Incerteza padrão da temperatura (k=1).
-     * @param float $cte Coeficiente de expansão.
-     * @param float $uCte Incerteza do coeficiente (geralmente 10% do CTE se desconhecido).
+     * @param  float  $length  Comprimento nominal.
+     * @param  float  $temperature  Temperatura média.
+     * @param  float  $uTemperature  Incerteza padrão da temperatura (k=1).
+     * @param  float  $cte  Coeficiente de expansão.
+     * @param  float  $uCte  Incerteza do coeficiente (geralmente 10% do CTE se desconhecido).
      * @return float A incerteza padrão combinada (u_c) da correção.
      */
     public function calculateCorrectionUncertainty(

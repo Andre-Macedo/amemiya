@@ -12,12 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('intermediate_checks', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('instrument_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('reference_standard_id')->nullable()->constrained()->nullOnDelete();
+            $table->ulid('id')->primary();
+            $table->foreignUlid('tenant_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignUlid('instrument_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignUlid('reference_standard_id')->nullable()->constrained()->cascadeOnUpdate()->nullOnDelete();
             $table->date('check_date');
-            $table->string('result'); // passed, failed
-            $table->foreignId('performed_by')->constrained('users');
+            $table->string('result'); // pass, fail
+            $table->foreignUlid('performed_by')->constrained('users')->cascadeOnUpdate()->cascadeOnDelete();
             $table->decimal('temperature', 5, 2)->nullable();
             $table->decimal('humidity', 5, 2)->nullable();
             $table->text('notes')->nullable();

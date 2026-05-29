@@ -11,17 +11,15 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Resources\Resource;
 use Filament\Schemas\Components\Form;
 use Filament\Schemas\Components\Section;
-use Modules\Metrology\Filament\Clusters\Metrology\MetrologyCluster;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\IntermediateChecks\Pages;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\IntermediateChecks\RelationManagers;
-use Modules\Metrology\Models\IntermediateCheck;
-use Filament\Forms;
-use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Modules\Metrology\Filament\Clusters\Metrology;
+use Modules\Metrology\Filament\Clusters\Metrology\MetrologyCluster;
+use Modules\Metrology\Filament\Clusters\Metrology\Resources\IntermediateChecks\Pages;
+use Modules\Metrology\Models\IntermediateCheck;
 
 class IntermediateCheckResource extends Resource
 {
@@ -32,9 +30,10 @@ class IntermediateCheckResource extends Resource
     protected static ?string $cluster = MetrologyCluster::class;
 
     protected static ?string $modelLabel = 'Checagem Intermediária';
+
     protected static ?string $pluralModelLabel = 'Checagens Intermediárias';
 
-    public static function form(Form|\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema
+    public static function form(Form|Schema $schema): Schema
     {
         return $schema
             ->schema([

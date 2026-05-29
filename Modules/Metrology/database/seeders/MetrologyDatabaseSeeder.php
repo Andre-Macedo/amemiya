@@ -2,11 +2,7 @@
 
 namespace Modules\Metrology\Database\Seeders;
 
-use App\Models\Station;
-use App\Models\Supplier;
-use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Modules\Metrology\Models\Calibration;
 use Modules\Metrology\Models\Checklist;
@@ -17,13 +13,24 @@ use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\InstrumentType;
 use Modules\Metrology\Models\ReferenceStandard;
 use Modules\Metrology\Models\ReferenceStandardType;
+use Modules\System\Models\Station;
+use Modules\System\Models\Supplier;
+use Modules\System\Models\User;
 
+/**
+ * Seeder principal do módulo de Metrologia.
+ *
+ * Popula o banco de dados com um cenário completo para testes e desenvolvimento,
+ * incluindo: Usuários, Fornecedores, Estações, Tipos de Instrumentos/Padrões,
+ * Padrões de Referência (com kits e filhos), Instrumentos (em vários estados)
+ * e Histórico de Calibrações.
+ */
 class MetrologyDatabaseSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
-// Modules/Metrology/database/seeders/MetrologyDatabaseSeeder.php
+    // Modules/Metrology/database/seeders/MetrologyDatabaseSeeder.php
 
     public function run(): void
     {
@@ -41,7 +48,7 @@ class MetrologyDatabaseSeeder extends Seeder
         ReferenceStandardType::truncate();
         Schema::enableForeignKeyConstraints();
 
-        // -- 1. Create Users --
+        // -- 1. Criar Usuários --
         $users = collect([
             User::firstOrCreate(['email' => 'tech1@example.com'], ['name' => 'Técnico Metrologista 1', 'password' => bcrypt('password')]),
             User::firstOrCreate(['email' => 'tech2@example.com'], ['name' => 'Técnico Metrologista 2', 'password' => bcrypt('password')]),
@@ -55,7 +62,7 @@ class MetrologyDatabaseSeeder extends Seeder
             'is_calibration_provider' => true, // Eles também calibram
             'is_maintenance_provider' => true,
             'rbc_code' => '00123',
-            'accreditation_valid_until' => '2030-12-31'
+            'accreditation_valid_until' => '2030-12-31',
         ]);
 
         $starrett = Supplier::create([
@@ -75,7 +82,7 @@ class MetrologyDatabaseSeeder extends Seeder
 
         $manufacturers = collect([$mitutoyo, $starrett]);
 
-        // -- 3. ESTAÇÕES (Stations) --
+        // -- 3. ESTAÇÕES (Locais) --
         $labInternal = Station::create([
             'name' => 'Laboratório Central',
             'type' => 'internal_lab',
@@ -109,7 +116,7 @@ class MetrologyDatabaseSeeder extends Seeder
         $typeCalibrator = ReferenceStandardType::create(['name' => 'Calibrador Universal', 'calibration_frequency_months' => 24]);
         $typeBlockSet = ReferenceStandardType::create([
             'name' => 'Jogo de Blocos (Kit)',
-            'calibration_frequency_months' => 24
+            'calibration_frequency_months' => 24,
         ]);
 
         $calibratorMesa = ReferenceStandard::create([
@@ -172,7 +179,7 @@ class MetrologyDatabaseSeeder extends Seeder
         $referenceStandards = collect();
 
         // Helper para criar padrões já com data de vencimento calculada
-        $createStandards = function($type, $count) use (&$referenceStandards) {
+        $createStandards = function ($type, $count) use (&$referenceStandards) {
             $standards = ReferenceStandard::factory()->count($count)->create([
                 'reference_standard_type_id' => $type->id,
                 'calibration_due' => now()->addMonths($type->calibration_frequency_months),
@@ -195,8 +202,6 @@ class MetrologyDatabaseSeeder extends Seeder
         $bloco25 = ReferenceStandard::where('nominal_value', 25.0)->whereNotNull('parent_id')->first();
         $bloco50 = ReferenceStandard::where('nominal_value', 50.0)->whereNotNull('parent_id')->first();
         $bloco100 = ReferenceStandard::where('nominal_value', 100.0)->whereNotNull('parent_id')->first();
-
-
 
         // -- 5. Create Checklist Templates (Específicos para cada tecnologia) --
 
@@ -270,7 +275,7 @@ class MetrologyDatabaseSeeder extends Seeder
             ['step' => 'Zerar instrumento (Abs/Inc)', 'question_type' => 'boolean', 'order' => 4],
             [
                 'order' => 5, 'step' => 'Medição 25mm', 'question_type' => 'numeric', 'required_readings' => 3,
-                'reference_standard_type_id' => $typeBlock->id, 'nominal_value' => 25.00
+                'reference_standard_type_id' => $typeBlock->id, 'nominal_value' => 25.00,
             ],
             [
                 'order' => 6, 'step' => 'Medição 50mm', 'question_type' => 'numeric', 'required_readings' => 3,
@@ -296,13 +301,13 @@ class MetrologyDatabaseSeeder extends Seeder
         // -- 6. Create Instruments (Lógica Realista de Status e Datas) --
         $instruments = collect();
 
-        $createBatch = function($prefix, $count, $typesWithError) use (&$instruments, $manufacturers, $labInternal, $labExternal, $linhaProducao, $almoxarifado) {
+        $createBatch = function ($prefix, $count, $typesWithError) use (&$instruments, $labInternal, $linhaProducao) {
             for ($i = 1; $i <= $count; $i++) {
                 $stockNumber = sprintf('%s-%03d', $prefix, $i);
 
                 // Escolhe tipo
                 $typeId = fake()->randomElement(array_keys($typesWithError));
-                $type = \Modules\Metrology\Models\InstrumentType::find($typeId);
+                $type = InstrumentType::find($typeId);
                 $uncertainty = $typesWithError[$typeId];
 
                 // SORTEIO DO CENÁRIO DO INSTRUMENTO
@@ -315,32 +320,28 @@ class MetrologyDatabaseSeeder extends Seeder
                 if ($scenario === 'expired') {
                     $status = 'expired'; // Fica na linha, mas vencido
                     $dueDate = now()->subDays(rand(10, 60));
-                }
-                elseif ($scenario === 'rejected') {
+                } elseif ($scenario === 'rejected') {
                     $status = 'rejected';
                     $stationId = $labInternal->id; // Segregado no lab
                     // Data vencida/passada (data da reprovação)
                     $dueDate = now()->subDays(rand(1, 30));
-                }
-                elseif ($scenario === 'in_calibration') {
+                } elseif ($scenario === 'in_calibration') {
                     $status = 'in_calibration';
                     $stationId = $labInternal->id; // Está fisicamente no lab
                     $dueDate = now()->subDays(2); // Venceu e foi pro lab
-                }
-                elseif ($scenario === 'maintenance') {
+                } elseif ($scenario === 'maintenance') {
                     $status = 'maintenance';
                     $stationId = $labInternal->id; // Ou oficina externa
                     $dueDate = now()->subDays(30);
-                }
-                elseif ($scenario === 'due_soon') {
+                } elseif ($scenario === 'due_soon') {
                     $dueDate = now()->addDays(random_int(1, 20));
                 }
 
-                $instrument = \Modules\Metrology\Models\Instrument::factory()->create([
+                $instrument = Instrument::factory()->create([
                     'instrument_type_id' => $type->id,
-                    'name' => $type->name . ' ' . $i,
+                    'name' => $type->name.' '.$i,
                     'stock_number' => $stockNumber,
-                    'uncertainty' => $typesWithError[$typeId],
+                    'mpe' => $typesWithError[$typeId],
                     'manufacturer' => fake()->randomElement(['Mitutoyo', 'Starrett', 'Digimess', 'Tesa']),
                     'status' => $status,
                     'calibration_due' => $dueDate,
@@ -353,113 +354,107 @@ class MetrologyDatabaseSeeder extends Seeder
 
         // A. Paquímetros (PQ) - 85 un.
         $createBatch('PQ', 85, [
-            $typePaqAnalog->id => '0.05mm',
-            $typePaqDigital->id => '0.01mm'
+            $typePaqAnalog->id => 0.05,
+            $typePaqDigital->id => 0.01,
         ]);
 
         // B. Micrômetros (MC) - 119 un.
         $createBatch('MC', 119, [
-            $typeMicroAnalog->id => '0.01mm',
-            $typeMicroDigital->id => '0.001mm'
+            $typeMicroAnalog->id => 0.01,
+            $typeMicroDigital->id => 0.001,
         ]);
 
         // C. Relógios (RC) - 251 un.
         $createBatch('RC', 251, [
-            $typeRelogio->id => '0.001mm'
+            $typeRelogio->id => 0.001,
         ]);
 
         // -- 7. Create Calibrations (Agora usando os novos templates) --
         foreach ($instruments as $instrument) {
-            Calibration::withoutEvents(function () use ($instrument, $users, $referenceStandards, $labExterno, $kitBlocos, $calibratorMesa) {
-                $freq = $instrument->instrumentType->calibration_frequency_months ?? 12;
-                $numberOfCalibrations = rand(1, 3);
+            $freq = $instrument->instrumentType->calibration_frequency_months ?? 12;
+            $numberOfCalibrations = rand(1, 3);
 
-                for ($i = 0; $i < $numberOfCalibrations; $i++) {
-                    $isLatest = ($i == 0);
-                    $result = 'approved';
+            for ($i = 0; $i < $numberOfCalibrations; $i++) {
+                $isLatest = ($i == 0);
+                $result = 'approved';
 
-                    // Lógica para determinar a data
-                    if ($isLatest && $instrument->status === 'rejected') {
-                        // Se o instrumento está REJEITADO atualmente, a última calibração TEM que ser rejeitada
-                        $result = 'rejected';
-                        $date = $instrument->calibration_due; // A data da rejeição é a data do vencimento/atual
-                    } else {
-                        // Histórico normal (aprovado)
-                        $date = $instrument->calibration_due->copy()->subMonths($freq * ($i + ($instrument->status === 'active' ? 1 : 0)));
-                    }
+                // Lógica para determinar a data
+                if ($isLatest && $instrument->status === 'rejected') {
+                    // Se o instrumento está REJEITADO atualmente, a última calibração TEM que ser rejeitada
+                    $result = 'rejected';
+                    $date = $instrument->calibration_due; // A data da rejeição é a data do vencimento/atual
+                } else {
+                    // Histórico normal (aprovado)
+                    $date = $instrument->calibration_due->copy()->subMonths($freq * ($i + ($instrument->status === 'active' ? 1 : 0)));
+                }
 
-                    // CORREÇÃO 1: Se a data calculada for futura, não cria histórico (pula)
-                    if ($date->isFuture()) {
-                        continue;
-                    }
+                // CORREÇÃO 1: Se a data calculada for futura, não cria histórico (pula)
+                if ($date->isFuture()) {
+                    continue;
+                }
 
-                    $isExternal = fake()->boolean(30);
-                    $isInternal = !$isExternal; // CORREÇÃO 2: Define explicitamente
+                $isExternal = fake()->boolean(30);
+                $isInternal = ! $isExternal; // CORREÇÃO 2: Define explicitamente
 
-                    $calibration = Calibration::factory()->create([
-                        'calibrated_item_id' => $instrument->id,
-                        'calibrated_item_type' => Instrument::class,
-                        'type' => $isExternal ? 'external_rbc' : 'internal',
-                        'provider_id' => $isExternal ? $labExterno->id : null,
-                        'calibration_date' => $date,
-                        'result' => $result,
-                        // Se rejeitado, força um desvio alto. Se aprovado, desvio baixo.
-                        'deviation' => $result === 'rejected' ? 0.99 : 0.001,
-                        'performed_by_id' => $users->random()->id,
-                        'certificate_path' => $isExternal ? 'fake/cert.pdf' : null,
-                    ]);
+                $calibration = Calibration::factory()->create([
+                    'calibrated_item_id' => $instrument->id,
+                    'calibrated_item_type' => Instrument::class,
+                    'type' => $isExternal ? 'external_rbc' : 'internal',
+                    'provider_id' => $isExternal ? $labExterno->id : null,
+                    'calibration_date' => $date,
+                    'result' => $result,
+                    // Se rejeitado, força um desvio alto. Se aprovado, desvio baixo.
+                    'deviation' => $result === 'rejected' ? 0.99 : 0.001,
+                    'performed_by_id' => $users->random()->id,
+                    'certificate_path' => $isExternal ? 'fake/cert.pdf' : null,
+                ]);
 
-                    // CORREÇÃO 3: Checklist apenas para Calibrações INTERNAS e APROVADAS
-                    // (Para simplificar o seed e não quebrar a cabeça gerando falhas no checklist)
-                    if ($isInternal && $result === 'approved' && $instrument->instrumentType) {
-                        $template = $instrument->instrumentType->checklistTemplates()->first();
+                // CORREÇÃO 3: Checklist apenas para Calibrações INTERNAS e APROVADAS
+                if ($isInternal && $result === 'approved' && $instrument->instrumentType) {
+                    $template = $instrument->instrumentType->checklistTemplates()->first();
 
-                        if ($template) {
-                            $checklist = Checklist::create([
-                                'calibration_id' => $calibration->id,
-                                'checklist_template_id' => $template->id,
-                                'completed' => true,
-                            ]);
+                    if ($template) {
+                        $checklist = Checklist::create([
+                            'calibration_id' => $calibration->id,
+                            'checklist_template_id' => $template->id,
+                            'completed' => true,
+                        ]);
 
-                            foreach ($template->items as $templateItem) {
-                                // LÓGICA DE BUSCA DO PADRÃO (Já que removemos o ID fixo do template)
-                                $stdId = null;
+                        foreach ($template->items as $templateItem) {
+                            $stdId = null;
 
-                                if ($templateItem->question_type === 'numeric') {
-                                    // 1. Se tem nominal, busca no Kit de Blocos
-                                    if ($templateItem->nominal_value) {
-                                        $stdId = ReferenceStandard::where('parent_id', $kitBlocos->id)
-                                            ->where('nominal_value', $templateItem->nominal_value)
-                                            ->first()?->id;
-                                    }
-                                    // 2. Se pede Calibrador, usa a Mesa
-                                    elseif ($templateItem->reference_standard_type_id === $calibratorMesa->reference_standard_type_id) {
-                                        $stdId = $calibratorMesa->id;
-                                    }
+                            if ($templateItem->question_type === 'numeric') {
+                                if ($templateItem->nominal_value) {
+                                    $stdId = ReferenceStandard::where('parent_id', $kitBlocos->id)
+                                        ->where('nominal_value', $templateItem->nominal_value)
+                                        ->first()?->id;
+                                } elseif ($templateItem->reference_standard_type_id === $calibratorMesa->reference_standard_type_id) {
+                                    $stdId = $calibratorMesa->id;
                                 }
-                                $checklist->items()->create([
-                                    'checklist_id' => $checklist->id,
-                                    'step' => $templateItem->step,
-                                    'question_type' => $templateItem->question_type,
-                                    'order' => $templateItem->order,
-                                    'completed' => true,
-                                    'result' => 'approved',
-                                    'required_readings' => $templateItem->required_readings,
-                                    'reference_standard_id' => $templateItem->reference_standard_id,
-                                    'readings' => $templateItem->question_type === 'numeric'
-                                        ? json_encode([
-                                            $templateItem->nominal_value + 0.01,
-                                            $templateItem->nominal_value,
-                                            $templateItem->nominal_value + 0.01
-                                        ])
-                                        : null,
-                                ]);
                             }
-                            $calibration->update(['checklist_id' => $checklist->id]);
+                            $checklist->items()->create([
+                                'checklist_id' => $checklist->id,
+                                'step' => $templateItem->step,
+                                'question_type' => $templateItem->question_type,
+                                'order' => $templateItem->order,
+                                'completed' => true,
+                                'result' => 'approved',
+                                'required_readings' => $templateItem->required_readings,
+                                'reference_standard_id' => $templateItem->reference_standard_id,
+                                'as_found_readings' => $templateItem->question_type === 'numeric'
+                                    ? [
+                                        $templateItem->nominal_value + 0.01,
+                                        $templateItem->nominal_value,
+                                        $templateItem->nominal_value + 0.01,
+                                    ]
+                                    : null,
+
+                            ]);
                         }
+                        $calibration->update(['checklist_id' => $checklist->id]);
                     }
                 }
-            });
+            }
         }
 
         // -- 8. Calibração dos Padrões (Mantido igual) --
@@ -478,4 +473,5 @@ class MetrologyDatabaseSeeder extends Seeder
                 ),
             ]);
         }
-    }}
+    }
+}

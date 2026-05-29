@@ -21,6 +21,12 @@ use Modules\Metrology\Filament\Clusters\Metrology\Resources\Calibrations\Schemas
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Calibrations\Tables\CalibrationsTable;
 use Modules\Metrology\Models\Calibration;
 
+/**
+ * Recurso Filament para gerenciamento de Calibrações.
+ *
+ * Permite listar, criar, visualizar e editar registros de calibração.
+ * Integra formulários, infolists e tabelas de dados.
+ */
 class CalibrationResource extends Resource
 {
     protected static ?string $model = Calibration::class;
@@ -34,19 +40,28 @@ class CalibrationResource extends Resource
     protected static ?string $navigationLabel = 'Calibrações';
 
     protected static ?string $modelLabel = 'Calibração';
+
     protected static ?string $pluralModelLabel = 'Calibrações';
 
-
+    /**
+     * Define o esquema do formulário (Criação/Edição).
+     */
     public static function form(Schema $schema): Schema
     {
         return CalibrationForm::configure($schema);
     }
 
+    /**
+     * Define o esquema do InfoList (Visualização).
+     */
     public static function infolist(Schema $schema): Schema
     {
         return CalibrationInfolist::configure($schema);
     }
 
+    /**
+     * Define a tabela de listagem de calibrações.
+     */
     public static function table(Table $table): Table
     {
         return CalibrationsTable::configure($table);

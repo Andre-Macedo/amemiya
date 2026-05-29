@@ -4,7 +4,6 @@ namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStand
 
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
-use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -13,13 +12,12 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Schemas\Components\Form;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Livewire\Component;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\ReferenceStandardResource;
 use Modules\Metrology\Models\ReferenceStandard;
 use Modules\Metrology\Models\ReferenceStandardType;
@@ -34,7 +32,7 @@ class ChildrenRelationManager extends RelationManager
 
     protected static string|null|\BackedEnum $icon = 'heroicon-o-squares-2x2';
 
-    public static function canViewForRecord(\Illuminate\Database\Eloquent\Model $ownerRecord, string $pageClass): bool
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
         return $ownerRecord->is_kit;
     }
@@ -60,7 +58,7 @@ class ChildrenRelationManager extends RelationManager
                     ->label('Valor Nominal')
                     ->numeric()
                     ->required()
-                    ->suffix(fn($record) => $record?->unit ?? 'mm'),
+                    ->suffix(fn ($record) => $record?->unit ?? 'mm'),
 
                 TextInput::make('actual_value')
                     ->label('Valor Real')
@@ -122,7 +120,7 @@ class ChildrenRelationManager extends RelationManager
 
                 TextColumn::make('nominal_value')
                     ->label('Nominal')
-                    ->suffix(fn($record) => ' ' . $record->unit)
+                    ->suffix(fn ($record) => ' '.$record->unit)
                     ->sortable(),
 
                 TextColumn::make('actual_value')
@@ -140,7 +138,7 @@ class ChildrenRelationManager extends RelationManager
                     ->slideOver() // Abre na lateral
                     ->modalWidth('md')
                     ->form($this->getFormSchema()) // Usa nosso schema
-                    ->action(function (array $data, \Livewire\Component $livewire) {
+                    ->action(function (array $data, Component $livewire) {
                         // 1. Pega o Pai (O Kit que estamos visualizando)
                         $parentKit = $livewire->getOwnerRecord();
                         // 2. Cria o Filho vinculado manualmente
@@ -161,7 +159,7 @@ class ChildrenRelationManager extends RelationManager
                             ->title('Peça adicionada ao Kit')
                             ->send();
                     }),
-                ])
+            ])
             ->actions([
                 EditAction::make()->slideOver(),
                 DeleteAction::make(),

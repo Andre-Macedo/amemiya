@@ -9,7 +9,8 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void {
+    public function up(): void
+    {
 
         Schema::table('instruments', function (Blueprint $table) {
             $table->renameColumn('precision', 'uncertainty');
@@ -27,7 +28,8 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void {
+    public function down(): void
+    {
 
         Schema::table('instruments', function (Blueprint $table) {
             $table->renameColumn('uncertainty', 'precision');

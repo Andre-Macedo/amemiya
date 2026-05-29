@@ -2,18 +2,18 @@
 
 namespace Modules\Metrology\Tests\Feature;
 
-use Modules\Metrology\Models\Instrument;
-use Modules\Metrology\Models\IntermediateCheck;
-use Tests\Concerns\HasSuperAdmin;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\IntermediateChecks\Pages\CreateIntermediateCheck;
+use Modules\Metrology\Models\Instrument;
+use Modules\Metrology\Models\IntermediateCheck;
+use Tests\Concerns\HasSuperAdmin;
 
 uses(RefreshDatabase::class, HasSuperAdmin::class);
 
 test('it can create an intermediate check via filament form', function () {
     $user = $this->createSuperAdmin();
-    
+
     $instrument = Instrument::factory()->create(['name' => 'Caliper Test']);
 
     Livewire::test(CreateIntermediateCheck::class)
@@ -49,6 +49,6 @@ test('intermediate check failure records correctly', function () {
     ]);
 
     expect($check->result)->toBe('failed');
-    // Note: Business logic might eventually trigger instrument status update, 
+    // Note: Business logic might eventually trigger instrument status update,
     // but for now we verify the record exists.
 });

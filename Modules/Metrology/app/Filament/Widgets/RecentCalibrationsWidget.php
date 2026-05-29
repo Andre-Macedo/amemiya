@@ -4,11 +4,14 @@ namespace Modules\Metrology\Filament\Widgets;
 
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Modules\Metrology\Models\Calibration;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Metrology\Models\Calibration;
 use Modules\Metrology\Models\Instrument;
 
+/**
+ * Widget de tabela listando as calibrações mais recentes.
+ */
 class RecentCalibrationsWidget extends TableWidget
 {
     protected function getTableQuery(): Builder
@@ -32,5 +35,4 @@ class RecentCalibrationsWidget extends TableWidget
                 ->falseIcon('heroicon-o-x-circle'),
         ];
     }
-
 }

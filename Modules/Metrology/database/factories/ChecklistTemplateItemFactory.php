@@ -3,8 +3,8 @@
 namespace Modules\Metrology\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Modules\Metrology\Models\ChecklistTemplateItem;
 use Modules\Metrology\Models\ChecklistTemplate;
+use Modules\Metrology\Models\ChecklistTemplateItem;
 
 class ChecklistTemplateItemFactory extends Factory
 {

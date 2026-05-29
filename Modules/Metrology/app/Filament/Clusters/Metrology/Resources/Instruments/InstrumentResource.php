@@ -11,6 +11,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Modules\Metrology\Enums\ItemStatus;
 use Modules\Metrology\Filament\Clusters\Metrology\MetrologyCluster;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Pages\CreateInstrument;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Pages\EditInstrument;
@@ -23,6 +24,12 @@ use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Tables\I
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Widgets\InstrumentStatsWidget;
 use Modules\Metrology\Models\Instrument;
 
+/**
+ * Recurso Filament para gerenciamento de Instrumentos.
+ *
+ * Fornece CRUD completo para instrumentos de medição, incluindo histórico de calibrações
+ * estatísticas e controle de status.
+ */
 class InstrumentResource extends Resource
 {
     protected static ?string $model = Instrument::class;
@@ -31,22 +38,31 @@ class InstrumentResource extends Resource
 
     protected static ?string $cluster = MetrologyCluster::class;
 
-    protected static string|null|\UnitEnum $navigationGroup = 'Instrumentos';
-
     protected static ?string $navigationLabel = 'Instrumentos';
+
     protected static ?string $pluralModelLabel = 'Instrumentos';
+
     protected static ?string $modelLabel = 'Instrumento';
 
+    /**
+     * Define o formulário de instrumentos.
+     */
     public static function form(Schema $schema): Schema
     {
         return InstrumentForm::configure($schema);
     }
 
+    /**
+     * Define a visualização (InfoList) de detalhes do instrumento.
+     */
     public static function infolist(Schema $schema): Schema
     {
         return InstrumentInfolist::configure($schema);
     }
 
+    /**
+     * Define a tabela de listagem de instrumentos.
+     */
     public static function table(Table $table): Table
     {
         return InstrumentsTable::configure($table);
@@ -87,7 +103,7 @@ class InstrumentResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $count = Instrument::where('status', \Modules\Metrology\Enums\ItemStatus::Rejected)->count();
+        $count = Instrument::where('status', ItemStatus::Rejected)->count();
 
         return $count > 0 ? (string) $count : null;
     }

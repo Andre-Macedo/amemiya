@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('instruments', function (Blueprint $table) {
             $table->string('nfc_tag')->nullable()->unique();
-            $table->foreignId('current_station_id')->nullable()->constrained('stations');
+            $table->foreignUlid('current_station_id')->nullable()->constrained('stations');
             $table->string('status_stock')->default('available'); // available, in_use
         });
     }

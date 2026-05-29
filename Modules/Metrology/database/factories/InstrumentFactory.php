@@ -3,15 +3,21 @@
 namespace Modules\Metrology\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Storage;
+use Modules\Metrology\Enums\ItemStatus;
+use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\InstrumentType;
 
+/**
+ * Factory para criação de Instrumentos de Medição.
+ *
+ * @extends Factory<Instrument>
+ */
 class InstrumentFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      */
-    protected $model = \Modules\Metrology\Models\Instrument::class;
+    protected $model = Instrument::class;
 
     /**
      * Define the model's default state.
@@ -19,7 +25,7 @@ class InstrumentFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->word . ' ' . $this->faker->numberBetween(1, 100),
+            'name' => $this->faker->word.' '.$this->faker->numberBetween(1, 100),
             'stock_number' => $this->faker->unique()->bothify('??-###'),
             'serial_number' => $this->faker->unique()->bothify('SRL-#####'),
             'instrument_type_id' => InstrumentType::factory(),
@@ -30,7 +36,7 @@ class InstrumentFactory extends Factory
             'location' => $this->faker->city,
             'acquisition_date' => $this->faker->dateTimeBetween('-5 years', 'now'),
             'calibration_due' => $this->faker->dateTimeBetween('now', '+1 year'),
-            'status' => $this->faker->randomElement(\Modules\Metrology\Enums\ItemStatus::cases())->value,
+            'status' => $this->faker->randomElement(ItemStatus::cases())->value,
             'image_path' => null,
         ];
     }

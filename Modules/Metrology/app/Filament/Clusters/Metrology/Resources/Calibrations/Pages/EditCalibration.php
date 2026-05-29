@@ -32,7 +32,6 @@ class EditCalibration extends EditRecord
         return [];
     }
 
-
     protected function getHeaderActions(): array
     {
         return [
@@ -102,9 +101,10 @@ class EditCalibration extends EditRecord
 
             }, $data['checklist_items']);
             ChecklistItem::insert($items);
-            $checklist->update(['completed' => !in_array(false, array_column($data['checklist_items'], 'completed'))]);
+            $checklist->update(['completed' => ! in_array(false, array_column($data['checklist_items'], 'completed'))]);
         }
         unset($data['checklist_template_id'], $data['checklist_items']);
+
         return $data;
     }
 
@@ -119,5 +119,4 @@ class EditCalibration extends EditRecord
                 ->send();
         }
     }
-
 }

@@ -11,126 +11,132 @@ class MetrologyMath
      */
     public static function calculateAverage(array $readings): float
     {
-        if (empty($readings)) return 0.0;
-        return array_sum($readings) / count($readings);
+        if (empty($readings)) {
+            return 0.0;
+        }
+
+        $sum = '0';
+        foreach ($readings as $r) {
+            $sum = PreciseMath::add($sum, $r);
+        }
+
+        return (float) PreciseMath::div($sum, count($readings));
     }
 
     /**
      * Calcula o Erro (Tendência / Bias).
-     * Fórmula: Média - Valor Verdadeiro do Padrão
      */
     public static function calculateBias(float $average, float $standardActualValue): float
     {
-        return $average - $standardActualValue;
+        return (float) PreciseMath::sub($average, $standardActualValue);
     }
 
     /**
      * Incerteza TIPO A: Repetibilidade.
-     * Baseada na estatística das leituras.
-     * Se usamos a média como resultado, usamos o "Desvio Padrão da Média" (Standard Error).
      * u_a = s / sqrt(n)
      */
     public static function calculateTypeA(array $readings): float
     {
         $n = count($readings);
-        if ($n < 2) return 0.0;
-
-        // 1. Calcula Desvio Padrão Amostral (s)
-        $avg = self::calculateAverage($readings);
-        $sumSquares = 0.0;
-        foreach ($readings as $val) {
-            $sumSquares += pow($val - $avg, 2);
+        if ($n < 2) {
+            return 0.0;
         }
-        $stdDev = sqrt($sumSquares / ($n - 1));
 
-        // 2. Retorna a Incerteza da Média
-        return $stdDev / sqrt($n);
+        $avg = self::calculateAverage($readings);
+        $sumSquares = '0';
+
+        foreach ($readings as $val) {
+            $diff = PreciseMath::sub($val, $avg);
+            $sumSquares = PreciseMath::add($sumSquares, PreciseMath::square($diff));
+        }
+
+        // Variância Amostral: s^2 = sumSquares / (n-1)
+        $variance = PreciseMath::div($sumSquares, $n - 1);
+        $stdDev = PreciseMath::sqrt($variance);
+
+        // u_a = stdDev / sqrt(n)
+        return (float) PreciseMath::div($stdDev, sqrt($n));
     }
 
     /**
      * Incerteza TIPO B: Resolução do Instrumento.
-     * Distribuição Retangular.
-     * u_res = (Resolução / 2) / sqrt(3)  -> Para instrumentos digitais/analógicos comuns
-     * Simplificado matematicamente: Resolução / 3.464
+     * u_res = (Resolução / 2) / sqrt(3)
      */
     public static function calculateTypeB_Resolution(float $resolution): float
     {
-        if ($resolution <= 0) return 0.0;
+        if ($resolution <= 0) {
+            return 0.0;
+        }
 
-        // A semilargura é resolution / 2.
-        // Divide-se pela raiz de 3 (distribuição retangular).
-        return ($resolution / 2) / sqrt(3);
+        $semiWidth = PreciseMath::div($resolution, 2);
+        $sqrt3 = (string) sqrt(3);
+
+        return (float) PreciseMath::div($semiWidth, $sqrt3);
     }
 
     /**
      * Incerteza TIPO B: Do Padrão de Referência.
-     * Distribuição Normal.
-     * u_std = Incerteza Expandida do Certificado / k do Certificado
      */
     public static function calculateTypeB_Standard(float $stdUncertainty, float $stdK = 2.00): float
     {
-        if ($stdK == 0) return $stdUncertainty; // Evita divisão por zero
-        return $stdUncertainty / $stdK;
+        if ($stdK == 0) {
+            return $stdUncertainty;
+        }
+
+        return (float) PreciseMath::div($stdUncertainty, $stdK);
     }
 
     /**
      * CÁLCULO FINAL: Incerteza Expandida (U).
-     * Raiz da soma dos quadrados (Root Sum Squares).
      */
     public static function calculateFinalUncertainty(
-        float $u_typeA,       // Repetibilidade
-        float $u_resolution,  // Resolução
-        float $u_standard,    // Padrão
-        float $k = 2.00       // Fator de Abrangência (Geralmente 2 para 95.45%)
-    ): array
-    {
+        float $u_typeA,
+        float $u_resolution,
+        float $u_standard,
+        float $k = 2.00
+    ): array {
 
-        // 1. Incerteza Combinada (uc)
-        // uc = sqrt( uA² + uRes² + uStd² )
-        $sumSquares = pow($u_typeA, 2) + pow($u_resolution, 2) + pow($u_standard, 2);
-        $uc = sqrt($sumSquares);
+        // Combined: uc = sqrt( uA² + uRes² + uStd² )
+        $sumSquares = PreciseMath::add(
+            PreciseMath::add(PreciseMath::square($u_typeA), PreciseMath::square($u_resolution)),
+            PreciseMath::square($u_standard)
+        );
 
-        // 2. Incerteza Expandida (U)
-        // U = uc * k
-        $U = $uc * $k;
-
-        // 3. Graus de Liberdade Efetivos (Veff) - Opcional avançado (Welch-Satterthwaite)
-        // Por enquanto, assumimos k=2 (infinitos graus de liberdade), que é padrão para industria geral.
+        $uc = PreciseMath::sqrt($sumSquares);
+        $U = PreciseMath::mul($uc, $k);
 
         return [
-            'combined_uncertainty' => round($uc, 6),
-            'expanded_uncertainty' => round($U, 5), // Valor final para o certificado
+            'combined_uncertainty' => (float) round((float) $uc, 6),
+            'expanded_uncertainty' => (float) round((float) $U, 5),
             'k_factor' => $k,
-            // Retornamos os componentes para ajudar a debugar se o valor ficar alto
             'components' => [
                 'u_type_a' => $u_typeA,
                 'u_resolution' => $u_resolution,
-                'u_standard' => $u_standard
+                'u_standard' => $u_standard,
             ],
-            // ADICIONAR ISSO: O "Extrato" bancário da incerteza
             'budget' => [
                 [
                     'source' => 'Repetibilidade (Tipo A)',
                     'value' => $u_typeA,
                     'divisor' => 1,
                     'distribution' => 'Normal',
-                    'standard_uncertainty' => $u_typeA // Já vem dividida
+                    'standard_uncertainty' => $u_typeA,
                 ],
                 [
                     'source' => 'Resolução do Instrumento',
-                    'value' => $u_resolution * sqrt(3), // Valor cheio
-                    'divisor' => 1.732,
+                    'value' => (float) PreciseMath::mul($u_resolution, sqrt(12)),
+                    'divisor' => 3.464,
                     'distribution' => 'Retangular',
-                    'standard_uncertainty' => $u_resolution
+                    'standard_uncertainty' => $u_resolution,
                 ],
                 [
                     'source' => 'Certificado do Padrão',
-                    'value' => $u_standard * 2, // Valor cheio (do certificado)
-                    'divisor' => 2,
+                    'value' => (float) PreciseMath::mul($u_standard, $k),
+                    'divisor' => $k,
                     'distribution' => 'Normal',
-                    'standard_uncertainty' => $u_standard
-                ]
-            ]
+                    'standard_uncertainty' => $u_standard,
+                ],
+            ],
         ];
     }
 }

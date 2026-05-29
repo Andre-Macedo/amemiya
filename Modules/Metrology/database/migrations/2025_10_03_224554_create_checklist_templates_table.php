@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('checklist_templates', function (Blueprint $table) {
-            $table->id();
+            $table->ulid('id')->primary();
+            $table->foreignUlid('tenant_id')->nullable()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('name');
             $table->string('instrument_type');
             $table->timestamps();

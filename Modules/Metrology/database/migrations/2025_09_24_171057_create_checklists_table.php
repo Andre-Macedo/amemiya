@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('checklists', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('calibration_id')->constrained()->onDelete('cascade');
+            $table->ulid('id')->primary();
+            $table->foreignUlid('tenant_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignUlid('calibration_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->json('steps'); // e.g., [{"step": "Check alignment", "completed": false}]
             $table->boolean('completed')->default(false);
             $table->timestamps();

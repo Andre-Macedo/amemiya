@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Pages;
 
+use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
+use Modules\Metrology\Actions\PrintInstrumentLabelAction;
 use Modules\Metrology\Filament\Clusters\Metrology\MetrologyCluster;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\InstrumentResource;
+use Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Widgets\InstrumentDriftChart;
 
 class ViewInstrument extends ViewRecord
 {
@@ -31,6 +34,20 @@ class ViewInstrument extends ViewRecord
     {
         return [
             EditAction::make(),
+            Action::make('print_label')
+                ->label('Imprimir Etiqueta')
+                ->icon('heroicon-o-qr-code')
+                ->action(fn (InstrumentResource $resource, $record) => response()->streamDownload(
+                    fn () => print ((new PrintInstrumentLabelAction)->execute($record)),
+                    "etiqueta-{$record->asset_number}.pdf"
+                )),
+        ];
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            InstrumentDriftChart::class,
         ];
     }
 }

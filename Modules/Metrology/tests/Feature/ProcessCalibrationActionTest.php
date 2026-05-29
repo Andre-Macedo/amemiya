@@ -2,21 +2,50 @@
 
 namespace Modules\Metrology\Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Modules\Metrology\Models\Calibration;
 use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\InstrumentType;
+use Modules\Metrology\Notifications\CalibrationRejectedNotification;
 use Tests\Concerns\HasSuperAdmin;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class, HasSuperAdmin::class);
 
+test('it automatically opens an NC when calibration is rejected', function () {
+    Notification::fake();
+    $this->createSuperAdmin(['id' => 1]);
+
+    $instrument = Instrument::factory()->create(['mpe' => '0.05']);
+
+    // Create a published calibration that is rejected
+    $calibration = Calibration::factory()->create([
+        'calibrated_item_type' => Instrument::class,
+        'calibrated_item_id' => $instrument->id,
+        'nominal_value' => '10.00',
+        'actual_value' => '10.10', // 0.10 > 0.05
+        'status' => 'published',
+        'performed_by_id' => 1,
+    ]);
+
+    // Check if NC was created
+    $this->assertDatabaseHas('non_conformities', [
+        'calibration_id' => $calibration->id,
+        'item_id' => $instrument->id,
+        'status' => 'open',
+    ]);
+
+    // Check if Notification was sent to admins
+    Notification::assertSentTo(User::all(), CalibrationRejectedNotification::class);
+});
+
 test('it approves calibration within tolerance (simple rule)', function () {
-    $this->createSuperAdmin(['id' => 1]); 
-    
+    $this->createSuperAdmin(['id' => 1]);
+
     $type = InstrumentType::factory()->create(['decision_rule' => 'simple']);
     $instrument = Instrument::factory()->create([
         'instrument_type_id' => $type->id,
-        'mpe' => '0.05' // 0.05 mm
+        'mpe' => '0.05', // 0.05 mm
     ]);
 
     // Nominal: 10.00, Actual: 10.03 -> Deviation: 0.03.
@@ -32,7 +61,7 @@ test('it approves calibration within tolerance (simple rule)', function () {
     ]);
 
     $calibration->refresh();
-    
+
     expect($calibration->deviation)->toEqual(0.03)
         ->and($calibration->result)->toBe('approved');
 
@@ -46,7 +75,7 @@ test('it rejects calibration outside tolerance (simple rule)', function () {
     $type = InstrumentType::factory()->create(['decision_rule' => 'simple']);
     $instrument = Instrument::factory()->create([
         'instrument_type_id' => $type->id,
-        'mpe' => '0.05'
+        'mpe' => '0.05',
     ]);
 
     // Nominal: 10.00, Actual: 10.06 -> Deviation: 0.06.
@@ -62,19 +91,19 @@ test('it rejects calibration outside tolerance (simple rule)', function () {
     $calibration->refresh();
 
     expect($calibration->result)->toBe('rejected');
-    
+
     $instrument->refresh();
     expect($instrument->status)->toBe('rejected');
 });
 
 test('it rejects calibration with uncertainty accounted (decision rule)', function () {
     $this->createSuperAdmin(['id' => 1]);
-    
+
     // Rule: Uncertainty Accounted (Error + U < MPE)
     $type = InstrumentType::factory()->create(['decision_rule' => 'uncertainty_accounted']);
     $instrument = Instrument::factory()->create([
         'instrument_type_id' => $type->id,
-        'mpe' => '0.05'
+        'mpe' => '0.05',
     ]);
 
     // Error: 0.04. Uncertainty: 0.02. Total: 0.06 > 0.05 -> Reject
@@ -88,6 +117,54 @@ test('it rejects calibration with uncertainty accounted (decision rule)', functi
     ]);
 
     $calibration->refresh();
-    
+
     expect($calibration->result)->toBe('rejected');
+});
+
+test('it handles guard band conditional approval', function () {
+    $this->createSuperAdmin(['id' => 1]);
+
+    // Rule: Guard Band (Error <= MPE - U)
+    $type = InstrumentType::factory()->create(['decision_rule' => 'guard_band']);
+    $instrument = Instrument::factory()->create([
+        'instrument_type_id' => $type->id,
+        'mpe' => '0.05',
+    ]);
+
+    // Scenario A: Full Approval
+    // Error: 0.02. Uncertainty: 0.02. Limit: 0.05.
+    // Reduced Limit: 0.05 - 0.02 = 0.03.
+    // 0.02 <= 0.03 -> Approved
+    $calibrationA = Calibration::factory()->create([
+        'calibrated_item_id' => $instrument->id,
+        'nominal_value' => '10.00',
+        'actual_value' => '10.02',
+        'uncertainty' => '0.02',
+        'performed_by_id' => 1,
+    ]);
+    expect($calibrationA->refresh()->result)->toBe('approved');
+
+    // Scenario B: Conditional Approval (Doubt Zone)
+    // Error: 0.04. Uncertainty: 0.02. Limit: 0.05.
+    // 0.04 > (0.05 - 0.02) AND 0.04 <= 0.05 -> Conditional
+    $calibrationB = Calibration::factory()->create([
+        'calibrated_item_id' => $instrument->id,
+        'nominal_value' => '10.00',
+        'actual_value' => '10.04',
+        'uncertainty' => '0.02',
+        'performed_by_id' => 1,
+    ]);
+    expect($calibrationB->refresh()->result)->toBe('conditional');
+
+    // Scenario C: Rejection
+    // Error: 0.06. Uncertainty: 0.02. Limit: 0.05.
+    // 0.06 > 0.05 -> Rejected
+    $calibrationC = Calibration::factory()->create([
+        'calibrated_item_id' => $instrument->id,
+        'nominal_value' => '10.00',
+        'actual_value' => '10.06',
+        'uncertainty' => '0.02',
+        'performed_by_id' => 1,
+    ]);
+    expect($calibrationC->refresh()->result)->toBe('rejected');
 });

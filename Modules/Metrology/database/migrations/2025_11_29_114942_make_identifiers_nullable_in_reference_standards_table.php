@@ -22,11 +22,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-//        Reverter é arriscado se tiver dados nulos, mas segue o padrão:
-//        Schema::table('reference_standards', function (Blueprint $table) {
-//            $table->string('serial_number')->nullable(false)->change();
-//
-//        });
+        //        Reverter é arriscado se tiver dados nulos, mas segue o padrão:
+        //        Schema::table('reference_standards', function (Blueprint $table) {
+        //            $table->string('serial_number')->nullable(false)->change();
+        //
+        //        });
 
     }
 };

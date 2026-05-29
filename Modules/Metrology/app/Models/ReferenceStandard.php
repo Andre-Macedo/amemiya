@@ -4,18 +4,24 @@ declare(strict_types=1);
 
 namespace Modules\Metrology\Models;
 
+use App\Traits\BelongsToTenant;
+use App\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Carbon;
 use Modules\Metrology\Contracts\CalibratableItem;
-use Modules\Metrology\Database\Factories\CalibrationFactory;
 use Modules\Metrology\Database\Factories\ReferenceStandardFactory;
+use Modules\Metrology\Enums\CalibrationResult;
+use Modules\Metrology\Enums\ItemStatus;
 use Modules\Metrology\Services\DecisionRules\DecisionRuleStrategy;
 use Modules\Metrology\Services\DecisionRules\SimpleAcceptance;
+use Modules\Metrology\Traits\HasAssetIdentity;
+use Modules\Metrology\Traits\HasAttachments;
 
 /**
  * @property int $id
@@ -25,22 +31,28 @@ use Modules\Metrology\Services\DecisionRules\SimpleAcceptance;
  * @property string|null $stock_number
  * @property int $reference_standard_type_id
  * @property string|null $description
- * @property \Illuminate\Support\Carbon|null $calibration_due
+ * @property Carbon|null $calibration_due
  * @property string $status
  * @property string|null $nominal_value
  * @property string|null $unit
  * @property string|null $actual_value
  * @property string|null $uncertainty
  * @property string|null $grade
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Modules\Metrology\Models\ReferenceStandard|null $parent
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \Modules\Metrology\Models\ReferenceStandard> $children
- * @property-read \Modules\Metrology\Models\Calibration|null $latestCalibration
+ * @property int|null $material_id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read ReferenceStandard|null $parent
+ * @property-read Collection<int, ReferenceStandard> $children
+ * @property-read Calibration|null $latestCalibration
  */
 class ReferenceStandard extends Model implements CalibratableItem
 {
+    use BelongsToTenant, HasUlids, LogsActivity;
+    use HasAssetIdentity;
+    use HasAttachments;
+
     protected $fillable = [
+        'tenant_id',
         'name',
         'parent_id',
         'serial_number',
@@ -55,6 +67,7 @@ class ReferenceStandard extends Model implements CalibratableItem
         'actual_value',
         'uncertainty',
         'grade',
+        'material_id',
     ];
 
     protected $casts = [
@@ -62,7 +75,7 @@ class ReferenceStandard extends Model implements CalibratableItem
         'actual_value' => 'decimal:6',
         'uncertainty' => 'decimal:6',
         'calibration_due' => 'date',
-        'status' => \Modules\Metrology\Enums\ItemStatus::class,
+        'status' => ItemStatus::class,
     ];
 
     protected $appends = [
@@ -70,17 +83,31 @@ class ReferenceStandard extends Model implements CalibratableItem
         'effective_stock_number',
     ];
 
-
+    /**
+     * Tipo do padrão de referência.
+     *
+     * @return BelongsTo<ReferenceStandardType, ReferenceStandard>
+     */
     public function referenceStandardType(): BelongsTo
     {
         return $this->belongsTo(ReferenceStandardType::class);
     }
 
+    /**
+     * Padrão pai (se este for componente de um kit).
+     *
+     * @return BelongsTo<ReferenceStandard, ReferenceStandard>
+     */
     public function parent(): BelongsTo
     {
         return $this->belongsTo(ReferenceStandard::class, 'parent_id');
     }
 
+    /**
+     * Componentes filhos (se este padrão for um kit).
+     *
+     * @return HasMany<ReferenceStandard>
+     */
     public function children(): HasMany
     {
         return $this->hasMany(ReferenceStandard::class, 'parent_id');
@@ -90,16 +117,51 @@ class ReferenceStandard extends Model implements CalibratableItem
     {
         return $this->morphMany(Calibration::class, 'calibrated_item');
     }
+
+    /**
+     * @return MorphMany<WorkOrder>
+     */
+    public function workOrders(): MorphMany
+    {
+        return $this->morphMany(WorkOrder::class, 'item');
+    }
+
+    /**
+     * Retorna a Não-Conformidade ativa (aberta/investigando) mais recente.
+     */
+    public function openNonConformity(): MorphOne
+    {
+        return $this->morphOne(NonConformity::class, 'item')
+            ->whereIn('status', ['open', 'investigating', 'resolved']) // Não fechada
+            ->latest();
+    }
+
     public static function factory(): ReferenceStandardFactory
     {
         return ReferenceStandardFactory::new();
     }
 
+    /**
+     * Obtém a calibração mais recente deste padrão.
+     *
+     * @return MorphOne<Calibration>
+     */
     public function latestCalibration(): MorphOne
     {
         return $this->morphOne(Calibration::class, 'calibrated_item')->latestOfMany();
     }
 
+    /**
+     * @return BelongsTo<Material, ReferenceStandard>
+     */
+    public function material(): BelongsTo
+    {
+        return $this->belongsTo(Material::class);
+    }
+
+    /**
+     * Obtém a URL do certificado ativo (próprio ou herdado do pai).
+     */
     public function getActiveCertificateUrlAttribute(): ?string
     {
         // 1. Tenta calibração própria
@@ -114,6 +176,7 @@ class ReferenceStandard extends Model implements CalibratableItem
 
         return null;
     }
+
     public function getNextCalibrationDueAttribute(): ?Carbon
     {
         /** @var Calibration|null $latestCalibration */
@@ -121,38 +184,11 @@ class ReferenceStandard extends Model implements CalibratableItem
 
         if ($latestCalibration) {
             $months = $this->referenceStandardType->calibration_frequency_months ?? 24;
-            
+
             return $latestCalibration->calibration_date->copy()->addMonths($months);
         }
 
         return null; // Retorna null se não houver histórico
-    }
-
-    public function getEffectiveSerialNumberAttribute(): string
-    {
-        if ($this->serial_number) {
-            return $this->serial_number;
-        }
-
-        if ($this->parent_id && $this->parent) {
-            return $this->parent->serial_number . ' (Kit)';
-        }
-
-        return 'S/N';
-    }
-
-    public function getEffectiveStockNumberAttribute(): string
-    {
-        if (!empty($this->stock_number)) {
-            return $this->stock_number;
-        }
-
-        if ($this->parent_id && $this->parent) {
-            // Retorna o do Pai indicando vínculo
-            return $this->parent->stock_number . ' (Kit)';
-        }
-
-        return 'N/A';
     }
 
     public function getCalibrationFrequencyMonths(): int
@@ -162,53 +198,53 @@ class ReferenceStandard extends Model implements CalibratableItem
 
     public function getMaximumPermissibleError(): ?float
     {
-        // Reference Standards usually don't have MPE in the same way instruments do for decision rules
-        // unless specified. Returning null skips the MPE evaluation logic in the Action.
-        return null; 
+        // Padrões de Referência geralmente não possuem MPE da mesma forma que instrumentos
+        // para regras de decisão, a menos que especificado. Retornar null pula a avaliação.
+        return null;
     }
 
     public function getDecisionRuleStrategy(): DecisionRuleStrategy
     {
-        // Default strategy if none specified
-        return new SimpleAcceptance();
+        // Estratégia padrão se nenhuma for especificada
+        return new SimpleAcceptance;
     }
 
-    public function processCalibrationResult(Calibration $calibration, \Modules\Metrology\Enums\CalibrationResult $status): void
+    public function processCalibrationResult(Calibration $calibration, CalibrationResult $status): void
     {
-        if (in_array($status, [\Modules\Metrology\Enums\CalibrationResult::Approved, \Modules\Metrology\Enums\CalibrationResult::ApprovedWithRestrictions])) {
-             // 1. Calculate Due Date
-             $months = $this->getCalibrationFrequencyMonths();
-             $nextDate = $calibration->calibration_date->copy()->addMonths($months);
+        if (in_array($status, [CalibrationResult::Approved, CalibrationResult::ApprovedWithRestrictions])) {
+            // 1. Calcula Data de Vencimento
+            $months = $this->getCalibrationFrequencyMonths();
+            $nextDate = $calibration->calibration_date->copy()->addMonths($months);
 
-             // 2. Prepare Update Data
-             $updateData = [
-                 'calibration_due' => $nextDate,
-                 'status' => \Modules\Metrology\Enums\ItemStatus::Active,
-             ];
+            // 2. Prepara Dados para Atualização
+            $updateData = [
+                'calibration_due' => $nextDate,
+                'status' => ItemStatus::Active,
+            ];
 
-             // 3. Update Actual Value & Uncertainty
-             if ($this->nominal_value && $calibration->deviation !== null) {
-                 $updateData['actual_value'] = (float) $this->nominal_value + (float) $calibration->deviation;
-             }
-             if ($calibration->uncertainty) {
-                 $updateData['uncertainty'] = $calibration->uncertainty;
-             }
+            // 3. Atualiza Valor Real e Incerteza
+            if ($this->nominal_value && $calibration->deviation !== null) {
+                $updateData['actual_value'] = (float) $this->nominal_value + (float) $calibration->deviation;
+            }
+            if ($calibration->uncertainty) {
+                $updateData['uncertainty'] = $calibration->uncertainty;
+            }
 
-             $this->update($updateData);
+            $this->update($updateData);
 
-             // 4. Cascade to Children (Kits)
-             if ($this->children()->exists()) {
-                 $this->children()->update([
-                     'calibration_due' => $nextDate,
-                     'status' => \Modules\Metrology\Enums\ItemStatus::Active,
-                 ]);
-             }
+            // 4. Cascata para Filhos (Kits)
+            if ($this->children()->exists()) {
+                $this->children()->update([
+                    'calibration_due' => $nextDate,
+                    'status' => ItemStatus::Active,
+                ]);
+            }
 
-        } elseif ($status === \Modules\Metrology\Enums\CalibrationResult::Rejected) {
-            $this->update(['status' => \Modules\Metrology\Enums\ItemStatus::Rejected]);
+        } elseif ($status === CalibrationResult::Rejected) {
+            $this->update(['status' => ItemStatus::Rejected]);
 
             if ($this->children()->exists()) {
-                $this->children()->update(['status' => \Modules\Metrology\Enums\ItemStatus::Rejected]);
+                $this->children()->update(['status' => ItemStatus::Rejected]);
             }
         }
     }

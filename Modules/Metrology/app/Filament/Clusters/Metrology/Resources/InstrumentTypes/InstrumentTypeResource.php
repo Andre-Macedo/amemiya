@@ -27,6 +27,7 @@ class InstrumentTypeResource extends Resource
     protected static string|null|\UnitEnum $navigationGroup = 'Instrumentos';
 
     protected static ?string $modelLabel = 'Tipo de Instrumento';
+
     protected static ?string $pluralLabel = 'Tipos de Instrumentos';
 
     protected static ?string $navigationLabel = 'Tipos de Instrumentos';
@@ -57,9 +58,9 @@ class InstrumentTypeResource extends Resource
     {
         return [
             'index' => ListInstrumentTypes::route('/'),
-//            'create' => CreateInstrumentType::route('/create'),
-//            'view' => ViewInstrumentType::route('/{record}'),
-//            'edit' => EditInstrumentType::route('/{record}/edit'),
+            //            'create' => CreateInstrumentType::route('/create'),
+            //            'view' => ViewInstrumentType::route('/{record}'),
+            //            'edit' => EditInstrumentType::route('/{record}/edit'),
         ];
     }
 }

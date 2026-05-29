@@ -26,9 +26,10 @@ class ReferenceStandardTypeResource extends Resource
 
     protected static ?string $navigationLabel = 'Tipos de Padrões de Refêrencia';
 
-    protected static string|null|\UnitEnum $navigationGroup = "Padrões de Refêrencia";
+    protected static string|null|\UnitEnum $navigationGroup = 'Padrões de Refêrencia';
 
     protected static ?string $modelLabel = 'Tipo de Padrão de Referencia';
+
     protected static ?string $pluralModelLabel = 'Tipos de Padrão de Referencia';
 
     public static function form(Schema $schema): Schema
@@ -57,9 +58,9 @@ class ReferenceStandardTypeResource extends Resource
     {
         return [
             'index' => ListReferenceStandardTypes::route('/'),
-//            'create' => CreateReferenceStandardType::route('/create'),
-//            'view' => ViewReferenceStandardType::route('/{record}'),
-//            'edit' => EditReferenceStandardType::route('/{record}/edit'),
+            //            'create' => CreateReferenceStandardType::route('/create'),
+            //            'view' => ViewReferenceStandardType::route('/{record}'),
+            //            'edit' => EditReferenceStandardType::route('/{record}/edit'),
         ];
     }
 }

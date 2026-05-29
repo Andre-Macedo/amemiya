@@ -1,11 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Metrology\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use Modules\Metrology\Models\Instrument;
-use Modules\Metrology\Models\ChecklistTemplate;
+use Illuminate\Http\Request;
+use Modules\Metrology\Actions\SubmitInstrumentChecklistAction;
+use Modules\Metrology\DTOs\InstrumentChecklistSubmissionData;
 use Modules\Metrology\Http\Resources\ChecklistTemplateApiResource;
+use Modules\Metrology\Models\ChecklistTemplate;
+use Modules\Metrology\Models\Instrument;
 
 class InstrumentChecklistController extends Controller
 {
@@ -24,6 +29,27 @@ class InstrumentChecklistController extends Controller
     public function show(ChecklistTemplate $checklistTemplate)
     {
         $checklistTemplate->load('items');
+
         return new ChecklistTemplateApiResource($checklistTemplate);
+    }
+
+    // 3. Submete o checklist preenchido (Salva Calibração + Checklist + Status)
+    public function store(
+        Request $request,
+        SubmitInstrumentChecklistAction $action
+    ) {
+        // Validação básica se necessário, ou confiar na Action/DTO?
+        // Idealmente FormRequest, mas por brevidade faremos aqui ou confiaremos no DTO safe cast.
+        // Vamos usar DTO safe cast por enquanto conforme pedido "Controller burro".
+
+        $data = InstrumentChecklistSubmissionData::fromArray($request->all());
+
+        $calibration = $action->execute($data);
+
+        return response()->json([
+            'message' => 'Instrument checklist submitted successfully',
+            'calibration_id' => $calibration->id,
+            'result' => $calibration->result,
+        ], 201);
     }
 }

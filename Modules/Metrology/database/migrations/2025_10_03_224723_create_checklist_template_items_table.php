@@ -12,8 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('checklist_template_items', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('checklist_template_id')->constrained()->onDelete('cascade');
+            $table->ulid('id')->primary();
+            $table->foreignUlid('tenant_id')->nullable()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignUlid('checklist_template_id')->constrained()->onDelete('cascade');
+
             $table->text('step');
             $table->string('question_type')->default('boolean'); // boolean, numeric, text
             $table->integer('order');

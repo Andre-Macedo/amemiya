@@ -19,7 +19,7 @@ class ChecklistTemplateFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'Checklist ' . $this->faker->words(2, true),
+            'name' => 'Checklist '.$this->faker->words(2, true),
             'instrument_type_id' => InstrumentType::factory(),
         ];
     }

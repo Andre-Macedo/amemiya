@@ -11,30 +11,29 @@ use Modules\Metrology\Exceptions\MetrologyException;
 class CalibrationValidator
 {
     /**
-     * Determine if the item can be calibrated.
+     * Determina se o item pode ser calibrado.
+     * Regra: Itens 'Scrapped' (Sucateados), 'Lost' (Perdidos) ou 'Rejected' (Reprovados no passado) não devem ser calibrados sem manutenção prévia.
      *
-     * @param CalibratableItem $item
-     * @return bool
      * @throws MetrologyException
      */
     public function canBeCalibrated(CalibratableItem $item): bool
     {
-        // Enforce strong typing on status by checking if it's an Enum or string
+        // Garante tipagem forte para verificação de status (Enum ou string legado)
         $status = $item->status;
 
-        // If models are not ensuring casting yet (hybrid state), handle strings strictly
+        // Se o modelo ainda não estiver usando Casts (legado), trata string estritamente
         if (is_string($status)) {
-            // Should strictly use Enums now per Phase 5, but safety check
             if (in_array($status, ['rejected', 'lost'])) {
-                throw new MetrologyException("Item status '{$status}' prevents calibration without maintenance.");
+                throw new MetrologyException("Status do item '{$status}' impede calibração sem manutenção.");
             }
+
             return true;
         }
 
-        // Enum check
+        // Verificação via Enum (Padrão atual)
         if ($status instanceof ItemStatus) {
             if (in_array($status, [ItemStatus::Rejected, ItemStatus::Lost])) {
-                throw new MetrologyException("Item status '{$status->getLabel()}' prevents calibration without maintenance.");
+                throw new MetrologyException("Status do item '{$status->getLabel()}' impede calibração sem manutenção.");
             }
         }
 

@@ -4,7 +4,6 @@ namespace Modules\Metrology\Console;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Notification;
 use Modules\Metrology\Emails\CalibrationStatusReport;
 use Modules\Metrology\Models\Instrument;
 
@@ -42,15 +41,16 @@ class CheckInstrumentStatus extends Command
             // Define quem recebe email
             $recipients = ['andrluis@proton.me'];
 
-            if (!$recipients) {
+            if (! $recipients) {
                 $this->warn('Nenhum usuário encontrado para enviar o e-mail.');
+
                 return;
             }
 
             // Envia o e-mail
             Mail::to($recipients)->send(new CalibrationStatusReport($expired, $dueSoon));
 
-            $this->info('Relatório enviado por e-mail para ' . $recipients[0]. ' usuários.');
+            $this->info('Relatório enviado por e-mail para '.$recipients[0].' usuários.');
         } else {
             $this->info('Tudo em ordem. Nenhum e-mail enviado.');
         }

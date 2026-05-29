@@ -6,6 +6,9 @@ use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Modules\Metrology\Models\Instrument;
 
+/**
+ * Widget de estatísticas mostrando instrumentos com calibração vencida.
+ */
 class OverdueCalibrationsWidget extends StatsOverviewWidget
 {
     protected function getStats(): array

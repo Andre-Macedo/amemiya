@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Tables;
 
-use App\Models\Station;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
@@ -23,8 +22,12 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
-use Illuminate\Support\Carbon;
+use Modules\Metrology\Actions\PrintInstrumentLabelAction;
+use Modules\Metrology\Enums\ItemStatus;
 use Modules\Metrology\Models\Instrument;
+use Modules\System\Models\AccessLog;
+use Modules\System\Models\Station;
+use Modules\System\Models\Supplier;
 
 class InstrumentsTable
 {
@@ -43,6 +46,22 @@ class InstrumentsTable
                     ->label('Tipo')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('instrumentType.decision_rule')
+                    ->label('Regra de Decisão')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'simple' => 'gray',
+                        'uncertainty_accounted' => 'warning',
+                        'guard_band' => 'success',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'simple' => 'Simples',
+                        'uncertainty_accounted' => 'U Somada',
+                        'guard_band' => 'Banda de Guarda',
+                        default => $state,
+                    })
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('location')
                     ->label('Localização')
                     ->searchable()
@@ -60,7 +79,7 @@ class InstrumentsTable
             ])
             ->filters([
                 SelectFilter::make('status')
-                    ->options(\Modules\Metrology\Enums\ItemStatus::class),
+                    ->options(ItemStatus::class),
                 SelectFilter::make('instrument_type_id')
                     ->label('Tipo de Instrumento')
                     ->relationship('instrumentType', 'name')
@@ -73,8 +92,16 @@ class InstrumentsTable
                 ActionGroup::make([
                     ViewAction::make(),
                     EditAction::make(),
+                    Action::make('print_label')
+                        ->label('Etiqueta')
+                        ->icon('heroicon-o-qr-code')
+                        ->color('gray')
+                        ->action(fn (Instrument $record) => response()->streamDownload(
+                            fn () => print ((new PrintInstrumentLabelAction)->execute($record)),
+                            "etiqueta-{$record->asset_number}.pdf"
+                        )),
 
-// ---------------------------------------------------------------
+                    // ---------------------------------------------------------------
                     // 1. ENVIAR PARA CALIBRAÇÃO (Fluxo Normal)
                     // ---------------------------------------------------------------
                     // ---------------------------------------------------------------
@@ -100,15 +127,15 @@ class InstrumentsTable
                             // 1. Atualizar Localização Atual
                             $record->update([
                                 'current_station_id' => $station->id,
-                                'location' => $station->name, // Mantém o texto simples syncado
+                                'location' => $station->name, // Mantém o texto simples sincronizado
                             ]);
 
                             // 2. Criar Log de Acesso (Histórico)
-                            \Modules\Metrology\Models\AccessLog::create([
+                            AccessLog::create([
                                 'instrument_id' => $record->id,
                                 'user_id' => auth()->id(),
                                 'station_id' => $station->id,
-                                'action' => 'moved: ' . ($data['notes'] ?? 'Sem justificativa'),
+                                'action' => 'moved: '.($data['notes'] ?? 'Sem justificativa'),
                             ]);
 
                             Notification::make()->success()->title('Movimentação Registrada')->send();
@@ -121,7 +148,7 @@ class InstrumentsTable
                         ->label('Enviar p/ Calibrar')
                         ->icon('heroicon-o-beaker')
                         ->color('info')
-                        ->visible(fn (Instrument $record) => in_array($record->status, [\Modules\Metrology\Enums\ItemStatus::Active, \Modules\Metrology\Enums\ItemStatus::Expired]))
+                        ->visible(fn (Instrument $record) => in_array($record->status, [ItemStatus::Active, ItemStatus::Expired]))
                         ->form([
                             Select::make('type')
                                 ->label('Onde será realizada?')
@@ -145,7 +172,7 @@ class InstrumentsTable
 
                             Select::make('supplier_id')
                                 ->label('Fornecedor / Laboratório Externo')
-                                ->options(\App\Models\Supplier::where('is_calibration_provider', true)->pluck('name', 'id'))
+                                ->options(Supplier::where('is_calibration_provider', true)->pluck('name', 'id'))
                                 ->required(fn (Get $get) => $get('type') === 'external')
                                 ->visible(fn (Get $get) => $get('type') === 'external')
                                 ->searchable(),
@@ -153,7 +180,7 @@ class InstrumentsTable
                             Textarea::make('notes')->label('Observações de Envio'),
                         ])
                         ->action(function (Instrument $record, array $data) {
-                            $updateData = ['status' => \Modules\Metrology\Enums\ItemStatus::InCalibration];
+                            $updateData = ['status' => ItemStatus::InCalibration];
                             $logAction = 'sent_to_calibration';
                             $destinationStationId = null;
 
@@ -166,14 +193,14 @@ class InstrumentsTable
                                 $updateData['current_station_id'] = $externalStation?->id;
                                 $updateData['current_supplier_id'] = $data['supplier_id'];
                                 $destinationStationId = $externalStation?->id;
-                                $logAction .= ' (External: ' . $data['supplier_id'] . ')';
+                                $logAction .= ' (Externo: '.$data['supplier_id'].')';
                             }
 
                             $record->update($updateData);
 
-                            // Log Custody Change
+                            // Registrar Mudança de Custódia
                             if ($destinationStationId) {
-                                \Modules\Metrology\Models\AccessLog::create([
+                                AccessLog::create([
                                     'instrument_id' => $record->id,
                                     'user_id' => auth()->id(),
                                     'station_id' => $destinationStationId,
@@ -192,22 +219,24 @@ class InstrumentsTable
                         ->icon('heroicon-o-wrench')
                         ->color('warning')
                         ->requiresConfirmation()
-                        ->visible(fn (Instrument $record) => in_array($record->status, [\Modules\Metrology\Enums\ItemStatus::Active, \Modules\Metrology\Enums\ItemStatus::Rejected, \Modules\Metrology\Enums\ItemStatus::Expired]))
+                        ->visible(fn (Instrument $record) => in_array($record->status, [ItemStatus::Active, ItemStatus::Rejected, ItemStatus::Expired]))
                         ->form([
                             Textarea::make('problem_description')->label('Descrição do Problema')->required(),
                         ])
                         ->action(function (Instrument $record, array $data) {
-                            $record->update(['status' => \Modules\Metrology\Enums\ItemStatus::Maintenance]);
+                            $record->update(['status' => ItemStatus::Maintenance]);
 
-                            // Log Maintenance
-                            // Ideally maintenance is a "Station" too, checking if exists
+                            $record->update(['status' => ItemStatus::Maintenance]);
+
+                            // Log de Manutenção
+                            // Idealmente manutenção é uma "Estação" também, verifica se existe
                             $maintStation = Station::where('type', 'maintenance')->first();
                             if ($maintStation) {
-                                \Modules\Metrology\Models\AccessLog::create([
+                                AccessLog::create([
                                     'instrument_id' => $record->id,
                                     'user_id' => auth()->id(),
                                     'station_id' => $maintStation->id,
-                                    'action' => 'maintenance: ' . $data['problem_description'],
+                                    'action' => 'maintenance: '.$data['problem_description'],
                                 ]);
                             }
 
@@ -219,18 +248,18 @@ class InstrumentsTable
                         ->label('Retornou (Calibrar)')
                         ->icon('heroicon-o-arrow-path')
                         ->color('success')
-                        ->visible(fn (Instrument $record) => $record->status === \Modules\Metrology\Enums\ItemStatus::Maintenance)
+                        ->visible(fn (Instrument $record) => $record->status === ItemStatus::Maintenance)
                         ->form([
                             TextInput::make('repair_notes')->label('O que foi feito?')->required(),
                         ])
                         ->action(function (Instrument $record, array $data) {
-                            $record->update(['status' => \Modules\Metrology\Enums\ItemStatus::InCalibration]);
+                            $record->update(['status' => ItemStatus::InCalibration]);
                             // Log
-                             \Modules\Metrology\Models\AccessLog::create([
+                            AccessLog::create([
                                 'instrument_id' => $record->id,
                                 'user_id' => auth()->id(),
-                                'station_id' => $record->current_station_id ?? 0, // Keeps same station or default
-                                'action' => 'returned_from_maintenance: ' . $data['repair_notes'],
+                                'station_id' => $record->current_station_id ?? 0, // Mantém a mesma estação ou padrão
+                                'action' => 'returned_from_maintenance: '.$data['repair_notes'],
                             ]);
                         }),
 
@@ -239,10 +268,10 @@ class InstrumentsTable
                         ->label('Descartar (Sucata)')
                         ->icon('heroicon-o-trash')
                         ->color('danger')
-                        ->visible(fn (Instrument $record) => in_array($record->status, [\Modules\Metrology\Enums\ItemStatus::Rejected, \Modules\Metrology\Enums\ItemStatus::Maintenance]))
+                        ->visible(fn (Instrument $record) => in_array($record->status, [ItemStatus::Rejected, ItemStatus::Maintenance]))
                         ->requiresConfirmation()
-                        ->action(fn (Instrument $record) => $record->update(['status' => \Modules\Metrology\Enums\ItemStatus::Scrapped])),
-                ])
+                        ->action(fn (Instrument $record) => $record->update(['status' => ItemStatus::Scrapped])),
+                ]),
 
             ])
             ->toolbarActions([

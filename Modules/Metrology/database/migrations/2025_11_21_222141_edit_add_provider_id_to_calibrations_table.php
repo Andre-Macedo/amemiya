@@ -9,9 +9,10 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void {
+    public function up(): void
+    {
         Schema::table('calibrations', function (Blueprint $table) {
-            $table->foreignId('provider_id')
+            $table->foreignUlid('provider_id')
                 ->nullable()
                 ->after('type')
                 ->constrained('suppliers')
@@ -22,7 +23,8 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void {
+    public function down(): void
+    {
         Schema::table('calibrations', function (Blueprint $table) {
             $table->dropForeign(['provider_id']);
             $table->dropColumn('provider_id');

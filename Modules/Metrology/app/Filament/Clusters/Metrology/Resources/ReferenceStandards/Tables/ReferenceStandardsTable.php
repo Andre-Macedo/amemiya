@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\Tables;
 
-use Carbon\Carbon;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -13,8 +12,8 @@ use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Metrology\Models\ReferenceStandard;
@@ -47,9 +46,8 @@ class ReferenceStandardsTable
                 TextColumn::make('name')
                     ->label('Descrição')
                     ->searchable()
-                    ->description(fn (ReferenceStandard $record) =>
-                    $record->children()->exists()
-                        ? 'Composto por ' . $record->children()->count() . ' itens'
+                    ->description(fn (ReferenceStandard $record) => $record->children()->exists()
+                        ? 'Composto por '.$record->children()->count().' itens'
                         : ($record->nominal_value ? "Nominal: {$record->nominal_value} {$record->unit}" : 'Item individual')
                     )
                     ->wrap(),
@@ -65,8 +63,7 @@ class ReferenceStandardsTable
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                // Status calculado na hora (Visual)
-                // Status standardized
+                // Status calculado via Enum (Visual)
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge(),

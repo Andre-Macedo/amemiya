@@ -6,6 +6,11 @@ use Coolsam\Modules\Concerns\ModuleFilamentPlugin;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 
+/**
+ * Plugin do Filament para o módulo de Metrologia.
+ *
+ * Registra recursos, páginas e widgets específicos do módulo no painel admin.
+ */
 class MetrologyPlugin implements Plugin
 {
     use ModuleFilamentPlugin;

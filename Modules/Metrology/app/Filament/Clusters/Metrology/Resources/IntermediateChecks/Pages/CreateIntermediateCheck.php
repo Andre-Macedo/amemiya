@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\IntermediateChecks\Pages;
 
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\IntermediateCheckResource;
 use Filament\Resources\Pages\CreateRecord;
+use Modules\Metrology\Filament\Clusters\Metrology\Resources\IntermediateCheckResource;
 
 class CreateIntermediateCheck extends CreateRecord
 {

@@ -4,7 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\Metrology\Listeners;
 
+use Filament\Notifications\Notification;
+use Modules\Metrology\Actions\CreateChecklistAction;
 use Modules\Metrology\Actions\ProcessCalibrationAction;
+use Modules\Metrology\Actions\UpdateReferenceStandardKitAction;
+use Modules\Metrology\DTOs\ChecklistCreationData;
+use Modules\Metrology\DTOs\KitUpdateData;
 use Modules\Metrology\Events\CalibrationSaved;
 
 class ProcessCalibrationListener
@@ -14,8 +19,8 @@ class ProcessCalibrationListener
      */
     public function __construct(
         protected ProcessCalibrationAction $processAction,
-        protected \Modules\Metrology\Actions\CreateChecklistAction $createChecklistAction,
-        protected \Modules\Metrology\Actions\UpdateReferenceStandardKitAction $updateKitAction
+        protected CreateChecklistAction $createChecklistAction,
+        protected UpdateReferenceStandardKitAction $updateKitAction
     ) {}
 
     /**
@@ -25,23 +30,28 @@ class ProcessCalibrationListener
     {
         $calibration = $event->calibration;
 
-        // 1. Process Core Calibration Logic (Status, Due Date)
+        // 1. Processa Lógica Central de Calibração (Status, Data de Vencimento)
         $this->processAction->execute($calibration);
 
-        // 2. Create Checklist if input provided (from Filament/API)
+        // 2. Cria Checklist se houver input (via Filament/API)
         if (! empty($calibration->checklistInput)) {
-            $this->createChecklistAction->execute($calibration, $calibration->checklistInput);
+            $dto = ChecklistCreationData::fromArray($calibration->checklistInput);
+            $this->createChecklistAction->execute($calibration, $dto);
         }
 
-        // 3. Update Kit Items if input provided
+        // 3. Atualiza Itens do Kit se houver input
         if (! empty($calibration->kitItemsInput)) {
-            $this->updateKitAction->execute($calibration, $calibration->kitItemsInput);
+            $dto = KitUpdateData::fromArray($calibration->kitItemsInput);
+            $this->updateKitAction->execute($calibration, $dto);
         }
 
-        // 4. Send Notification if Rejected (and running in a context that supports it?)
-        // Ideally we should check if running in console or http, but Filament notifications are harmless if not rendered.
-        if ($calibration->result === 'rejected' && class_exists(\Filament\Notifications\Notification::class)) {
-            \Filament\Notifications\Notification::make()
+        // 4. Envia Notificação se Reprovado
+        // Verifica se a classe de notificação do Filament existe e se não estamos em testes para evitar erros de resolução.
+        if ($calibration->result === 'rejected'
+            && class_exists(Notification::class)
+            && ! app()->runningUnitTests()
+        ) {
+            Notification::make()
                 ->warning()
                 ->title('Atenção: Instrumento Reprovado')
                 ->body('O desvio encontrado foi superior à incerteza/critério permitido. O status foi definido como "Reprovado" automaticamente.')

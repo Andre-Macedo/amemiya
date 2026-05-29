@@ -6,8 +6,12 @@ namespace Modules\Metrology\Filament\Clusters\Metrology;
 
 use BackedEnum;
 use Filament\Clusters\Cluster;
-use Filament\Support\Icons\Heroicon;
 
+/**
+ * Cluster principal do módulo de Metrologia.
+ *
+ * Agrupa todos os recursos (Instrumentos, Calibrações, Padrões, etc.) sob a navegação "Metrologia".
+ */
 class MetrologyCluster extends Cluster
 {
     protected static string|null|BackedEnum $navigationIcon = 'heroicon-o-wrench-screwdriver';
@@ -22,5 +26,4 @@ class MetrologyCluster extends Cluster
             'index' => Pages\Dashboard::route('/'),
         ];
     }
-
 }
