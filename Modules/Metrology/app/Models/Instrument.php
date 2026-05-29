@@ -4,46 +4,41 @@ declare(strict_types=1);
 
 namespace Modules\Metrology\Models;
 
-use App\Models\Station;
-use App\Models\Supplier;
+use App\Traits\BelongsToTenant;
+use App\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Metrology\Contracts\CalibratableItem;
 use Modules\Metrology\Database\Factories\InstrumentFactory;
+use Modules\Metrology\Enums\CalibrationResult;
+use Modules\Metrology\Enums\ItemStatus;
 use Modules\Metrology\Services\DecisionRules\DecisionRuleStrategy;
 use Modules\Metrology\Services\DecisionRules\GuardBand;
 use Modules\Metrology\Services\DecisionRules\SimpleAcceptance;
 use Modules\Metrology\Services\DecisionRules\UncertaintyAccounted;
-
-// use Modules\Metrology\Database\Factories\InstrumentFactory;
+use Modules\Metrology\Traits\HasAssetIdentity;
+use Modules\Metrology\Traits\HasAttachments;
+use Modules\Metrology\Traits\HasStateTransitions;
+use Modules\System\Models\Station;
+use Modules\System\Models\Supplier;
 
 /**
- * @property int $id
+ * @property string $id
  * @property string $name
- * @property string|null $stock_number
- * @property string $serial_number
- * @property int $instrument_type_id
- * @property string|null $mpe
- * @property string|null $measuring_range
- * @property string|null $resolution
- * @property string|null $manufacturer
- * @property string|null $location
- * @property \Illuminate\Support\Carbon $acquisition_date
- * @property \Illuminate\Support\Carbon $calibration_due
- * @property string $status
- * @property string|null $nfc_tag
- * @property int|null $current_station_id
- * @property int|null $current_supplier_id
- * @property string|null $image_path
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property ItemStatus $status
  */
 class Instrument extends Model implements CalibratableItem
 {
-    use HasFactory, SoftDeletes;
+    use BelongsToTenant, HasFactory, HasUlids, SoftDeletes;
+    use HasAssetIdentity;
+    use HasAttachments;
+    use HasStateTransitions;
+    use LogsActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -54,9 +49,11 @@ class Instrument extends Model implements CalibratableItem
         'serial_number',
         'instrument_type_id',
         'mpe',
+        'mpe_value',
         'measuring_range',
         'resolution',
         'manufacturer',
+        'model',
         'location',
         'acquisition_date',
         'calibration_due',
@@ -65,18 +62,49 @@ class Instrument extends Model implements CalibratableItem
         'current_station_id',
         'current_supplier_id',
         'image_path',
+        'material_id',
+        'tenant_id',
+        'guard_band_multiplier_override',
     ];
 
     protected $casts = [
+        'mpe_value' => 'float',
         'calibration_due' => 'datetime',
         'acquisition_date' => 'datetime',
         'next_calibration_date' => 'datetime',
-        'status' => \Modules\Metrology\Enums\ItemStatus::class,
+        'status' => ItemStatus::class,
+        'guard_band_multiplier_override' => 'float',
     ];
 
+    /**
+     * @return MorphMany<Calibration>
+     */
     public function calibrations(): MorphMany
     {
         return $this->morphMany(Calibration::class, 'calibrated_item');
+    }
+
+    public function movements(): HasMany
+    {
+        return $this->hasMany(InstrumentMovement::class);
+    }
+
+    /**
+     * @return MorphMany<WorkOrder>
+     */
+    public function workOrders(): MorphMany
+    {
+        return $this->morphMany(WorkOrder::class, 'item');
+    }
+
+    /**
+     * Retorna a Não-Conformidade ativa (aberta/investigando) mais recente.
+     */
+    public function openNonConformity(): MorphOne
+    {
+        return $this->morphOne(NonConformity::class, 'item')
+            ->whereIn('status', ['open', 'investigating', 'resolved']) // Não fechada
+            ->latest();
     }
 
     protected static function factory(): InstrumentFactory
@@ -84,90 +112,104 @@ class Instrument extends Model implements CalibratableItem
         return InstrumentFactory::new();
     }
 
+    /**
+     * @return BelongsTo<InstrumentType, Instrument>
+     */
     public function instrumentType(): BelongsTo
     {
         return $this->belongsTo(InstrumentType::class);
     }
 
-    public function manufacturer(): BelongsTo {
-        return $this->belongsTo(Supplier::class, 'manufacturer_id');
-    }
-    public function station(): BelongsTo {
+    /**
+     * @return BelongsTo<Station, Instrument>
+     */
+    public function station(): BelongsTo
+    {
         return $this->belongsTo(Station::class, 'current_station_id');
     }
 
+    /**
+     * @return BelongsTo<Supplier, Instrument>
+     */
     public function currentSupplier(): BelongsTo
     {
         return $this->belongsTo(Supplier::class, 'current_supplier_id');
     }
 
-    public function getMpeValue(): float
+    /**
+     * @return BelongsTo<Material, Instrument>
+     */
+    public function material(): BelongsTo
     {
-        if (empty($this->mpe)) {
+        return $this->belongsTo(Material::class);
+    }
+
+    /**
+     * Obtém o Erro Máximo Permissível (MPE) como float.
+     * Prioriza o valor numérico puro do banco.
+     */
+    public function getMaximumPermissibleError(): ?float
+    {
+        if ($this->mpe_value !== null) {
+            return (float) $this->mpe_value;
+        }
+
+        return $this->parseMpeFromString($this->mpe);
+    }
+
+    protected function parseMpeFromString(mixed $mpe): float
+    {
+        $mpe = (string) $mpe;
+
+        if (empty($mpe) || str_contains($mpe, '%')) {
             return 0.0;
         }
 
-        // Safety check for Relative/Percentage errors which are not supported yet as absolute limits
-        if (str_contains((string)$this->mpe, '%')) {
-            return 0.0; 
-        }
-
-        // Normalize comma to dot
-        $normalized = str_replace(',', '.', (string) $this->mpe);
-        
-        // Remove everything that is NOT a digit or a dot (e.g. "0.05 mm" -> "0.05")
+        $normalized = str_replace(',', '.', $mpe);
         $numericValue = preg_replace('/[^0-9.]/', '', $normalized);
 
-        // Parse to float, verifying if it's a valid numeric string
         return is_numeric($numericValue) ? (float) $numericValue : 0.0;
     }
 
     public function getDecisionRule(): string
     {
-        // Default to 'simple' if type not found or not set
         return $this->instrumentType?->decision_rule ?? 'simple';
     }
 
     public function getCalibrationFrequencyMonths(): int
     {
-        return $this->instrumentType?->calibration_frequency_months ?? 12; // Default 12 if missing
-    }
-
-    public function getMaximumPermissibleError(): ?float
-    {
-        // If the property itself is null, try to parse it.
-        // But getMpeValue() handles parsing logic.
-        return $this->getMpeValue();
+        return $this->instrumentType?->calibration_frequency_months ?? 12;
     }
 
     public function getDecisionRuleStrategy(): DecisionRuleStrategy
     {
         $rule = $this->getDecisionRule();
+        $multiplier = (float) ($this->guard_band_multiplier_override ?? $this->instrumentType?->guard_band_multiplier ?? 1.0);
 
         return match ($rule) {
-            'guard_band' => new GuardBand(),
-            'uncertainty_accounted' => new UncertaintyAccounted(),
-            default => new SimpleAcceptance(),
+            'guard_band' => new GuardBand($multiplier),
+            'uncertainty_accounted' => new UncertaintyAccounted,
+            default => new SimpleAcceptance,
         };
     }
 
-    public function processCalibrationResult(Calibration $calibration, \Modules\Metrology\Enums\CalibrationResult $status): void
+    /**
+     * Processa o resultado de uma calibração e atualiza o estado do instrumento.
+     * Usa a máquina de estados para validação.
+     */
+    public function processCalibrationResult(Calibration $calibration, CalibrationResult $status): void
     {
-        if (in_array($status, [\Modules\Metrology\Enums\CalibrationResult::Approved, \Modules\Metrology\Enums\CalibrationResult::ApprovedWithRestrictions])) {
-             // 1. Calculate Due Date
-             $months = $this->getCalibrationFrequencyMonths();
-             $nextDate = $calibration->calibration_date->copy()->addMonths($months);
+        if (in_array($status, [CalibrationResult::Approved, CalibrationResult::ApprovedWithRestrictions])) {
+            $months = $this->getCalibrationFrequencyMonths();
+            $nextDate = $calibration->calibration_date->copy()->addMonths($months);
 
-             // 2. Update Data
-             $this->calibration_due = $nextDate;
-             $this->status = \Modules\Metrology\Enums\ItemStatus::Active;
-             $this->current_supplier_id = null; // Returned from calibration
-             
-             $this->save();
-             
-        } elseif ($status === \Modules\Metrology\Enums\CalibrationResult::Rejected) {
-             $this->status = \Modules\Metrology\Enums\ItemStatus::Rejected;
-             $this->save();
+            $this->calibration_due = $nextDate;
+            $this->current_supplier_id = null;
+
+            $this->transitionTo(ItemStatus::Active);
+
+        } elseif ($status === CalibrationResult::Rejected) {
+            $this->transitionTo(ItemStatus::Rejected);
         }
     }
 }

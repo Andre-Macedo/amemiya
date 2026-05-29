@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('calibration_reference_standard', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('calibration_id')->constrained()->onDelete('cascade');
-            $table->foreignId('reference_standard_id')->constrained()->onDelete('cascade');
+            $table->ulid('id')->primary();
+            $table->foreignUlid('calibration_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->foreignUlid('reference_standard_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamps();
         });
     }

@@ -15,8 +15,8 @@ class PublicInstrumentController extends Controller
     {
         $instrument = Instrument::with(['calibrations' => function ($query) {
             $query->where('result', '!=', 'rejected')
-                  ->latest('calibration_date')
-                  ->limit(1);
+                ->latest('calibration_date')
+                ->limit(1);
         }])->findOrFail($id);
 
         $lastCalibration = $instrument->calibrations->first();

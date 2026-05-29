@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Modules\Metrology\Policies;
 
-use App\Models\Station;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
+use Modules\System\Models\Station;
 
 class StationPolicy
 {
@@ -66,5 +66,4 @@ class StationPolicy
     {
         return $authUser->can('Reorder:Station');
     }
-
 }

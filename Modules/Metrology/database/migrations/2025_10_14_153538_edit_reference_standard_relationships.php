@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('checklist_items', function (Blueprint $table) {
-            $table->foreignId('reference_standard_id')
+            $table->foreignUlid('reference_standard_id')
                 ->nullable()
                 ->after('completed');
         });
@@ -28,8 +28,8 @@ return new class extends Migration
     {
         Schema::create('calibration_reference_standard', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('calibration_id');
-            $table->foreignId('reference_standard_id');
+            $table->foreignUlid('calibration_id');
+            $table->foreignUlid('reference_standard_id');
             $table->timestamps();
         });
 

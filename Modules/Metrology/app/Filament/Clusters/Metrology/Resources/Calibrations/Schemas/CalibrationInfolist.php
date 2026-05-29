@@ -20,7 +20,7 @@ class CalibrationInfolist
                         ->schema([
                             Grid::make(2)->schema([
                                 TextEntry::make('calibratedItem.name') // Usa a relação polimórfica
-                                ->label('Item Calibrado'),
+                                    ->label('Item Calibrado'),
                                 TextEntry::make('calibrated_item_type')
                                     ->label('Tipo de Item')
                                     ->formatStateUsing(fn (string $state): string => class_basename($state))
@@ -30,8 +30,12 @@ class CalibrationInfolist
                                 TextEntry::make('type')->label('Tipo Cal.')
                                     ->formatStateUsing(fn (string $state): string => $state === 'internal' ? 'Interna' : 'Externa RBC'),
                                 TextEntry::make('result')->label('Resultado')
-                                    ->formatStateUsing(fn (?string $state): string => match($state) {'approved'=>'Aprovado','rejected'=>'Reprovado', default => 'N/A'})
-                                    ->badge()->color(fn(?string $state) => match($state){'approved'=>'success','rejected'=>'danger',default=>'gray'}),
+                                    ->formatStateUsing(fn (?string $state): string => match ($state) {
+                                        'approved' => 'Aprovado','rejected' => 'Reprovado', default => 'N/A'
+                                    })
+                                    ->badge()->color(fn (?string $state) => match ($state) {
+                                        'approved' => 'success','rejected' => 'danger',default => 'gray'
+                                    }),
                                 TextEntry::make('deviation')->label('Desvio')->suffix(' mm'),
                                 TextEntry::make('uncertainty')->label('Incerteza')->suffix(' mm'),
                                 TextEntry::make('performedBy.name')->label('Executado Por'),
@@ -39,7 +43,7 @@ class CalibrationInfolist
                                 // Adicionar link/visualização para certificado se for externo?
                                 // FileEntry::make('certificate_path')->visible(fn($record)=>$record->type == 'external_rbc'),
                             ])->columnSpanFull(),
-                    ]),
+                        ]),
 
                     Tabs\Tab::make('Checklist Executado')
                         ->schema([
@@ -53,7 +57,7 @@ class CalibrationInfolist
                                         TextEntry::make('result')
                                             ->label('Resultado')
                                             ->badge()
-                                            ->color(fn(string $state): string => match ($state) {
+                                            ->color(fn (string $state): string => match ($state) {
                                                 'approved' => 'success',
                                                 'rejected' => 'danger',
                                                 default => 'gray',
@@ -65,25 +69,27 @@ class CalibrationInfolist
                                             if (is_array($state)) {
                                                 return empty($state) ? 'N/A' : implode(' | ', $state);
                                             }
-                                            return (string)$state;
+
+                                            return (string) $state;
                                         })
-                                        ->visible(fn($record) => $record->question_type === 'numeric'),
+                                        ->visible(fn ($record) => $record->question_type === 'numeric'),
                                     TextEntry::make('referenceStandard.name')
                                         ->label('Padrão de Referência Utilizado')
                                         ->placeholder('N/A')
-                                        ->visible(fn($record) => $record->question_type === 'numeric'),
+                                        ->visible(fn ($record) => $record->question_type === 'numeric'),
                                     TextEntry::make('notes')
                                         ->label('Anotações')
-                                        ->visible(fn($record) => $record->question_type === 'text' && !empty($record->notes)),
+                                        ->visible(fn ($record) => $record->question_type === 'text' && ! empty($record->notes)),
                                 ])
                                 ->getStateUsing(function (Calibration $record) {
-                                    if (!$record->checklist) {
+                                    if (! $record->checklist) {
                                         return [];
                                     }
+
                                     return $record->checklist->items()->with('referenceStandard')->get();
                                 }),
                         ])
-                        ->visible(fn($record) => $record->type === 'internal' && $record->checklist),
+                        ->visible(fn ($record) => $record->type === 'internal' && $record->checklist),
                 ])->columnSpanFull(),
         ]);
     }

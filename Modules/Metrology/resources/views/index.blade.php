@@ -3,3 +3,5 @@
 
     <p>Module: {!! config('metrology.name') !!}</p>
 </x-metrology::layouts.master>
+
+

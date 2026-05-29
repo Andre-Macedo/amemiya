@@ -2,32 +2,35 @@
 
 namespace Modules\Metrology\Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Modules\Metrology\Actions\CreateChecklistAction;
+use Modules\Metrology\Enums\CalibrationResult;
+use Modules\Metrology\Enums\ItemStatus;
 use Modules\Metrology\Models\Calibration;
 use Modules\Metrology\Models\ChecklistTemplate;
 use Modules\Metrology\Models\Instrument;
+use Modules\Metrology\Models\InstrumentType;
 use Modules\Metrology\Models\ReferenceStandard;
 use Modules\Metrology\Services\UncertaintyCalculator;
 use Tests\Concerns\HasSuperAdmin;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Artisan;
 
-// Use the trait to get createSuperAdmin helper
+// Use a trait para obter o helper createSuperAdmin
 uses(RefreshDatabase::class, HasSuperAdmin::class);
 
 beforeEach(function () {
-    // Ensure modules are migrated if using SQLite memory
+    // Garante que os módulos sejam migrados se estiver usando SQLite em memória
     Artisan::call('module:migrate', ['module' => 'Metrology']);
 
-    // Create User with permissions
+    // Cria Usuário com permissões
     $this->user = $this->createSuperAdmin();
 
-    // Create Instrument Type
-    $type = \Modules\Metrology\Models\InstrumentType::factory()->create([
-        'calibration_frequency_months' => 12
+    // Cria Tipo de Instrumento
+    $type = InstrumentType::factory()->create([
+        'calibration_frequency_months' => 12,
     ]);
 
-    // Create Instrument
+    // Cria Instrumento
     $this->instrument = Instrument::factory()->create([
         'name' => 'Paquímetro Digital',
         'instrument_type_id' => $type->id,
@@ -35,7 +38,7 @@ beforeEach(function () {
         'mpe' => '0.03',
     ]);
 
-    // Create Reference Standard
+    // Cria Padrão de Referência
     $this->standard = ReferenceStandard::factory()->create([
         'name' => 'Bloco Padrão 10mm',
         'nominal_value' => 10.00,
@@ -43,7 +46,7 @@ beforeEach(function () {
         'uncertainty' => 0.002,
     ]);
 
-    // Create Checklist Template
+    // Cria Modelo de Checklist
     $this->template = ChecklistTemplate::create([
         'name' => 'Procedimento Paquímetro',
         'instrument_type_id' => $this->instrument->instrument_type_id,
@@ -59,7 +62,7 @@ beforeEach(function () {
 });
 
 test('full calibration lifecycle approved via event listener', function () {
-    // 1. Create Calibration
+    // 1. Cria Calibração
     $calibration = Calibration::create([
         'calibrated_item_type' => Instrument::class,
         'calibrated_item_id' => $this->instrument->id,
@@ -67,10 +70,10 @@ test('full calibration lifecycle approved via event listener', function () {
         'performed_by_id' => $this->user->id,
         'type' => 'internal',
         'type' => 'internal',
-        // 'status' is not correct for Calibration, checking create parameters
+        // 'status' não é correto para parâmetros de create da Calibração
     ]);
 
-    // 2. Create Checklist (Action)
+    // 2. Cria Checklist (Action)
     $checklistData = [
         'template_id' => $this->template->id,
         'items' => [
@@ -85,40 +88,40 @@ test('full calibration lifecycle approved via event listener', function () {
                     ['value' => 10.02],
                     ['value' => 10.01],
                 ],
-            ]
-        ]
+            ],
+        ],
     ];
 
-    (new CreateChecklistAction())->execute($calibration, $checklistData);
+    (new CreateChecklistAction)->execute($calibration, $checklistData);
 
     $this->assertDatabaseHas('checklists', ['calibration_id' => $calibration->id]);
 
-    // 3. Simulate Calculation (GUM)
-    $calculator = new UncertaintyCalculator();
+    // 3. Simula Cálculo (GUM)
+    $calculator = new UncertaintyCalculator;
     $readings = [10.01, 10.02, 10.01];
-    
+
     $result = $calculator->calculate(
         $readings,
-        $this->instrument->resolution, 
-        $this->standard->actual_value, 
-        $this->standard->uncertainty   
+        $this->instrument->resolution,
+        $this->standard->actual_value,
+        $this->standard->uncertainty
     );
 
-    // 4. Update Calibration -> Should Trigger Listener -> ProcessCalibrationAction
+    // 4. Atualiza Calibração -> Deve Disparar Listener -> ProcessCalibrationAction
     $calibration->update([
         'deviation' => $result['bias'],
         'uncertainty' => $result['expanded_uncertainty'],
-        'result' => \Modules\Metrology\Enums\CalibrationResult::Approved, // Initial intent
+        'result' => CalibrationResult::Approved, // Intenção inicial
     ]);
 
-    // 5. Verify Final State
+    // 5. Verifica Estado Final
     $this->instrument->refresh();
     $calibration->refresh();
 
-    expect($this->instrument->status)->toBe(\Modules\Metrology\Enums\ItemStatus::Active);
-    expect($calibration->result)->toBe(\Modules\Metrology\Enums\CalibrationResult::Approved);
-    
-    // Deviation 0.0123 < MPE 0.03 -> Approved
+    expect($this->instrument->status)->toBe(ItemStatus::Active);
+    expect($calibration->result)->toBe(CalibrationResult::Approved);
+
+    // Desvio 0.0123 < MPE 0.03 -> Aprovado
     expect($calibration->deviation)->toEqualWithDelta(0.0123, 0.001);
 });
 
@@ -132,17 +135,18 @@ test('full calibration lifecycle rejected via event listener', function () {
         'type' => 'internal',
     ]);
 
-    // Simulate bad result
+    // Simula resultado ruim
     $calibration->update([
         'deviation' => 0.05, // > MPE 0.03
         'uncertainty' => 0.005,
-        'result' => \Modules\Metrology\Enums\CalibrationResult::Approved, // Try to approve
+        'result' => CalibrationResult::Approved, // Tenta aprovar
     ]);
 
-    // Listener should have flipped it to rejected
+    // Listener deve ter alterado para rejeitado
+
     $calibration->refresh();
     $this->instrument->refresh();
 
-    expect($calibration->result)->toBe(\Modules\Metrology\Enums\CalibrationResult::Rejected);
-    expect($this->instrument->status)->toBe(\Modules\Metrology\Enums\ItemStatus::Rejected);
+    expect($calibration->result)->toBe(CalibrationResult::Rejected);
+    expect($this->instrument->status)->toBe(ItemStatus::Rejected);
 });

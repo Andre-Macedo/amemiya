@@ -5,7 +5,6 @@ namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\ChecklistTempl
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
 
@@ -43,7 +42,7 @@ class ChecklistTemplateInfolist
                                                 ->columnSpan(3),
                                             TextEntry::make('question_type')
                                                 ->label('Tipo de Resposta')
-                                                ->formatStateUsing(fn(string $state): string => match ($state) {
+                                                ->formatStateUsing(fn (string $state): string => match ($state) {
                                                     'boolean' => 'Sim / Não',
                                                     'numeric' => 'Leitura Numérica',
                                                     'text' => 'Anotação',
@@ -53,7 +52,7 @@ class ChecklistTemplateInfolist
                                                 ->label('Padrão de Referência')
                                                 ->placeholder('N/A')
                                                 ->columnSpan(2)
-                                                ->visible(fn($record) => $record->question_type === 'numeric'),
+                                                ->visible(fn ($record) => $record->question_type === 'numeric'),
                                         ]),
                                     ]),
                             ]),

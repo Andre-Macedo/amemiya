@@ -4,17 +4,23 @@ declare(strict_types=1);
 
 namespace Modules\Metrology\Models;
 
-use App\Models\User;
+use App\Traits\BelongsToTenant;
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\System\Models\User;
 
 class NonConformity extends Model
 {
+    use BelongsToTenant, HasUlids;
     use SoftDeletes;
 
     protected $fillable = [
-        'instrument_id',
+        'tenant_id',
+        'item_type',
+        'item_id',
         'calibration_id',
         'user_id',
         'status',
@@ -33,9 +39,9 @@ class NonConformity extends Model
         'closed_at' => 'datetime',
     ];
 
-    public function instrument(): BelongsTo
+    public function item(): MorphTo
     {
-        return $this->belongsTo(Instrument::class);
+        return $this->morphTo();
     }
 
     public function calibration(): BelongsTo

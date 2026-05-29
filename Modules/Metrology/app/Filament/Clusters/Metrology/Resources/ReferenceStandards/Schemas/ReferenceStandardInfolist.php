@@ -6,9 +6,6 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Carbon;
-use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\ReferenceStandardResource;
-use Modules\Metrology\Models\ReferenceStandard;
 
 class ReferenceStandardInfolist
 {
@@ -45,7 +42,7 @@ class ReferenceStandardInfolist
 
                             TextEntry::make('status')
                                 ->badge()
-                                ->color(fn ($state) => match($state) {
+                                ->color(fn ($state) => match ($state) {
                                     'active' => 'success',
                                     'expired' => 'danger',
                                     default => 'gray'
@@ -56,12 +53,12 @@ class ReferenceStandardInfolist
                 // Seção técnica só aparece se tiver dados
                 Section::make('Metrologia')
                     ->schema([
-                        TextEntry::make('nominal_value')->label('Nominal')->suffix(fn($record)=>' '.($record->unit ?? 'mm')),
+                        TextEntry::make('nominal_value')->label('Nominal')->suffix(fn ($record) => ' '.($record->unit ?? 'mm')),
                         TextEntry::make('actual_value')->label('Valor Real'),
                         TextEntry::make('uncertainty')->label('Incerteza'),
                     ])
                     ->columns(3)
-                    ->visible(fn ($record) => !$record->is_kit),
+                    ->visible(fn ($record) => ! $record->is_kit),
             ]);
     }
 }

@@ -28,3 +28,5 @@
         {{-- {{ module_vite('build-metrology', 'resources/assets/js/app.js') }} --}}
     </body>
 </html>
+
+

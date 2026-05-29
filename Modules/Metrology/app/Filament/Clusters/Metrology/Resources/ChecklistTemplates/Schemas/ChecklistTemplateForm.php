@@ -6,16 +6,19 @@ namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\ChecklistTempl
 
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
-use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Schema;
 
+/**
+ * Defines the form schema for calibration checklist templates.
+ */
 class ChecklistTemplateForm
 {
+    /**
+     * Configures the form components.
+     */
     public static function configure(Schema $schema): Schema
     {
         return $schema
@@ -25,9 +28,10 @@ class ChecklistTemplateForm
                         ->description('Defina o nome e a qual tipo de instrumento este checklist se aplica.')
                         ->schema([
                             TextInput::make('name')
-                                ->label('Nome do Checklist')
+                                ->label('Nome do Procedimento')
                                 ->required()
-                                ->maxLength(255),
+                                ->maxLength(255)
+                                ->placeholder('Ex: Paquímetro Digital 0-150mm'),
                             Select::make('instrument_type_id')
                                 ->label('Tipo de Instrumento')
                                 ->relationship('instrumentType', 'name')
@@ -40,10 +44,10 @@ class ChecklistTemplateForm
                         ->description('Adicione os passos a serem seguidos durante a calibração.')
                         ->schema([
                             Repeater::make('items')
-                                ->label('Passos')
+                                ->label('Pontos de Medição / Passos')
                                 ->relationship()
                                 ->schema([
-                                    Grid::make(3)->schema([
+                                    Grid::make(4)->schema([
                                         TextInput::make('order')
                                             ->label('Ordem')
                                             ->numeric()
@@ -52,38 +56,48 @@ class ChecklistTemplateForm
                                         Select::make('question_type')
                                             ->label('Tipo de Resposta')
                                             ->options([
-                                                'boolean' => 'Sim / Não',
                                                 'numeric' => 'Leitura Numérica',
-                                                'text' => 'Anotação (Texto)',
+                                                'boolean' => 'Aprova / Reprova',
+                                                'text' => 'Observação (Texto)',
                                             ])
                                             ->live()
                                             ->required(),
+                                        TextInput::make('nominal_value')
+                                            ->label('V. Nominal')
+                                            ->numeric()
+                                            ->step('0.000001')
+                                            ->visible(fn (Get $get) => $get('question_type') === 'numeric'),
+                                        TextInput::make('criteria')
+                                            ->label('Tolerância (+/-)')
+                                            ->numeric()
+                                            ->step('0.000001')
+                                            ->placeholder('Ex: 0.02')
+                                            ->visible(fn (Get $get) => $get('question_type') === 'numeric'),
+                                    ]),
+                                    Grid::make(2)->schema([
+                                        TextInput::make('step')
+                                            ->label('Descrição do Passo/Ponto')
+                                            ->required()
+                                            ->placeholder('Ex: Ponto de 50mm'),
                                         TextInput::make('required_readings')
                                             ->label('Nº de Leituras')
                                             ->numeric()
-                                            ->default(1)
+                                            ->default(3)
                                             ->required()
                                             ->visible(fn (Get $get) => $get('question_type') === 'numeric'),
                                     ]),
-                                    Textarea::make('step')
-                                        ->label('Descrição do Passo')
-                                        ->required()
-                                        ->columnSpanFull(),
                                     Select::make('reference_standard_type_id')
-                                        ->label('Tipo de Padrão de Referência')
+                                        ->label('Padrão Requerido')
                                         ->relationship('referenceStandardType', 'name')
                                         ->searchable()
                                         ->required()
                                         ->preload()
-                                        ->createOptionForm([
-                                            TextInput::make('name')->required()->unique(),
-                                        ])
                                         ->visible(fn (Get $get) => $get('question_type') === 'numeric'),
                                 ])
                                 ->orderColumn('order')
                                 ->defaultItems(1)
                                 ->reorderableWithDragAndDrop()
-                                ->addActionLabel('Adicionar Passo')
+                                ->addActionLabel('Adicionar Novo Ponto')
                                 ->columnSpanFull(),
                         ]),
                 ])->columnSpanFull(),

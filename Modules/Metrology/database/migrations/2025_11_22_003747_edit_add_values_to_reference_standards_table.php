@@ -9,7 +9,8 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void {
+    public function up(): void
+    {
         Schema::table('reference_standards', function (Blueprint $table) {
             // Dados Fixos (Definidos na compra)
             $table->decimal('nominal_value', 12, 6)->nullable()->after('name')
@@ -30,7 +31,8 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void {
+    public function down(): void
+    {
         Schema::table('reference_standards', function (Blueprint $table) {
             $table->dropColumn('nominal_value');
             $table->dropColumn('unit');

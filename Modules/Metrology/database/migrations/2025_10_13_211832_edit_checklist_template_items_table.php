@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('checklist_template_items', function (Blueprint $table) {
             $table->dropColumn('reference_standard_type');
-            $table->foreignId('reference_standard_type_id')->nullable()->after('required_readings')->constrained('reference_standard_types');
+            $table->foreignUlid('reference_standard_type_id')->nullable()->after('required_readings')->constrained('reference_standard_types');
         });
     }
 

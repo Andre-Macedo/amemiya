@@ -9,31 +9,33 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('non_conformities', function (Blueprint $table) {
-            $table->id();
+            $table->ulid('id')->primary();
+            $table->foreignUlid('tenant_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
 
-            // Vínculos
-            $table->foreignId('instrument_id')->constrained('instruments')->cascadeOnDelete();
-            $table->foreignId('calibration_id')->nullable()->constrained('calibrations')->nullOnDelete(); // O gatilho (se houver)
-            $table->foreignId('user_id')->nullable()->constrained('users'); // Quem abriu (ou sistema)
+            // Vínculos Polimórficos (Instrumento ou Padrão)
+            $table->nullableUlidMorphs('item'); // item_type, item_id
+
+            $table->foreignUlid('calibration_id')->nullable()->constrained('calibrations')->nullOnDelete();
+            $table->foreignUlid('user_id')->nullable()->constrained('users');
 
             // Estado
-            $table->string('status')->default('open'); // open, investigating, resolved, closed
-            $table->string('priority')->default('medium'); // low, medium, high, critical
+            $table->string('status')->default('open');
+            $table->string('priority')->default('medium');
 
-            // Detalhes do Problema (O Quê)
+            // Detalhes
             $table->string('title');
             $table->text('description');
 
-            // Investigação (Por Quê - ISO 17025 7.10)
-            $table->text('root_cause_analysis')->nullable(); // Análise de Causa Raiz
+            // Investigação
+            $table->text('root_cause_analysis')->nullable();
 
-            // Solução (Como - ISO 17025 8.7)
-            $table->text('immediate_action')->nullable(); // Ação Imediata (ex: tirar de uso)
-            $table->text('corrective_action')->nullable(); // Ação Corretiva (ex: consertar)
-            $table->text('preventive_action')->nullable(); // Ação Preventiva (ex: treinar equipe)
+            // Solução
+            $table->text('immediate_action')->nullable();
+            $table->text('corrective_action')->nullable();
+            $table->text('preventive_action')->nullable();
 
             // Fechamento
-            $table->foreignId('closed_by')->nullable()->constrained('users');
+            $table->foreignUlid('closed_by')->nullable()->constrained('users');
             $table->timestamp('closed_at')->nullable();
 
             $table->timestamps();

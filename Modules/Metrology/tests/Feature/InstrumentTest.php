@@ -1,25 +1,33 @@
 <?php
 
+/**
+ * Testes de integração para o model Instrument e suas interações básicas.
+ *
+ * Cobre:
+ * - Criação de instrumentos (com factories)
+ * - Cálculo automático de data de vencimento baseada na frequência do tipo.
+ */
+
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\InstrumentType;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Concerns\HasSuperAdmin;
+
 use function Pest\Laravel\assertDatabaseHas;
-use function Pest\Laravel\actingAs;
 
 uses(RefreshDatabase::class, HasSuperAdmin::class);
 
 it('can create an instrument', function () {
     $user = $this->createSuperAdmin();
     $type = InstrumentType::factory()->create(['name' => 'Calliper']);
-    
+
     // Simulate data structure for Filament Resource creation if testing Resource
     // But testing the Model/Action level is more reliable here first.
-    
+
     // Let's test Model creation for now to ensure Factories are good
     $instrument = Instrument::factory()->create([
         'instrument_type_id' => $type->id,
-        'name' => 'Digital Calliper'
+        'name' => 'Digital Calliper',
     ]);
 
     expect($instrument)
@@ -28,17 +36,17 @@ it('can create an instrument', function () {
 
     assertDatabaseHas('instruments', [
         'name' => 'Digital Calliper',
-        'instrument_type_id' => $type->id
+        'instrument_type_id' => $type->id,
     ]);
 });
 
 it('calculates due date based on instrument type frequency', function () {
     $type = InstrumentType::factory()->create(['calibration_frequency_months' => 6]);
-    
+
     $instrument = Instrument::factory()->create([
         'instrument_type_id' => $type->id,
         // calibration_due will be set by factory
     ]);
-    
+
     expect($instrument->instrumentType->calibration_frequency_months)->toBe(6);
 });

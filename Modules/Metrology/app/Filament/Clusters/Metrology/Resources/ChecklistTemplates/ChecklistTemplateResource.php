@@ -21,6 +21,11 @@ use Modules\Metrology\Filament\Clusters\Metrology\Resources\ChecklistTemplates\S
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\ChecklistTemplates\Tables\ChecklistTemplatesTable;
 use Modules\Metrology\Models\ChecklistTemplate;
 
+/**
+ * Recurso Filament para gerenciamento de Templates de Checklist.
+ *
+ * Permite criar modelos de checklist reutilizáveis para diferentes tipos de instrumentos.
+ */
 class ChecklistTemplateResource extends Resource
 {
     protected static ?string $model = ChecklistTemplate::class;
@@ -30,20 +35,32 @@ class ChecklistTemplateResource extends Resource
     protected static ?string $cluster = MetrologyCluster::class;
 
     protected static ?string $navigationLabel = 'Checklists';
+
     protected static ?string $pluralModelLabel = 'Checklists';
+
     protected static ?string $modelLabel = 'Checklist';
+
     protected static string|null|\UnitEnum $navigationGroup = 'Calibrações';
 
+    /**
+     * Define o formulário de templates.
+     */
     public static function form(Schema $schema): Schema
     {
         return ChecklistTemplateForm::configure($schema);
     }
 
+    /**
+     * Define a visualização de detalhes do template.
+     */
     public static function infolist(Schema $schema): Schema
     {
         return ChecklistTemplateInfolist::configure($schema);
     }
 
+    /**
+     * Define a tabela de listagem de templates.
+     */
     public static function table(Table $table): Table
     {
         return ChecklistTemplatesTable::configure($table);

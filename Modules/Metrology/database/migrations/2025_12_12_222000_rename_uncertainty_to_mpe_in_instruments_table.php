@@ -10,7 +10,8 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void {
+    public function up(): void
+    {
         Schema::table('instruments', function (Blueprint $table) {
             // Renomeia para o termo correto (Erro Máximo Permissível)
             if (Schema::hasColumn('instruments', 'uncertainty')) {
@@ -47,7 +48,8 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void {
+    public function down(): void
+    {
         Schema::table('instruments', function (Blueprint $table) {
             $table->renameColumn('mpe', 'uncertainty');
         });

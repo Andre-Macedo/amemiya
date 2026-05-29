@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Modules\Metrology\Policies;
 
-use Illuminate\Foundation\Auth\User as AuthUser;
-use Modules\Metrology\Models\AccessLog;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User as AuthUser;
+use Modules\System\Models\AccessLog;
 
 class AccessLogPolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:AccessLog');
@@ -66,5 +66,4 @@ class AccessLogPolicy
     {
         return $authUser->can('Reorder:AccessLog');
     }
-
 }

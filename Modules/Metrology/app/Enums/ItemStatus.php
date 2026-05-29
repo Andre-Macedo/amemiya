@@ -7,7 +7,10 @@ namespace Modules\Metrology\Enums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum ItemStatus: string implements HasLabel, HasColor
+/**
+ * Enum que representa o status operacional de um item calibrável (Instrumento ou Padrão).
+ */
+enum ItemStatus: string implements HasColor, HasLabel
 {
     case Active = 'active';
     case Inactive = 'inactive';
@@ -32,7 +35,7 @@ enum ItemStatus: string implements HasLabel, HasColor
         };
     }
 
-    public function getColor(): string | array | null
+    public function getColor(): string|array|null
     {
         return match ($this) {
             self::Active => 'success',

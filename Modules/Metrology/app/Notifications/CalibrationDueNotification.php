@@ -3,23 +3,23 @@
 namespace Modules\Metrology\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Notifications\Messages\MailMessage;
-use Modules\Metrology\Models\Instrument;
+use Illuminate\Notifications\Notification;
 
 class CalibrationDueNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     protected $instruments;
+
     protected $daysUntilDue;
 
     /**
      * Create a new notification instance.
      *
-     * @param \Illuminate\Database\Eloquent\Collection $instruments
-     * @param int $daysUntilDue
+     * @param  Collection  $instruments
      */
     public function __construct($instruments, int $daysUntilDue)
     {
@@ -53,7 +53,7 @@ class CalibrationDueNotification extends Notification implements ShouldQueue
         }
 
         if ($count > 5) {
-            $mail->line("...and " . ($count - 5) . " more.");
+            $mail->line('...and '.($count - 5).' more.');
         }
 
         return $mail

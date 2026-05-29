@@ -23,6 +23,12 @@ use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\S
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\Tables\ReferenceStandardsTable;
 use Modules\Metrology\Models\ReferenceStandard;
 
+/**
+ * Recurso Filament para gerenciamento de Padrões de Referência.
+ *
+ * Permite o cadastro e controle de padrões utilizados nas calibrações,
+ * incluindo rastreabilidade (pai/filho) e certificados.
+ */
 class ReferenceStandardResource extends Resource
 {
     protected static ?string $model = ReferenceStandard::class;
@@ -31,22 +37,33 @@ class ReferenceStandardResource extends Resource
 
     protected static ?string $cluster = MetrologyCluster::class;
 
-    protected static string|null|\UnitEnum $navigationGroup = "Padrões de Refêrencia";
+    protected static string|null|\UnitEnum $navigationGroup = 'Padrões de Refêrencia';
 
     protected static ?string $navigationLabel = 'Padrões de Referencia';
+
     protected static ?string $pluralModelLabel = 'Padrões de Referencia';
+
     protected static ?string $modelLabel = 'Padrão de Referencia';
 
+    /**
+     * Define o formulário de padrões.
+     */
     public static function form(Schema $schema): Schema
     {
         return ReferenceStandardForm::configure($schema);
     }
 
+    /**
+     * Define a visualização (InfoList) de detalhes do padrão.
+     */
     public static function infolist(Schema $schema): Schema
     {
         return ReferenceStandardInfolist::configure($schema);
     }
 
+    /**
+     * Define a tabela de listagem de padrões.
+     */
     public static function table(Table $table): Table
     {
         return ReferenceStandardsTable::configure($table);

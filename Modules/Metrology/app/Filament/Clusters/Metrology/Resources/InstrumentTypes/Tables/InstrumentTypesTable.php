@@ -29,6 +29,23 @@ class InstrumentTypesTable
                     ->badge()
                     ->color('info'), // Azulzinho para destacar
 
+                TextColumn::make('decision_rule')
+                    ->label('Regra de Decisão')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'simple' => 'gray',
+                        'uncertainty_accounted' => 'warning',
+                        'guard_band' => 'success',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'simple' => 'Simples',
+                        'uncertainty_accounted' => 'U Somada',
+                        'guard_band' => 'Banda de Guarda',
+                        default => $state,
+                    })
+                    ->sortable(),
+
                 TextColumn::make('instruments_count')
                     ->counts('instruments')
                     ->label('Nº de Instrumentos')

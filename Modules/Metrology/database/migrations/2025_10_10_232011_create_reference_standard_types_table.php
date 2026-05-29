@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('reference_standard_types', function (Blueprint $table) {
-            $table->id();
-            $table->string('name')->unique();
+            $table->ulid('id')->primary();
+            $table->foreignUlid('tenant_id')->nullable()->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+            $table->string('name');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -9,7 +9,8 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void {
+    public function up(): void
+    {
 
         Schema::table('calibrations', function (Blueprint $table) {
             if (Schema::hasColumn('calibrations', 'calibration_interval')) {
@@ -24,7 +25,8 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void {
+    public function down(): void
+    {
         Schema::table('calibrations', function (Blueprint $table) {
             $table->integer('calibration_interval')->nullable();
             $table->dropColumn(['temperature', 'humidity']);

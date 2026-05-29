@@ -29,7 +29,7 @@ class InstrumentInfolist
                                         TextEntry::make('instrumentType.name')->label('Tipo'),
                                         TextEntry::make('serial_number')->label('Número de Série'),
                                         TextEntry::make('asset_tag')->label('Nº Patrimônio')->placeholder('N/A'),
-                                        TextEntry::make('precision')->label('Precisão')->formatStateUsing(fn($state) => ucfirst($state)),
+                                        TextEntry::make('precision')->label('Precisão')->formatStateUsing(fn ($state) => ucfirst($state)),
                                         TextEntry::make('location')->label('Localização')->placeholder('N/A'),
                                         TextEntry::make('acquisition_date')->label('Data de Aquisição')->date('d/m/Y'),
                                         TextEntry::make('calibration_due')->label('Venc. Calibração')->date('d/m/Y')
@@ -48,9 +48,9 @@ class InstrumentInfolist
                                                 return 'success';
                                             }),
                                         TextEntry::make('status')->label('Status')
-                                            ->formatStateUsing(fn(string $state): string => ucfirst(str_replace('_', ' ', $state)))
+                                            ->formatStateUsing(fn (string $state): string => ucfirst(str_replace('_', ' ', $state)))
                                             ->badge()
-                                            ->color(fn(string $state): string => match ($state) {
+                                            ->color(fn (string $state): string => match ($state) {
                                                 'active' => 'success',
                                                 'in_calibration' => 'warning',
                                                 'expired' => 'danger',
@@ -75,7 +75,7 @@ class InstrumentInfolist
                         ->schema(function (Instrument $record) {
                             $latestCalibration = $record->calibrations()->with(['performedBy', 'checklist.items.referenceStandard'])->latest()->first();
 
-                            if (!$latestCalibration) {
+                            if (! $latestCalibration) {
                                 return [
                                     Placeholder::make('no_calibration')->content('Nenhum registro de calibração encontrado para este instrumento.'),
                                 ];
@@ -84,11 +84,11 @@ class InstrumentInfolist
                             $schema = [
                                 Grid::make(2)
                                     ->schema([
-                                        TextEntry::make('calibration_date')->label('Data da Calibração')->date('d/m/Y')->getStateUsing(fn() => $latestCalibration->calibration_date),
+                                        TextEntry::make('calibration_date')->label('Data da Calibração')->date('d/m/Y')->getStateUsing(fn () => $latestCalibration->calibration_date),
                                         TextEntry::make('result')
                                             ->label('Resultado')
                                             ->badge()
-                                            ->getStateUsing(fn() => $latestCalibration->result)
+                                            ->getStateUsing(fn () => $latestCalibration->result)
                                             ->formatStateUsing(fn (?string $state): string => match ($state) {
                                                 'approved' => 'Aprovado',
                                                 'rejected' => 'Reprovado',
@@ -99,8 +99,8 @@ class InstrumentInfolist
                                                 'rejected' => 'danger',
                                                 default => 'gray',
                                             }),
-                                        TextEntry::make('performedBy.name')->label('Executado Por')->getStateUsing(fn() => $latestCalibration->performedBy->name ?? 'N/A'),
-                                        TextEntry::make('notes')->label('Observações')->getStateUsing(fn() => $latestCalibration->notes)->placeholder('N/A')->columnSpanFull(),
+                                        TextEntry::make('performedBy.name')->label('Executado Por')->getStateUsing(fn () => $latestCalibration->performedBy->name ?? 'N/A'),
+                                        TextEntry::make('notes')->label('Observações')->getStateUsing(fn () => $latestCalibration->notes)->placeholder('N/A')->columnSpanFull(),
                                     ])->columnSpanFull(),
                             ];
 
@@ -116,12 +116,12 @@ class InstrumentInfolist
                                                     TextEntry::make('result')
                                                         ->label('Resultado')
                                                         ->badge()
-                                                        ->formatStateUsing(fn(?string $state): string => match ($state) {
+                                                        ->formatStateUsing(fn (?string $state): string => match ($state) {
                                                             'approved' => 'Aprovado',
                                                             'rejected' => 'Reprovado',
                                                             default => ucfirst($state ?? 'N/A'),
                                                         })
-                                                        ->color(fn(?string $state): string => match ($state) {
+                                                        ->color(fn (?string $state): string => match ($state) {
                                                             'approved' => 'success',
                                                             'rejected' => 'danger',
                                                             default => 'gray',
@@ -132,12 +132,13 @@ class InstrumentInfolist
                                                         if (is_array($state)) {
                                                             return empty($state) ? 'N/A' : implode(' | ', $state);
                                                         }
-                                                        return (string)$state;
-                                                    })->visible(fn($record) => $record->question_type === 'numeric'),
-                                                TextEntry::make('referenceStandard.name')->label('Padrão Utilizado')->placeholder('N/A')->visible(fn($record) => $record->question_type === 'numeric'),
-                                                TextEntry::make('notes')->label('Anotações')->placeholder('N/A')->visible(fn($record) => $record->question_type === 'text' && !empty($record->notes)),
+
+                                                        return (string) $state;
+                                                    })->visible(fn ($record) => $record->question_type === 'numeric'),
+                                                TextEntry::make('referenceStandard.name')->label('Padrão Utilizado')->placeholder('N/A')->visible(fn ($record) => $record->question_type === 'numeric'),
+                                                TextEntry::make('notes')->label('Anotações')->placeholder('N/A')->visible(fn ($record) => $record->question_type === 'text' && ! empty($record->notes)),
                                             ])
-                                            ->getStateUsing(fn() => $latestCalibration->checklist->items),
+                                            ->getStateUsing(fn () => $latestCalibration->checklist->items),
                                     ]);
                             }
 

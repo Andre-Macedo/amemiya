@@ -12,7 +12,7 @@ class InstrumentTypeInfolist
         return $schema
             ->components([
                 TextEntry::make('name')
-                ->label('Nome'),
+                    ->label('Nome'),
                 TextEntry::make('instruments_count')
                     ->counts('instruments')
                     ->label('Nº de Instrumentos Associados'),

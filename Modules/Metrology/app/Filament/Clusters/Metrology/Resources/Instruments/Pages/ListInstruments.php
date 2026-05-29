@@ -19,7 +19,6 @@ class ListInstruments extends ListRecords
 
     protected static string $resource = InstrumentResource::class;
 
-
     protected function getHeaderActions(): array
     {
         return [

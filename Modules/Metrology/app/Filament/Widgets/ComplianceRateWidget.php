@@ -7,6 +7,9 @@ use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
 use Modules\Metrology\Models\Calibration;
 
+/**
+ * Widget de gráfico (barra) mostrando a taxa de conformidade das calibrações nos últimos 30 dias.
+ */
 class ComplianceRateWidget extends ChartWidget
 {
     protected ?string $heading = 'Compliance Rate Widget';
@@ -22,7 +25,7 @@ class ComplianceRateWidget extends ChartWidget
             'datasets' => [
                 [
                     'label' => 'Approved Calibrations',
-                    'data' => $data->map(fn(TrendValue $value) => $value->aggregate),
+                    'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
                     'backgroundColor' => '#10b981',
                 ],
             ],

@@ -1,0 +1,72 @@
+<?php
+
+namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\Instruments\Widgets;
+
+use Filament\Widgets\ChartWidget;
+use Illuminate\Database\Eloquent\Model;
+use Modules\Metrology\Models\Calibration;
+use Modules\Metrology\Models\Instrument;
+
+class InstrumentDriftChart extends ChartWidget
+{
+    protected ?string $heading = 'Análise de Tendência (Histórico de Erro)';
+
+    // Configura para ocupar largura total na página de visualização
+    protected int|string|array $columnSpan = 'full';
+
+    // O Filament passa o registro atual para widgets nas páginas View/Edit se configurado corretamente
+    public ?Model $record = null;
+
+    protected function getData(): array
+    {
+        if (! $this->record) {
+            return [];
+        }
+
+        // Busca calibrações para este Instrumento
+        // Limita às últimas 10 para não poluir o gráfico
+        $calibrations = Calibration::query()
+            ->where('calibrated_item_type', Instrument::class)
+            ->where('calibrated_item_id', $this->record->id)
+            ->where('result', 'approved') // Apenas aprovadas
+            ->orderBy('calibration_date')
+            ->limit(10)
+            ->get();
+
+        $dataError = [];
+        $dataUncertainty = [];
+        $labels = [];
+
+        foreach ($calibrations as $cal) {
+            $labels[] = $cal->calibration_date->format('d/m/Y');
+
+            $dataError[] = (float) $cal->deviation;
+            // Adicional: Vamos plotar a Incerteza também para ver se está piorando
+            $dataUncertainty[] = (float) $cal->uncertainty;
+        }
+
+        return [
+            'datasets' => [
+                [
+                    'label' => 'Erro / Tendência (mm)',
+                    'data' => $dataError,
+                    'borderColor' => '#3b82f6', // Azul
+                    'fill' => false,
+                ],
+                [
+                    'label' => 'Incerteza (U)',
+                    'data' => $dataUncertainty,
+                    'borderColor' => '#ef4444', // Vermelho
+                    'borderDash' => [5, 5], // Linha tracejada
+                    'fill' => false,
+                ],
+            ],
+            'labels' => $labels,
+        ];
+    }
+
+    protected function getType(): string
+    {
+        return 'line';
+    }
+}

@@ -9,21 +9,23 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void {
+    public function up(): void
+    {
         Schema::table('checklist_templates', function (Blueprint $table) {
-            if(Schema::hasColumn('checklist_templates', 'instrument_type')) {
+            if (Schema::hasColumn('checklist_templates', 'instrument_type')) {
                 $table->dropColumn('instrument_type');
             }
-            $table->foreignId('instrument_type_id')->nullable();
+            $table->foreignUlid('instrument_type_id')->nullable();
         });
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void {
+    public function down(): void
+    {
         Schema::table('checklist_templates', function (Blueprint $table) {
-            if(Schema::hasColumn('checklist_templates', 'instrument_type_id')) {
+            if (Schema::hasColumn('checklist_templates', 'instrument_type_id')) {
                 $table->dropForeign('checklist_templates_instrument_type_id_foreign');
                 $table->dropColumn('instrument_type_id');
             }

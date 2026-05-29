@@ -12,7 +12,7 @@ use Modules\Metrology\Filament\Clusters\Metrology\Resources\AccessLogs\Pages\Lis
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\AccessLogs\Schemas\AccessLogForm;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\AccessLogs\Schemas\AccessLogInfolist;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\AccessLogs\Tables\AccessLogsTable;
-use Modules\Metrology\Models\AccessLog;
+use Modules\System\Models\AccessLog;
 
 class AccessLogResource extends Resource
 {
@@ -50,9 +50,9 @@ class AccessLogResource extends Resource
     {
         return [
             'index' => ListAccessLogs::route('/'),
-//            'create' => CreateAccessLog::route('/create'),
-//            'view' => ViewAccessLog::route('/{record}'),
-//            'edit' => EditAccessLog::route('/{record}/edit'),
+            //            'create' => CreateAccessLog::route('/create'),
+            //            'view' => ViewAccessLog::route('/{record}'),
+            //            'edit' => EditAccessLog::route('/{record}/edit'),
         ];
     }
 }

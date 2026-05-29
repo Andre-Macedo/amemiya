@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Metrology\Actions;
 
+use Modules\Metrology\DTOs\ChecklistCreationData;
 use Modules\Metrology\Models\Calibration;
 use Modules\Metrology\Models\Checklist;
 use Modules\Metrology\Models\ChecklistItem;
@@ -11,39 +12,38 @@ use Modules\Metrology\Models\ChecklistItem;
 class CreateChecklistAction
 {
     /**
-     * Cria um checklist e seus itens baseados no template.
-     *
-     * @param Calibration $calibration
-     * @param array{template_id: int, items: array} $checklistData
-     * @return Checklist
+     * Cria um checklist e seus itens baseados no template e dados fornecidos.
+     * Utiliza DTO para garantir a estrutura dos dados de entrada.
      */
-    public function execute(Calibration $calibration, array $checklistData): Checklist
+    public function execute(Calibration $calibration, ChecklistCreationData $checklistData): Checklist
     {
         $checklist = Checklist::create([
             'calibration_id' => $calibration->id,
-            'checklist_template_id' => $checklistData['template_id'],
+            'checklist_template_id' => $checklistData->templateId,
             'completed' => false,
         ]);
 
         $items = array_map(function ($item) use ($checklist) {
-            $hasResult = !empty($item['result']);
-            $hasReadings = !empty($item['readings']) && isset($item['readings'][0]['value']);
-            $isCompleted = $hasResult || $hasReadings;
+            $hasResult = ! empty($item->result);
+            $hasAsFoundReadings = ! empty($item->asFoundReadings) && isset($item->asFoundReadings[0]['value']);
+            $isCompleted = $hasResult || $hasAsFoundReadings;
 
             return [
                 'checklist_id' => $checklist->id,
-                'step' => $item['step'],
-                'question_type' => $item['question_type'],
-                'order' => $item['order'],
-                'required_readings' => $item['required_readings'] ?? 0,
+                'step' => $item->step,
+                'question_type' => $item->questionType,
+                'order' => $item->order,
+                'required_readings' => $item->requiredReadings,
                 'completed' => $isCompleted,
-                'readings' => isset($item['readings']) ? json_encode(array_column($item['readings'], 'value')) : null,
-                'uncertainty' => $item['uncertainty'] ?? null,
-                'result' => $item['result'] ?? null,
-                'notes' => $item['notes'] ?? null,
-                'reference_standard_id' => $item['reference_standard_id'] ?? null,
+                'as_found_readings' => ! empty($item->asFoundReadings) ? json_encode(array_column($item->asFoundReadings, 'value')) : null,
+                'as_left_readings' => ! empty($item->asLeftReadings) ? json_encode(array_column($item->asLeftReadings, 'value')) : null,
+                'adjusted' => $item->adjusted,
+                'uncertainty' => $item->uncertainty,
+                'result' => $item->result,
+                'notes' => $item->notes,
+                'reference_standard_id' => $item->referenceStandardId,
             ];
-        }, $checklistData['items']);
+        }, $checklistData->items);
 
         ChecklistItem::insert($items);
 
