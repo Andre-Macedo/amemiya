@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Modules\Metrology\Policies;
 
+use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User as AuthUser;
 use Modules\Metrology\Models\Calibration;
-use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CalibrationPolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(AuthUser $authUser): bool
     {
         return $authUser->can('ViewAny:Calibration');
@@ -66,5 +66,4 @@ class CalibrationPolicy
     {
         return $authUser->can('Reorder:Calibration');
     }
-
 }

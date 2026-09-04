@@ -7,6 +7,7 @@ namespace Modules\Metrology\Actions;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Modules\Metrology\Models\Calibration;
+use Modules\System\Models\Setting;
 use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
 
 class MergeCertificateAttachmentsAction
@@ -33,12 +34,22 @@ class MergeCertificateAttachmentsAction
             $instrument = $calibration->calibratedItem;
             $data = app(PrepareCertificateDataAction::class)->execute($calibration);
 
+            $identity = [
+                'lab_name' => Setting::getValue('lab_name', config('app.name')),
+                'lab_address' => Setting::getValue('lab_address', ''),
+                'lab_contact' => Setting::getValue('lab_contact', ''),
+                'lab_logo_path' => Setting::getValue('lab_logo_path'),
+                'certificate_footer' => Setting::getValue('certificate_footer', 'Digital signature compliant with FDA 21 CFR Part 11.'),
+                'accent_color' => Setting::getValue('lab_accent_color', '#3b82f6'),
+            ];
+
             $pdfContent = Pdf::loadView('metrology::pdf.certificate', [
                 'calibration' => $calibration,
                 'record' => $calibration, // View espera $record
                 'instrument' => $instrument,
                 'results' => $data['results'],
                 'standards' => $data['standards'],
+                'identity' => $identity,
             ])->output();
 
             // Adiciona o certificado principal (string mode)

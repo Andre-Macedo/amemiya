@@ -58,10 +58,10 @@ class PrepareCertificateDataAction
                         continue;
                     }
 
-                    $avg = $readings->avg();
+                    $avg = round((float) $readings->avg(), 8);
                     // Obtém valor nominal do item ou tenta extrair do texto do passo
-                    $nominal = (float) $item->nominal_value ?? (float) filter_var($item->step, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-                    $error = $avg - $nominal;
+                    $nominal = (float) ($item->nominal_value ?? filter_var($item->step, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION));
+                    $error = round($avg - $nominal, 8);
 
                     $results[] = [
                         'step' => $item->step,
@@ -70,7 +70,7 @@ class PrepareCertificateDataAction
                         'average' => $avg,
                         'error' => $error,
                         'uncertainty' => $item->uncertainty ?? $calibration->uncertainty, // Usa incerteza global se a do item estiver ausente
-                        'k_factor' => 2.00, // Padrão k=2
+                        'k_factor' => $item->k_factor ?? 2.00, // Fator de abrangência do item ou padrão k=2
                         'result' => $item->result ?? ($calibration->result === CalibrationResult::Approved ? 'Approved' : 'Rejected'),
                     ];
                 }

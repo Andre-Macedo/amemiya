@@ -85,10 +85,10 @@
             <tbody>
                 @forelse($standards as $std)
                     <tr>
-                        <td style="text-align: left;">{{ $std->name }}</td>
-                        <td>{{ $std->serial_number }}</td>
+                        <td style="text-align: left;">{{ $std->name ?? 'N/A' }}</td>
+                        <td>{{ $std->serial_number ?? 'N/A' }}</td>
                         <td>{{ $std->last_certificate_number ?? 'N/A' }}</td>
-                        <td>{{ $std->next_calibration_date ? \Illuminate\Support\Carbon::parse($std->next_calibration_date)->format('d/m/Y') : '-' }}</td>
+                        <td>{{ !empty($std->next_calibration_date) ? \Illuminate\Support\Carbon::parse($std->next_calibration_date)->format('d/m/Y') : '-' }}</td>
                     </tr>
                 @empty
                     <tr><td colspan="4">Nenhum padrão registrado.</td></tr>

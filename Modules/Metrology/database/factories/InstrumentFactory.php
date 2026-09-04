@@ -36,7 +36,7 @@ class InstrumentFactory extends Factory
             'location' => $this->faker->city,
             'acquisition_date' => $this->faker->dateTimeBetween('-5 years', 'now'),
             'calibration_due' => $this->faker->dateTimeBetween('now', '+1 year'),
-            'status' => $this->faker->randomElement(ItemStatus::cases())->value,
+            'status' => ItemStatus::Active,
             'image_path' => null,
         ];
     }

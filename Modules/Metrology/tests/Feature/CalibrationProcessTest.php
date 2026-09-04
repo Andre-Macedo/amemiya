@@ -109,6 +109,7 @@ test('full calibration lifecycle approved via event listener', function () {
 
     // 4. Atualiza Calibração -> Deve Disparar Listener -> ProcessCalibrationAction
     $calibration->update([
+        'status' => 'published',
         'deviation' => $result['bias'],
         'uncertainty' => $result['expanded_uncertainty'],
         'result' => CalibrationResult::Approved, // Intenção inicial
@@ -132,11 +133,11 @@ test('full calibration lifecycle rejected via event listener', function () {
         'calibration_date' => now(),
         'performed_by_id' => $this->user->id,
         'type' => 'internal',
-        'type' => 'internal',
     ]);
 
     // Simula resultado ruim
     $calibration->update([
+        'status' => 'published',
         'deviation' => 0.05, // > MPE 0.03
         'uncertainty' => 0.005,
         'result' => CalibrationResult::Approved, // Tenta aprovar

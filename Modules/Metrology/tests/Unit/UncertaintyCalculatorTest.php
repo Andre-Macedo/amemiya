@@ -49,3 +49,39 @@ test('it returns zeros for empty readings', function () {
     expect($result->bias)->toBe(0.0)
         ->and($result->expandedUncertainty)->toBe(0.0);
 });
+
+test('it calculates dynamic k factor via welch satterthwaite for small n', function () {
+    $calculator = new UncertaintyCalculator;
+
+    // n=3 com dispersão: uA domina, veff ≈ 2, k deve ser próximo de 4.30
+    $data = new MeasurementCalculationData(
+        readings: [10.00, 10.05, 10.10],
+        resolution: 0.0001,
+        standardActualValue: 10.00,
+        standardUncertainty: 0.0001,
+        standardK: 2.0,
+    );
+
+    $result = $calculator->calculate($data);
+
+    expect($result->kFactor)->toBeGreaterThan(3.5)
+        ->and($result->kFactor)->toBeLessThan(5.0)
+        ->and($result->effectiveDegreesOfFreedom)->toBeLessThan(5.0);
+});
+
+test('it approaches k 2.00 for large n or dominant type b', function () {
+    $calculator = new UncertaintyCalculator;
+
+    // n=30 com uA quase nulo
+    $data = new MeasurementCalculationData(
+        readings: array_fill(0, 30, 10.01),
+        resolution: 0.01,
+        standardActualValue: 10.00,
+        standardUncertainty: 0.005,
+        standardK: 2.0,
+    );
+
+    $result = $calculator->calculate($data);
+
+    expect($result->kFactor)->toBeLessThanOrEqual(2.10);
+});

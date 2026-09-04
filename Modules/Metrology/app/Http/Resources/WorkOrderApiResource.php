@@ -17,6 +17,7 @@ class WorkOrderApiResource extends JsonResource
             'status' => $this->status,
             'item_id' => $this->item_id,
             'item_type' => $this->item_type,
+            'item_name' => $this->item?->name,
             'item' => $this->item ? [
                 'id' => $this->item->id,
                 'name' => $this->item->name,

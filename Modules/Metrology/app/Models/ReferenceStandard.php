@@ -203,6 +203,11 @@ class ReferenceStandard extends Model implements CalibratableItem
         return null;
     }
 
+    public function getDecisionRule(): string
+    {
+        return 'simple';
+    }
+
     public function getDecisionRuleStrategy(): DecisionRuleStrategy
     {
         // Estratégia padrão se nenhuma for especificada

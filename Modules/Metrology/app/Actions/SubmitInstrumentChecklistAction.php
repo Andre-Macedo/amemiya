@@ -37,11 +37,6 @@ class SubmitInstrumentChecklistAction
     public function execute(InstrumentChecklistSubmissionData $data): Calibration
     {
         return DB::transaction(function () use ($data) {
-            $column = 'instrument_id';
-            $column = 'instrument_id';
-            // Verifica se a migração polimórfica rodou.
-            // Assumindo mapeamento do instrument_id para o relacionamento polimórfico.
-
             $calibration = new Calibration;
             $calibration->calibration_date = $data->calibrationDate;
             $calibration->performed_by_id = $data->performedById;

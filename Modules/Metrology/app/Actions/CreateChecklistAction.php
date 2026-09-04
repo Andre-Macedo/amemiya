@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Metrology\Actions;
 
+use Illuminate\Support\Str;
 use Modules\Metrology\DTOs\ChecklistCreationData;
 use Modules\Metrology\Models\Calibration;
 use Modules\Metrology\Models\Checklist;
@@ -15,8 +16,12 @@ class CreateChecklistAction
      * Cria um checklist e seus itens baseados no template e dados fornecidos.
      * Utiliza DTO para garantir a estrutura dos dados de entrada.
      */
-    public function execute(Calibration $calibration, ChecklistCreationData $checklistData): Checklist
+    public function execute(Calibration $calibration, ChecklistCreationData|array $checklistData): Checklist
     {
+        if (is_array($checklistData)) {
+            $checklistData = ChecklistCreationData::fromArray($checklistData);
+        }
+
         $checklist = Checklist::create([
             'calibration_id' => $calibration->id,
             'checklist_template_id' => $checklistData->templateId,
@@ -29,6 +34,8 @@ class CreateChecklistAction
             $isCompleted = $hasResult || $hasAsFoundReadings;
 
             return [
+                'id' => (string) Str::ulid(),
+                'tenant_id' => $checklist->tenant_id,
                 'checklist_id' => $checklist->id,
                 'step' => $item->step,
                 'question_type' => $item->questionType,

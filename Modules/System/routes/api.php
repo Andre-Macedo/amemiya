@@ -4,20 +4,19 @@ use App\Http\Middleware\InitializeTenancyByHeader;
 use App\Http\Middleware\VerifySubscription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Modules\System\Http\Controllers\Api\V1\AuthApiController;
 use Modules\System\Http\Controllers\Api\V1\AuditLogApiController;
+use Modules\System\Http\Controllers\Api\V1\AuthApiController;
 use Modules\System\Http\Controllers\Api\V1\BillingApiController;
 use Modules\System\Http\Controllers\Api\V1\LabIdentityApiController;
+use Modules\System\Http\Controllers\Api\V1\MachineApiController;
 use Modules\System\Http\Controllers\Api\V1\NotificationApiController;
 use Modules\System\Http\Controllers\Api\V1\ProfileApiController;
 use Modules\System\Http\Controllers\Api\V1\SettingsApiController;
 use Modules\System\Http\Controllers\Api\V1\StationApiController;
-use Modules\System\Http\Controllers\Api\V1\MachineApiController;
 use Modules\System\Http\Controllers\Api\V1\SupplierApiController;
 use Modules\System\Http\Controllers\Api\V1\TicketApiController;
 use Modules\System\Http\Controllers\Api\V1\UserApiController;
 use Modules\System\Http\Controllers\Api\V1\UserCompetenceApiController;
-use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 
 /*
 |--------------------------------------------------------------------------

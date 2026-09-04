@@ -56,7 +56,7 @@ class SupplierAccreditationApiController extends Controller
     /**
      * Check if a supplier is accredited for a specific instrument type.
      */
-    public function check(Supplier $supplier, int $instrumentTypeId): JsonResponse
+    public function check(Supplier $supplier, string $instrumentTypeId): JsonResponse
     {
         $isAccredited = $supplier->accreditedInstrumentTypes()
             ->where('instrument_types.id', $instrumentTypeId)

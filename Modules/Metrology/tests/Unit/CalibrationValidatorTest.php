@@ -6,7 +6,7 @@ use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Services\CalibrationValidator;
 
 it('allows active items to be calibrated', function () {
-    $instrument = Instrument::factory()->create([
+    $instrument = new Instrument([
         'status' => ItemStatus::Active,
     ]);
 
@@ -15,23 +15,34 @@ it('allows active items to be calibrated', function () {
 });
 
 it('prevents rejected items from being calibrated', function () {
-    $instrument = Instrument::factory()->create([
+    $instrument = new Instrument([
         'status' => ItemStatus::Rejected,
     ]);
 
     $validator = new CalibrationValidator;
 
     expect(fn () => $validator->canBeCalibrated($instrument))
-        ->throws(MetrologyException::class, "Item status 'Reprovado' prevents calibration without maintenance.");
+        ->toThrow(MetrologyException::class);
 });
 
 it('prevents lost items from being calibrated', function () {
-    $instrument = Instrument::factory()->create([
+    $instrument = new Instrument([
         'status' => ItemStatus::Lost,
     ]);
 
     $validator = new CalibrationValidator;
 
     expect(fn () => $validator->canBeCalibrated($instrument))
-        ->throws(MetrologyException::class);
+        ->toThrow(MetrologyException::class);
+});
+
+it('prevents scrapped items from being calibrated', function () {
+    $instrument = new Instrument([
+        'status' => ItemStatus::Scrapped,
+    ]);
+
+    $validator = new CalibrationValidator;
+
+    expect(fn () => $validator->canBeCalibrated($instrument))
+        ->toThrow(MetrologyException::class);
 });

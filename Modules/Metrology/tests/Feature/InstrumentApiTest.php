@@ -3,13 +3,23 @@
 namespace Modules\Metrology\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\InstrumentType;
+use Modules\System\Models\User;
 use Tests\TestCase;
 
 class InstrumentApiTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $user = User::factory()->create();
+        Sanctum::actingAs($user);
+    }
 
     public function test_pagination_respects_per_page_parameter()
     {

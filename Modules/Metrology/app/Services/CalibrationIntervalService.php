@@ -14,9 +14,35 @@ class CalibrationIntervalService
      */
     public function analyze(Instrument $instrument): ?array
     {
+        // 1. Reset por reprovação recente (ILAC-G24 Seção 6.3)
+        $latestRejection = $instrument->calibrations()
+            ->where('result', 'rejected')
+            ->latest('calibration_date')
+            ->first();
+
+        $latestApproval = $instrument->calibrations()
+            ->whereIn('result', ['approved', 'approved_with_restrictions'])
+            ->latest('calibration_date')
+            ->first();
+
+        if ($latestRejection && (
+            ! $latestApproval ||
+            $latestRejection->calibration_date->gt($latestApproval->calibration_date)
+        )) {
+            return [
+                'type' => 'reset',
+                'current_interval' => $instrument->getCalibrationFrequencyMonths(),
+                'suggested_interval' => 3,
+                'reliability_score' => 'Critical',
+                'max_limit_usage' => 'N/A',
+                'reason' => 'Recent rejection detected. Interval reset to minimum (3 months) per ILAC-G24 Section 6.3.',
+                'method' => 'ILAC-G24 Simple Response',
+            ];
+        }
+
         // Requer pelo menos 3 calibrações para uma análise de tendência segura
         $calibrations = $instrument->calibrations()
-            ->whereIn('result', ['approved', 'approved_with_restrictions']) // Ignora rejeitadas para a tendência de estabilidade, mas rejeições deveriam resetar o intervalo.
+            ->whereIn('result', ['approved', 'approved_with_restrictions'])
             ->latest('calibration_date')
             ->take(3)
             ->get();

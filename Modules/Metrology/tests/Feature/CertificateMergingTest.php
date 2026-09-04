@@ -63,6 +63,10 @@ class CertificateMergingTest extends TestCase
         // Mock PrepareCertificateDataAction
         $mockStandard = new class
         {
+            public $name = 'Standard Padrão';
+
+            public $serial_number = 'STD-001';
+
             public $active_certificate_url = 'certificates/standard.pdf';
         };
 

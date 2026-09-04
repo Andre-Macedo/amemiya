@@ -30,20 +30,20 @@ class ProcessCalibrationListener
     {
         $calibration = $event->calibration;
 
-        // 1. Processa Lógica Central de Calibração (Status, Data de Vencimento)
-        $this->processAction->execute($calibration);
-
-        // 2. Cria Checklist se houver input (via Filament/API)
+        // 1. Cria Checklist se houver input (via Filament/API)
         if (! empty($calibration->checklistInput)) {
             $dto = ChecklistCreationData::fromArray($calibration->checklistInput);
             $this->createChecklistAction->execute($calibration, $dto);
         }
 
-        // 3. Atualiza Itens do Kit se houver input
+        // 2. Atualiza Itens do Kit se houver input
         if (! empty($calibration->kitItemsInput)) {
             $dto = KitUpdateData::fromArray($calibration->kitItemsInput);
             $this->updateKitAction->execute($calibration, $dto);
         }
+
+        // 3. Processa Lógica Central de Calibração (Status, Data de Vencimento, Procedure Snapshot)
+        $this->processAction->execute($calibration);
 
         // 4. Envia Notificação se Reprovado
         // Verifica se a classe de notificação do Filament existe e se não estamos em testes para evitar erros de resolução.

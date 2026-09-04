@@ -21,6 +21,8 @@ interface CalibratableItem
 
     public function getMaximumPermissibleError(): ?float;
 
+    public function getDecisionRule(): string;
+
     public function getDecisionRuleStrategy(): DecisionRuleStrategy;
 
     public function processCalibrationResult(Calibration $calibration, CalibrationResult $status): void;

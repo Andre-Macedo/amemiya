@@ -24,6 +24,7 @@ class RectifyCalibrationAction
         // 1. Clona os dados básicos
         $newCalibration = $source->replicate([
             'id',
+            'verification_hash',
             'created_at',
             'updated_at',
             'approved_by_id',
