@@ -105,6 +105,12 @@ class ProcessCalibrationAction
         if ($result === CalibrationResult::Approved) {
             $template = $type?->pass_statement_template ?? "O item atende aos requisitos de erro máximo permissível (MPE) estabelecidos, considerando a regra de decisão {$ruleName}.";
             $calibration->conformity_statement = $template;
+        } elseif ($result === CalibrationResult::ApprovedWithRestrictions) {
+            if ($calibration->as_found_result === 'rejected' || $calibration->as_found_result === 'fail') {
+                $calibration->conformity_statement = "O item atende aos requisitos de erro máximo permissível (MPE) estabelecidos, aprovado após ajuste e calibração final, considerando a regra de decisão {$ruleName}.";
+            } else {
+                $calibration->conformity_statement = "O item atende aos requisitos de erro máximo permissível com restrições operacionais, considerando a regra de decisão {$ruleName}.";
+            }
         } elseif ($result === CalibrationResult::Rejected) {
             $template = $type?->fail_statement_template ?? "O item NÃO atende aos requisitos de erro máximo permissível (MPE) estabelecidos, baseando-se na regra de decisão {$ruleName}.";
             $calibration->conformity_statement = $template;

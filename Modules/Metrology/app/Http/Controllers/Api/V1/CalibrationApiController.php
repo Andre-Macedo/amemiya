@@ -14,6 +14,7 @@ use Modules\Metrology\Actions\ApproveCalibrationAction;
 use Modules\Metrology\Actions\CreateCalibrationAction;
 use Modules\Metrology\Actions\RejectCalibrationAction;
 use Modules\Metrology\DTOs\CalibrationSubmissionDTO;
+use Modules\Metrology\Exceptions\MetrologyException;
 use Modules\Metrology\Http\Requests\StoreCalibrationRequest;
 use Modules\Metrology\Http\Resources\CalibrationApiResource;
 use Modules\Metrology\Models\Calibration;
@@ -146,7 +147,11 @@ class CalibrationApiController extends Controller
         RateLimiter::clear($throttleKey);
 
         $calibration = Calibration::findOrFail($id);
-        $action->execute($calibration, $user);
+        try {
+            $action->execute($calibration, $user);
+        } catch (MetrologyException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        }
 
         return response()->json([
             'message' => 'Calibration approved and signed.',

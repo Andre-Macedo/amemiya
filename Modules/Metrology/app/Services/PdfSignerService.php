@@ -45,11 +45,10 @@ class PdfSignerService
             $pdf->useTemplate($templateId);
 
             // 4. Add Rubric Image (if provided and on the last page usually? Or all? Let's assume Technician signs)
-            // For now, let's put it on the bottom right of the LAST page or where defined.
-            // In a real scenario, we'd need coordinates passed or hardcoded for the template.
-            // Let's assume a standard coordinates for now: x=140, y=250 (just an example)
+            // 4. Add Rubric Image
             if ($rubricImagePath && $pageNo === $pageCount && file_exists($rubricImagePath)) {
-                $pdf->Image($rubricImagePath, 140, 250, 40, 0, 'PNG');
+                $pos = config('metrology.pdf_rubric_position', ['x' => 140, 'y' => 250, 'w' => 40]);
+                $pdf->Image($rubricImagePath, (float) $pos['x'], (float) $pos['y'], (float) $pos['w'], 0, 'PNG');
             }
         }
 

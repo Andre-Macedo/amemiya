@@ -20,11 +20,13 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Modules\Metrology\Actions\ApproveCalibrationAction;
 use Modules\Metrology\Actions\ExportCalibrationToExcelAction;
 use Modules\Metrology\Actions\MergeCertificateAttachmentsAction;
 use Modules\Metrology\Actions\PrepareCertificateDataAction;
 use Modules\Metrology\Actions\RectifyCalibrationAction;
 use Modules\Metrology\Enums\CalibrationResult;
+use Modules\Metrology\Exceptions\MetrologyException;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Calibrations\Pages\EditCalibration;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\Calibrations\Pages\ViewCalibration;
 use Modules\Metrology\Models\Calibration;
@@ -107,17 +109,25 @@ class CalibrationsTable
                         ] : [])
                         ->visible(fn (Calibration $record) => $record->status !== 'published')
                         ->action(function (Calibration $record, array $data) {
-                            $record->update([
-                                'status' => 'published',
-                                'approved_by_id' => auth()->id(),
-                                'approved_at' => now(),
-                                'amendment_reason' => $data['amendment_reason'] ?? null,
-                            ]);
+                            if (! empty($data['amendment_reason'])) {
+                                $record->amendment_reason = $data['amendment_reason'];
+                                $record->save();
+                            }
 
-                            Notification::make()
-                                ->title('Calibração Aprovada')
-                                ->success()
-                                ->send();
+                            try {
+                                app(ApproveCalibrationAction::class)->execute($record, auth()->user());
+
+                                Notification::make()
+                                    ->title('Calibração Aprovada')
+                                    ->success()
+                                    ->send();
+                            } catch (MetrologyException $e) {
+                                Notification::make()
+                                    ->title('Erro na Aprovação')
+                                    ->body($e->getMessage())
+                                    ->danger()
+                                    ->send();
+                            }
                         }),
 
                     Action::make('rectify')

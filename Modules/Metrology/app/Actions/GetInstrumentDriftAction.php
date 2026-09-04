@@ -23,12 +23,13 @@ class GetInstrumentDriftAction
      */
     public function execute(Instrument $instrument, ?string $nominalValue = null): array
     {
-        $query = $instrument->calibrations()
+        $calibrations = $instrument->calibrations()
+            ->with(['checklist.items'])
             ->where('result', '!=', 'rejected')
             ->latest('calibration_date')
-            ->limit(10);
-
-        $calibrations = $query->get()->reverse();
+            ->limit(10)
+            ->get()
+            ->reverse();
 
         $labels = [];
         $dataError = [];
@@ -38,15 +39,11 @@ class GetInstrumentDriftAction
             $labels[] = $calibration->calibration_date->format('d/m/Y');
 
             if ($nominalValue) {
-                $item = $calibration->checklist->items()
-                    ->where('nominal_value', $nominalValue)
-                    ->first();
-
-                if (! $item) {
-                    $item = $calibration->checklist->items()
-                        ->where('step', 'like', "%{$nominalValue}%")
-                        ->first();
-                }
+                $items = $calibration->checklist?->items ?? collect();
+                $item = $items->first(function ($i) use ($nominalValue) {
+                    return (string) $i->nominal_value === (string) $nominalValue
+                        || str_contains((string) $i->step, (string) $nominalValue);
+                });
 
                 if ($item && ! empty($item->readings)) {
                     $readings = is_array($item->readings) ? $item->readings : json_decode($item->readings, true);
@@ -88,12 +85,10 @@ class GetInstrumentDriftAction
                     'fill' => false,
                 ],
             ],
-            'available_points' => $instrument->calibrations()
-                ->latest()
-                ->first()?->checklist?->items
+            'available_points' => $calibrations->last()?->checklist?->items
                 ?->pluck('nominal_value')
-                ->filter()
-                ->values() ?? [],
+                ?->filter()
+                ?->values() ?? [],
         ];
     }
 }
