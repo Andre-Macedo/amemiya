@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use Modules\Metrology\Models\InstrumentType;
+use Modules\Metrology\Models\SupplierAccreditation;
 
 /**
  * @property int $id
@@ -60,6 +61,7 @@ class Supplier extends Model
     public function accreditedInstrumentTypes(): BelongsToMany
     {
         return $this->belongsToMany(InstrumentType::class, 'supplier_accreditations')
+            ->using(SupplierAccreditation::class)
             ->withPivot(['range', 'uncertainty'])
             ->withTimestamps();
     }

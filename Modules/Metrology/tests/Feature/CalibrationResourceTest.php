@@ -1,5 +1,6 @@
 <?php
 
+use Laravel\Sanctum\Sanctum;
 use Modules\Metrology\Models\Calibration;
 use Modules\Metrology\Models\Checklist;
 use Modules\Metrology\Models\ChecklistItem;
@@ -10,6 +11,9 @@ use Modules\System\Models\User;
 
 it('includes nested item and formatted as_found/as_left readings', function () {
     // Arrange
+    $user = User::factory()->create();
+    Sanctum::actingAs($user);
+
     $type = InstrumentType::factory()->create();
     $instrument = Instrument::factory()->create([
         'instrument_type_id' => $type->id,

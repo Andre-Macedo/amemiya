@@ -55,7 +55,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/instruments/export', [InstrumentApiController::class, 'export']);
     Route::get('/instruments/batch/labels', [InstrumentApiController::class, 'batchLabels']);
     Route::apiResource('instruments', InstrumentApiController::class);
+    Route::apiResource('metrology/instruments', InstrumentApiController::class);
     Route::apiResource('instrument-types', InstrumentTypeApiController::class);
+    Route::apiResource('metrology/instrument-types', InstrumentTypeApiController::class);
     Route::get('instruments/{instrument}/intermediate-checks', [IntermediateCheckApiController::class, 'index']);
     Route::post('intermediate-checks', [IntermediateCheckApiController::class, 'store']);
 
@@ -75,9 +77,12 @@ Route::middleware('auth:sanctum')->group(function () {
     // Calibrations CRUD
     Route::get('/calibrations/export', [CalibrationApiController::class, 'export']);
     Route::apiResource('calibrations', CalibrationApiController::class)->except(['store']);
+    Route::apiResource('metrology/calibrations', CalibrationApiController::class)->except(['store']);
     Route::post('/metrology/calibrations', [CalibrationApiController::class, 'store']);
     Route::post('/calibrations/{id}/approve', [CalibrationApiController::class, 'approve']);
     Route::post('/calibrations/{id}/reject', [CalibrationApiController::class, 'reject']);
+    Route::post('/metrology/calibrations/{id}/approve', [CalibrationApiController::class, 'approve']);
+    Route::post('/metrology/calibrations/{id}/reject', [CalibrationApiController::class, 'reject']);
     Route::get('/calibrations/{id}/traceability-chain', [TraceabilityController::class, 'show']);
 
     // Non-Conformities (NC)
@@ -86,6 +91,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/non-conformities/{id}', [NonConformityApiController::class, 'show']);
     Route::put('/non-conformities/{id}', [NonConformityApiController::class, 'update']);
     Route::post('/non-conformities/{id}/close', [NonConformityApiController::class, 'close']);
+
+    Route::get('/metrology/non-conformities/export', [NonConformityApiController::class, 'export']);
+    Route::get('/metrology/non-conformities', [NonConformityApiController::class, 'index']);
+    Route::get('/metrology/non-conformities/{id}', [NonConformityApiController::class, 'show']);
+    Route::put('/metrology/non-conformities/{id}', [NonConformityApiController::class, 'update']);
+    Route::post('/metrology/non-conformities/{id}/close', [NonConformityApiController::class, 'close']);
 
     // Utils
     Route::get('/calibrations/{calibration}/pdf', [CalibrationPdfController::class, 'download'])->name('calibrations.pdf');
@@ -97,6 +108,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Materials
     Route::apiResource('materials', MaterialApiController::class);
+    Route::apiResource('metrology/materials', MaterialApiController::class);
 
     // Maintenance
     Route::get('maintenance', [MaintenanceApiController::class, 'index']);
@@ -105,13 +117,19 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Work Orders
     Route::apiResource('work-orders', WorkOrderApiController::class);
+    Route::apiResource('metrology/work-orders', WorkOrderApiController::class);
 
     // Supplier Accreditations
     Route::get('suppliers/{supplier}/accreditations', [SupplierAccreditationApiController::class, 'index']);
     Route::post('suppliers/{supplier}/accreditations', [SupplierAccreditationApiController::class, 'sync']);
     Route::get('suppliers/{supplier}/check-accreditation/{instrumentType}', [SupplierAccreditationApiController::class, 'check']);
+    Route::get('metrology/suppliers/{supplier}/accreditations', [SupplierAccreditationApiController::class, 'index']);
+    Route::post('metrology/suppliers/{supplier}/accreditations', [SupplierAccreditationApiController::class, 'sync']);
+    Route::get('metrology/suppliers/{supplier}/check-accreditation/{instrumentType}', [SupplierAccreditationApiController::class, 'check']);
 
     // Attachments
     Route::post('attachments', [AttachmentApiController::class, 'store']);
     Route::delete('attachments/{attachment}', [AttachmentApiController::class, 'destroy']);
+    Route::post('metrology/attachments', [AttachmentApiController::class, 'store']);
+    Route::delete('metrology/attachments/{attachment}', [AttachmentApiController::class, 'destroy']);
 });

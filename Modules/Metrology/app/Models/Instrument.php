@@ -21,6 +21,7 @@ use Modules\Metrology\Services\DecisionRules\DecisionRuleStrategy;
 use Modules\Metrology\Services\DecisionRules\GuardBand;
 use Modules\Metrology\Services\DecisionRules\SimpleAcceptance;
 use Modules\Metrology\Services\DecisionRules\UncertaintyAccounted;
+use Modules\Metrology\Services\MpeCalculator;
 use Modules\Metrology\Traits\HasAssetIdentity;
 use Modules\Metrology\Traits\HasAttachments;
 use Modules\Metrology\Traits\HasStateTransitions;
@@ -50,6 +51,7 @@ class Instrument extends Model implements CalibratableItem
         'instrument_type_id',
         'mpe',
         'mpe_value',
+        'mpe_type',
         'measuring_range',
         'resolution',
         'manufacturer',
@@ -146,29 +148,11 @@ class Instrument extends Model implements CalibratableItem
 
     /**
      * Obtém o Erro Máximo Permissível (MPE) como float.
-     * Prioriza o valor numérico puro do banco.
+     * Suporta valores absolutos, percentuais (%) e em ppm resolvidos pelo MpeCalculator.
      */
-    public function getMaximumPermissibleError(): ?float
+    public function getMaximumPermissibleError(?float $nominalValue = null): ?float
     {
-        if ($this->mpe_value !== null) {
-            return (float) $this->mpe_value;
-        }
-
-        return $this->parseMpeFromString($this->mpe);
-    }
-
-    protected function parseMpeFromString(mixed $mpe): float
-    {
-        $mpe = (string) $mpe;
-
-        if (empty($mpe) || str_contains($mpe, '%')) {
-            return 0.0;
-        }
-
-        $normalized = str_replace(',', '.', $mpe);
-        $numericValue = preg_replace('/[^0-9.]/', '', $normalized);
-
-        return is_numeric($numericValue) ? (float) $numericValue : 0.0;
+        return MpeCalculator::resolve($this, $nominalValue);
     }
 
     public function getDecisionRule(): string
@@ -206,10 +190,17 @@ class Instrument extends Model implements CalibratableItem
             $this->calibration_due = $nextDate;
             $this->current_supplier_id = null;
 
-            $this->transitionTo(ItemStatus::Active);
+            if ($this->status !== ItemStatus::Active) {
+                $this->transitionTo(ItemStatus::Active);
+            }
+            $this->save();
 
         } elseif ($status === CalibrationResult::Rejected) {
-            $this->transitionTo(ItemStatus::Rejected);
+            if ($this->status !== ItemStatus::Rejected) {
+                $this->transitionTo(ItemStatus::Rejected);
+            } else {
+                $this->save();
+            }
         }
     }
 }

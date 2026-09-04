@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Modules\Metrology\Actions;
 
+use App\Models\Role;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Modules\Metrology\Contracts\CalibratableItem;
 use Modules\Metrology\Enums\CalibrationResult;
+use Modules\Metrology\Exceptions\MpeNotResolvableException;
 use Modules\Metrology\Models\Calibration;
 use Modules\Metrology\Models\NonConformity;
 use Modules\Metrology\Notifications\CalibrationRejectedNotification;
@@ -112,7 +115,19 @@ class ProcessCalibrationAction
 
     private function evaluateResult(Calibration $calibration, CalibratableItem $item): void
     {
-        $limit = $item->getMaximumPermissibleError();
+        $nominal = $calibration->nominal_value
+            ?? $calibration->checklist?->items()
+                ->whereNotNull('nominal_value')
+                ->value('nominal_value');
+        $nominalValue = $nominal !== null ? (float) $nominal : null;
+
+        try {
+            $limit = $item->getMaximumPermissibleError($nominalValue);
+        } catch (MpeNotResolvableException $e) {
+            Log::warning("MPE não resolvível para {$item->name}: {$e->getMessage()}");
+
+            return;
+        }
 
         // A avaliação só ocorre se o Erro Máximo Permissível (MPE/Limit) estiver definido
         // e se a calibração possuir desvio calculado.
@@ -172,7 +187,8 @@ class ProcessCalibrationAction
                 ]);
 
                 // Notificar administradores sobre a reprovação crítica
-                $admins = User::role(['super_admin', 'admin'])->get();
+                $roles = Role::whereIn('name', ['super_admin', 'admin'])->pluck('name')->toArray();
+                $admins = ! empty($roles) ? User::role($roles)->get() : collect();
                 if ($admins->count() > 0) {
                     Notification::send($admins, new CalibrationRejectedNotification($calibration));
                 }

@@ -139,4 +139,82 @@ class MetrologyMath
             ],
         ];
     }
+
+    /**
+     * Calcula os graus de liberdade efetivos via fórmula de Welch-Satterthwaite (GUM §G.4.1).
+     *
+     * @param  float  $uA  Incerteza padrão Tipo A
+     * @param  int  $n  Número de leituras
+     * @param  float  $uc  Incerteza combinada total
+     * @return float Graus de liberdade efetivos (Veff)
+     */
+    public static function calculateVeff(float $uA, int $n, float $uc): float
+    {
+        if ($n < 2 || $uA <= 0.0 || $uc <= 0.0) {
+            return INF;
+        }
+
+        $viA = $n - 1;
+        $numerator = pow($uc, 4);
+        $denominator = pow($uA, 4) / $viA;
+
+        if ($denominator <= 0.0) {
+            return INF;
+        }
+
+        return max(1.0, $numerator / $denominator);
+    }
+
+    /**
+     * Retorna o fator de cobertura k para graus de liberdade efetivos (Veff).
+     * Baseado na distribuição t de Student bilateral (95.45% de confiança - GUM Tabela G.2).
+     *
+     * @param  float  $veff  Graus de liberdade efetivos
+     * @return float Fator k
+     */
+    public static function getKFromVeff(float $veff): float
+    {
+        if (is_infinite($veff) || $veff >= 100) {
+            return 2.00;
+        }
+
+        $table = [
+            1 => 13.97,
+            2 => 4.303,
+            3 => 3.182,
+            4 => 2.776,
+            5 => 2.571,
+            6 => 2.447,
+            7 => 2.365,
+            8 => 2.306,
+            9 => 2.262,
+            10 => 2.228,
+            11 => 2.201,
+            12 => 2.179,
+            13 => 2.160,
+            14 => 2.145,
+            15 => 2.131,
+            16 => 2.120,
+            17 => 2.110,
+            18 => 2.101,
+            19 => 2.093,
+            20 => 2.086,
+            25 => 2.060,
+            30 => 2.042,
+            35 => 2.030,
+            40 => 2.021,
+            50 => 2.009,
+            60 => 2.000,
+        ];
+
+        $keys = array_keys($table);
+        $closest = $keys[0];
+        foreach ($keys as $key) {
+            if (abs($key - $veff) < abs($closest - $veff)) {
+                $closest = $key;
+            }
+        }
+
+        return $table[$closest];
+    }
 }

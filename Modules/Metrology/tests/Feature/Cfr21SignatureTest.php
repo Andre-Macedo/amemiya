@@ -34,7 +34,7 @@ it('allows calibration approval with correct password (CFR 21)', function () {
     ]);
 
     $response->assertStatus(200)
-        ->assertJsonPath('message', 'Calibration approved and published via authenticated signature.');
+        ->assertJsonPath('message', 'Calibration approved and signed.');
 
     expect($calibration->refresh()->status)->toBe('published');
 });

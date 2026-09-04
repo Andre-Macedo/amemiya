@@ -4,10 +4,13 @@ namespace Modules\Metrology\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
+use Modules\Metrology\Enums\CalibrationResult;
+use Modules\Metrology\Enums\ItemStatus;
 use Modules\Metrology\Models\Calibration;
 use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\InstrumentType;
 use Modules\Metrology\Notifications\CalibrationRejectedNotification;
+use Modules\System\Models\User;
 use Tests\Concerns\HasSuperAdmin;
 
 uses(RefreshDatabase::class, HasSuperAdmin::class);
@@ -63,10 +66,10 @@ test('it approves calibration within tolerance (simple rule)', function () {
     $calibration->refresh();
 
     expect($calibration->deviation)->toEqual(0.03)
-        ->and($calibration->result)->toBe('approved');
+        ->and($calibration->result)->toBe(CalibrationResult::Approved);
 
     $instrument->refresh();
-    expect($instrument->status)->toBe('active');
+    expect($instrument->status)->toBe(ItemStatus::Active);
 });
 
 test('it rejects calibration outside tolerance (simple rule)', function () {
@@ -90,10 +93,10 @@ test('it rejects calibration outside tolerance (simple rule)', function () {
 
     $calibration->refresh();
 
-    expect($calibration->result)->toBe('rejected');
+    expect($calibration->result)->toBe(CalibrationResult::Rejected);
 
     $instrument->refresh();
-    expect($instrument->status)->toBe('rejected');
+    expect($instrument->status)->toBe(ItemStatus::Rejected);
 });
 
 test('it rejects calibration with uncertainty accounted (decision rule)', function () {
@@ -118,7 +121,7 @@ test('it rejects calibration with uncertainty accounted (decision rule)', functi
 
     $calibration->refresh();
 
-    expect($calibration->result)->toBe('rejected');
+    expect($calibration->result)->toBe(CalibrationResult::Rejected);
 });
 
 test('it handles guard band conditional approval', function () {
@@ -136,35 +139,38 @@ test('it handles guard band conditional approval', function () {
     // Reduced Limit: 0.05 - 0.02 = 0.03.
     // 0.02 <= 0.03 -> Approved
     $calibrationA = Calibration::factory()->create([
+        'calibrated_item_type' => Instrument::class,
         'calibrated_item_id' => $instrument->id,
         'nominal_value' => '10.00',
         'actual_value' => '10.02',
         'uncertainty' => '0.02',
         'performed_by_id' => 1,
     ]);
-    expect($calibrationA->refresh()->result)->toBe('approved');
+    expect($calibrationA->refresh()->result)->toBe(CalibrationResult::Approved);
 
     // Scenario B: Conditional Approval (Doubt Zone)
     // Error: 0.04. Uncertainty: 0.02. Limit: 0.05.
     // 0.04 > (0.05 - 0.02) AND 0.04 <= 0.05 -> Conditional
     $calibrationB = Calibration::factory()->create([
+        'calibrated_item_type' => Instrument::class,
         'calibrated_item_id' => $instrument->id,
         'nominal_value' => '10.00',
         'actual_value' => '10.04',
         'uncertainty' => '0.02',
         'performed_by_id' => 1,
     ]);
-    expect($calibrationB->refresh()->result)->toBe('conditional');
+    expect($calibrationB->refresh()->result)->toBe(CalibrationResult::Conditional);
 
     // Scenario C: Rejection
     // Error: 0.06. Uncertainty: 0.02. Limit: 0.05.
     // 0.06 > 0.05 -> Rejected
     $calibrationC = Calibration::factory()->create([
+        'calibrated_item_type' => Instrument::class,
         'calibrated_item_id' => $instrument->id,
         'nominal_value' => '10.00',
         'actual_value' => '10.06',
         'uncertainty' => '0.02',
         'performed_by_id' => 1,
     ]);
-    expect($calibrationC->refresh()->result)->toBe('rejected');
+    expect($calibrationC->refresh()->result)->toBe(CalibrationResult::Rejected);
 });

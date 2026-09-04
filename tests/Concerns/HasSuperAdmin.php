@@ -2,9 +2,9 @@
 
 namespace Tests\Concerns;
 
+use App\Models\Role;
 use Illuminate\Support\Facades\Gate;
 use Modules\System\Models\User;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
 trait HasSuperAdmin

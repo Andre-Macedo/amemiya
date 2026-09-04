@@ -2,6 +2,7 @@
 
 namespace Modules\Metrology\Observers;
 
+use App\Models\Role;
 use Illuminate\Support\Facades\Notification;
 use Modules\Metrology\Models\NonConformity;
 use Modules\Metrology\Notifications\CriticalNCNotification;
@@ -15,7 +16,8 @@ class NonConformityObserver
     public function created(NonConformity $nc): void
     {
         // Notificar administradores
-        $admins = User::role(['super_admin', 'admin'])->get();
+        $roles = Role::whereIn('name', ['super_admin', 'admin'])->pluck('name')->toArray();
+        $admins = ! empty($roles) ? User::role($roles)->get() : collect();
         if ($admins->count() > 0) {
             Notification::send($admins, new CriticalNCNotification($nc));
         }
@@ -28,7 +30,8 @@ class NonConformityObserver
     {
         // Se a NC foi resolvida mas não fechada, notifica o gestor para conferir
         if ($nc->isDirty('status') && $nc->status === 'resolved') {
-            $admins = User::role(['super_admin', 'admin'])->get();
+            $roles = Role::whereIn('name', ['super_admin', 'admin'])->pluck('name')->toArray();
+            $admins = ! empty($roles) ? User::role($roles)->get() : collect();
             if ($admins->count() > 0) {
                 Notification::send($admins, new CriticalNCNotification($nc));
             }

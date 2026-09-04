@@ -10,11 +10,11 @@ namespace Modules\Metrology\DTOs;
 class KitItemUpdateData
 {
     /**
-     * @param  int  $childId  ID do padrão filho (componente do kit).
+     * @param  string  $childId  ID do padrão filho (componente do kit).
      * @param  float  $newActualValue  Novo valor verdadeiro medido.
      */
     public function __construct(
-        public readonly int $childId,
+        public readonly string $childId,
         public readonly float $newActualValue,
     ) {}
 
@@ -24,7 +24,7 @@ class KitItemUpdateData
     public static function fromArray(array $data): self
     {
         return new self(
-            childId: (int) ($data['child_id'] ?? 0),
+            childId: (string) ($data['child_id'] ?? ''),
             newActualValue: (float) ($data['new_actual_value'] ?? 0.0),
         );
     }

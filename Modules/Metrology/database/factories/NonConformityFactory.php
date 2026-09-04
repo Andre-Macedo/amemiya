@@ -21,7 +21,6 @@ class NonConformityFactory extends Factory
             'description' => $this->faker->paragraph(),
             'status' => 'open',
             'priority' => $this->faker->randomElement(['low', 'medium', 'high', 'critical']),
-            'opened_at' => now(),
         ];
     }
 }

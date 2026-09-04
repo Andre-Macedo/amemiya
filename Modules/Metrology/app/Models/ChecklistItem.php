@@ -67,6 +67,22 @@ class ChecklistItem extends Model
     ];
 
     /**
+     * Accessor de compatibilidade: retorna as_left_readings se houver ajuste, senão as_found_readings.
+     */
+    public function getReadingsAttribute(): ?array
+    {
+        return $this->as_left_readings ?: $this->as_found_readings;
+    }
+
+    /**
+     * Mutator de compatibilidade: se passar 'readings', salva em as_found_readings.
+     */
+    public function setReadingsAttribute(mixed $value): void
+    {
+        $this->attributes['as_found_readings'] = is_array($value) ? json_encode($value) : $value;
+    }
+
+    /**
      * @return BelongsTo<Checklist, ChecklistItem>
      */
     public function checklist(): BelongsTo

@@ -7,11 +7,11 @@ namespace Modules\Metrology\DTOs;
 class ChecklistCreationData
 {
     /**
-     * @param  int  $templateId  ID do template de checklist a ser usado.
+     * @param  string  $templateId  ID do template de checklist a ser usado.
      * @param  array<ChecklistItemData>  $items  Lista de itens a serem criados/respondidos.
      */
     public function __construct(
-        public readonly int $templateId,
+        public readonly string $templateId,
         public readonly array $items,
     ) {}
 
@@ -28,7 +28,7 @@ class ChecklistCreationData
         );
 
         return new self(
-            templateId: (int) ($data['template_id'] ?? 0),
+            templateId: (string) ($data['template_id'] ?? ''),
             items: $items,
         );
     }

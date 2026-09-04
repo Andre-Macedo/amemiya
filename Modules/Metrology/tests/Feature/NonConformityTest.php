@@ -38,7 +38,11 @@ it('can update a non-conformity investigation', function () {
 });
 
 it('can close a non-conformity', function () {
-    $nc = NonConformity::factory()->create(['status' => 'resolved']);
+    $nc = NonConformity::factory()->create([
+        'status' => 'resolved',
+        'root_cause_analysis' => 'Root cause identified',
+        'corrective_action' => 'Corrective action implemented',
+    ]);
 
     $response = $this->postJson("/api/v1/metrology/non-conformities/{$nc->id}/close", [
         'resolution' => 'Everything fixed',

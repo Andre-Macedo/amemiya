@@ -16,7 +16,7 @@ class StoreWorkOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'item_id' => ['required', 'integer'],
+            'item_id' => ['required', 'string'],
             'item_type' => ['required', 'string'],
             'visual_inspection_notes' => ['nullable', 'string'],
             'customer_notes' => ['nullable', 'string'],

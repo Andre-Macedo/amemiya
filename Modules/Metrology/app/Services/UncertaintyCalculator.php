@@ -20,8 +20,23 @@ class UncertaintyCalculator
      * Calcula a incerteza expandida com base nas leituras e no padrão.
      * Implementação simplificada do método GUM com Correção Térmica.
      */
-    public function calculate(MeasurementCalculationData $data): UncertaintyResult
-    {
+    public function calculate(
+        MeasurementCalculationData|array $data,
+        ?float $resolution = null,
+        ?float $standardActualValue = null,
+        ?float $standardUncertainty = null,
+        float $standardK = 2.0
+    ): UncertaintyResult {
+        if (is_array($data)) {
+            $data = new MeasurementCalculationData(
+                readings: $data,
+                resolution: (float) $resolution,
+                standardActualValue: (float) $standardActualValue,
+                standardUncertainty: (float) $standardUncertainty,
+                standardK: $standardK
+            );
+        }
+
         if (empty($data->readings)) {
             return new UncertaintyResult(0.0, 0.0, [], 2.00);
         }
@@ -92,7 +107,8 @@ class UncertaintyCalculator
         }
 
         $uc = sqrt($sumSquares);
-        $k = 2.00;
+        $veff = MetrologyMath::calculateVeff($uA, count($readings), $uc);
+        $k = MetrologyMath::getKFromVeff($veff);
         $U = $uc * $k;
 
         // Monta o Budget Completo
@@ -127,7 +143,8 @@ class UncertaintyCalculator
             bias: $bias,
             expandedUncertainty: round($U, 5),
             budget: $budget,
-            kFactor: $k
+            kFactor: $k,
+            effectiveDegreesOfFreedom: $veff,
         );
     }
 }

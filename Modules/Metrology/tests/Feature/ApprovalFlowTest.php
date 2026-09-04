@@ -10,11 +10,13 @@ use Modules\System\Models\User;
 it('does not update instrument due date when calibration is draft', function () {
     // Arrange
     $user = User::factory()->create();
-    actingAs($user);
+    $this->actingAs($user);
 
     $instrument = Instrument::factory()->create([
         'calibration_due' => now()->subDays(10), // Vencido
         'status' => ItemStatus::Active,
+        'mpe' => '0.1',
+        'mpe_value' => 0.1,
     ]);
 
     $oldDueDate = $instrument->calibration_due;
@@ -38,11 +40,13 @@ it('does not update instrument due date when calibration is draft', function () 
 it('updates instrument and logs audit when calibration is published', function () {
     // Arrange
     $user = User::factory()->create();
-    actingAs($user);
+    $this->actingAs($user);
 
     $instrument = Instrument::factory()->create([
         'calibration_due' => now()->subDays(10),
         'status' => ItemStatus::Active,
+        'mpe' => '0.1',
+        'mpe_value' => 0.1,
     ]);
 
     $calibration = Calibration::factory()->create([

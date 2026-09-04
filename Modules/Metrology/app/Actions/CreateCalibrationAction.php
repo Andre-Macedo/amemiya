@@ -65,11 +65,13 @@ class CreateCalibrationAction
                 ->orderBy('order')
                 ->get();
 
-            $appItemsMap = collect($dto->items)->keyBy('item_id');
+            $appItemsMap = collect($dto->items)->keyBy(function ($item) {
+                return $item['template_item_id'] ?? $item['item_id'] ?? $item['id'] ?? $item['step'] ?? null;
+            });
             $checklistItemsData = [];
 
             foreach ($templateItems as $templateItem) {
-                $appResponse = $appItemsMap->get($templateItem->id);
+                $appResponse = $appItemsMap->get($templateItem->id) ?? $appItemsMap->get($templateItem->step);
 
                 $readingsJson = null;
                 $resultItem = null;
@@ -79,13 +81,15 @@ class CreateCalibrationAction
 
                 if ($appResponse) {
                     if ($templateItem->question_type === 'numeric') {
-                        if (! empty($appResponse['readings'])) {
-                            $rawReadings = is_array($appResponse['readings']) ? $appResponse['readings'] : [$appResponse['readings']];
-                            $readingsJson = json_encode($rawReadings);
+                        $rawReadings = $appResponse['as_found_readings'] ?? $appResponse['readings'] ?? null;
+                        if (! empty($rawReadings)) {
+                            $readingsArray = is_array($rawReadings) ? $rawReadings : [$rawReadings];
+                            $readingsJson = json_encode($readingsArray);
                             $isCompleted = true;
                         }
-                        if (isset($appResponse['reference_standard_id']) && is_numeric($appResponse['reference_standard_id'])) {
-                            $standardId = (int) $appResponse['reference_standard_id'];
+                        $possibleStandardId = $appResponse['standard_id'] ?? $appResponse['reference_standard_id'] ?? null;
+                        if (! empty($possibleStandardId)) {
+                            $standardId = (string) $possibleStandardId;
                         }
                     } elseif ($templateItem->question_type === 'boolean') {
                         $resultItem = $appResponse['result'] ?? null;

@@ -18,7 +18,7 @@ class AttachmentApiController extends Controller
         $request->validate([
             'file' => ['required', 'file', 'max:10240'], // Max 10MB
             'attachable_type' => ['required', 'string'],
-            'attachable_id' => ['required', 'integer'],
+            'attachable_id' => ['required', 'string'],
         ]);
 
         $file = $request->file('file');

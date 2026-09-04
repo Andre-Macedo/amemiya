@@ -70,7 +70,7 @@ class ProcessTelemetryJob implements ShouldQueue
                 };
             }
             $mlStatus = $mlStatus ?? 'normal';
-            $mlConfidence = (float) ($this->payload['confianca'] ?? $this->payload['ml_confidence'] ?? 1.0);
+            $mlConfidence = (float) ($this->payload['confianca'] ?? $this->payload['ml_confidence'] ?? 0.0);
 
             // 3. Handshake e IA
             $cloudMlStatus = null;

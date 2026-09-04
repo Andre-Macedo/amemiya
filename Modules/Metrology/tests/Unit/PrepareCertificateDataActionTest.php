@@ -1,7 +1,8 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Tenant;
 // Assuming name or using relationship
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Modules\Metrology\Actions\PrepareCertificateDataAction;
 use Modules\Metrology\Models\Calibration;
 use Modules\Metrology\Models\Checklist;
@@ -13,6 +14,12 @@ uses(RefreshDatabase::class);
 
 it('prepares certificate data correctly', function () {
     // 1. Setup Data
+    $tenant = Tenant::create([
+        'name' => 'Default Tenant',
+        'slug' => 'default',
+    ]);
+    tenancy()->initialize($tenant);
+
     $instrument = Instrument::factory()->create();
     $standard = ReferenceStandard::factory()->create(['name' => 'Ref Std 1']);
 

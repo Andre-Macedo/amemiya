@@ -2,13 +2,17 @@
 
 namespace App\Providers;
 
+use App\Models\PersonalAccessToken;
 use Filament\Support\Facades\FilamentColor;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Sanctum\Sanctum;
+use Modules\System\Models\User;
 use Sentry\State\Scope;
 use Spatie\Backup\Tasks\Monitor\HealthChecks\BackupCheck;
 use Spatie\Health\Checks\Checks\CacheCheck;
@@ -16,9 +20,6 @@ use Spatie\Health\Checks\Checks\DatabaseCheck;
 use Spatie\Health\Checks\Checks\OptimizedAppCheck;
 use Spatie\Health\Checks\Checks\UsedDiskSpaceCheck;
 use Spatie\Health\Facades\Health;
-
-use Illuminate\Database\Eloquent\Relations\Relation;
-use Modules\System\Models\User;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -36,7 +37,20 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Registrar modelo customizado do Sanctum para suportar ULIDs
-        Sanctum::usePersonalAccessTokenModel(\App\Models\PersonalAccessToken::class);
+        Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+
+        // Resolução dinâmica de factories para os módulos
+        Factory::guessFactoryNamesUsing(function (string $modelName) {
+            if (str_starts_with($modelName, 'Modules\\')) {
+                $parts = explode('\\', $modelName);
+                $module = $parts[1] ?? '';
+                $model = end($parts);
+
+                return "Modules\\{$module}\\Database\\Factories\\{$model}Factory";
+            }
+
+            return 'Database\\Factories\\'.class_basename($modelName).'Factory';
+        });
 
         // Registro de Morph Map para relações polimórficas (Sanctum, ActivityLog, etc)
         Relation::morphMap([
