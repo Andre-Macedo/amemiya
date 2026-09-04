@@ -5,16 +5,119 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.prod
-      target: app 
+      target: app
     container_name: amemiya-app
     restart: unless-stopped
     volumes:
-      # --- MUDANÇA AQUI ---
-      # Montamos APENAS o .env e o storage, não o código
-     # - ./.env:/var/www/amemiya/.env:ro
-     # - ./storage:/var/www/amemiya/storage
-      - ./:/var/www/amemiya
-      # --- FIM DA MUDANÇA ---
+      - ./.env:/var/www/amemiya/.env:ro
+      - ./storage:/var/www/amemiya/storage
+      - ./public/build:/var/www/amemiya/public/build
+    networks:
+      - proxy-network
+
+  redis:
+    image: redis:alpine
+    container_name: amemiya-redis
+    restart: always
+    networks:
+      - proxy-network
+
+  mqtt:
+    image: eclipse-mosquitto
+    container_name: amemiya-mqtt
+    restart: always
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./.docker/mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./.docker/mosquitto/config/password_file:/mosquitto/config/password_file:ro
+    networks:
+      - proxy-network
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      target: app
+    container_name: amemiya-worker
+    restart: unless-stopped
+    command: php artisan queue:work --verbose --tries=3 --timeout=90
+    volumes:
+      - ./.env:/var/www/amemiya/.env:ro
+      - ./storage:/var/www/amemiya/storage
+      - ./Modules:/var/www/amemiya/Modules
+    networks:
+      - proxy-network
+
+  mqtt-bridge:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      target: app
+    container_name: amemiya-mqtt-bridge
+    restart: unless-stopped
+    command: php artisan iot:mqtt-bridge
+    volumes:
+      - ./.env:/var/www/amemiya/.env:ro
+      - ./storage:/var/www/amemiya/storage
+      - ./Modules:/var/www/amemiya/Modules
+    networks:
+      - proxy-network
+    depends_on:
+      - mqtt
+      - redis
+
+  pulse:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      target: app
+    container_name: amemiya-pulse
+    restart: unless-stopped
+    command: php artisan pulse:check
+    volumes:
+      - ./.env:/var/www/amemiya/.env:ro
+      - ./storage:/var/www/amemiya/storage
+    networks:
+      - proxy-network
+    depends_on:
+      - redis
+
+  reverb:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+      target: app
+    container_name: amemiya-reverb
+    restart: unless-stopped
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080
+    volumes:
+      - ./.env:/var/www/amemiya/.env:ro
+      - ./storage:/var/www/amemiya/storage
+    networks:
+      - proxy-network
+
+  ml-service:
+    build:
+      context: ./Modules/IoT/ml_service
+      dockerfile: Dockerfile
+    container_name: amemiya-ml-service
+    restart: unless-stopped
+    networks:
+      - proxy-network
+
+  frontend:
+    build:
+      context: ../metrology-sass-front
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: "/api/v1"
+        NEXT_PUBLIC_REVERB_HOST: ${REVERB_HOST}
+        NEXT_PUBLIC_REVERB_KEY: ${REVERB_APP_KEY}
+        NEXT_PUBLIC_REVERB_PORT: ${REVERB_PORT}
+        NEXT_PUBLIC_REVERB_SCHEME: ${REVERB_SCHEME}
+    container_name: amemiya-frontend
+    restart: unless-stopped
     networks:
       - proxy-network
 

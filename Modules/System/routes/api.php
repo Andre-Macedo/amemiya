@@ -12,6 +12,7 @@ use Modules\System\Http\Controllers\Api\V1\NotificationApiController;
 use Modules\System\Http\Controllers\Api\V1\ProfileApiController;
 use Modules\System\Http\Controllers\Api\V1\SettingsApiController;
 use Modules\System\Http\Controllers\Api\V1\StationApiController;
+use Modules\System\Http\Controllers\Api\V1\MachineApiController;
 use Modules\System\Http\Controllers\Api\V1\SupplierApiController;
 use Modules\System\Http\Controllers\Api\V1\TicketApiController;
 use Modules\System\Http\Controllers\Api\V1\UserApiController;
@@ -51,6 +52,9 @@ Route::middleware([
 
             // Stations
             Route::apiResource('stations', StationApiController::class);
+
+            // Machines
+            Route::get('machines', [MachineApiController::class, 'index']);
 
             // Suppliers
             Route::apiResource('suppliers', SupplierApiController::class);

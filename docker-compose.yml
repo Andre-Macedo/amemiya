@@ -5,7 +5,6 @@ services:
         build:
             context: .
             dockerfile: Dockerfile
-        image: amemiya-app:latest
         container_name: amemiya-app
         volumes:
             - ./:/var/www/html:cached
@@ -14,11 +13,9 @@ services:
         depends_on:
             db:
                 condition: service_healthy
-            redis:
-                condition: service_started
+
             mailhog:
                 condition: service_started
-
     nginx:
         image: nginx:1.25
         container_name: amemiya-nginx
@@ -49,13 +46,6 @@ services:
             timeout: 5s
             retries: 5
 
-    redis:
-        image: redis:7-alpine
-        container_name: amemiya-redis
-        ports:
-            - "6379:6379"
-        volumes:
-            - redis_data:/data
 
     phpmyadmin:
         image: phpmyadmin/phpmyadmin
@@ -65,7 +55,7 @@ services:
             PMA_HOST: db
             MYSQL_ROOT_PASSWORD: rootpass
         ports:
-            - "8081:80"
+            - "8080:80"
 
     mailhog:
         image: mailhog/mailhog
@@ -74,6 +64,13 @@ services:
             - "8025:8025" # UI
             - "1025:1025" # SMTP
 
+    redis:
+        image: redis:alpine
+        container_name: amemiya-redis
+        ports:
+            - "6379:6379"
+        restart: always
+
     mqtt:
         image: eclipse-mosquitto
         container_name: amemiya-mqtt
@@ -81,46 +78,36 @@ services:
             - "1883:1883"
             - "9001:9001"
         volumes:
-            - ./.docker/mosquitto/config:/mosquitto/config
-            - mqtt_data:/mosquitto/data
-            - mqtt_log:/mosquitto/log
-
-    ml-service:
-        build:
-            context: ./Modules/IoT/ml_service
-        container_name: amemiya-ml-service
-        ports:
-            - "8001:8000"
-        volumes:
-            - ./Modules/IoT/ml_service:/app
-        restart: unless-stopped
-
-    reverb:
-        image: amemiya-app:latest
-        container_name: amemiya-reverb
-        command: php artisan reverb:start --host=0.0.0.0 --port=8080
-        ports:
-            - "8080:8080" # Agora a porta estÃ¡ no container certo
-        volumes:
-            - ./:/var/www/html:cached
-        depends_on:
-            - app
-            - redis
+            - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
         restart: always
 
     worker:
-        image: amemiya-app:latest
+        build:
+            context: .
+            dockerfile: Dockerfile
         container_name: amemiya-worker
-        command: php artisan queue:work --tries=3
+        command: php artisan queue:work --verbose --tries=3 --timeout=90
         volumes:
             - ./:/var/www/html:cached
         depends_on:
-            - app
+            - db
             - redis
-        restart: always
+
+    frontend:
+        build:
+            context: ../metrology-sass-front
+            dockerfile: Dockerfile
+            args:
+                NEXT_PUBLIC_API_URL: ${APP_URL}/api
+                NEXT_PUBLIC_REVERB_HOST: ${REVERB_HOST}
+                NEXT_PUBLIC_REVERB_KEY: ${REVERB_APP_KEY}
+                NEXT_PUBLIC_REVERB_PORT: ${REVERB_PORT}
+                NEXT_PUBLIC_REVERB_SCHEME: ${REVERB_SCHEME}
+        container_name: amemiya-frontend
+        ports:
+            - "3000:3000"
+        depends_on:
+            - app
 
 volumes:
     db_data:
-    redis_data:
-    mqtt_data:
-    mqtt_log:

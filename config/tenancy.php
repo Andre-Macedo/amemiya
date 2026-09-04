@@ -24,6 +24,7 @@ return [
         'localhost',
         'amemiya.test',
         'admin.amemiya.test',
+        'leantech.andremacedo.dev.br',
     ],
 
     /**

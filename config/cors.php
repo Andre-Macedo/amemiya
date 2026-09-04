@@ -23,11 +23,14 @@ return [
         env('FRONTEND_URL', 'http://localhost:3000'),
         'http://localhost:3000',
         'http://amemiya.localhost:3000',
-        'http://*.localhost:3000',
+        'https://leantech.andremacedo.dev.br',
+        'https://*.leantech.andremacedo.dev.br',
+        'https://*.andremacedo.dev.br',
     ],
 
     'allowed_origins_patterns' => [
         '/^http:\/\/.*\.localhost:3000$/',
+        '/^https:\/\/.*\.andremacedo\.dev\.br$/',
     ],
 
     'allowed_headers' => ['*'],
