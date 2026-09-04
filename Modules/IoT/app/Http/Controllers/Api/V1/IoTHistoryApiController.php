@@ -15,7 +15,7 @@ class IoTHistoryApiController extends Controller
             'node_id' => 'nullable|exists:iot_nodes,id',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
-            'limit' => 'nullable|integer|max:1000',
+            'limit' => 'nullable|integer|max:10000',
         ]);
 
         $query = IoTSensorData::query();

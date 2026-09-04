@@ -127,6 +127,24 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
+        'iot_telemetry' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/iot_telemetry.log'),
+            'level' => 'debug',
+        ],
+
+        'iot_ml' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/iot_ml.log'),
+            'level' => 'debug',
+        ],
+
+        'iot_commands' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/iot_commands.log'),
+            'level' => 'debug',
+        ],
+
     ],
 
 ];

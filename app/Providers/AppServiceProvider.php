@@ -60,6 +60,11 @@ class AppServiceProvider extends ServiceProvider
             return $user->hasRole('super-admin');
         });
 
+        // Autorização para Laravel Pulse
+        Gate::define('viewPulse', function ($user) {
+            return $user->hasRole('super-admin');
+        });
+
         // Registro de Saúde do Servidor (Spatie Health)
         Health::checks([
             DatabaseCheck::new(),

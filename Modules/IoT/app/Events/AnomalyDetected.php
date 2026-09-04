@@ -14,8 +14,8 @@ class AnomalyDetected implements ShouldBroadcast
 
     /**
      * @param string $tenantId ID do Tenant
-     * @param string $gatewayId ID do Gateway
-     * @param array $mlResult Resultado completo vindo do microserviço Python
+     * @param string $gatewayId ID do Gateway (UUID/ULID)
+     * @param array $mlResult Resultado completo vindo do microserviço Python ou da borda
      */
     public function __construct(
         public string $tenantId,
@@ -50,8 +50,10 @@ class AnomalyDetected implements ShouldBroadcast
     {
         return [
             'gateway_id' => $this->gatewayId,
+            'node_id' => $this->mlResult['node_id'] ?? 'N/A',
             'status' => $this->mlResult['status'] ?? 'desconhecido',
-            'confidence' => $this->mlResult['confidence'] ?? 0,
+            'confidence' => (float) ($this->mlResult['confidence'] ?? 0),
+            'reanalyzed' => (bool) ($this->mlResult['reanalyzed'] ?? false),
             'spectrogram_b64' => $this->mlResult['spectrogram_b64'] ?? null,
             'detected_at' => now()->toIso8601String(),
         ];

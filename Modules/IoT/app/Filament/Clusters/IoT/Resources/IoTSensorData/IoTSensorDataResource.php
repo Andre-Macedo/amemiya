@@ -68,13 +68,8 @@ class IoTSensorDataResource extends Resource
                     ->numeric(),
                 TextInput::make('kurt_z')
                     ->numeric(),
-                TextInput::make('piezo_rms')
+                TextInput::make('mic_rms')
                     ->numeric(),
-                TextInput::make('piezo_pico_max')
-                    ->numeric(),
-                TextInput::make('piezo_fator_crista')
-                    ->numeric(),
-                TextInput::make('fft_data'),
                 TextInput::make('ml_status'),
                 TextInput::make('ml_confidence')
                     ->numeric(),
@@ -87,80 +82,41 @@ class IoTSensorDataResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')
-                    ->label('ID')
-                    ->searchable(),
-                TextColumn::make('tenant.name')
-                    ->searchable(),
-                TextColumn::make('node.name')
-                    ->searchable(),
-                TextColumn::make('msg_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('rpm')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('rms_global')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('rms_x')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('rms_y')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('rms_z')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('kurt_x')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('kurt_y')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('kurt_z')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('piezo_rms')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('piezo_pico_max')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('piezo_fator_crista')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('ml_status')
-                    ->searchable(),
-                TextColumn::make('ml_confidence')
-                    ->numeric()
-                    ->sortable(),
                 TextColumn::make('measured_at')
                     ->dateTime()
                     ->sortable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('node.name')
+                    ->searchable(),
+                TextColumn::make('rms_global')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('mic_rms')
+                    ->label('Mic RMS')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('ml_status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'saudavel', 'normal' => 'success',
+                        'desbalanceamento', 'falha' => 'danger',
+                        'desligada' => 'gray',
+                        default => 'warning',
+                    })
+                    ->searchable(),
+                TextColumn::make('ml_confidence')
+                    ->label('Confiança')
+                    ->numeric()
+                    ->sortable(),
             ])
             ->filters([
-                TrashedFilter::make(),
+                //
             ])
-            ->recordActions([
-                EditAction::make(),
+            ->actions([
                 DeleteAction::make(),
-                ForceDeleteAction::make(),
-                RestoreAction::make(),
             ])
-            ->toolbarActions([
+            ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
-                    ForceDeleteBulkAction::make(),
-                    RestoreBulkAction::make(),
                 ]),
             ]);
     }
@@ -170,13 +126,5 @@ class IoTSensorDataResource extends Resource
         return [
             'index' => ManageIoTSensorData::route('/'),
         ];
-    }
-
-    public static function getRecordRouteBindingEloquentQuery(): Builder
-    {
-        return parent::getRecordRouteBindingEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
     }
 }

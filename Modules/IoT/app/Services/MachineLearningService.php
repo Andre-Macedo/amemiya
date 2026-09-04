@@ -8,28 +8,32 @@ use Illuminate\Support\Facades\Log;
 class MachineLearningService
 {
     /**
-     * Chama o microserviço FastAPI para analisar os dados brutos de vibração e acústica.
-     * Retorna um array com o status preditivo, confiança e o espectrograma em Base64.
+     * Chama o microserviço FastAPI para analisar as features extraídas na borda.
+     * Retorna um array com o status preditivo e confiança.
      */
-    public function analyzeTelemetry(array $payload): array
+    public function predictAnomalia(array $features): array
     {
         try {
             // No Docker, o hostname é o nome do serviço definido no docker-compose
             $url = config('iot.ml_service_url', 'http://ml-service:8000/predict-anomalia');
 
+            Log::channel('iot_ml')->info('Enviando features para Cloud ML', ['features_count' => count($features)]);
+
             $response = Http::timeout(10)->post($url, [
-                'radial' => $payload['radial'] ?? [],
-                'tangential' => $payload['tangential'] ?? [],
-                'axial' => $payload['axial'] ?? [],
-                'microphone' => $payload['microphone'] ?? [],
-                'inicio_janela' => $payload['inicio_janela'] ?? 0,
+                'features' => $features,
             ]);
 
             if ($response->successful()) {
-                return $response->json();
+                $result = $response->json();
+                Log::channel('iot_ml')->info('Resposta recebida da Nuvem', [
+                    'status' => $result['status'],
+                    'confidence' => $result['confidence'],
+                    'prob_defect' => $result['prob_defect'] ?? 'N/A'
+                ]);
+                return $result;
             }
 
-            Log::error('IoT: Falha na resposta do Machine Learning Service.', [
+            Log::channel('iot_ml')->error('Falha na resposta do Machine Learning Service (Features).', [
                 'status' => $response->status(),
                 'body' => $response->body(),
             ]);
@@ -42,7 +46,14 @@ class MachineLearningService
         return [
             'status' => 'indeterminado',
             'confidence' => 0.0,
-            'spectrogram_b64' => null,
         ];
+    }
+
+    /**
+     * @deprecated Usar predictAnomalia() com features.
+     */
+    public function analyzeTelemetry(array $payload): array
+    {
+        return $this->predictAnomalia($payload['features'] ?? []);
     }
 }

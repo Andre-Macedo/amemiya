@@ -25,17 +25,19 @@ class IoTSensorData extends Model
         'kurt_x',
         'kurt_y',
         'kurt_z',
-        'piezo_rms',
-        'piezo_pico_max',
-        'piezo_fator_crista',
+        'mic_rms',
+        'features',
         'fft_data',
         'ml_status',
         'ml_confidence',
+        'cloud_ml_status',
+        'cloud_ml_confidence',
         'measured_at',
     ];
 
     protected $casts = [
         'fft_data' => 'array',
+        'features' => 'array',
         'measured_at' => 'datetime',
         'rms_global' => 'float',
         'rms_x' => 'float',
@@ -44,10 +46,9 @@ class IoTSensorData extends Model
         'kurt_x' => 'float',
         'kurt_y' => 'float',
         'kurt_z' => 'float',
-        'piezo_rms' => 'float',
-        'piezo_pico_max' => 'float',
-        'piezo_fator_crista' => 'float',
+        'mic_rms' => 'float',
         'ml_confidence' => 'float',
+        'cloud_ml_confidence' => 'float',
     ];
 
     /**

@@ -31,7 +31,6 @@ class StationApiResource extends JsonResource
             'ip_address' => $this->ip_address ?? null,
             'status' => $this->status,
             'type' => $this->type,
-            'instruments_count' => $this->instruments()->count(),
             'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
         ];
     }
