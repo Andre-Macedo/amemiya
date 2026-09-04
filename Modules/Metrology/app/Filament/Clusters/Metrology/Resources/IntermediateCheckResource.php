@@ -17,6 +17,7 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Modules\Metrology\Enums\ItemStatus;
 use Modules\Metrology\Filament\Clusters\Metrology\MetrologyCluster;
 use Modules\Metrology\Filament\Clusters\Metrology\Resources\IntermediateChecks\Pages;
 use Modules\Metrology\Models\IntermediateCheck;
@@ -46,7 +47,7 @@ class IntermediateCheckResource extends Resource
                             ->preload(),
                         Select::make('reference_standard_id')
                             ->label('Padrão Utilizado (Opcional)')
-                            ->relationship('referenceStandard', 'name')
+                            ->relationship('referenceStandard', 'name', fn ($query) => $query->where('status', ItemStatus::Active)->where('calibration_due', '>=', now()->startOfDay()))
                             ->searchable()
                             ->preload(),
                         DatePicker::make('check_date')

@@ -56,11 +56,31 @@ class CalibrationSubmissionDTO
      */
     public static function fromArray(array $data): self
     {
+        $rawResult = $data['result'] ?? null;
+        $asFoundResult = $data['as_found_result'] ?? $rawResult;
+        $asLeftResult = $data['as_left_result'] ?? null;
+
+        $deviation = isset($data['deviation']) ? (float) $data['deviation'] : null;
+        $asFoundDeviation = isset($data['as_found_deviation']) ? (float) $data['as_found_deviation'] : $deviation;
+        $asLeftDeviation = isset($data['as_left_deviation']) ? (float) $data['as_left_deviation'] : null;
+
+        // Se As Found aprovou e As Left não foi preenchido, herda as_left = as_found
+        if (in_array(strtolower((string) $asFoundResult), ['approved', 'pass']) && $asLeftResult === null) {
+            $asLeftResult = $asFoundResult;
+            $asLeftDeviation = $asLeftDeviation ?? $asFoundDeviation;
+        }
+
+        // Se As Found reprovou mas foi feito ajuste e As Left aprovou: resultado final é Aprovado com Restrições (após ajuste)
+        $resolvedResult = $rawResult;
+        if (in_array(strtolower((string) $asFoundResult), ['rejected', 'fail']) && in_array(strtolower((string) $asLeftResult), ['approved', 'pass'])) {
+            $resolvedResult = 'approved_with_restrictions';
+        }
+
         return new self(
             instrumentId: (string) $data['instrument_id'],
             templateId: (string) $data['checklist_template_id'],
             date: $data['calibration_date'] ?? $data['date'] ?? now()->toDateString(),
-            result: $data['result'],
+            result: $resolvedResult ?? $asFoundResult ?? 'approved',
             items: $data['checklist_items'] ?? $data['items'] ?? [],
             temperature: isset($data['environment']['temperature'])
                 ? (float) $data['environment']['temperature']
@@ -68,14 +88,14 @@ class CalibrationSubmissionDTO
             humidity: isset($data['environment']['humidity'])
                 ? (float) $data['environment']['humidity']
                 : (isset($data['humidity']) ? (float) $data['humidity'] : null),
-            deviation: isset($data['deviation']) ? (float) $data['deviation'] : null,
+            deviation: $asLeftDeviation ?? $asFoundDeviation ?? $deviation,
             uncertainty: isset($data['uncertainty']) ? (float) $data['uncertainty'] : null,
             notes: $data['notes'] ?? null,
             performedBy: isset($data['performed_by_id']) ? (string) $data['performed_by_id'] : (auth()->id() ? (string) auth()->id() : null),
-            asFoundResult: $data['as_found_result'] ?? null,
-            asLeftResult: $data['as_left_result'] ?? null,
-            asFoundDeviation: isset($data['as_found_deviation']) ? (float) $data['as_found_deviation'] : null,
-            asLeftDeviation: isset($data['as_left_deviation']) ? (float) $data['as_left_deviation'] : null,
+            asFoundResult: $asFoundResult,
+            asLeftResult: $asLeftResult,
+            asFoundDeviation: $asFoundDeviation,
+            asLeftDeviation: $asLeftDeviation,
         );
     }
 }

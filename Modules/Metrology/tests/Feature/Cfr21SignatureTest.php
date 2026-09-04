@@ -47,3 +47,19 @@ it('requires a password field for approval', function () {
     $response->assertStatus(422)
         ->assertJsonValidationErrors(['password']);
 });
+
+it('blocks self-approval when executor tries to approve their own calibration', function () {
+    $calibration = Calibration::factory()->create([
+        'status' => 'in_review',
+        'performed_by_id' => $this->user->id,
+    ]);
+
+    $response = $this->postJson("/api/v1/metrology/calibrations/{$calibration->id}/approve", [
+        'password' => $this->password,
+    ]);
+
+    $response->assertStatus(422)
+        ->assertJsonPath('message', 'Segregação de funções violada: o técnico responsável pela calibração não pode aprovar seu próprio certificado.');
+
+    expect($calibration->refresh()->status)->toBe('in_review');
+});

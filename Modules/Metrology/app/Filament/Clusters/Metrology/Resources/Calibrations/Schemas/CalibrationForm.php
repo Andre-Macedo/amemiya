@@ -23,6 +23,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 use Modules\Metrology\DTOs\MeasurementCalculationData;
 use Modules\Metrology\Enums\CalibrationResult;
+use Modules\Metrology\Enums\ItemStatus;
 use Modules\Metrology\Models\ChecklistTemplate;
 use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\ReferenceStandard;
@@ -224,7 +225,25 @@ class CalibrationForm
 
                                             Select::make('reference_standard_id')
                                                 ->label('Padrão')
-                                                ->options(fn (Get $get) => ReferenceStandard::where('reference_standard_type_id', $get('reference_standard_type_id'))->pluck('name', 'id'))
+                                                ->options(function (Get $get, ?string $state) {
+                                                    $typeId = $get('reference_standard_type_id');
+                                                    if (! $typeId) {
+                                                        return [];
+                                                    }
+
+                                                    return ReferenceStandard::query()
+                                                        ->where('reference_standard_type_id', $typeId)
+                                                        ->where(function ($q) use ($state) {
+                                                            $q->where(function ($sub) {
+                                                                $sub->where('status', ItemStatus::Active)
+                                                                    ->where('calibration_due', '>=', now()->startOfDay());
+                                                            });
+                                                            if ($state) {
+                                                                $q->orWhere('id', $state);
+                                                            }
+                                                        })
+                                                        ->pluck('name', 'id');
+                                                })
                                                 ->required()
                                                 ->columnSpanFull()
                                                 ->visible(fn (Get $get) => $get('question_type') === 'numeric'),
