@@ -94,6 +94,7 @@ class Calibration extends Model
         'calculation_data',
         'procedure_snapshot',
         'tenant_id',
+        'lab_client_id',
     ];
 
     protected $casts = [
@@ -142,6 +143,11 @@ class Calibration extends Model
     public function provider(): BelongsTo
     {
         return $this->belongsTo(Supplier::class, 'provider_id');
+    }
+
+    public function labClient(): BelongsTo
+    {
+        return $this->belongsTo(LabClient::class, 'lab_client_id');
     }
 
     public function isRectification(): bool

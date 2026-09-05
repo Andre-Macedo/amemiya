@@ -1,17 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Metrology\Models;
 
 use App\Traits\BelongsToTenant;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\HasApiTokens;
 
-class LabClient extends Model
+class LabClient extends Model implements AuthenticatableContract
 {
-    use BelongsToTenant, HasUlids, SoftDeletes;
+    use Authenticatable, BelongsToTenant, HasApiTokens, HasUlids, SoftDeletes;
 
     protected $fillable = [
         'tenant_id',
@@ -37,7 +42,12 @@ class LabClient extends Model
         return $this->hasMany(Calibration::class, 'lab_client_id');
     }
 
-    protected static function boot()
+    public function instruments(): HasMany
+    {
+        return $this->hasMany(Instrument::class, 'lab_client_id');
+    }
+
+    protected static function boot(): void
     {
         parent::boot();
 
