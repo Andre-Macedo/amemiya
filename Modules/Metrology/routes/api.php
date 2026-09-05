@@ -35,9 +35,18 @@ use Modules\Metrology\Http\Controllers\CalibrationPdfController;
 Route::get('/public/instruments/{id}', [PublicInstrumentController::class, 'show']);
 Route::get('/public/certificates/verify/{hash}', [PublicCalibrationController::class, 'show']);
 
-// Client Portal (White-label)
+// Client Portal (White-label) - Login Público
 Route::post('/public/portal/login', [PublicClientPortalController::class, 'login']);
-Route::get('/public/portal/clients/{client}/certificates', [PublicClientPortalController::class, 'certificates']);
+
+// Rotas Autenticadas do Portal do Cliente (Sanctum)
+Route::middleware('auth:sanctum')->prefix('public/portal')->group(function () {
+    Route::get('/me', [PublicClientPortalController::class, 'me']);
+    Route::get('/certificates', [PublicClientPortalController::class, 'certificates']);
+    Route::get('/certificates/{id}/download', [PublicClientPortalController::class, 'downloadCertificate']);
+    Route::post('/certificates/download-zip', [PublicClientPortalController::class, 'downloadZip']);
+    Route::get('/instruments', [PublicClientPortalController::class, 'instruments']);
+    Route::get('/clients/{client}/certificates', [PublicClientPortalController::class, 'certificates']);
+});
 
 Route::middleware('auth:sanctum')->group(function () {
 

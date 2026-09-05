@@ -66,6 +66,7 @@ class Instrument extends Model implements CalibratableItem
         'image_path',
         'material_id',
         'tenant_id',
+        'lab_client_id',
         'guard_band_multiplier_override',
     ];
 
@@ -144,6 +145,14 @@ class Instrument extends Model implements CalibratableItem
     public function material(): BelongsTo
     {
         return $this->belongsTo(Material::class);
+    }
+
+    /**
+     * @return BelongsTo<LabClient, Instrument>
+     */
+    public function labClient(): BelongsTo
+    {
+        return $this->belongsTo(LabClient::class, 'lab_client_id');
     }
 
     /**
