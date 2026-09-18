@@ -16,6 +16,12 @@ hardware/kicad/
 ├── amemiya_main_node/               # PCB 2: Nó de Borda Principal ESP32-S3 (70x50 mm)
 │   ├── amemiya_main_node.kicad_sch     # Esquemático elétrico KiCad
 │   └── amemiya_main_node.kicad_pcb     # Layout da placa PCB
+├── amemiya_probe_tower/             # PCB 3: Sonda Cartucho Torre Cilíndrica (24x48 mm)
+│   └── amemiya_probe_tower.kicad_pcb   # Layout da placa PCB
+├── scripts/                         # Scripts Python de geração procedural e roteamento A*
+│   ├── generate_zero_drc_pcbs_v35.py   # Gerador master v35 (PTH, 0 DRC)
+│   ├── astar_router_v13.py             # Roteador A* Grid Maze v13
+│   └── generate_probe_tower_v5.py      # Gerador da torre v5
 └── README.md                         # Este manual
 ```
 
