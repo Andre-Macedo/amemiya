@@ -57,5 +57,8 @@ jobs:
               docker-compose -f docker-compose.prod.yml exec app php artisan migrate --force
               docker-compose -f docker-compose.prod.yml exec app php artisan optimize
 
+              echo '==> 10. A recarregar o proxy reverso Nginx...'
+              docker restart nginx-proxy
+
               echo '==> DEPLOY AUTOMÁTICO CONCLUÍDO!'
               "
