@@ -1,0 +1,338 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-09-09T14:26:47-0300",
+    "kicad_version": "9.0.7",
+    "schematic_parity": [],
+    "source": "amemiya_probe_tower.kicad_pcb",
+    "unconnected_items": [],
+    "violations": [
+        {
+            "description": "Cruzamento das trilhas",
+            "items": [
+                {
+                    "description": "Trilha [I2C_SCL] no F.Cu, comprimento 14,6100 mm",
+                    "pos": {
+                        "x": 3.5,
+                        "y": 41.5
+                    },
+                    "uuid": "52dfdad3-2e41-4d89-82c8-27753bc1c313"
+                },
+                {
+                    "description": "Trilha [+3V3] no F.Cu, comprimento 4,9200 mm",
+                    "pos": {
+                        "x": 2.0,
+                        "y": 30.46
+                    },
+                    "uuid": "6b8f531f-7ff9-473a-a293-28adcae08134"
+                }
+            ],
+            "severity": "error",
+            "type": "tracks_crossing"
+        },
+        {
+            "description": "Cruzamento das trilhas",
+            "items": [
+                {
+                    "description": "Trilha [1W_DQ] no F.Cu, comprimento 5,5000 mm",
+                    "pos": {
+                        "x": 8.19,
+                        "y": 44.5
+                    },
+                    "uuid": "87b4178a-9e0a-44c2-9009-697d0f29a376"
+                },
+                {
+                    "description": "Trilha [I2C_SCL] no F.Cu, comprimento 7,2300 mm",
+                    "pos": {
+                        "x": 10.73,
+                        "y": 41.5
+                    },
+                    "uuid": "f11e89b7-6d4f-4c77-95aa-631debfe7bd2"
+                }
+            ],
+            "severity": "error",
+            "type": "tracks_crossing"
+        },
+        {
+            "description": "Cruzamento das trilhas",
+            "items": [
+                {
+                    "description": "Trilha [I2C_SDA] no B.Cu, comprimento 9,7700 mm",
+                    "pos": {
+                        "x": 13.27,
+                        "y": 41.0
+                    },
+                    "uuid": "11ed3d02-acf9-46e3-82ab-9c86d8ac1a4b"
+                },
+                {
+                    "description": "Trilha [GND] no B.Cu, comprimento 11,5000 mm",
+                    "pos": {
+                        "x": 5.65,
+                        "y": 44.5
+                    },
+                    "uuid": "b0213867-915a-4028-b536-c88f7ded94c8"
+                }
+            ],
+            "severity": "error",
+            "type": "tracks_crossing"
+        },
+        {
+            "description": "Cruzamento das trilhas",
+            "items": [
+                {
+                    "description": "Trilha [I2S_SCK] no B.Cu, comprimento 7,5000 mm",
+                    "pos": {
+                        "x": 15.81,
+                        "y": 44.5
+                    },
+                    "uuid": "316df6f6-ca3e-41f6-8ca2-4ca1a765b811"
+                },
+                {
+                    "description": "Trilha [I2S_SD] no B.Cu, comprimento 11,4300 mm",
+                    "pos": {
+                        "x": 18.35,
+                        "y": 38.0
+                    },
+                    "uuid": "cb14595c-c279-4342-bfae-efe48e85d7eb"
+                }
+            ],
+            "severity": "error",
+            "type": "tracks_crossing"
+        },
+        {
+            "description": "Violação do isolamento (placa mínima isolamento 0,2500 mm; atual 0,0500 mm)",
+            "items": [
+                {
+                    "description": "Ilha PTH 4 [<no net>] de J_ADXL",
+                    "pos": {
+                        "x": 4.5,
+                        "y": 16.73
+                    },
+                    "uuid": "906f1674-d523-4b14-b0d3-fbbeebd08415"
+                },
+                {
+                    "description": "Trilha [GND] no B.Cu, comprimento 12,7000 mm",
+                    "pos": {
+                        "x": 5.65,
+                        "y": 21.81
+                    },
+                    "uuid": "a7f81f8c-f999-41a4-9778-1696e5b0043a"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Itens encurtando duas redes (redes I2C_SCL e I2C_SDA)",
+            "items": [
+                {
+                    "description": "Ilha PTH 8 [I2C_SCL] de J_ADXL",
+                    "pos": {
+                        "x": 4.5,
+                        "y": 26.89
+                    },
+                    "uuid": "21d594c3-cd03-4163-91b8-655e0d989f5c"
+                },
+                {
+                    "description": "Trilha [I2C_SDA] no B.Cu, comprimento 16,6500 mm",
+                    "pos": {
+                        "x": 3.5,
+                        "y": 41.0
+                    },
+                    "uuid": "8736c84a-09bf-462a-be09-4dad0c3fb249"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Violação do isolamento (placa mínima isolamento 0,2500 mm; atual 0,1700 mm)",
+            "items": [
+                {
+                    "description": "Ilha PTH 1 [+3V3] de J_MIC",
+                    "pos": {
+                        "x": 6.92,
+                        "y": 30.46
+                    },
+                    "uuid": "0ebee71b-f9c4-4c59-9ca2-9bd6a3f20af7"
+                },
+                {
+                    "description": "Trilha [GND] no B.Cu, comprimento 11,1900 mm",
+                    "pos": {
+                        "x": 5.65,
+                        "y": 33.0
+                    },
+                    "uuid": "612193b5-dee8-4c35-b2e8-35e32e60ef51"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Violação do isolamento (placa mínima isolamento 0,2500 mm; atual 0,1700 mm)",
+            "items": [
+                {
+                    "description": "Ilha PTH 3 [I2S_SD] de J_MIC",
+                    "pos": {
+                        "x": 6.92,
+                        "y": 35.54
+                    },
+                    "uuid": "13477b1f-5556-4973-898d-7a8b74a845dc"
+                },
+                {
+                    "description": "Trilha [GND] no B.Cu, comprimento 11,5000 mm",
+                    "pos": {
+                        "x": 5.65,
+                        "y": 44.5
+                    },
+                    "uuid": "b0213867-915a-4028-b536-c88f7ded94c8"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "A abertura da máscara de solda de trás conecta itens com redes diferentes",
+            "items": [
+                {
+                    "description": "Trilha [I2C_SDA] no B.Cu, comprimento 16,6500 mm",
+                    "pos": {
+                        "x": 3.5,
+                        "y": 41.0
+                    },
+                    "uuid": "8736c84a-09bf-462a-be09-4dad0c3fb249"
+                },
+                {
+                    "description": "Ilha PTH 8 [I2C_SCL] de J_ADXL",
+                    "pos": {
+                        "x": 4.5,
+                        "y": 26.89
+                    },
+                    "uuid": "21d594c3-cd03-4163-91b8-655e0d989f5c"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "O footprint 'PinHeader_1x03_P2.54mm_Vertical' não bate com a cópia existente na biblioteca 'Connector_PinHeader_2.54mm'.",
+            "items": [
+                {
+                    "description": "Footprint J_TEMP",
+                    "pos": {
+                        "x": 12.0,
+                        "y": 4.5
+                    },
+                    "uuid": "87ae3d75-1675-4648-acec-2968612550c1"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "O footprint 'C_Disc_D3.8mm_W2.6mm_P2.50mm' não bate com a cópia existente na biblioteca 'Capacitor_THT'.",
+            "items": [
+                {
+                    "description": "Footprint C1",
+                    "pos": {
+                        "x": 10.73,
+                        "y": 6.5
+                    },
+                    "uuid": "2f8e4d03-956c-468a-8fa7-63f567ee0256"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "O footprint 'R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal' não bate com a cópia existente na biblioteca 'Resistor_THT'.",
+            "items": [
+                {
+                    "description": "Footprint R1",
+                    "pos": {
+                        "x": 12.0,
+                        "y": 8.5
+                    },
+                    "uuid": "c35f52eb-aa1d-4907-8594-3bb2974ddf06"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "O footprint 'PinHeader_1x08_P2.54mm_Vertical' não bate com a cópia existente na biblioteca 'Connector_PinHeader_2.54mm'.",
+            "items": [
+                {
+                    "description": "Footprint J_ADXL",
+                    "pos": {
+                        "x": 4.5,
+                        "y": 18.0
+                    },
+                    "uuid": "72930bfd-2aae-403a-a139-ce37f1be9af3"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "O footprint 'INMP441_Round_14mm' não foi encontrado na biblioteca 'Module'.",
+            "items": [
+                {
+                    "description": "Footprint J_MIC",
+                    "pos": {
+                        "x": 12.0,
+                        "y": 33.0
+                    },
+                    "uuid": "75c65dfa-b67d-4f02-b615-22b072eb6fd7"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_issues"
+        },
+        {
+            "description": "O footprint 'PinHeader_1x08_P2.54mm_Vertical' não bate com a cópia existente na biblioteca 'Connector_PinHeader_2.54mm'.",
+            "items": [
+                {
+                    "description": "Footprint J_CABLE",
+                    "pos": {
+                        "x": 12.0,
+                        "y": 44.5
+                    },
+                    "uuid": "9baae485-d57a-4aae-aa81-29792b914c5a"
+                }
+            ],
+            "severity": "warning",
+            "type": "lib_footprint_mismatch"
+        },
+        {
+            "description": "A serigrafia foi cortado pela máscara de solda",
+            "items": [
+                {
+                    "description": "Campo de referência do C1",
+                    "pos": {
+                        "x": 10.73,
+                        "y": 4.5
+                    },
+                    "uuid": "fcf12bed-310a-4a8d-91d4-26bbd0418c5c"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "A serigrafia foi cortado pela máscara de solda",
+            "items": [
+                {
+                    "description": "Campo de referência do R1",
+                    "pos": {
+                        "x": 12.0,
+                        "y": 6.5
+                    },
+                    "uuid": "2793b729-ffeb-4437-a6a1-4f9b108bf922"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        }
+    ]
+}

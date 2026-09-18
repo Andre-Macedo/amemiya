@@ -1,0 +1,179 @@
+Multi-Sensor Edge Condition Monitoring for Rotating Machinery: A Comprehensive Literature Review
+This review covers 13 peer-reviewed papers spanning hardware prototypes, sensor fusion methodologies, order tracking techniques, and edge-computing implementations relevant to your Industrial IoT multi-sensor condition monitoring device.
+
+1. Similar Multi-Sensor Hardware Prototypes
+Several research groups have developed multi-modal sensing platforms that combine vibration, acoustic, speed, and electrical measurements for rotating machinery diagnostics.
+
+Cardoso et al. [1] developed a smart sensor integrating a tri-axial MEMS accelerometer (STMicroelectronics LIS3LV02DQ) with a digital temperature sensor, controlled by an MSP430 microcontroller, communicating over CANbus. This device performs local FFT and RMS computation of vibration data in situ, though it lacks acoustic, current, or tachometer sensing.
+
+Janssens et al. [3] built a comprehensive test rig combining infrared thermal imaging with dual-axis accelerometers (Brüel & Kjær 4533-B, 51.2 kHz sampling) for multi-sensor bearing fault detection. Their platform included a single-phase asynchronous induction motor (1.1 kW, 1500 rpm) with controlled imbalance and bearing faults, demonstrating that feature fusion of vibration and thermal data improved detection accuracy from ~88% (single-sensor) to 100% (fused).
+
+Pagar et al. [12] implemented a complete edge-based condition monitoring system using an STM32F4 microcontroller (ARM Cortex-M4) with a piezoelectric accelerometer, PZEM004T current sensor (AC current transformer), and MAX6675 temperature sensor. Vibration, current, and temperature data are processed locally via FFT on the MCU and transmitted via Modbus/RS-485 to cloud dashboards.
+
+Bengherbia et al. [11] designed an FPGA-based edge device (Pynq-Z2 with Zynq-7020 SoC) using the MFCC algorithm to convert vibration signals into 2D feature arrays, classified by a lightweight CNN running on an Intel NCS2 neural compute stick. Their system processes data in under 40 ms per sample.
+
+Zhang et al. [2] used five accelerometers on a planetary gearbox (sampled at 16,384 Hz) and three on a parallel shaft gearbox (12,800 Hz) combined with a torque tachometer. Their Transformer-based multi-sensor feature fusion framework demonstrated that multi-sensor collaborative diagnosis significantly outperforms single-sensor approaches (94–96% vs. 49–85%).
+
+Liu et al. [4] instrumented a planetary gearbox test rig with seven Brüel & Kjær accelerometers (8192 Hz sampling) and a torque/speed sensor. Their multi-sensor time-frequency fusion approach converted signals into fused images via continuous wavelet transform and graph attention networks.
+
+Hardware Gaps: Notably, none of the reviewed papers simultaneously integrated all four modalities (MEMS accelerometer, digital acoustic microphone, tachometer, and current sensor) that your prototype includes. The closest are Pagar et al. [12] (vibration + current + temperature) and Cardoso et al. [1] (vibration + temperature). This indicates that your proposed quadruple-sensor combination represents a novel contribution.
+
+2. Sensor Data Fusion Methodologies
+2.1 Vibration–Current Fusion for Fault Separation
+The critical challenge is separating mechanical faults (bearing defects, unbalance) from electrical faults (rotor eccentricity, broken rotor bars, stator inter-turn faults).
+
+Wu et al. [7] provided a comprehensive review of techniques for separating mechanical load effects from rotor faults in induction motors using MCSA. They found that rotor-position-dependent load torque oscillations generate side-band harmonics at frequencies identical to rotor eccentricity fault signatures (f_ecc = (1 ± k/P)f_s). Their key findings:
+
+Negative sequence harmonics can effectively distinguish rotor eccentricity from load oscillation, since load oscillation produces only positive-sequence harmonics while rotor eccentricity generates both positive and negative sequence components.
+The Vienna Monitoring Method (VMM) compares torque from voltage and current models—rotor faults produce a torque ripple at double slip frequency, independent of load variations—but is ineffective below ~40% full load.
+Instantaneous power spectrum analysis reveals additional modulation frequency components (f_0) that aid in mechanical load fault detection, as power spectrum contains components at (2f_s ± f_0) and at f_0 itself.
+Al-Haddad et al. [5] demonstrated vibration-current data fusion for PMSM stator inter-turn fault diagnosis. Using a gradient boosting classifier on statistical features (mean, standard deviation, variance, max, min) extracted from three-phase currents and z-axis vibration, they achieved:
+
+Current-only features: 43.4% accuracy
+Vibration-only features: 74.5% accuracy
+Fused vibration-current features: 90.7% accuracy (AUC = 95.1%)
+This represents a ~17% improvement over vibration alone, confirming that electrical and mechanical modalities provide complementary information.
+
+Ertargin et al. [6] proposed a CNN-LSTM model for induction motor fault detection using three accelerometers. Their model classified seven fault types (including both electrical: voltage unbalance, single phasing, broken rotor bars; and mechanical: bearing faults) with >99% accuracy on individual accelerometers, demonstrating the power of deep temporal feature learning.
+
+2.2 Multi-Sensor Fusion Architectures
+Zhang et al. [2] proposed a three-level fusion taxonomy applicable to your design:
+
+Data-level fusion: Direct combination of raw sensor data—requires synchronous sampling and is sensitive to noise.
+Feature-level fusion: Separate feature extraction per sensor followed by concatenation—more robust and suitable for real-time edge processing. Their Transformer-based fusion module captures long-range dependencies between sensor features.
+Decision-level fusion: Independent classification per sensor with weighted voting (e.g., Dempster-Shafer fusion).
+Liu et al. [4] proposed a graph-based fusion method converting multi-sensor time-frequency maps into graph structures (nodes = superpixels from SLIC segmentation, features = color+texture). Their R_GATv2 (Graph Attention Network with residual connections) achieved 99.62% accuracy on gearbox fault diagnosis and 99.79% on CWRU bearing data.
+
+Janssens et al. [3] demonstrated that feature-level fusion of model-driven features (vibration: amplitude at BPFO, kurtosis, crest factor, RMS) with data-driven features (thermal imaging: standard deviation, Gini coefficient, M20 moment) in a random forest classifier achieved 100% accuracy on combined bearing/imbalance conditions, versus 88% (thermal-only) and 87% (vibration-only).
+
+2.3 Separating Mechanical from Electrical Faults
+Mechanical faults (bearing defects, unbalance): best detected via vibration envelope analysis at bearing fault frequencies (BPFO, BPFI, BSF, FTF) and 1× RPM component for imbalance [3,8].
+Electrical faults (stator inter-turn, rotor eccentricity): best detected via MCSA side-band analysis at (1±2ks)f_s for broken bars and (1±k/P)f_s for eccentricity [7].
+Fused approach: Vibration-current feature fusion provides the greatest discriminative power. The vibration signal dominates mechanical fault detection, while current signal provides electrical fault signatures. Cross-validation between modalities reduces false alarms [5,7].
+3. Order Tracking and RPM Normalization
+Order tracking (OT) is essential for variable-speed operation, transforming time-domain non-stationary signals into stationary angle-domain signals.
+
+3.1 Hardware-Based Order Tracking (HOT)
+In HOT, a tachometer (optical encoder, magnetic pickup, or Hall sensor) generates pulses that trigger ADC sampling at constant angular increments [9]. The microcontroller adjusts sampling frequency and anti-aliasing filter cutoff dynamically based on pulse rate. HOT is fast and suitable for online implementation but requires dedicated hardware and can suffer from sampling latency during rapid speed changes [10].
+
+3.2 Computed Order Tracking (COT)
+COT is more flexible: both the vibration signal and tachometer pulses are sampled synchronously at a fixed sampling rate, then the vibration signal is resampled in software using interpolation based on the shaft's angular position [9,10]. Wang and Heyns [8] demonstrated COT combined with Vold-Kalman Filter (VKF-OT) and Empirical Mode Decomposition (EMD) to separate speed-synchronous from non-synchronous vibration components. Their sequential approach:
+
+EMD decomposes raw vibration into Intrinsic Mode Functions (IMFs).
+COT transforms IMFs into the order domain, identifying speed-synchronous components.
+VKF-OT extracts dominant orders (e.g., 3rd order) in the time domain.
+The residual contains amplitude-modulated non-synchronous components that are diagnostic of faults.
+This method successfully extracted stator inter-turn short-circuit fault signatures from automotive alternator vibration data that were not extractable by either EMD or VKF-OT alone [8].
+
+3.3 Tacholess Order Tracking (TOT)
+Lu et al. [9] provided an authoritative review of TOT methods, classifying them by signal source:
+
+Vibration/sound signal: Instantaneous frequency (IF) estimated from time-frequency representations (STFT, wavelet, synchrosqueezing) or signal decomposition (EMD, VMD). Ridge detection extracts the 1× component as the rotating speed curve.
+Motor current signal: For AC motors, the supply frequency relates directly to speed: n = 60f(1-s)/p. Speed estimation from current is often more accurate than from vibration, as the current fundamental frequency is dominant and clean.
+Video stream: Computer vision (SURF, KLT tracking) estimates speed from pixel motion in camera frames. This is contactless but computationally intensive.
+Their comparative case study showed that current-based speed estimation achieved the lowest RMS error and highest SNR in envelope order spectra for bearing fault diagnosis, followed by vibration-based, then video-based methods [9].
+
+3.4 Practical Implementation for Your Prototype
+For your tachometer input (optical/Hall sensor), COT is the most practical firmware approach:
+
+Sample vibration, acoustic, and current signals synchronously at fixed f_s (e.g., 10–50 kHz depending on sensor bandwidth).
+Process tachometer pulses to compute instantaneous angular position θ(t) via interpolation between pulse edges.
+Resample all sensor signals at constant Δθ using cubic or polynomial interpolation.
+Apply FFT to obtain order spectra where fault frequencies are fixed multiples of 1× RPM regardless of speed changes [10].
+For variable-speed drives, Lin and Zhao [10] recommend combining COT with time-synchronous averaging (TSA) and phase-domain averaging to compensate for transmission path phase distortion.
+
+Gildish et al. [13] proposed a novel statistical method for estimating relative rotating speed from vibration signals alone, using the inverse CDF of spectral peak frequencies. This method requires no prior knowledge of machine kinematics and achieved R² = 0.92 on wind turbine data, making it suitable as a fallback when tachometer data is temporarily unavailable.
+
+4. Edge Computing Implementations
+4.1 Microcontroller-Based Platforms (STM32, ESP32)
+Pagar et al. [12] implemented the most relevant complete system using the STM32F4 (ARM Cortex-M4 with FPU and DSP instructions):
+
+Sensors: Piezoelectric accelerometer (via I2S), PZEM004T current sensor, MAX6675 temperature sensor.
+Processing: On-device real FFT (arm_rfft_fast_f32 from CMSIS-DSP) with 1024–8192 point FFT sizes. Frequency resolution determined by FFT size and sampling rate.
+Edge computing: Data processed locally before cloud transmission—FFT spectra, RMS values, and ISO 10816 severity classifications computed on MCU.
+Communication: Modbus/RS-485 for sensor bus, WiFi/Ethernet for cloud (Ubidots platform).
+Alarms: Threshold-based alerts via SMS when vibration exceeds ISO limits.
+Validation: Results verified against professional VibXpert-II vibration meter with good agreement.
+STM32 advantages: DSP instruction set, FPU, peripheral-rich (I2S for microphones, timers for tachometer capture, multiple ADC channels), low power, mature ecosystem (STM32CubeMX, STM32CubeAI for neural network deployment).
+
+ESP32 advantages: Integrated WiFi/BLE, dual-core (allowing one core for signal acquisition, one for communication/cloud), lower cost, but limited DSP performance compared to STM32F4/H7 series.
+
+4.2 FPGA and Accelerator-Based Systems
+Bengherbia et al. [11] implemented a more powerful edge solution using Pynq-Z2 FPGA (Zynq-7020):
+
+MFCC pre-processing implemented as custom IP cores via Vivado HLS: Spectrogram (FFT + power spectrum), Mel-filterbank, DCT stages.
+CNN inference offloaded to Intel NCS2 (Myriad X VPU) via USB.
+Performance: Total processing < 40 ms (26 ms MFCC + 5 ms inference), using only 23% LUTs and 19% DSP slices.
+Comparison: FPGA processing was 4× faster than an STM32L433 (80 MHz Cortex-M4) for the same MFCC computation.
+4.3 TinyML and Edge-AI Pipelines
+Ertargin et al. [6] demonstrated an end-to-end CNN-LSTM model (15 layers) for motor fault classification using raw 1000-sample vibration windows. The model was trained on 42 kHz data and achieved response time of 0.066 s per sample—sufficient for real-time operation. STM32CubeAI can convert such trained Keras/TensorFlow models into optimized C code for deployment on STM32 MCUs [12].
+
+4.4 Processing Pipeline Recommendations
+For your multi-sensor (accelerometer + microphone + tachometer + current) device, a realistic edge processing pipeline is:
+
+Stage	Processing	Platform Suitability
+Data acquisition	Synchronous sampling of 4 sensor streams	STM32 timers + DMA, or ESP32 I2S + ADC
+Tachometer processing	Pulse edge detection, angular interpolation	STM32 timer capture channels
+Order tracking	COT resampling	STM32 (CMSIS-DSP interpolation) or FPGA
+FFT / Order spectrum	N-point FFT per sensor channel	STM32 arm_rfft_fast_f32 (up to 8192 pt)
+Feature extraction	RMS, peak, kurtosis, sideband levels	MCU real-time computation
+Fault classification	Lightweight ML (Random Forest, SVM, 1D-CNN)	STM32CubeAI, TensorFlow Lite Micro
+Cloud communication	Transmit features/alarms only (not raw data)	ESP32 WiFi, or STM32 + external WiFi module
+For resource-constrained MCUs, the key principle from Gildish et al. [13] applies: transmit condition indicators (RMS, peak-to-peak, estimated speed, fault probabilities) rather than raw waveforms, to conserve bandwidth and enable edge-based real-time decision-making.
+
+5. Structured Table of Relevant Papers
+#	Paper Title	Authors	Year	Journal/Conference	DOI	Sensor Suite & Key Findings
+1	A smart sensor for the condition monitoring of industrial rotating machinery	Cardoso et al.	2012	IEEE Sensors	10.1109/icsens.2012.6411586	Sensors: Tri-axial MEMS accelerometer (LIS3LV02DQ) + temperature sensor (ADT7301). Key finding: MSP430-based smart sensor with on-board FFT and CANbus communication; RMS acceleration/velocity computed in situ; validated against calibration shaker.
+2	Multi-sensor open-set cross-domain intelligent diagnostics for rotating machinery under variable operating conditions	Zhang et al.	2023	Mechanical Systems and Signal Processing	10.1016/j.ymssp.2023.110172	Sensors: 5 accelerometers (planetary gearbox) + torque tachometer. Key finding: CNN + Transformer fusion for multi-sensor open-set domain adaptation; multi-sensor (95.88%) significantly outperforms single-sensor (max 85.54%) across 10 cross-domain tasks.
+3	Thermal Imaging and Vibration-Based Multisensor Fault Detection for Rotating Machinery	Janssens et al.	2019	IEEE Trans. Industrial Informatics	10.1109/tii.2018.2873175	Sensors: Dual-axis accelerometer (51.2 kHz) + infrared thermal camera. Key finding: Feature fusion (vibration BPFO amplitude + thermal std dev/Gini/M20) in random forest achieved 100% accuracy vs. 88% (thermal-only) and 87% (vibration-only) for bearing+imbalance faults.
+4	A multisensory time-frequency features fusion method for rotating machinery fault diagnosis under nonstationary case	Liu et al.	2023	Journal of Intelligent Manufacturing	10.1007/s10845-023-02198-x	Sensors: 7 accelerometers (8192 Hz) on planetary gearbox. Key finding: Multi-sensor CWT time-frequency images fused via graph attention network (R_GATv2); 99.62% accuracy for gearbox faults (normal/pitting/crack) under time-varying speed; robust to noise (SNR ≥ 0 dB).
+5	Vibration-current data fusion and gradient boosting classifier for enhanced stator fault diagnosis in PMSMs	Al-Haddad et al.	2023	Electrical Engineering	10.1007/s00202-023-02148-z	Sensors: 3-phase current probes + z-axis piezoelectric accelerometer. Key finding: Gradient boosting on fused statistical features achieved 90.7% (vibration+current) vs. 74.5% (vibration-only) and 43.4% (current-only) for inter-turn short-circuit faults.
+6	Mechanical and electrical faults detection in induction motor across multiple sensors with CNN-LSTM	Ertargin et al.	2024	Electrical Engineering	10.1007/s00202-024-02420-w	Sensors: 3x accelerometers on induction motor (42 kHz sampling). Key finding: 15-layer CNN-LSTM model with >98% accuracy across all sensor positions; end-to-end automatic feature extraction; model independent of accelerometer location.
+7	A Review of Separating Mechanical Load Effects from Rotor Faults Detection in Induction Motors	Wu et al.	2007	IEEE SDEMPED	10.1109/demped.2007.4393098	Sensors: MCSA (current transformers). Key finding: Comprehensive review of techniques to separate load oscillation from rotor faults; negative sequence harmonics can eliminate load effects; VMM is load-independent but requires >40% rated load; instantaneous power spectrum adds modulation frequency components.
+8	Application of computed order tracking, Vold-Kalman filtering and EMD in rotating machine vibration	Wang & Heyns	2011	Mechanical Systems and Signal Processing	10.1016/j.ymssp.2010.09.003	Sensors: Accelerometer + shaft encoder (1 pulse/rev). Key finding: Sequential EMD + COT + VKF-OT extracted speed-non-synchronous amplitude modulation sidebands (fault indicators) that were unextractable by any single method; validated on automotive alternator with seeded stator fault.
+9	Tacholess Speed Estimation in Order Tracking: A Review With Application to Rotating Machine Fault Diagnosis	Lu et al.	2019	IEEE Trans. Instrumentation and Measurement	10.1109/tim.2019.2902806	Sensors: Accelerometer, current probes, camera, encoder (for comparison). Key finding: Comprehensive review of TOT methods; current-based speed estimation achieved highest accuracy (lowest RMSD) for bearing fault diagnosis; vibration-based suffers from low SNR for small faults; video-based is flexible but computationally heavy.
+10	A review and strategy for the diagnosis of speed-varying machinery	Lin & Zhao	2014	IEEE PHM Conference	10.1109/icphm.2014.7036368	Sensors: Accelerometer + tachometer. Key finding: Review of COT, TSA, time-frequency analysis, and EMD for speed-varying conditions; COT is essential pre-processing; phase domain averaging compensates for transmission path distortion; short-time phase demodulation reveals speed-dependent fault features.
+11	Design and Hardware Implementation of an Intelligent Industrial IoT Edge Device for Bearing Monitoring	Bengherbia et al.	2023	Arabian J. for Science and Engineering	10.1007/s13369-023-08268-9	Sensors: Accelerometer (48 kHz, CWRU data). Key finding: FPGA-based edge device (Pynq-Z2) with MFCC pre-processing (20×13 2D features) + CNN on Intel NCS2; 99.92% accuracy; <40 ms total processing; 4× faster than STM32L433 MCU for same task.
+12	Online condition monitoring system for rotating machine elements using edge computing	Pagar et al.	2023	Australian J. Mechanical Engineering	10.1080/14484846.2023.2215493	Sensors: Piezoelectric accelerometer + PZEM004T current sensor + MAX6675 temp sensor on STM32F4. Key finding: Edge-based FFT analysis with ISO 10816 severity classification; Modbus/RS-485 sensor bus; web dashboard with real-time FFT spectra; validated against VibXpert-II professional meter.
+13	Vibration-based rotation speed estimation for Industrial IoT	Gildish et al.	2024	Internet of Things	10.1016/j.iot.2023.101024	Sensors: Wireless accelerometer (24 kHz). Key finding: Novel statistical speed estimation from spectral peak CDFs—no prior knowledge of machine kinematics required; R²=0.92 on 5 MW wind turbine data; suitable as contextual parameter for IIoT condition monitoring without tachometer.
+
+6. Summary and Recommendations for Your Prototype
+Based on this literature review, your proposed quadruple-sensor configuration (MEMS accelerometer + digital acoustic microphone + tachometer + current clamp) is a novel combination that has not been comprehensively studied in a single device. Here are key implementation guidelines:
+
+Hardware platform: The STM32F4/H7 series (Cortex-M4/M7 with DSP and FPU) is the best choice for MCU-based edge processing, offering timer capture channels for tachometer input, I2S for PDM microphones, multiple SAR ADCs for current sensing, and CMSIS-DSP libraries for real-time FFT. The ESP32 can serve as a WiFi coprocessor for cloud connectivity.
+
+Sensor fusion strategy: Implement feature-level fusion (as in [3,5])—extract separate statistical features (RMS, peak, kurtosis, sideband amplitudes, BPFO/BPFI amplitudes) from each modality, then fuse them in a lightweight classifier (Random Forest, XGBoost, or 1D-CNN via STM32CubeAI).
+
+Order tracking: Implement computed order tracking (COT) in firmware using the tachometer input to compute angular position and resample all sensor signals. Use Vold-Kalman filtering for extraction of specific order components [8].
+
+Fault separation: Use vibration features (envelope spectrum at BPFO/BPFI/BSF) for mechanical bearing faults; use current features (side-band analysis at (1±2ks)f_s) for electrical rotor faults; use acoustic features (high-frequency envelope) for friction and early-stage defects. Fuse all three for robust decision-making.
+
+Edge AI: Deploy a lightweight 1D-CNN or Random Forest model using STM32CubeAI or TensorFlow Lite Micro. Transmit only condition indicators (fault probabilities, severity indices, RMS values, estimated RPM) to the cloud, not raw waveforms [13]. This enables real-time alerting while minimizing bandwidth and power consumption.
+
+References
+[1]F.J.A. Cardoso, S.P.S. Faria, and J.E.G. Oliveira, "A smart sensor for the condition monitoring of industrial rotating machinery," in 2012 IEEE Sensors, pp. 1–4, 2012
+DOI: 10.1109/icsens.2012.6411586
+[2]Y. Zhang, J.C. Ji, Z. Ren, Q. Ni, and B. Wen, "Multi-sensor open-set cross-domain intelligent diagnostics for rotating machinery under variable operating conditions," Mechanical Systems and Signal Processing, vol. 191, p. 110172, 2023
+DOI: 10.1016/j.ymssp.2023.110172
+[3]O. Janssens, M. Loccufier, and S. Van Hoecke, "Thermal Imaging and Vibration-Based Multisensor Fault Detection for Rotating Machinery," IEEE Transactions on Industrial Informatics, vol. 15, no. 1, pp. 434–444, 2019
+DOI: 10.1109/tii.2018.2873175
+[4]J. Liu, F. Xie, Q. Zhang, Q. Lyu, X. Wang, and S. Wu, "A multisensory time-frequency features fusion method for rotating machinery fault diagnosis under nonstationary case," Journal of Intelligent Manufacturing, vol. 35, no. 7, pp. 3197–3217, 2023
+DOI: 10.1007/s10845-023-02198-x
+[5]L.A. Al-Haddad, A.A. Jaber, M.N. Hamzah, and M.A. Fayad, "Vibration-current data fusion and gradient boosting classifier for enhanced stator fault diagnosis in three-phase permanent magnet synchronous motors," Electrical Engineering, vol. 106, no. 3, pp. 3253–3268, 2023
+DOI: 10.1007/s00202-023-02148-z
+[6]M. Ertargin, O. Yildirim, and A. Orhan, "Mechanical and electrical faults detection in induction motor across multiple sensors with CNN-LSTM deep learning model," Electrical Engineering, vol. 106, no. 6, pp. 6941–6951, 2024
+DOI: 10.1007/s00202-024-02420-w
+[7]L. Wu, T.G. Habetler, and R.G. Harley, "A Review of Separating Mechanical Load Effects from Rotor Faults Detection in Induction Motors," in 2007 IEEE International Symposium on Diagnostics for Electric Machines, Power Electronics and Drives, pp. 221–225, 2007
+DOI: 10.1109/demped.2007.4393098
+[8]K.S. Wang and P.S. Heyns, "Application of computed order tracking, Vold–Kalman filtering and EMD in rotating machine vibration," Mechanical Systems and Signal Processing, vol. 25, no. 1, pp. 416–430, 2011
+DOI: 10.1016/j.ymssp.2010.09.003
+[9]S. Lu, R. Yan, Y. Liu, and Q. Wang, "Tacholess Speed Estimation in Order Tracking: A Review With Application to Rotating Machine Fault Diagnosis," IEEE Transactions on Instrumentation and Measurement, vol. 68, no. 7, pp. 2315–2332, 2019
+DOI: 10.1109/tim.2019.2902806
+[10]J. Lin and M. Zhao, "A review and strategy for the diagnosis of speed-varying machinery," in 2014 International Conference on Prognostics and Health Management, pp. 1–9, 2014
+DOI: 10.1109/icphm.2014.7036368
+[11]B. Bengherbia, A. Tobbal, S. Chadli, M.A. Elmohri, A. Toubal, M. Rebiai, and Y. Toumi, "Design and Hardware Implementation of an Intelligent Industrial IoT Edge Device for Bearing Monitoring and Fault Diagnosis," Arabian Journal for Science and Engineering, vol. 49, no. 5, pp. 6343–6359, 2023
+DOI: 10.1007/s13369-023-08268-9
+[12]N.D. Pagar, S.S. Gawde, and S.B. Sanap, "Online condition monitoring system for rotating machine elements using edge computing," Australian Journal of Mechanical Engineering, vol. 22, no. 5, pp. 984–997, 2023
+DOI: 10.1080/14484846.2023.2215493
+[13]E. Gildish, M. Grebshtein, and I. Makienko, "Vibration-based rotation speed estimation for Industrial IoT," Internet of Things, vol. 25, p. 101024, 2024
+DOI: 10.1016/j.iot.2023.101024
