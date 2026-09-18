@@ -1,0 +1,310 @@
+{
+  "board": "C:\\Users\\andrl\\OneDrive\\Documentos\\Projetos Pessoal\\amemiya\\hardware\\kicad\\amemiya_probe_tower\\amemiya_probe_tower.kicad_pcb",
+  "timestamp": "2026-09-08T18:53:08-0300",
+  "total_violations": 29,
+  "violation_counts": {
+    "tracks_crossing": 4,
+    "shorting_items": 3,
+    "clearance": 7,
+    "solder_mask_bridge": 9,
+    "lib_footprint_mismatch": 5,
+    "lib_footprint_issues": 1
+  },
+  "severity_counts": {
+    "error": 23,
+    "warning": 6,
+    "info": 0
+  },
+  "violations": [
+    {
+      "type": "tracks_crossing",
+      "severity": "error",
+      "message": "Cruzamento das trilhas",
+      "location": {
+        "x": 11.5,
+        "y": 24.35,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "tracks_crossing",
+      "severity": "error",
+      "message": "Cruzamento das trilhas",
+      "location": {
+        "x": 18.35,
+        "y": 39.0,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "shorting_items",
+      "severity": "error",
+      "message": "Itens encurtando duas redes (redes I2S_SD e GND)",
+      "location": {
+        "x": 18.35,
+        "y": 44.5,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "clearance",
+      "severity": "error",
+      "message": "Viola\u00e7\u00e3o do isolamento (placa m\u00ednima isolamento 0,2500 mm; atual 0,0059 mm)",
+      "location": {
+        "x": 12.0,
+        "y": 8.5,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "tracks_crossing",
+      "severity": "error",
+      "message": "Cruzamento das trilhas",
+      "location": {
+        "x": 18.35,
+        "y": 39.0,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "clearance",
+      "severity": "error",
+      "message": "Viola\u00e7\u00e3o do isolamento (placa m\u00ednima isolamento 0,2500 mm; atual 0,0632 mm)",
+      "location": {
+        "x": 6.92,
+        "y": 35.54,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "clearance",
+      "severity": "error",
+      "message": "Viola\u00e7\u00e3o do isolamento (placa m\u00ednima isolamento 0,2500 mm; atual 0,0500 mm)",
+      "location": {
+        "x": 4.5,
+        "y": 14.19,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "clearance",
+      "severity": "error",
+      "message": "Viola\u00e7\u00e3o do isolamento (placa m\u00ednima isolamento 0,2500 mm; atual 0,1700 mm)",
+      "location": {
+        "x": 6.92,
+        "y": 35.54,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "clearance",
+      "severity": "error",
+      "message": "Viola\u00e7\u00e3o do isolamento (placa m\u00ednima isolamento 0,2500 mm; atual 0,0721 mm)",
+      "location": {
+        "x": 10.73,
+        "y": 8.5,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "shorting_items",
+      "severity": "error",
+      "message": "Itens encurtando duas redes (redes +3V3 e 1W_DQ)",
+      "location": {
+        "x": 12.0,
+        "y": 8.5,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "clearance",
+      "severity": "error",
+      "message": "Viola\u00e7\u00e3o do isolamento (placa m\u00ednima isolamento 0,2500 mm; atual 0,0500 mm)",
+      "location": {
+        "x": 4.5,
+        "y": 24.35,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "clearance",
+      "severity": "error",
+      "message": "Viola\u00e7\u00e3o do isolamento (placa m\u00ednima isolamento 0,2500 mm; atual 0,0300 mm)",
+      "location": {
+        "x": 8.0,
+        "y": 35.27,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "tracks_crossing",
+      "severity": "error",
+      "message": "Cruzamento das trilhas",
+      "location": {
+        "x": 8.0,
+        "y": 26.89,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "shorting_items",
+      "severity": "error",
+      "message": "Itens encurtando duas redes (redes +3V3 e GND)",
+      "location": {
+        "x": 12.0,
+        "y": 8.5,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "solder_mask_bridge",
+      "severity": "error",
+      "message": "A abertura da m\u00e1scara de solda de tr\u00e1s conecta itens com redes diferentes",
+      "location": {
+        "x": 22.5,
+        "y": 45.5,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "solder_mask_bridge",
+      "severity": "error",
+      "message": "A abertura da m\u00e1scara de solda de tr\u00e1s conecta itens com redes diferentes",
+      "location": {
+        "x": 22.5,
+        "y": 45.5,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "solder_mask_bridge",
+      "severity": "error",
+      "message": "A abertura da m\u00e1scara de solda de tr\u00e1s conecta itens com redes diferentes",
+      "location": {
+        "x": 22.5,
+        "y": 45.5,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "solder_mask_bridge",
+      "severity": "error",
+      "message": "A abertura da m\u00e1scara de solda de tr\u00e1s conecta itens com redes diferentes",
+      "location": {
+        "x": 22.5,
+        "y": 45.5,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "solder_mask_bridge",
+      "severity": "error",
+      "message": "A abertura da m\u00e1scara de solda de tr\u00e1s conecta itens com redes diferentes",
+      "location": {
+        "x": 22.5,
+        "y": 45.5,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "solder_mask_bridge",
+      "severity": "error",
+      "message": "A abertura da m\u00e1scara de solda de tr\u00e1s conecta itens com redes diferentes",
+      "location": {
+        "x": 22.5,
+        "y": 45.5,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "solder_mask_bridge",
+      "severity": "error",
+      "message": "A abertura da m\u00e1scara de solda da frente conecta itens com redes diferentes",
+      "location": {
+        "x": 10.0,
+        "y": 12.0,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "solder_mask_bridge",
+      "severity": "error",
+      "message": "A abertura da m\u00e1scara de solda da frente conecta itens com redes diferentes",
+      "location": {
+        "x": 12.0,
+        "y": 8.5,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "solder_mask_bridge",
+      "severity": "error",
+      "message": "A abertura da m\u00e1scara de solda de tr\u00e1s conecta itens com redes diferentes",
+      "location": {
+        "x": 12.0,
+        "y": 8.5,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "lib_footprint_mismatch",
+      "severity": "warning",
+      "message": "O footprint 'PinHeader_1x03_P2.54mm_Vertical' n\u00e3o bate com a c\u00f3pia existente na biblioteca 'Connector_PinHeader_2.54mm'.",
+      "location": {
+        "x": 12.0,
+        "y": 4.5,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "lib_footprint_mismatch",
+      "severity": "warning",
+      "message": "O footprint 'R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal' n\u00e3o bate com a c\u00f3pia existente na biblioteca 'Resistor_THT'.",
+      "location": {
+        "x": 14.54,
+        "y": 8.5,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "lib_footprint_mismatch",
+      "severity": "warning",
+      "message": "O footprint 'C_Disc_D3.8mm_W2.6mm_P2.50mm' n\u00e3o bate com a c\u00f3pia existente na biblioteca 'Capacitor_THT'.",
+      "location": {
+        "x": 9.46,
+        "y": 8.5,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "lib_footprint_mismatch",
+      "severity": "warning",
+      "message": "O footprint 'PinHeader_1x08_P2.54mm_Vertical' n\u00e3o bate com a c\u00f3pia existente na biblioteca 'Connector_PinHeader_2.54mm'.",
+      "location": {
+        "x": 4.5,
+        "y": 18.0,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "lib_footprint_issues",
+      "severity": "warning",
+      "message": "O footprint 'INMP441_Round_14mm' n\u00e3o foi encontrado na biblioteca 'Module'.",
+      "location": {
+        "x": 12.0,
+        "y": 33.0,
+        "unit": "mm"
+      }
+    },
+    {
+      "type": "lib_footprint_mismatch",
+      "severity": "warning",
+      "message": "O footprint 'PinHeader_1x08_P2.54mm_Vertical' n\u00e3o bate com a c\u00f3pia existente na biblioteca 'Connector_PinHeader_2.54mm'.",
+      "location": {
+        "x": 12.0,
+        "y": 44.5,
+        "unit": "mm"
+      }
+    }
+  ]
+}
