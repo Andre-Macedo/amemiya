@@ -64,9 +64,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/instruments/export', [InstrumentApiController::class, 'export']);
     Route::get('/instruments/batch/labels', [InstrumentApiController::class, 'batchLabels']);
     Route::apiResource('instruments', InstrumentApiController::class);
-    Route::apiResource('metrology/instruments', InstrumentApiController::class);
+    Route::apiResource('metrology/instruments', InstrumentApiController::class)->names('metrology.instruments');
     Route::apiResource('instrument-types', InstrumentTypeApiController::class);
-    Route::apiResource('metrology/instrument-types', InstrumentTypeApiController::class);
+    Route::apiResource('metrology/instrument-types', InstrumentTypeApiController::class)->names('metrology.instrument-types');
     Route::get('instruments/{instrument}/intermediate-checks', [IntermediateCheckApiController::class, 'index']);
     Route::post('intermediate-checks', [IntermediateCheckApiController::class, 'store']);
 
@@ -86,7 +86,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Calibrations CRUD
     Route::get('/calibrations/export', [CalibrationApiController::class, 'export']);
     Route::apiResource('calibrations', CalibrationApiController::class)->except(['store']);
-    Route::apiResource('metrology/calibrations', CalibrationApiController::class)->except(['store']);
+    Route::apiResource('metrology/calibrations', CalibrationApiController::class)->except(['store'])->names('metrology.calibrations');
     Route::post('/metrology/calibrations', [CalibrationApiController::class, 'store']);
     Route::post('/calibrations/{id}/approve', [CalibrationApiController::class, 'approve']);
     Route::post('/calibrations/{id}/reject', [CalibrationApiController::class, 'reject']);
@@ -117,7 +117,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Materials
     Route::apiResource('materials', MaterialApiController::class);
-    Route::apiResource('metrology/materials', MaterialApiController::class);
+    Route::apiResource('metrology/materials', MaterialApiController::class)->names('metrology.materials');
 
     // Maintenance
     Route::get('maintenance', [MaintenanceApiController::class, 'index']);
@@ -126,7 +126,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Work Orders
     Route::apiResource('work-orders', WorkOrderApiController::class);
-    Route::apiResource('metrology/work-orders', WorkOrderApiController::class);
+    Route::apiResource('metrology/work-orders', WorkOrderApiController::class)->names('metrology.work-orders');
 
     // Supplier Accreditations
     Route::get('suppliers/{supplier}/accreditations', [SupplierAccreditationApiController::class, 'index']);
