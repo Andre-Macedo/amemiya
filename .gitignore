@@ -29,6 +29,11 @@ Homestead.json
 .phpactor.json
 auth.json
 .idea/
+.junie/
+.ai/
+*.bak
+prepare_*.php
+*.ipynb_checkpoints/
 
 # CAD & FreeCAD
 *.FCBak
