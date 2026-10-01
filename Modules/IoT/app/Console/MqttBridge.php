@@ -3,23 +3,24 @@
 namespace Modules\IoT\Console;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Modules\IoT\Jobs\ProcessTelemetryJob;
 use PhpMqtt\Client\Facades\MQTT;
-use Illuminate\Support\Facades\Log;
 
 class MqttBridge extends Command
 {
     protected $signature = 'iot:mqtt-bridge';
+
     protected $description = 'Fica ouvindo o Broker MQTT e encaminha telemetria para a fila do Redis';
 
     public function handle(): void
     {
         $this->info('Iniciando Ponte MQTT...');
-        
+
         while (true) {
             try {
                 // Client ID aleatório para evitar conflitos se o container reiniciar rápido
-                $clientId = 'amemiya_bridge_' . substr(md5(uniqid()), 0, 6);
+                $clientId = 'amemiya_bridge_'.substr(md5(uniqid()), 0, 6);
                 $mqtt = MQTT::connection('default', $clientId);
 
                 $this->info("Conectado como {$clientId}. Aguardando mensagens...");
@@ -35,9 +36,9 @@ class MqttBridge extends Command
                 $mqtt->loop(true);
 
             } catch (\Exception $e) {
-                $this->error('Conexão perdida: ' . $e->getMessage());
+                $this->error('Conexão perdida: '.$e->getMessage());
                 Log::channel('iot_telemetry')->error('MQTT Bridge: Falha na conexão. Tentando reconectar em 5s...', [
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
                 ]);
                 sleep(5);
             }
@@ -57,7 +58,7 @@ class MqttBridge extends Command
             }
 
             ProcessTelemetryJob::dispatch($data);
-            $this->info("-> [Msg enfileirada] Gateway: " . $data['device_id'] . " | Node: " . $data['node_id']);
+            $this->info('-> [Msg enfileirada] Gateway: '.$data['device_id'].' | Node: '.$data['node_id']);
         }
     }
 }

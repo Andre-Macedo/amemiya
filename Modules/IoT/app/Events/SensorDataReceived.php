@@ -2,6 +2,7 @@
 
 namespace Modules\IoT\Events;
 
+use App\Models\Tenant;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -26,8 +27,8 @@ class SensorDataReceived implements ShouldBroadcast
     public function broadcastOn(): array
     {
         // Tenta encontrar o slug se o tenantId for um ULID, senão usa o que veio
-        $tenantSlug = \App\Models\Tenant::find($this->data->tenantId)?->slug ?? $this->data->tenantId;
-        
+        $tenantSlug = Tenant::find($this->data->tenantId)?->slug ?? $this->data->tenantId;
+
         return [
             new Channel("tenant.{$tenantSlug}.iot"),
         ];

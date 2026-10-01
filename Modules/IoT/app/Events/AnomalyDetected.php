@@ -2,6 +2,7 @@
 
 namespace Modules\IoT\Events;
 
+use App\Models\Tenant;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -13,9 +14,9 @@ class AnomalyDetected implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
-     * @param string $tenantId ID do Tenant
-     * @param string $gatewayId ID do Gateway (UUID/ULID)
-     * @param array $mlResult Resultado completo vindo do microserviço Python ou da borda
+     * @param  string  $tenantId  ID do Tenant
+     * @param  string  $gatewayId  ID do Gateway (UUID/ULID)
+     * @param  array  $mlResult  Resultado completo vindo do microserviço Python ou da borda
      */
     public function __construct(
         public string $tenantId,
@@ -28,8 +29,8 @@ class AnomalyDetected implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
-        $tenantSlug = \App\Models\Tenant::find($this->tenantId)?->slug ?? $this->tenantId;
-        
+        $tenantSlug = Tenant::find($this->tenantId)?->slug ?? $this->tenantId;
+
         return [
             new Channel("tenant.{$tenantSlug}.iot"),
         ];

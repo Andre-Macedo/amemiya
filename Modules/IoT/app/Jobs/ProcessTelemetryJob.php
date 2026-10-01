@@ -6,15 +6,18 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
+use Laravel\Pulse\Facades\Pulse;
 use Modules\IoT\DTOs\TelemetryDataDTO;
 use Modules\IoT\Events\AnomalyDetected;
 use Modules\IoT\Events\SensorDataReceived;
+use Modules\IoT\Models\IoTDeviceLog;
 use Modules\IoT\Models\IoTGateway;
 use Modules\IoT\Services\MachineLearningService;
 use PhpMqtt\Client\Facades\MQTT;
-use Illuminate\Queue\Middleware\WithoutOverlapping;
 
 class ProcessTelemetryJob implements ShouldQueue
 {
@@ -28,7 +31,7 @@ class ProcessTelemetryJob implements ShouldQueue
         return [
             (new WithoutOverlapping($this->payload['node_id'] ?? 'global'))
                 ->releaseAfter(20)
-                ->expireAfter(60)
+                ->expireAfter(60),
         ];
     }
 
@@ -44,20 +47,27 @@ class ProcessTelemetryJob implements ShouldQueue
     {
         $startTime = microtime(true);
         $msgId = now()->format('H:i:s.v');
+        $gateway = null;
+        $node = null;
+        $lastSentCommand = null;
 
         try {
-            // Log do Payload Completo de Entrada
+            // Log do Payload Completo de Entrada (para fins de histórico do servidor)
             Log::channel('iot_telemetry')->info("--- INÍCIO [Ref: {$msgId}] ---", [
-                'payload_recebido' => $this->payload
+                'payload_recebido' => $this->payload,
             ]);
 
             // 1. Identificação básica
             $gateway = IoTGateway::where('device_id', $this->payload['device_id'] ?? '')->first();
-            if (! $gateway) return;
+            if (! $gateway) {
+                return;
+            }
 
             $nodeId = $this->payload['node_id'] ?? null;
             $node = $gateway->nodes()->where('node_id', $nodeId)->first() ?? $gateway->nodes()->first();
-            if (! $node) return;
+            if (! $node) {
+                return;
+            }
 
             // 2. Mapeamento de Status/Confiança
             $mlStatus = $this->payload['ml_status'] ?? null;
@@ -78,18 +88,18 @@ class ProcessTelemetryJob implements ShouldQueue
             $reanalyzed = false;
 
             if (($mlConfidence < 0.80 || $mlStatus === 'desbalanceamento') && ! empty($this->payload['features'])) {
-                
+
                 // Handshake 1: Análise Pendente (Amarelo)
                 $this->sendMqttCommand($gateway->device_id, $node->node_id, 'analise_pendente', $mlConfidence, $msgId);
 
                 Log::channel('iot_ml')->info("Ref: {$msgId} | Analisando na Nuvem", [
                     'node' => $node->node_id,
-                    'node_status' => $mlStatus
+                    'node_status' => $mlStatus,
                 ]);
-                
+
                 $mlResult = $mlService->predictAnomalia($this->payload['features']);
-                
-                $cloudMlStatus = $mlResult['status']; 
+
+                $cloudMlStatus = $mlResult['status'];
                 $cloudMlConfidence = (float) ($mlResult['confidence'] ?? 0);
                 $reanalyzed = true;
 
@@ -97,17 +107,17 @@ class ProcessTelemetryJob implements ShouldQueue
                 Log::channel('iot_ml')->info("Ref: {$msgId} | Veredito Nuvem: {$logStatus} ({$cloudMlConfidence})");
 
                 // Handshake 2: Veredito Final
-                $this->sendMqttCommand($gateway->device_id, $node->node_id, $cloudMlStatus, $cloudMlConfidence, $msgId);
-                
+                $lastSentCommand = $this->sendMqttCommand($gateway->device_id, $node->node_id, $cloudMlStatus, $cloudMlConfidence, $msgId);
+
             } else {
                 // Handshake Único: Espelhamento
                 $finalStatus = match ($mlStatus) {
                     'desbalanceamento' => 'falha_confirmada',
-                    'desligada'        => 'machine_off',
-                    default            => 'saudavel',
+                    'desligada' => 'machine_off',
+                    default => 'saudavel',
                 };
-                
-                $this->sendMqttCommand($gateway->device_id, $node->node_id, $finalStatus, $mlConfidence, $msgId);
+
+                $lastSentCommand = $this->sendMqttCommand($gateway->device_id, $node->node_id, $finalStatus, $mlConfidence, $msgId);
             }
 
             // 4. DTO e Broadcast
@@ -131,38 +141,118 @@ class ProcessTelemetryJob implements ShouldQueue
                 mlStatus: $mlStatus,
                 mlConfidence: $mlConfidence,
                 timestamp: isset($this->payload['timestamp']) && $this->payload['timestamp'] > 0
-                    ? \Illuminate\Support\Carbon::createFromTimestamp($this->payload['timestamp'])->toIso8601String()
+                    ? Carbon::createFromTimestamp($this->payload['timestamp'])->toIso8601String()
                     : now()->toIso8601String(),
                 cloudMlStatus: $cloudMlStatus,
                 cloudMlConfidence: $cloudMlConfidence
             );
 
             event(new SensorDataReceived($dto));
-            
+
             // 5. Alerta Push
             $alertStatus = $cloudMlStatus ?? $mlStatus;
-            if (!in_array($alertStatus, ['saudavel', 'normal', 'desligada'])) {
+            $isAnomaly = ! in_array($alertStatus, ['saudavel', 'normal', 'desligada'], true);
+
+            if ($isAnomaly) {
                 broadcast(new AnomalyDetected($gateway->tenant_id, $gateway->id, [
                     'status' => $alertStatus,
                     'confidence' => $cloudMlConfidence ?? $mlConfidence,
                     'node_id' => $node->node_id,
-                    'reanalyzed' => $reanalyzed
+                    'reanalyzed' => $reanalyzed,
                 ]));
+            }
+
+            // 6. Registro de Auditoria / Diagnóstico Estruturado
+            if ($isAnomaly || $reanalyzed) {
+                $level = match ($alertStatus) {
+                    'falha_confirmada', 'desbalanceamento' => 'critical',
+                    'analise_pendente' => 'warning',
+                    default => 'info',
+                };
+
+                $eventType = $isAnomaly ? 'anomaly_detected' : 'cloud_ml_evaluated';
+
+                IoTDeviceLog::create([
+                    'tenant_id' => $gateway->tenant_id,
+                    'gateway_id' => $gateway->id,
+                    'node_id' => $node->id,
+                    'machine_id' => $node->machine_id,
+                    'level' => $level,
+                    'event_type' => $eventType,
+                    'ml_status' => $mlStatus,
+                    'ml_confidence' => $mlConfidence,
+                    'cloud_ml_status' => $cloudMlStatus,
+                    'cloud_ml_confidence' => $cloudMlConfidence,
+                    'rpm' => $this->payload['rpm'] ?? null,
+                    'rms_global' => (float) ($this->payload['rms_global'] ?? 0),
+                    'raw_payload' => $this->payload,
+                    'features' => $this->payload['features'] ?? [],
+                    'sent_command' => $lastSentCommand,
+                    'message' => "Disparo de IA: Status Edge [{$mlStatus}] (".round($mlConfidence * 100, 1).'%)'.($reanalyzed ? " -> Nuvem [{$cloudMlStatus}] (".round((float) $cloudMlConfidence * 100, 1).'%)' : ''),
+                    'measured_at' => isset($this->payload['timestamp']) && $this->payload['timestamp'] > 0
+                        ? Carbon::createFromTimestamp($this->payload['timestamp'])
+                        : now(),
+                ]);
             }
 
             $totalTime = round((microtime(true) - $startTime) * 1000);
             Log::channel('iot_telemetry')->info("--- FIM [Ref: {$msgId}] em {$totalTime}ms ---");
 
+            // 7. Laravel Pulse Telemetria (se habilitado)
+            if (class_exists(Pulse::class)) {
+                Pulse::record(
+                    type: 'iot_telemetry',
+                    key: $node->node_id,
+                    value: 1,
+                    timestamp: now(),
+                )->count();
+
+                if ($reanalyzed) {
+                    Pulse::record(
+                        type: 'iot_ml_latency',
+                        key: 'cloud_xgboost',
+                        value: (int) $totalTime,
+                        timestamp: now(),
+                    )->avg();
+                }
+            }
+
         } catch (\Exception $e) {
-            Log::error("IoT Error [Ref: {$msgId}]: " . $e->getMessage());
+            Log::error("IoT Error [Ref: {$msgId}]: ".$e->getMessage());
+
+            if ($gateway && $node) {
+                try {
+                    IoTDeviceLog::create([
+                        'tenant_id' => $gateway->tenant_id,
+                        'gateway_id' => $gateway->id,
+                        'node_id' => $node->id,
+                        'machine_id' => $node->machine_id,
+                        'level' => 'error',
+                        'event_type' => 'error',
+                        'raw_payload' => $this->payload,
+                        'message' => 'Erro ao processar telemetria: '.$e->getMessage(),
+                        'measured_at' => now(),
+                    ]);
+                } catch (\Exception $logEx) {
+                    Log::error('IoT Device Log Error: '.$logEx->getMessage());
+                }
+            }
+
+            if (app()->bound('sentry')) {
+                \Sentry\captureException($e);
+            }
         }
     }
 
     /**
      * Envia comando MQTT padronizado com log do payload completo.
+     *
+     * @return array<string, mixed> O payload do comando enviado
      */
-    protected function sendMqttCommand(string $gwId, string $nodeId, string $status, float $confidence, $msgId): void
+    protected function sendMqttCommand(string $gwId, string $nodeId, string $status, float $confidence, $msgId): array
     {
+        $payload = [];
+
         try {
             $mqttStatus = match ($status) {
                 'falha_confirmada' => 'fault_confirmed',
@@ -173,34 +263,36 @@ class ProcessTelemetryJob implements ShouldQueue
             };
 
             $logDisplayStatus = match ($mqttStatus) {
-                'fault_confirmed'  => 'FALHA CONFIRMADA (Vermelho)',
-                'healthy'          => 'SAUDÁVEL (Verde)',
+                'fault_confirmed' => 'FALHA CONFIRMADA (Vermelho)',
+                'healthy' => 'SAUDÁVEL (Verde)',
                 'pending_analysis' => 'EM ANÁLISE (Amarelo)',
-                'off'              => 'MÁQUINA DESLIGADA (Verde Piscante)',
-                default            => 'SAUDÁVEL',
+                'off' => 'MÁQUINA DESLIGADA (Verde Piscante)',
+                default => 'SAUDÁVEL',
             };
 
             $payload = [
-                'command'     => 'set_alarm_state',
-                'status'      => $mqttStatus,
-                'fault_type'  => ($status === 'falha_confirmada' || $status === 'desbalanceamento') ? 'desbalanceamento' : 'normal',
-                'confidence'  => (float) $confidence,
+                'command' => 'set_alarm_state',
+                'status' => $mqttStatus,
+                'fault_type' => ($status === 'falha_confirmada' || $status === 'desbalanceamento') ? 'desbalanceamento' : 'normal',
+                'confidence' => (float) $confidence,
                 'ttl_seconds' => 60,
-                'ref_msg'     => $msgId
+                'ref_msg' => $msgId,
             ];
 
-            $pubClientId = 'amemiya_pub_' . substr(md5(uniqid()), 0, 6);
+            $pubClientId = 'amemiya_pub_'.substr(md5(uniqid()), 0, 6);
             $mqtt = MQTT::connection('default', $pubClientId);
             $mqtt->publish("v1/gateways/{$gwId}/nodes/{$nodeId}/commands", json_encode($payload));
             $mqtt->disconnect();
 
             // Log detalhado do comando enviado
             Log::channel('iot_commands')->info("Ref: {$msgId} | Resposta: {$logDisplayStatus}", [
-                'payload_enviado' => $payload
+                'payload_enviado' => $payload,
             ]);
 
         } catch (\Exception $e) {
-            Log::channel('iot_commands')->error("Ref: {$msgId} | Erro MQTT: " . $e->getMessage());
+            Log::channel('iot_commands')->error("Ref: {$msgId} | Erro MQTT: ".$e->getMessage());
         }
+
+        return $payload;
     }
 }

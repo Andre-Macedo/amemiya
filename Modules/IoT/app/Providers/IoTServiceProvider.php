@@ -3,6 +3,8 @@
 namespace Modules\IoT\Providers;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Modules\IoT\Console\Commands\PruneSensorData;
+use Modules\IoT\Console\MqttBridge;
 use Nwidart\Modules\Support\ModuleServiceProvider;
 
 class IoTServiceProvider extends ModuleServiceProvider
@@ -23,8 +25,8 @@ class IoTServiceProvider extends ModuleServiceProvider
      * @var string[]
      */
     protected array $commands = [
-        \Modules\IoT\Console\MqttBridge::class,
-        \Modules\IoT\Console\Commands\PruneSensorData::class,
+        MqttBridge::class,
+        PruneSensorData::class,
     ];
 
     /**

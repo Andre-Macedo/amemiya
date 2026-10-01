@@ -4,8 +4,8 @@ namespace Modules\IoT\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Modules\IoT\Models\IoTSensorData;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\IoT\Models\IoTSensorData;
 
 class IoTHistoryApiController extends Controller
 {

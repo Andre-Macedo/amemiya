@@ -21,7 +21,8 @@ class Logs extends Page
 
     public static function shouldRegisterNavigation(): bool
     {
-        // Apenas Super Admins podem ver os logs
-        return auth()->user()?->hasRole('super-admin') ?? false;
+        // Descontinuado da navegação em favor dos logs estruturados de auditoria e IoT.
+        // Permanece acessível apenas diretamente via /log-viewer para sysadmins.
+        return false;
     }
 }

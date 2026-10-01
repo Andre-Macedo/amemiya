@@ -16,8 +16,8 @@ class TelemetryDataDTO
      * @param  array  $features  Features extraídas na borda
      * @param  string  $mlStatus  Status preditivo (saudavel, falha, etc)
      * @param  float  $mlConfidence  Nível de confiança do modelo
-     * @param  string|null $cloudMlStatus Status vindo da nuvem (modelo especialista)
-     * @param  float|null $cloudMlConfidence Confiança vinda da nuvem
+     * @param  string|null  $cloudMlStatus  Status vindo da nuvem (modelo especialista)
+     * @param  float|null  $cloudMlConfidence  Confiança vinda da nuvem
      * @param  string  $timestamp  ISO8601
      */
     public function __construct(

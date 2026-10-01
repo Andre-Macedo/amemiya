@@ -4,14 +4,15 @@ namespace Modules\IoT\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Modules\IoT\Models\IoTNode;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\IoT\Models\IoTNode;
 
 class IoTNodeApiController extends Controller
 {
     public function index()
     {
         $nodes = IoTNode::with(['gateway', 'machine'])->latest()->get();
+
         return JsonResource::collection($nodes);
     }
 
@@ -53,6 +54,7 @@ class IoTNodeApiController extends Controller
     public function destroy(IoTNode $iotNode)
     {
         $iotNode->delete();
+
         return response()->noContent();
     }
 }

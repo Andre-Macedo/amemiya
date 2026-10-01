@@ -28,8 +28,9 @@ class MachineLearningService
                 Log::channel('iot_ml')->info('Resposta recebida da Nuvem', [
                     'status' => $result['status'],
                     'confidence' => $result['confidence'],
-                    'prob_defect' => $result['prob_defect'] ?? 'N/A'
+                    'prob_defect' => $result['prob_defect'] ?? 'N/A',
                 ]);
+
                 return $result;
             }
 

@@ -3,6 +3,8 @@
 namespace Modules\IoT\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Modules\IoT\Events\SensorDataReceived;
+use Modules\IoT\Listeners\PersistSensorData;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -12,8 +14,8 @@ class EventServiceProvider extends ServiceProvider
      * @var array<string, array<int, string>>
      */
     protected $listen = [
-        \Modules\IoT\Events\SensorDataReceived::class => [
-            \Modules\IoT\Listeners\PersistSensorData::class,
+        SensorDataReceived::class => [
+            PersistSensorData::class,
         ],
     ];
 

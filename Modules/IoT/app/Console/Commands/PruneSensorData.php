@@ -3,6 +3,7 @@
 namespace Modules\IoT\Console\Commands;
 
 use Illuminate\Console\Command;
+use Modules\IoT\Models\IoTDeviceLog;
 use Modules\IoT\Models\IoTSensorData;
 
 class PruneSensorData extends Command
@@ -19,18 +20,19 @@ class PruneSensorData extends Command
      *
      * @var string
      */
-    protected $description = 'Remove dados antigos de sensores para manter o banco saudável.';
+    protected $description = 'Remove dados antigos de sensores e logs operacionais para manter o banco saudável.';
 
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
-        $days = $this->option('days');
+        $days = (int) $this->option('days');
         $date = now()->subDays($days);
 
-        $count = IoTSensorData::where('measured_at', '<', $date)->delete();
+        $sensorCount = IoTSensorData::where('measured_at', '<', $date)->delete();
+        $logCount = IoTDeviceLog::where('created_at', '<', $date)->delete();
 
-        $this->info("Limpeza concluída: {$count} registros antigos removidos.");
+        $this->info("Limpeza concluída: {$sensorCount} telemetrias e {$logCount} logs removidos.");
     }
 }
