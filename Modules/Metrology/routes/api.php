@@ -24,6 +24,7 @@ use Modules\Metrology\Http\Controllers\Api\V1\SupplierAccreditationApiController
 use Modules\Metrology\Http\Controllers\Api\V1\TraceabilityController;
 use Modules\Metrology\Http\Controllers\Api\V1\WorkOrderApiController;
 use Modules\Metrology\Http\Controllers\CalibrationPdfController;
+use Modules\System\Http\Controllers\Api\V1\AuditLogApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -50,8 +51,9 @@ Route::middleware('auth:sanctum')->prefix('public/portal')->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    // Global Search
+    // Global Search & Audit
     Route::get('/search', [GlobalSearchController::class, 'index']);
+    Route::get('/audit-logs', [AuditLogApiController::class, 'index']);
 
     // Instruments
     Route::post('/instruments/scan', [LogisticsApiController::class, 'scan']);

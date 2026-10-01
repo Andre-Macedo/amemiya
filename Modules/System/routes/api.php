@@ -2,8 +2,8 @@
 
 use App\Http\Middleware\InitializeTenancyByHeader;
 use App\Http\Middleware\VerifySubscription;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\System\Http\Controllers\Api\V1\AccessLogApiController;
 use Modules\System\Http\Controllers\Api\V1\AuditLogApiController;
 use Modules\System\Http\Controllers\Api\V1\AuthApiController;
 use Modules\System\Http\Controllers\Api\V1\BillingApiController;
@@ -82,6 +82,7 @@ Route::middleware([
 
             // Logs
             Route::get('audit-logs', [AuditLogApiController::class, 'index']);
+            Route::get('access-logs', [AccessLogApiController::class, 'index']);
         });
     });
 });

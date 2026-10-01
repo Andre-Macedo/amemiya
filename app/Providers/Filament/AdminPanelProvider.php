@@ -40,13 +40,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->discoverClusters(in: app_path('Filament/Clusters'), for: 'App\Filament\Clusters')
-            ->discoverClusters(in: base_path('Modules/Metrology/app/Filament/Clusters'), for: 'Modules\Metrology\Filament\Clusters')
             ->discoverClusters(in: base_path('Modules/System/app/Filament/Clusters'), for: 'Modules\System\Filament\Clusters')
-            ->discoverClusters(in: base_path('Modules/IoT/app/Filament/Clusters'), for: 'Modules\IoT\Filament\Clusters')
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
-            ->discoverResources(in: base_path('Modules/Metrology/app/Filament/Clusters/Metrology/Resources'), for: 'Modules\Metrology\Filament\Clusters\Metrology\Resources')
             ->discoverResources(in: base_path('Modules/System/app/Filament/Clusters/System/Resources'), for: 'Modules\System\Filament\Clusters\System\Resources')
-            ->discoverResources(in: base_path('Modules/IoT/app/Filament/Clusters/IoT/Resources'), for: 'Modules\IoT\Filament\Clusters\IoT\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([

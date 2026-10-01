@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\System\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
@@ -14,47 +16,57 @@ use Spatie\Activitylog\Models\Activity;
 class AuditLogApiController extends Controller
 {
     /**
-     * Retorna o histórico de auditoria para um recurso específico.
+     * Display a listing of audit logs (global or resource-scoped).
      */
     public function index(Request $request): JsonResponse
     {
-        $request->validate([
-            'auditable_type' => ['required', 'string'],
-            'auditable_id' => ['required', 'string'],
-        ]);
+        $perPage = min((int) $request->input('per_page', 20), 100);
 
-        // Mapeia os tipos simplificados do frontend para as classes reais do backend
-        $typeMapping = [
-            'instrument' => Instrument::class,
-            'standard' => ReferenceStandard::class,
-            'calibration' => Calibration::class,
-            'work_order' => WorkOrder::class,
-        ];
+        $query = Activity::with('causer')->latest();
 
-        $subjectType = $typeMapping[$request->auditable_type] ?? $request->auditable_type;
+        if ($request->filled('auditable_type')) {
+            $typeMapping = [
+                'instrument' => Instrument::class,
+                'standard' => ReferenceStandard::class,
+                'calibration' => Calibration::class,
+                'work_order' => WorkOrder::class,
+            ];
 
-        $logs = Activity::with('causer')
-            ->where('subject_type', $subjectType)
-            ->where('subject_id', $request->auditable_id)
-            ->latest()
-            ->get();
+            $subjectType = $typeMapping[$request->input('auditable_type')] ?? $request->input('auditable_type');
+            $query->where('subject_type', $subjectType);
+        }
 
-        // Normaliza para o formato esperado pelo frontend atual
-        $normalizedLogs = $logs->map(function ($log) {
-            $props = $log->properties->toArray();
+        if ($request->filled('auditable_id')) {
+            $query->where('subject_id', (string) $request->input('auditable_id'));
+        }
+
+        $paginated = $query->paginate($perPage);
+
+        $transformed = $paginated->getCollection()->map(function (Activity $log): array {
+            $props = $log->properties ? $log->properties->toArray() : [];
 
             return [
-                'id' => $log->id,
-                'event' => $log->event,
-                'description' => $log->description,
+                'id' => (string) $log->id,
+                'event' => (string) ($log->event ?? 'updated'),
+                'description' => (string) ($log->description ?? ''),
                 'user_name' => $log->causer?->name ?? 'Sistema',
-                'formatted_date' => $log->created_at->format('d/m/Y H:i'),
+                'created_at' => $log->created_at?->toIso8601String() ?? '',
+                'formatted_date' => $log->created_at?->format('d/m/Y H:i') ?? '',
+                'auditable_type' => class_basename((string) ($log->subject_type ?? 'System')),
+                'auditable_id' => $log->subject_id,
                 'old_values' => $props['old'] ?? null,
                 'new_values' => $props['attributes'] ?? null,
+                'url' => null,
                 'causer_id' => $log->causer_id,
             ];
         });
 
-        return response()->json($normalizedLogs);
+        return response()->json([
+            'data' => $transformed,
+            'current_page' => $paginated->currentPage(),
+            'last_page' => $paginated->lastPage(),
+            'per_page' => $paginated->perPage(),
+            'total' => $paginated->total(),
+        ]);
     }
 }

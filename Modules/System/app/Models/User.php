@@ -19,6 +19,16 @@ use Laravel\Sanctum\HasApiTokens;
 use Modules\Metrology\Models\InstrumentType;
 use Spatie\Permission\Traits\HasRoles;
 
+/**
+ * @property string $id
+ * @property string $name
+ * @property string $email
+ * @property ?string $signature_image_path
+ * @property ?string $tenant_id
+ * @property ?Carbon $email_verified_at
+ * @property ?Carbon $terms_accepted_at
+ * @property ?Carbon $privacy_policy_accepted_at
+ */
 class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<UserFactory> */

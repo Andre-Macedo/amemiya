@@ -6,9 +6,24 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 use Stancl\Tenancy\Database\Concerns\HasDomains;
 use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
 
+/**
+ * @property string $id
+ * @property string $name
+ * @property string $slug
+ * @property string $status
+ * @property ?string $plan_id
+ * @property ?string $contact_email
+ * @property ?string $contact_phone
+ * @property ?string $address
+ * @property ?int $limit_instruments_override
+ * @property ?int $limit_users_override
+ * @property ?Carbon $trial_ends_at
+ * @property ?Carbon $subscription_ends_at
+ */
 class Tenant extends BaseTenant
 {
     use HasDomains, HasUlids;
