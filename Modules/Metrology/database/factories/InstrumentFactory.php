@@ -3,6 +3,7 @@
 namespace Modules\Metrology\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Modules\Metrology\Enums\InstrumentCriticality;
 use Modules\Metrology\Enums\ItemStatus;
 use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\InstrumentType;
@@ -37,6 +38,7 @@ class InstrumentFactory extends Factory
             'acquisition_date' => $this->faker->dateTimeBetween('-5 years', 'now'),
             'calibration_due' => $this->faker->dateTimeBetween('now', '+1 year'),
             'status' => ItemStatus::Active,
+            'criticality' => InstrumentCriticality::OperationalReference,
             'image_path' => null,
         ];
     }

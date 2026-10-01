@@ -20,6 +20,7 @@ use Modules\System\Models\Supplier;
  * @property string $name
  * @property int|null $calibration_frequency_months
  * @property string $decision_rule
+ * @property float|null $guard_band_multiplier
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -43,7 +44,7 @@ class InstrumentType extends Model
     ];
 
     /**
-     * @return HasMany<Instrument>
+     * @return HasMany<Instrument, $this>
      */
     public function instruments(): HasMany
     {
@@ -51,7 +52,7 @@ class InstrumentType extends Model
     }
 
     /**
-     * @return HasMany<ChecklistTemplate>
+     * @return HasMany<ChecklistTemplate, $this>
      */
     public function checklistTemplates(): HasMany
     {

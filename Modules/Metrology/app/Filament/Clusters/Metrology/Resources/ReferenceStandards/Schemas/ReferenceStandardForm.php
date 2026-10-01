@@ -43,7 +43,7 @@ class ReferenceStandardForm
                                         return;
                                     }
                                     $type = ReferenceStandardType::find($state);
-                                    if ($type) {
+                                    if ($type instanceof ReferenceStandardType) {
                                         $set('is_kit', $type->is_kit);
                                         // Se virou Kit, limpa o pai (Kit não tem pai)
                                         if ($type->is_kit) {
@@ -127,8 +127,23 @@ class ReferenceStandardForm
                                 ->label('Última Calibração'),
                         ]),
 
-                    Section::make('Certificado')
+                    Section::make('Certificado e Rastreabilidade RBC')
                         ->schema([
+                            TextInput::make('certificate_number')
+                                ->label('Nº do Certificado de Calibração')
+                                ->placeholder('Ex: CAL-4421/2026')
+                                ->maxLength(255),
+
+                            TextInput::make('accredited_lab')
+                                ->label('Laboratório Emissor / RBC')
+                                ->placeholder('Ex: Mitutoyo - RBC CAL 0031')
+                                ->maxLength(255),
+
+                            TextInput::make('traceability_chain')
+                                ->label('Cadeia de Rastreabilidade')
+                                ->placeholder('Ex: Rastreado ao Inmetro / Cgcre RBC')
+                                ->maxLength(255),
+
                             FileUpload::make('certificate_path')
                                 ->label('Arquivo PDF')
                                 ->directory('reference-certificates')

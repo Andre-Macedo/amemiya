@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Modules\Metrology\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Modules\Metrology\Enums\InstrumentCriticality;
 
 /**
  * Validates the creation of a new metrology instrument.
@@ -41,6 +43,7 @@ class StoreInstrumentRequest extends FormRequest
             'mpe' => ['nullable', 'string'],
             'measuring_range' => ['nullable', 'string'],
             'resolution' => ['nullable', 'string'],
+            'criticality' => ['nullable', Rule::enum(InstrumentCriticality::class)],
         ];
     }
 }

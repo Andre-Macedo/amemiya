@@ -28,6 +28,13 @@ class StoreReferenceStandardRequest extends FormRequest
             'uncertainty' => ['nullable', 'numeric'],
             'status' => ['required', 'in:active,inactive,maintenance'],
             'material_id' => ['nullable', 'exists:materials,id'],
+            'manufacturer' => ['nullable', 'string', 'max:255'],
+            'certificate_number' => ['nullable', 'string', 'max:255'],
+            'accredited_lab' => ['nullable', 'string', 'max:255'],
+            'traceability_chain' => ['nullable', 'string'],
+            'parent_id' => ['nullable', 'exists:reference_standards,id'],
+            'last_calibration_date' => ['nullable', 'date'],
+            'next_calibration_date' => ['nullable', 'date'],
         ];
     }
 }

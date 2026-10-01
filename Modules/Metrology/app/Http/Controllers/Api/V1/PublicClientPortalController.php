@@ -173,7 +173,7 @@ class PublicClientPortalController extends Controller
         }
         $tempZipPath = $tempDir.DIRECTORY_SEPARATOR.$zipFilename;
 
-        $zip = new \ZipArchive();
+        $zip = new \ZipArchive;
         if ($zip->open($tempZipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
             return response()->json(['message' => 'Não foi possível criar o pacote ZIP.'], 500);
         }

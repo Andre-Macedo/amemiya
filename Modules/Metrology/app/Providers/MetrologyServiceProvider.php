@@ -9,9 +9,13 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Schedule;
 use Illuminate\Support\ServiceProvider;
 use Modules\Metrology\Console\CheckInstrumentStatus;
+use Modules\Metrology\Console\Commands\CheckCalibrationDue;
+use Modules\Metrology\Console\Commands\GenerateAutoWorkOrders;
 use Modules\Metrology\Events\CalibrationSaved;
 use Modules\Metrology\Listeners\ProcessCalibrationListener;
+use Modules\Metrology\Models\IntermediateCheck;
 use Modules\Metrology\Models\NonConformity;
+use Modules\Metrology\Observers\IntermediateCheckObserver;
 use Modules\Metrology\Observers\NonConformityObserver;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
@@ -38,6 +42,7 @@ class MetrologyServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
 
         NonConformity::observe(NonConformityObserver::class);
+        IntermediateCheck::observe(IntermediateCheckObserver::class);
 
         Event::listen(
             CalibrationSaved::class,
@@ -61,6 +66,8 @@ class MetrologyServiceProvider extends ServiceProvider
     {
         $this->commands([
             CheckInstrumentStatus::class,
+            CheckCalibrationDue::class,
+            GenerateAutoWorkOrders::class,
         ]);
     }
 

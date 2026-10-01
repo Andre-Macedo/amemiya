@@ -3,6 +3,7 @@
 namespace Modules\Metrology\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Metrology\Enums\ItemStatus;
 use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\IntermediateCheck;
 use Tests\Concerns\HasSuperAdmin;
@@ -31,19 +32,30 @@ test('it can create an intermediate check', function () {
     ]);
 });
 
-test('intermediate check failure records correctly', function () {
+test('intermediate check failure automatically blocks instrument and creates non-conformity', function () {
     $user = $this->createSuperAdmin();
-    $instrument = Instrument::factory()->create();
+    $instrument = Instrument::factory()->create([
+        'status' => ItemStatus::Active,
+    ]);
 
     $check = IntermediateCheck::create([
         'instrument_id' => $instrument->id,
         'check_date' => now(),
         'result' => 'failed',
         'performed_by' => $user->id,
-        'notes' => 'Broken tip',
+        'notes' => 'Pontas de medição danificadas, desvio superior à tolerância',
     ]);
 
     expect($check->result)->toBe('failed');
-    // Note: Business logic might eventually trigger instrument status update,
-    // but for now we verify the record exists.
+
+    // Instrumento deve ser bloqueado com status Rejected (ISO 17025 §6.4.10)
+    expect($instrument->fresh()->status)->toBe(ItemStatus::Rejected);
+
+    // Não conformidade deve ser aberta automaticamente
+    $this->assertDatabaseHas('non_conformities', [
+        'item_type' => Instrument::class,
+        'item_id' => $instrument->id,
+        'status' => 'open',
+        'priority' => 'high',
+    ]);
 });

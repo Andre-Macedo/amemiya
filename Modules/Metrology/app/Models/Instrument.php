@@ -6,16 +6,19 @@ namespace Modules\Metrology\Models;
 
 use App\Traits\BelongsToTenant;
 use App\Traits\LogsActivity;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Metrology\Contracts\CalibratableItem;
 use Modules\Metrology\Database\Factories\InstrumentFactory;
 use Modules\Metrology\Enums\CalibrationResult;
+use Modules\Metrology\Enums\InstrumentCriticality;
 use Modules\Metrology\Enums\ItemStatus;
 use Modules\Metrology\Services\DecisionRules\DecisionRuleStrategy;
 use Modules\Metrology\Services\DecisionRules\GuardBand;
@@ -31,7 +34,26 @@ use Modules\System\Models\Supplier;
 /**
  * @property string $id
  * @property string $name
+ * @property ?string $asset_number
+ * @property ?string $tenant_id
+ * @property ?string $stock_number
+ * @property ?string $serial_number
  * @property ItemStatus $status
+ * @property InstrumentCriticality $criticality
+ * @property ?Carbon $calibration_due
+ * @property ?Carbon $acquisition_date
+ * @property ?Carbon $next_calibration_date
+ * @property ?string $current_supplier_id
+ * @property ?string $current_station_id
+ * @property ?string $instrument_type_id
+ * @property ?string $material_id
+ * @property ?string $lab_client_id
+ * @property ?float $guard_band_multiplier_override
+ * @property ?InstrumentType $instrumentType
+ * @property ?Station $station
+ * @property ?Supplier $currentSupplier
+ * @property ?Material $material
+ * @property ?LabClient $labClient
  */
 class Instrument extends Model implements CalibratableItem
 {
@@ -60,6 +82,7 @@ class Instrument extends Model implements CalibratableItem
         'acquisition_date',
         'calibration_due',
         'status',
+        'criticality',
         'nfc_tag',
         'current_station_id',
         'current_supplier_id',
@@ -70,30 +93,69 @@ class Instrument extends Model implements CalibratableItem
         'guard_band_multiplier_override',
     ];
 
+    protected $attributes = [
+        'criticality' => 'operational_reference',
+    ];
+
     protected $casts = [
         'mpe_value' => 'float',
         'calibration_due' => 'datetime',
         'acquisition_date' => 'datetime',
         'next_calibration_date' => 'datetime',
         'status' => ItemStatus::class,
+        'criticality' => InstrumentCriticality::class,
         'guard_band_multiplier_override' => 'float',
     ];
 
+    protected static function booted(): void
+    {
+        static::creating(function (Instrument $instrument): void {
+            if ($instrument->calibration_due !== null) {
+                return;
+            }
+
+            $baseDate = $instrument->acquisition_date ?? now();
+            $months = $instrument->getCalibrationFrequencyMonths();
+            $instrument->calibration_due = Carbon::parse($baseDate)->addMonths($months);
+        });
+    }
+
+    public function getCriticalityAttribute($value): InstrumentCriticality
+    {
+        if ($value instanceof InstrumentCriticality) {
+            return $value;
+        }
+
+        if (is_string($value)) {
+            return InstrumentCriticality::tryFrom($value) ?? InstrumentCriticality::OperationalReference;
+        }
+
+        return InstrumentCriticality::OperationalReference;
+    }
+
+    public function isCritical(): bool
+    {
+        return $this->criticality->isSafetyOrQualityCritical();
+    }
+
     /**
-     * @return MorphMany<Calibration>
+     * @return MorphMany<Calibration, $this>
      */
     public function calibrations(): MorphMany
     {
         return $this->morphMany(Calibration::class, 'calibrated_item');
     }
 
+    /**
+     * @return HasMany<InstrumentMovement, $this>
+     */
     public function movements(): HasMany
     {
         return $this->hasMany(InstrumentMovement::class);
     }
 
     /**
-     * @return MorphMany<WorkOrder>
+     * @return MorphMany<WorkOrder, $this>
      */
     public function workOrders(): MorphMany
     {
@@ -102,6 +164,8 @@ class Instrument extends Model implements CalibratableItem
 
     /**
      * Retorna a Não-Conformidade ativa (aberta/investigando) mais recente.
+     *
+     * @return MorphOne<NonConformity, $this>
      */
     public function openNonConformity(): MorphOne
     {
@@ -116,7 +180,7 @@ class Instrument extends Model implements CalibratableItem
     }
 
     /**
-     * @return BelongsTo<InstrumentType, Instrument>
+     * @return BelongsTo<InstrumentType, $this>
      */
     public function instrumentType(): BelongsTo
     {
@@ -124,7 +188,7 @@ class Instrument extends Model implements CalibratableItem
     }
 
     /**
-     * @return BelongsTo<Station, Instrument>
+     * @return BelongsTo<Station, $this>
      */
     public function station(): BelongsTo
     {
@@ -132,7 +196,7 @@ class Instrument extends Model implements CalibratableItem
     }
 
     /**
-     * @return BelongsTo<Supplier, Instrument>
+     * @return BelongsTo<Supplier, $this>
      */
     public function currentSupplier(): BelongsTo
     {
@@ -140,7 +204,7 @@ class Instrument extends Model implements CalibratableItem
     }
 
     /**
-     * @return BelongsTo<Material, Instrument>
+     * @return BelongsTo<Material, $this>
      */
     public function material(): BelongsTo
     {
@@ -148,7 +212,7 @@ class Instrument extends Model implements CalibratableItem
     }
 
     /**
-     * @return BelongsTo<LabClient, Instrument>
+     * @return BelongsTo<LabClient, $this>
      */
     public function labClient(): BelongsTo
     {
@@ -166,18 +230,18 @@ class Instrument extends Model implements CalibratableItem
 
     public function getDecisionRule(): string
     {
-        return $this->instrumentType?->decision_rule ?? 'simple';
+        return $this->instrumentType->decision_rule ?? 'simple';
     }
 
     public function getCalibrationFrequencyMonths(): int
     {
-        return $this->instrumentType?->calibration_frequency_months ?? 12;
+        return $this->instrumentType->calibration_frequency_months ?? 12;
     }
 
     public function getDecisionRuleStrategy(): DecisionRuleStrategy
     {
         $rule = $this->getDecisionRule();
-        $multiplier = (float) ($this->guard_band_multiplier_override ?? $this->instrumentType?->guard_band_multiplier ?? 1.0);
+        $multiplier = (float) ($this->guard_band_multiplier_override ?? $this->instrumentType->guard_band_multiplier ?? 1.0);
 
         return match ($rule) {
             'guard_band' => new GuardBand($multiplier),

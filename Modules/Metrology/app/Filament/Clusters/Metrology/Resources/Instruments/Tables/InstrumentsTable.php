@@ -23,6 +23,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Modules\Metrology\Actions\PrintInstrumentLabelAction;
+use Modules\Metrology\Enums\InstrumentCriticality;
 use Modules\Metrology\Enums\ItemStatus;
 use Modules\Metrology\Models\Instrument;
 use Modules\System\Models\AccessLog;
@@ -76,10 +77,18 @@ class InstrumentsTable
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge(),
+
+                TextColumn::make('criticality')
+                    ->label('Criticidade')
+                    ->badge()
+                    ->sortable(),
             ])
             ->filters([
                 SelectFilter::make('status')
                     ->options(ItemStatus::class),
+                SelectFilter::make('criticality')
+                    ->label('Criticidade')
+                    ->options(InstrumentCriticality::class),
                 SelectFilter::make('instrument_type_id')
                     ->label('Tipo de Instrumento')
                     ->relationship('instrumentType', 'name')

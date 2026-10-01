@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Metrology\Models;
 
 use App\Traits\BelongsToTenant;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,8 +22,32 @@ use Modules\System\Models\User;
 
 /**
  * @property string $id
+ * @property ?string $tenant_id
  * @property string $verification_hash
+ * @property ?string $certificate_code
+ * @property ?string $certificate_path
  * @property CalibrationResult $result
+ * @property ?Carbon $calibration_date
+ * @property ?Carbon $next_due_date
+ * @property ?float $deviation
+ * @property ?float $as_found_deviation
+ * @property ?float $as_left_deviation
+ * @property ?float $uncertainty
+ * @property ?float $temperature
+ * @property ?float $humidity
+ * @property ?string $notes
+ * @property ?string $conformity_statement
+ * @property ?string $performed_by_id
+ * @property ?string $approved_by_id
+ * @property ?string $provider_id
+ * @property ?Carbon $approved_at
+ * @property ?string $status
+ * @property ?string $replaces_calibration_id
+ * @property ?string $amendment_reason
+ * @property ?User $performedBy
+ * @property ?User $approvedBy
+ * @property ?Supplier $provider
+ * @property ?Checklist $checklist
  */
 class Calibration extends Model
 {
@@ -117,6 +142,11 @@ class Calibration extends Model
             if (empty($model->verification_hash)) {
                 $model->verification_hash = Str::random(32);
             }
+
+            if (empty($model->certificate_code)) {
+                $year = $model->calibration_date ? $model->calibration_date->format('Y') : now()->format('Y');
+                $model->certificate_code = 'CAL-'.$year.'-'.strtoupper(substr((string) Str::ulid(), -6));
+            }
         });
     }
 
@@ -130,11 +160,17 @@ class Calibration extends Model
         return $this->hasOne(Checklist::class);
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function performedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'performed_by_id');
     }
 
+    /**
+     * @return BelongsTo<User, $this>
+     */
     public function approvedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'approved_by_id');

@@ -6,9 +6,12 @@ namespace Modules\Metrology\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Metrology\Models\ReferenceStandard;
 
 /**
  * Serializes ReferenceStandard models for API responses.
+ *
+ * @mixin ReferenceStandard
  */
 class ReferenceStandardApiResource extends JsonResource
 {
@@ -35,6 +38,9 @@ class ReferenceStandardApiResource extends JsonResource
             'uncertainty' => $this->uncertainty,
             'status' => $this->status,
             'manufacturer' => $this->manufacturer,
+            'certificate_number' => $this->certificate_number,
+            'accredited_lab' => $this->accredited_lab,
+            'traceability_chain' => $this->traceability_chain,
             'certificate_url' => $this->active_certificate_url,
 
             // Dates

@@ -63,6 +63,18 @@ class ReferenceStandardsTable
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
+                TextColumn::make('certificate_number')
+                    ->label('Nº Certificado')
+                    ->searchable()
+                    ->placeholder('-')
+                    ->toggleable(),
+
+                TextColumn::make('accredited_lab')
+                    ->label('Laboratório RBC')
+                    ->searchable()
+                    ->placeholder('-')
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 // Status calculado via Enum (Visual)
                 TextColumn::make('status')
                     ->label('Status')

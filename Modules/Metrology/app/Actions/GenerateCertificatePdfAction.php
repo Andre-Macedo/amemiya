@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Modules\Metrology\Actions;
 
 use Barryvdh\DomPDF\Facade\Pdf;
+use Modules\Metrology\Enums\CalibrationResult;
 use Modules\Metrology\Models\Calibration;
 use Modules\Metrology\Services\PdfSignerService;
 use Modules\System\Models\Setting;
+use Modules\System\Models\User;
+use Throwable;
 
 class GenerateCertificatePdfAction
 {
@@ -27,30 +30,27 @@ class GenerateCertificatePdfAction
             'performedBy',
         ]);
 
-        $standards = collect();
-        if ($calibration->checklist && $calibration->checklist->items) {
-            $standards = $calibration->checklist->items
-                ->pluck('referenceStandard')
-                ->filter()
-                ->unique('id');
-        }
+        $prepared = app(PrepareCertificateDataAction::class)->execute($calibration);
+        $standards = $prepared['standards'];
+        $results = $prepared['results'];
 
-        $results = [];
-        if ($calibration->checklist && $calibration->checklist->items) {
-            $results = $calibration->checklist->items->map(function ($item) {
-                $readings = is_string($item->readings) ? json_decode($item->readings, true) : ($item->readings ?? []);
-                $average = ! empty($readings) && is_array($readings)
-                    ? array_sum($readings) / count($readings)
-                    : ($item->reading_value ?? 0);
+        // Fallback para calibrações externas sem checklist ponto a ponto
+        $hasDeviation = $calibration->deviation !== null || $calibration->as_left_deviation !== null;
+        if (empty($results) && $hasDeviation) {
+            $isApproved = in_array($calibration->result, [
+                CalibrationResult::Approved,
+                CalibrationResult::ApprovedWithRestrictions,
+            ], true);
 
-                return [
-                    'nominal' => $item->nominal_value,
-                    'average' => $average,
-                    'error' => $item->deviation ?? ($average - $item->nominal_value),
-                    'uncertainty' => $item->uncertainty ?? 0,
-                    'result' => $item->status ?? 'Pass',
-                ];
-            });
+            $results[] = [
+                'step' => 'Resultado Global / Calibração Externa',
+                'nominal' => $calibration->nominal_value ?? 0.0,
+                'average' => ($calibration->nominal_value ?? 0.0) + (float) ($calibration->as_left_deviation ?? $calibration->deviation ?? 0.0),
+                'error' => (float) ($calibration->as_left_deviation ?? $calibration->deviation ?? 0.0),
+                'uncertainty' => (float) ($calibration->uncertainty ?? 0.0),
+                'k_factor' => 2.0,
+                'result' => $isApproved ? 'Approved' : 'Rejected',
+            ];
         }
 
         $identity = [
@@ -76,15 +76,22 @@ class GenerateCertificatePdfAction
         $certPath = config('metrology.certificate_path');
         $certPass = config('metrology.certificate_password');
 
-        if ($certPath && file_exists($certPath)) {
-            $rubricPath = $calibration->performedBy && $calibration->performedBy->signature_image_path
-                ? storage_path('app/'.$calibration->performedBy->signature_image_path)
-                : null;
+        if ($certPath) {
+            if (file_exists($certPath)) {
+                $rubricPath = null;
+                $performer = $calibration->performedBy;
 
-            try {
-                $pdfContent = $this->signer->sign($pdfContent, $certPath, $certPass, $rubricPath);
-            } catch (\Throwable $e) {
-                logger()->error('PDF Signing Failed: '.$e->getMessage());
+                if ($performer instanceof User) {
+                    if ($performer->signature_image_path) {
+                        $rubricPath = storage_path("app/{$performer->signature_image_path}");
+                    }
+                }
+
+                try {
+                    $pdfContent = $this->signer->sign($pdfContent, $certPath, $certPass, $rubricPath);
+                } catch (Throwable $exception) {
+                    logger()->error("PDF Signing Failed: {$exception->getMessage()}");
+                }
             }
         }
 

@@ -39,6 +39,9 @@ use Modules\Metrology\Traits\HasAttachments;
  * @property string|null $uncertainty
  * @property string|null $grade
  * @property int|null $material_id
+ * @property ?string $certificate_number
+ * @property ?string $accredited_lab
+ * @property ?string $traceability_chain
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read ReferenceStandard|null $parent
@@ -68,6 +71,9 @@ class ReferenceStandard extends Model implements CalibratableItem
         'uncertainty',
         'grade',
         'material_id',
+        'certificate_number',
+        'accredited_lab',
+        'traceability_chain',
     ];
 
     protected $casts = [
@@ -86,7 +92,7 @@ class ReferenceStandard extends Model implements CalibratableItem
     /**
      * Tipo do padrão de referência.
      *
-     * @return BelongsTo<ReferenceStandardType, ReferenceStandard>
+     * @return BelongsTo<ReferenceStandardType, $this>
      */
     public function referenceStandardType(): BelongsTo
     {
@@ -96,7 +102,7 @@ class ReferenceStandard extends Model implements CalibratableItem
     /**
      * Padrão pai (se este for componente de um kit).
      *
-     * @return BelongsTo<ReferenceStandard, ReferenceStandard>
+     * @return BelongsTo<ReferenceStandard, $this>
      */
     public function parent(): BelongsTo
     {
@@ -106,20 +112,23 @@ class ReferenceStandard extends Model implements CalibratableItem
     /**
      * Componentes filhos (se este padrão for um kit).
      *
-     * @return HasMany<ReferenceStandard>
+     * @return HasMany<ReferenceStandard, $this>
      */
     public function children(): HasMany
     {
         return $this->hasMany(ReferenceStandard::class, 'parent_id');
     }
 
+    /**
+     * @return MorphMany<Calibration, $this>
+     */
     public function calibrations(): MorphMany
     {
         return $this->morphMany(Calibration::class, 'calibrated_item');
     }
 
     /**
-     * @return MorphMany<WorkOrder>
+     * @return MorphMany<WorkOrder, $this>
      */
     public function workOrders(): MorphMany
     {
@@ -128,6 +137,8 @@ class ReferenceStandard extends Model implements CalibratableItem
 
     /**
      * Retorna a Não-Conformidade ativa (aberta/investigando) mais recente.
+     *
+     * @return MorphOne<NonConformity, $this>
      */
     public function openNonConformity(): MorphOne
     {
@@ -144,7 +155,7 @@ class ReferenceStandard extends Model implements CalibratableItem
     /**
      * Obtém a calibração mais recente deste padrão.
      *
-     * @return MorphOne<Calibration>
+     * @return MorphOne<Calibration, $this>
      */
     public function latestCalibration(): MorphOne
     {
@@ -152,7 +163,7 @@ class ReferenceStandard extends Model implements CalibratableItem
     }
 
     /**
-     * @return BelongsTo<Material, ReferenceStandard>
+     * @return BelongsTo<Material, $this>
      */
     public function material(): BelongsTo
     {
@@ -165,13 +176,19 @@ class ReferenceStandard extends Model implements CalibratableItem
     public function getActiveCertificateUrlAttribute(): ?string
     {
         // 1. Tenta calibração própria
-        if ($this->latestCalibration && $this->latestCalibration->certificate_path) {
-            return $this->latestCalibration->certificate_path;
+        if ($this->latestCalibration) {
+            if ($this->latestCalibration->certificate_path) {
+                return $this->latestCalibration->certificate_path;
+            }
         }
 
         // 2. Se não tem, e for filho, tenta do Pai
-        if ($this->parent_id && $this->parent->latestCalibration) {
-            return $this->parent->latestCalibration->certificate_path;
+        if ($this->parent_id) {
+            if ($this->parent) {
+                if ($this->parent->latestCalibration) {
+                    return $this->parent->latestCalibration->certificate_path;
+                }
+            }
         }
 
         return null;
@@ -185,7 +202,9 @@ class ReferenceStandard extends Model implements CalibratableItem
         if ($latestCalibration) {
             $months = $this->referenceStandardType->calibration_frequency_months ?? 24;
 
-            return $latestCalibration->calibration_date->copy()->addMonths($months);
+            if ($latestCalibration->calibration_date) {
+                return Carbon::parse($latestCalibration->calibration_date)->addMonths($months);
+            }
         }
 
         return null; // Retorna null se não houver histórico

@@ -6,10 +6,13 @@ namespace Modules\Metrology\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Metrology\Models\Instrument;
 use Modules\System\Http\Resources\StationApiResource;
 
 /**
  * Serializes Instrument models for API responses.
+ *
+ * @mixin Instrument
  */
 class InstrumentApiResource extends JsonResource
 {
@@ -40,6 +43,9 @@ class InstrumentApiResource extends JsonResource
             'range' => $this->measuring_range,
             'precision' => $this->resolution ?? 'N/A',
             'mpe' => $this->mpe,
+            'criticality' => $this->criticality?->value,
+            'criticality_label' => $this->criticality?->getLabel(),
+            'is_critical' => $this->isCritical(),
 
             // Dates
             'acquisition_date' => $this->acquisition_date?->toDateString(),

@@ -6,6 +6,7 @@ namespace Modules\Metrology\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Modules\Metrology\Enums\InstrumentCriticality;
 
 /**
  * Validates the update of an existing metrology instrument.
@@ -50,6 +51,7 @@ class UpdateInstrumentRequest extends FormRequest
             'mpe' => ['nullable', 'string'],
             'measuring_range' => ['nullable', 'string'],
             'resolution' => ['nullable', 'string'],
+            'criticality' => ['nullable', Rule::enum(InstrumentCriticality::class)],
         ];
     }
 }

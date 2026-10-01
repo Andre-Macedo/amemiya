@@ -17,6 +17,7 @@ use Modules\Metrology\Database\Factories\ReferenceStandardTypeFactory;
 /**
  * @property string $id
  * @property string $name
+ * @property bool $is_kit
  * @property int|null $calibration_frequency_months
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -32,11 +33,16 @@ class ReferenceStandardType extends Model
     protected $fillable = [
         'tenant_id',
         'name',
+        'is_kit',
         'calibration_frequency_months',
     ];
 
+    protected $casts = [
+        'is_kit' => 'boolean',
+    ];
+
     /**
-     * @return HasMany<ReferenceStandard>
+     * @return HasMany<ReferenceStandard, $this>
      */
     public function referenceStandards(): HasMany
     {
@@ -44,7 +50,7 @@ class ReferenceStandardType extends Model
     }
 
     /**
-     * @return HasMany<ChecklistTemplateItem>
+     * @return HasMany<ChecklistTemplateItem, $this>
      */
     public function checklistTemplateItems(): HasMany
     {

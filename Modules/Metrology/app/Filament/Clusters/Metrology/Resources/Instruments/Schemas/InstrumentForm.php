@@ -12,6 +12,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Modules\Metrology\Enums\InstrumentCriticality;
 use Modules\Metrology\Enums\ItemStatus;
 use Modules\Metrology\Models\Instrument;
 
@@ -123,6 +124,11 @@ class InstrumentForm
                                         ->options(ItemStatus::class)
                                         ->default(ItemStatus::Active)
                                         ->required(),
+                                    Select::make('criticality')->label('Criticidade Regulatória / Qualidade')
+                                        ->options(InstrumentCriticality::class)
+                                        ->default(InstrumentCriticality::OperationalReference)
+                                        ->required()
+                                        ->helperText('Impacto de conformidade (NR-12, NR-13, CTQ da Qualidade).'),
                                     RichEditor::make('notes')->label('Observações Adicionais')
                                         ->columnSpanFull(),
 

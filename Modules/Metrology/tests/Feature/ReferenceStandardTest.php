@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
+use Laravel\Sanctum\Sanctum;
 use Modules\Metrology\Models\Calibration;
 use Modules\Metrology\Models\ReferenceStandard;
 use Modules\Metrology\Models\ReferenceStandardType;
@@ -13,7 +14,8 @@ uses(RefreshDatabase::class, HasSuperAdmin::class);
 
 beforeEach(function () {
     Artisan::call('module:migrate', ['module' => 'Metrology']);
-    $this->createSuperAdmin();
+    $user = $this->createSuperAdmin();
+    Sanctum::actingAs($user);
 });
 
 it('can create a reference standard', function () {
@@ -64,4 +66,66 @@ it('resolves effective serial number from parent for kits', function () {
     ]);
 
     expect($child->effective_serial_number)->toBe('KIT-123 (Kit)');
+});
+
+it('persists and retrieves rbc traceability chain information', function () {
+    $type = ReferenceStandardType::factory()->create(['name' => 'Anel Padrao']);
+
+    $standard = ReferenceStandard::factory()->create([
+        'reference_standard_type_id' => $type->id,
+        'name' => 'Anel Padrao 25mm',
+        'certificate_number' => 'CAL-0891/2026',
+        'accredited_lab' => 'Mitutoyo Sul Americana - RBC CAL 0031',
+        'traceability_chain' => 'Padrao Primario LNM/Inmetro rastreado ao BIPM',
+    ]);
+
+    expect($standard)
+        ->certificate_number->toBe('CAL-0891/2026')
+        ->accredited_lab->toBe('Mitutoyo Sul Americana - RBC CAL 0031')
+        ->traceability_chain->toBe('Padrao Primario LNM/Inmetro rastreado ao BIPM');
+
+    assertDatabaseHas('reference_standards', [
+        'id' => $standard->id,
+        'certificate_number' => 'CAL-0891/2026',
+        'accredited_lab' => 'Mitutoyo Sul Americana - RBC CAL 0031',
+        'traceability_chain' => 'Padrao Primario LNM/Inmetro rastreado ao BIPM',
+    ]);
+});
+
+it('serializes rbc traceability fields via api resource', function () {
+    $type = ReferenceStandardType::factory()->create();
+    $standard = ReferenceStandard::factory()->create([
+        'reference_standard_type_id' => $type->id,
+        'certificate_number' => 'CERT-2026-999',
+        'accredited_lab' => 'Laboratório Metrológico RBC 0123',
+        'traceability_chain' => 'Rastreado à Rede Brasileira de Calibração (RBC/Inmetro)',
+    ]);
+
+    $response = $this->getJson("/api/v1/standards/{$standard->id}");
+
+    $response->assertStatus(200);
+    $response->assertJsonPath('data.certificate_number', 'CERT-2026-999');
+    $response->assertJsonPath('data.accredited_lab', 'Laboratório Metrológico RBC 0123');
+    $response->assertJsonPath('data.traceability_chain', 'Rastreado à Rede Brasileira de Calibração (RBC/Inmetro)');
+});
+
+it('can store reference standard with rbc traceability fields via api', function () {
+    $type = ReferenceStandardType::factory()->create();
+
+    $payload = [
+        'name' => 'Bloco Padrão Cerâmico 100mm',
+        'serial_number' => 'BP-100-99',
+        'reference_standard_type_id' => $type->id,
+        'status' => 'active',
+        'certificate_number' => 'RBC-CAL-5544',
+        'accredited_lab' => 'Certi / Fundação CERTI RBC 0015',
+        'traceability_chain' => 'Inmetro -> BIPM (Bureau International des Poids et Mesures)',
+    ];
+
+    $response = $this->postJson('/api/v1/standards', $payload);
+
+    $response->assertStatus(201);
+    $response->assertJsonPath('data.certificate_number', 'RBC-CAL-5544');
+    $response->assertJsonPath('data.accredited_lab', 'Certi / Fundação CERTI RBC 0015');
+    $response->assertJsonPath('data.traceability_chain', 'Inmetro -> BIPM (Bureau International des Poids et Mesures)');
 });

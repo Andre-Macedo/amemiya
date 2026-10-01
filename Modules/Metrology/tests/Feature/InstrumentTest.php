@@ -9,6 +9,7 @@
  */
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Modules\Metrology\Enums\InstrumentCriticality;
 use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\InstrumentType;
 use Tests\Concerns\HasSuperAdmin;
@@ -49,4 +50,43 @@ it('calculates due date based on instrument type frequency', function () {
     ]);
 
     expect($instrument->instrumentType->calibration_frequency_months)->toBe(6);
+});
+
+it('defaults criticality to operational reference', function () {
+    $type = InstrumentType::factory()->create();
+    $instrument = Instrument::factory()->create([
+        'instrument_type_id' => $type->id,
+    ]);
+
+    expect($instrument->criticality)->toBe(InstrumentCriticality::OperationalReference)
+        ->and($instrument->isCritical())->toBeFalse();
+});
+
+it('correctly identifies safety and quality critical instruments', function () {
+    $type = InstrumentType::factory()->create();
+
+    $nr12 = Instrument::factory()->create([
+        'instrument_type_id' => $type->id,
+        'criticality' => InstrumentCriticality::SafetyNr12,
+    ]);
+
+    $nr13 = Instrument::factory()->create([
+        'instrument_type_id' => $type->id,
+        'criticality' => InstrumentCriticality::SafetyNr13,
+    ]);
+
+    $ctq = Instrument::factory()->create([
+        'instrument_type_id' => $type->id,
+        'criticality' => InstrumentCriticality::ProductQualityCtq,
+    ]);
+
+    $operational = Instrument::factory()->create([
+        'instrument_type_id' => $type->id,
+        'criticality' => InstrumentCriticality::OperationalReference,
+    ]);
+
+    expect($nr12->isCritical())->toBeTrue()
+        ->and($nr13->isCritical())->toBeTrue()
+        ->and($ctq->isCritical())->toBeTrue()
+        ->and($operational->isCritical())->toBeFalse();
 });
