@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\Metrology\Actions;
 
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Crypt;
 use Modules\Metrology\Enums\CalibrationResult;
 use Modules\Metrology\Models\Calibration;
 use Modules\Metrology\Services\PdfSignerService;
@@ -74,7 +75,16 @@ class GenerateCertificatePdfAction
 
         // Assinatura Digital X.509 / PKCS#12 (se configurada via Setting ou .env)
         $rawCertPath = Setting::getValue('lab_certificate_path') ?: config('metrology.certificate_path');
-        $certPass = (string) (Setting::getValue('lab_certificate_password') ?: config('metrology.certificate_password') ?: '');
+        $rawCertPass = Setting::getValue('lab_certificate_password') ?: config('metrology.certificate_password');
+
+        $certPass = '';
+        if (! empty($rawCertPass)) {
+            try {
+                $certPass = Crypt::decryptString((string) $rawCertPass);
+            } catch (Throwable) {
+                $certPass = (string) $rawCertPass;
+            }
+        }
 
         $certPath = null;
         if (! empty($rawCertPath)) {

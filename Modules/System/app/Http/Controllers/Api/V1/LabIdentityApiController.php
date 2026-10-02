@@ -15,6 +15,14 @@ class LabIdentityApiController extends Controller
     /**
      * Get laboratory identity settings for white-labeling.
      */
+    public function show(): JsonResponse
+    {
+        return $this->index();
+    }
+
+    /**
+     * Get laboratory identity settings for white-labeling.
+     */
     public function index(): JsonResponse
     {
         return response()->json([

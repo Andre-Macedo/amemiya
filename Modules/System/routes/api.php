@@ -7,6 +7,7 @@ use Modules\System\Http\Controllers\Api\V1\AccessLogApiController;
 use Modules\System\Http\Controllers\Api\V1\AuditLogApiController;
 use Modules\System\Http\Controllers\Api\V1\AuthApiController;
 use Modules\System\Http\Controllers\Api\V1\BillingApiController;
+use Modules\System\Http\Controllers\Api\V1\CertificateApiController;
 use Modules\System\Http\Controllers\Api\V1\LabIdentityApiController;
 use Modules\System\Http\Controllers\Api\V1\MachineApiController;
 use Modules\System\Http\Controllers\Api\V1\NotificationApiController;
@@ -66,9 +67,12 @@ Route::middleware([
             Route::get('users/{user}/competences', [UserCompetenceApiController::class, 'index']);
             Route::post('users/{user}/competences', [UserCompetenceApiController::class, 'sync']);
 
-            // Lab Identity
+            // Lab Identity & Digital Certificate (X.509 / ICP-Brasil)
             Route::get('lab-identity', [LabIdentityApiController::class, 'show']);
             Route::post('lab-identity', [LabIdentityApiController::class, 'update']);
+            Route::get('certificate', [CertificateApiController::class, 'show']);
+            Route::post('certificate', [CertificateApiController::class, 'store']);
+            Route::delete('certificate', [CertificateApiController::class, 'destroy']);
 
             // Settings
             Route::get('settings', [SettingsApiController::class, 'index']);
