@@ -6,9 +6,9 @@ Este documento define a estratégia para transformar o `amemiya` em um QMS compl
 
 | Módulo | Sigla Indústria | Função Principal | Status |
 | :--- | :--- | :--- | :--- |
-| **Metrology** | **MSA** | Gestão de Instrumentos e Calibração. | ✅ Existente |
-| **QualityControl** | **QC / SPC** | Inspeção de Peças, Lotes e Não Conformidades. | 🚧 A Criar |
-| **IoT** | **PdM / EHS** | Monitoramento de Máquinas (Preditiva) e Ambiente. | 🚧 A Criar |
+| **Metrology** | **MSA** | Gestão de Instrumentos e Calibração ISO 17025. | ✅ Existente |
+| **IoT** | **PdM / EHS** | Monitoramento de Máquinas (Preditiva) e Telemetria em Tempo Real. | ✅ Existente (`Modules/IoT`) |
+| **QualityControl** | **QC / SPC** | Inspeção de Peças, Lotes e Não Conformidades. | 🚧 Planejado para expansão |
 
 ---
 
@@ -78,11 +78,13 @@ O fluxo que resolve sua dor principal (Rastreabilidade Reversa):
 ---
 
 ## Próximos Passos Recomendados
-
-1.  **Criar Módulo `QualityControl`:**
-    *   Focar na estrutura: `Product` -> `Batch` -> `Inspection`.
-    *   Criar a ligação com `Metrology` (Foreign Key para `instruments`).
-
-2.  **Criar Módulo `IoT`:**
-    *   Focar na ingestão de dados (API para receber JSON dos sensores).
-    *   Dashboard simples de "Semáforo" (Verde/Amarelo/Vermelho) para as máquinas.
+ 
+ 1.  **Módulo `IoT` (Concluído ✅):**
+     *   Ponte MQTT Mosquitto implementada via comando `iot:mqtt-bridge`.
+     *   Ingestão assíncrona com Redis (`ProcessTelemetryJob`), classificação de severidade ISO 20816 e microserviço FastAPI/XGBoost.
+     *   Dashboard em tempo real com Laravel Reverb e gráficos reativos no Next.js.
+ 
+ 2.  **Próximo Passo — Desenvolver Módulo `QualityControl`:**
+     *   Focar na estrutura: `Product` -> `Batch` -> `Inspection`.
+     *   Criar a ligação com `Metrology` (Foreign Key para `instruments` para bloqueio de instrumentos vencidos).
+     *   Implementar o recall reverso automatizado vinculando lotes reprovados a instrumentos descalibrados.

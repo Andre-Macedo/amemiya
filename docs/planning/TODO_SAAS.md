@@ -29,10 +29,15 @@
 - [ ] **Session Hardening:** Automatic timeout for inactive sessions (Compliance requirement).
 
 ## 🟢 Priority 8: Sovereign Infrastructure & Scaling
-- [ ] **Sovereign Storage:** Deploy and configure **MinIO** (S3 compatible) for files.
-- [ ] **Enterprise Webhooks:** System to notify external ERPs (SAP, TOTVS) on events.
-- [x] **Industrial-Grade Backups:** `spatie/laravel-backup` configured in code.
-- [ ] **Enterprise SSO (OIDC/SAML):** Integration with Azure AD, Okta, and Google Workspace.
+- [ ] **Ambiente Remoto de Staging (`dev.leantech.andremacedo.dev.br`):**
+  - [ ] Bloco de configuração Nginx dedicado na VPS com certificado SSL Let's Encrypt.
+  - [ ] Banco de dados MySQL isolado (`amemiya_dev`) para testes sem risco à base de produção.
+  - [ ] Containers Docker isolados rodando a branch `develop` (app, worker, reverb e frontend).
+  - [ ] Pipeline de CD (Continuous Deployment) no GitHub Actions acionado automaticamente em pushes para `develop`.
+- [ ] **Sovereign Storage:** Deploy e configure **MinIO** (S3 compatible) para arquivos e certificados.
+- [ ] **Enterprise Webhooks:** Sistema para notificar ERPs externos (SAP, TOTVS) sobre eventos de calibração e alertas.
+- [x] **Industrial-Grade Backups:** `spatie/laravel-backup` configurado e operacional.
+- [ ] **Enterprise SSO (OIDC/SAML):** Integração com Azure AD, Okta e Google Workspace.
 
 ## ⚖️ Priority 9: ISO 17025 & Regulatory Rigor - COMPLETED ✅
 - [x] **Document Integrity (SHA-256):** Store and validate cryptographic hashes of every issued PDF to prevent file tampering.

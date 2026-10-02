@@ -55,11 +55,13 @@ Este documento centraliza ideias e melhorias propostas para o Módulo de Metrolo
 *   Fluxo: Solicitar Calibração -> Aprovação do Lab -> Recebimento -> Devolução.
 *   Email de notificação automático ("Seu paquímetro está pronto").
 
-## 9. Assinatura Digital e Rastreabilidade Blockchain
-**Tendência**: Eliminar papel 100%.
-**Solução Proposta**:
-*   Assinar os PDFs gerados com certificado digital ICP-Brasil (ou equivalente).
-*   Hash do certificado gravado no banco para garantir imutabilidade.
+## 9. Assinatura Digital e Rastreabilidade Forense [IMPLEMENTADO ✅]
+**Status**: Operacional.
+**Implementação**:
+*   Reautenticação de usuário obrigatória para assinatura eletrônica (`SignatureService`).
+*   Hash criptográfico SHA-256 gerado e carimbado no PDF e metadados (`PdfService`).
+*   Trilha de auditoria encadeada criptograficamente (*blockchain-style hash chaining* na tabela `audit_logs`).
+*   Portal público de verificação com QR Code para conferência de autenticidade bit a bit.
 
 ## 10. Gestão de Riscos e Oportunidades (ISO 17025:8.5)
 **Requisito de Norma**: O laboratório deve considerar riscos associados às atividades.
