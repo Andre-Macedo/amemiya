@@ -70,7 +70,13 @@ Os passos seguintes detalham o processo para iniciar a aplicação utilizando o 
         ```
 
 7.  **Preparar o Banco de Dados (via Terminal do PhpStorm):**
-    * Copie e cole o seguinte comando e pressione Enter:
+    * Execute as migrações globais e dos módulos:
+        ```bash
+        docker-compose exec app php artisan migrate
+        docker-compose exec app php artisan module:migrate Metrology
+        docker-compose exec app php artisan module:migrate IoT
+        ```
+    * Execute os seeders de dados iniciais:
         ```bash
         docker-compose exec app php artisan module:seed Metrology
         ```
@@ -120,9 +126,14 @@ Abra seu navegador web:
 
 ---
 
-## 6. Arquitetura Modular
+## 6. Arquitetura Modular e Estrutura do Projeto
 
-Este projeto adota uma **arquitetura modular** (`nwidart/laravel-modules`). A funcionalidade está organizada em módulos independentes (`Modules/Metrology`), cada um focado em uma área de negócio. Isso facilita a manutenção e a expansão futura do sistema para outras áreas (ex: `Qualidade`, `Manutenção`) com baixo acoplamento.
+Este projeto adota uma **arquitetura modular** (`nwidart/laravel-modules`). A funcionalidade está organizada em módulos independentes com baixo acoplamento:
+
+* **`Modules/Metrology/`**: Módulo metrológico completo. Gestão de calibrações, instrumentos, padrões de referência RBC, cálculo de incerteza (GUM), cartas de controle de Shewhart (ILAC-G24), laudos de impacto e integridade forense criptográfica (ISO 17025 / FDA 21 CFR Part 11).
+* **`Modules/IoT/`**: Monitoramento contínuo em tempo real. Ponte MQTT Mosquitto, telemetria de vibração e temperatura, classificação de severidade ISO 20816-3 e microserviço de inteligência artificial (XGBoost).
+* **`Modules/System/`**: Multi-tenancy central, perfis e permissões via Filament Shield, auditoria de acessos e usuários.
+* **`hardware/`**: Projetos de eletrônica e mecânica. Esquemáticos KiCad modulares, placas de circuito impresso (Main Node, Gateway LoRa, Torre de Sensores), arquivos de fabricação e modelos 3D CAD/STEP para montagem de bancadas industriais (NR-12).
 
 ---
 

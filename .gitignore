@@ -39,13 +39,18 @@ prepare_*.php
 *.FCBak
 hardware/cad/__pycache__/
 
-# KiCad Backups & Cache
+# KiCad Backups, Auto-routing & Reports
 *-backups/
 fp-info-cache
 *.kicad_prl
 *.kicad_pcb-bak
 *.kicad_sch-bak
 *.rpt
+*.dsn
+*.ses
+*.net
+*drc_report.json
+*erc_report.json
 
 # Python Cache & Logs
 __pycache__/
