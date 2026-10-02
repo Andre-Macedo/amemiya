@@ -20,6 +20,7 @@ class IoTDeviceLogApiController extends Controller
             'node_id' => 'nullable|string',
             'gateway_id' => 'nullable|string',
             'level' => 'nullable|string|in:info,warning,error,critical',
+            'iso_zone' => 'nullable|string|in:A,B,C,D',
             'event_type' => 'nullable|string',
             'only_anomalies' => 'nullable|boolean',
             'start_date' => 'nullable|date',
@@ -47,6 +48,10 @@ class IoTDeviceLogApiController extends Controller
             $query->where('level', $request->input('level'));
         }
 
+        if ($request->filled('iso_zone')) {
+            $query->where('iso_zone', $request->input('iso_zone'));
+        }
+
         if ($request->filled('event_type')) {
             $query->where('event_type', $request->input('event_type'));
         }
@@ -55,6 +60,7 @@ class IoTDeviceLogApiController extends Controller
             $query->where(function ($q) {
                 $q->whereIn('level', ['warning', 'critical'])
                     ->orWhereIn('event_type', ['anomaly_detected', 'cloud_ml_evaluated'])
+                    ->orWhereIn('iso_zone', ['C', 'D'])
                     ->orWhere('ml_status', 'desbalanceamento')
                     ->orWhere('cloud_ml_status', 'falha_confirmada');
             });

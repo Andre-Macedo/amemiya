@@ -16,6 +16,7 @@ use Modules\IoT\Events\AnomalyDetected;
 use Modules\IoT\Events\SensorDataReceived;
 use Modules\IoT\Models\IoTDeviceLog;
 use Modules\IoT\Models\IoTGateway;
+use Modules\IoT\Services\ISO20816SeverityService;
 use Modules\IoT\Services\MachineLearningService;
 use PhpMqtt\Client\Facades\MQTT;
 
@@ -121,12 +122,23 @@ class ProcessTelemetryJob implements ShouldQueue
             }
 
             // 4. DTO e Broadcast
+            // 4. Avaliação Metrológica ISO 20816-3 (Zonas de Severidade)
+            $isoService = app(ISO20816SeverityService::class);
+            $rmsInG = isset($this->payload['rms_global']) ? (float) $this->payload['rms_global'] : null;
+            $rpm = isset($this->payload['rpm']) ? (int) $this->payload['rpm'] : null;
+            $explicitVelo = isset($this->payload['features']['v_rms'])
+                ? (float) $this->payload['features']['v_rms']
+                : (isset($this->payload['velocity_rms']) ? (float) $this->payload['velocity_rms'] : null);
+
+            $velocityRms = $isoService->calculateVelocityRms($rmsInG, $rpm, $explicitVelo);
+            $isoEval = $isoService->evaluate($velocityRms);
+
             $dto = new TelemetryDataDTO(
                 tenantId: $gateway->tenant_id,
                 machineId: $node->machine_id,
                 nodeId: $node->node_id,
                 msgId: null,
-                rpm: $this->payload['rpm'] ?? null,
+                rpm: $rpm,
                 rmsGlobal: (float) ($this->payload['rms_global'] ?? 0),
                 timeDomain: [
                     'rms_x' => (float) ($this->payload['rms_x'] ?? $this->payload['features']['x_rms'] ?? 0),
@@ -144,14 +156,17 @@ class ProcessTelemetryJob implements ShouldQueue
                     ? Carbon::createFromTimestamp($this->payload['timestamp'])->toIso8601String()
                     : now()->toIso8601String(),
                 cloudMlStatus: $cloudMlStatus,
-                cloudMlConfidence: $cloudMlConfidence
+                cloudMlConfidence: $cloudMlConfidence,
+                velocityRms: $velocityRms,
+                isoZone: $isoEval['zone'] ?? null
             );
 
             event(new SensorDataReceived($dto));
 
-            // 5. Alerta Push
+            // 5. Alerta Push (IA ou Severidade ISO Crítica)
             $alertStatus = $cloudMlStatus ?? $mlStatus;
-            $isAnomaly = ! in_array($alertStatus, ['saudavel', 'normal', 'desligada'], true);
+            $isIsoCritical = in_array($isoEval['zone'] ?? '', ['C', 'D'], true);
+            $isAnomaly = (! in_array($alertStatus, ['saudavel', 'normal', 'desligada'], true)) || $isIsoCritical;
 
             if ($isAnomaly) {
                 broadcast(new AnomalyDetected($gateway->tenant_id, $gateway->id, [
@@ -159,18 +174,23 @@ class ProcessTelemetryJob implements ShouldQueue
                     'confidence' => $cloudMlConfidence ?? $mlConfidence,
                     'node_id' => $node->node_id,
                     'reanalyzed' => $reanalyzed,
+                    'iso_zone' => $isoEval['zone'] ?? null,
+                    'velocity_rms' => $velocityRms,
                 ]));
             }
 
             // 6. Registro de Auditoria / Diagnóstico Estruturado
-            if ($isAnomaly || $reanalyzed) {
+            if ($isAnomaly || $reanalyzed || $isIsoCritical) {
                 $level = match ($alertStatus) {
                     'falha_confirmada', 'desbalanceamento' => 'critical',
                     'analise_pendente' => 'warning',
-                    default => 'info',
+                    default => ($isoEval['zone'] === 'D' ? 'critical' : ($isoEval['zone'] === 'C' ? 'warning' : 'info')),
                 };
 
                 $eventType = $isAnomaly ? 'anomaly_detected' : 'cloud_ml_evaluated';
+                $isoText = $velocityRms !== null && isset($isoEval['zone'])
+                    ? " | ISO 20816: Zona {$isoEval['zone']} ({$velocityRms} mm/s)"
+                    : '';
 
                 IoTDeviceLog::create([
                     'tenant_id' => $gateway->tenant_id,
@@ -183,12 +203,15 @@ class ProcessTelemetryJob implements ShouldQueue
                     'ml_confidence' => $mlConfidence,
                     'cloud_ml_status' => $cloudMlStatus,
                     'cloud_ml_confidence' => $cloudMlConfidence,
-                    'rpm' => $this->payload['rpm'] ?? null,
+                    'rpm' => $rpm,
                     'rms_global' => (float) ($this->payload['rms_global'] ?? 0),
+                    'velocity_rms' => $velocityRms,
+                    'iso_zone' => $isoEval['zone'] ?? null,
+                    'iso_evaluation' => $isoEval,
                     'raw_payload' => $this->payload,
                     'features' => $this->payload['features'] ?? [],
                     'sent_command' => $lastSentCommand,
-                    'message' => "Disparo de IA: Status Edge [{$mlStatus}] (".round($mlConfidence * 100, 1).'%)'.($reanalyzed ? " -> Nuvem [{$cloudMlStatus}] (".round((float) $cloudMlConfidence * 100, 1).'%)' : ''),
+                    'message' => "Disparo de IA: Status Edge [{$mlStatus}] (".round($mlConfidence * 100, 1).'%)'.($reanalyzed ? " -> Nuvem [{$cloudMlStatus}] (".round((float) $cloudMlConfidence * 100, 1).'%)' : '').$isoText,
                     'measured_at' => isset($this->payload['timestamp']) && $this->payload['timestamp'] > 0
                         ? Carbon::createFromTimestamp($this->payload['timestamp'])
                         : now(),
