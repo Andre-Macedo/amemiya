@@ -1,0 +1,7 @@
+Ref,Val,Package,PosX,PosY,Rot,Side
+"C1","100nF","C_Disc_D3.8mm_W2.6mm_P2.50mm",9.460000,-7.500000,0.000000,top
+"J_ADXL","ADXL345_Module_8P","PinHeader_1x08_P2.54mm_Vertical",4.500000,-7.500000,0.000000,top
+"J_CABLE","JST_XH_B8B-XH-A_1x08","JST_XH_B8B-XH-A_1x08_P2.50mm_Vertical",3.250000,-43.800000,0.000000,top
+"J_MIC","INMP441_Round_MEMS","INMP441_Round_14mm",12.000000,-33.000000,0.000000,top
+"J_TEMP","DS18B20_Bulbo_Inox","PinHeader_1x03_P2.54mm_Vertical",9.460000,-4.000000,90.000000,top
+"R1","4.7k","R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal",9.460000,-11.500000,0.000000,top

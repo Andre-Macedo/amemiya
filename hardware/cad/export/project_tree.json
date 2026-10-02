@@ -1,0 +1,397 @@
+{
+  "project": "Amemiya",
+  "rootFiles": [
+    {
+      "name": "amemiya_bancada_testes_assembly",
+      "id": "urn:adsk.wipprod:dm.lineage:SEe17S73Sg-FXlNfxfRNRQ",
+      "version": 14,
+      "fileExtension": "f3d"
+    }
+  ],
+  "folders": [
+    {
+      "folder": "01_Probe_Tower_Components",
+      "files": [
+        {
+          "name": "02_Probe_Tower_Vibracao_Montada",
+          "id": "urn:adsk.wipprod:dm.lineage:TDNw85bwREqsABda4fKhRg",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "01_Base_Adaptadora_Mancal_Probe_Vertical_3D",
+          "id": "urn:adsk.wipprod:dm.lineage:ws4SlzerSEi42AAR8LZrlg",
+          "version": 4,
+          "fileExtension": "f3d"
+        }
+      ],
+      "subfolders": []
+    },
+    {
+      "folder": "02_Main_Node_Components",
+      "files": [
+        {
+          "name": "02_Placa_PCB_KiCad_Main_Node",
+          "id": "urn:adsk.wipprod:dm.lineage:urflNAUOQOWCqpZVhP4SUQ",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "03_Tampa_Superior_IHM",
+          "id": "urn:adsk.wipprod:dm.lineage:OOFvj3yZQo29CqyS6COaEg",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "04_Tampa_Inferior_Compartimento_Bateria",
+          "id": "urn:adsk.wipprod:dm.lineage:50qyFkKuQaSAl2fYft_ZCg",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "05_Conector_Industrial_GX16_8Vias",
+          "id": "urn:adsk.wipprod:dm.lineage:ktwXU6VuQPCwPPQmcEU_gw",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "06_Conector_Jack_P2_35mm_Painel",
+          "id": "urn:adsk.wipprod:dm.lineage:FN4vKYjdT0GkikQISLvBvw",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "07_Conector_Industrial_GX12_3Vias",
+          "id": "urn:adsk.wipprod:dm.lineage:xcqx_i3uQWedc5a0pauqsQ",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "08_Antena_LoRa_SMA",
+          "id": "urn:adsk.wipprod:dm.lineage:RMermizWSgiom-kl7Bh91g",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "09_Display_OLED_096_I2C",
+          "id": "urn:adsk.wipprod:dm.lineage:tPrr29e9RWeGBn26nebW_w",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "10_Parafuso_M3_Allen",
+          "id": "urn:adsk.wipprod:dm.lineage:dRQ9x9rURJ604XLqZYSrTw",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "11_Suporte_Bateria_Dupla_2x18650",
+          "id": "urn:adsk.wipprod:dm.lineage:9MwUXC_dT2SoyZYMxh6XtQ",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "13_Modulo_BMS_TP4056_USBC",
+          "id": "urn:adsk.wipprod:dm.lineage:Q5oGxQCdRaWyffOkGJuU4Q",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "12_Bateria_18650_LiIon",
+          "id": "urn:adsk.wipprod:dm.lineage:vkCYGK5dT2CW1gSek4sLUA",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "01_Gabinete_Base_Main_Node",
+          "id": "urn:adsk.wipprod:dm.lineage:mUSFdzjURZGlnj-2gwzRYQ",
+          "version": 1,
+          "fileExtension": "f3d"
+        }
+      ],
+      "subfolders": []
+    },
+    {
+      "folder": "03_Tacho_Probe_Components",
+      "files": [
+        {
+          "name": "01_Suporte_Tacometro_Ajustavel_3D",
+          "id": "urn:adsk.wipprod:dm.lineage:i_CDeXE_TOy2ylyV485r7A",
+          "version": 3,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "02_Colar_Bipartido_Eixo_Ima_3D",
+          "id": "urn:adsk.wipprod:dm.lineage:hIYKHflcSJ--HKqvGirUFg",
+          "version": 5,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "03_Sonda_Tacometro_Sensor",
+          "id": "urn:adsk.wipprod:dm.lineage:c8kaXPYfQeaiH_gbePCNSg",
+          "version": 1,
+          "fileExtension": "f3d"
+        }
+      ],
+      "subfolders": []
+    },
+    {
+      "folder": "04_Bancada_Components",
+      "files": [
+        {
+          "name": "01_Mesa_Base_Bancada",
+          "id": "urn:adsk.wipprod:dm.lineage:a--luHmDRf-jW4AxK50oQg",
+          "version": 5,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "02_Sapata_Niveladora_Borracha",
+          "id": "urn:adsk.wipprod:dm.lineage:s6KVgWAvQja2HfUUKM80eA",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "03_Placa_Base_Desalinhamento_Motor",
+          "id": "urn:adsk.wipprod:dm.lineage:M9mf9XvCQxm5_MGBQo4n2A",
+          "version": 2,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "04_Motor_Eletrico_Trifasico",
+          "id": "urn:adsk.wipprod:dm.lineage:Ep84Dy-NShebPzSuBF-ilA",
+          "version": 4,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "05_Acoplamento_Flexivel_Mandibula",
+          "id": "urn:adsk.wipprod:dm.lineage:HnwFW5qvQwqr6DOlJ89kiQ",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "06_Eixo_Rotativo_Retificado_20mm",
+          "id": "urn:adsk.wipprod:dm.lineage:pDWYh9G-Q3WpisYx-slbgQ",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "07_Mancal_Pillow_Block_UCP204",
+          "id": "urn:adsk.wipprod:dm.lineage:3hiuSI32RkSOCSeXiC-xMw",
+          "version": 2,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "08_Disco_Desbalanceamento_Calibrado",
+          "id": "urn:adsk.wipprod:dm.lineage:noFksY9cTOKv8ptiHwXBDQ",
+          "version": 2,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "09_Subplaca_Troca_Rapida_Mancal",
+          "id": "urn:adsk.wipprod:dm.lineage:0Ixc5e7PQQqib5N1u4iCxw",
+          "version": 4,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "10_Parafuso_Fixacao_M10_Allen",
+          "id": "urn:adsk.wipprod:dm.lineage:-Ctjwd6GTsaQcNmR8FN_xg",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "11_Bloco_Encosto_Push_Pull_Lateral",
+          "id": "urn:adsk.wipprod:dm.lineage:enc78G9tTUSGwRcu3GpPhg",
+          "version": 4,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "12_Parafuso_Jacking_Elevacao_M8",
+          "id": "urn:adsk.wipprod:dm.lineage:zny5D7T9TTK29WrYnQiPbQ",
+          "version": 2,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "13_Manipulo_Push_Pull_M8",
+          "id": "urn:adsk.wipprod:dm.lineage:eo6qxtnlQU2pVpOiNWe2Hg",
+          "version": 2,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "14_Cupula_Estrutural_2020",
+          "id": "urn:adsk.wipprod:dm.lineage:QqgVlCHNTEKsl2_eGjvyiA",
+          "version": 5,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "15_Botao_Emergencia_NR12",
+          "id": "urn:adsk.wipprod:dm.lineage:XT3lLtzbTmSD2sSzXe6jUw",
+          "version": 2,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "16_Microswitch_Seguranca_Tampa",
+          "id": "urn:adsk.wipprod:dm.lineage:8vu81RipQe6VQar43op5Xw",
+          "version": 2,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "17_Passa_Cabo_Borracha_Grommet",
+          "id": "urn:adsk.wipprod:dm.lineage:WAjfDPwAREeauf_bLWXoPQ",
+          "version": 2,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "18_Dobradica_Articulada_Mesa",
+          "id": "urn:adsk.wipprod:dm.lineage:ll1x2JBaTjKAGGGLUBHE0w",
+          "version": 2,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "19_Alca_Puxador_Tampa",
+          "id": "urn:adsk.wipprod:dm.lineage:8Mg1oY36QQupVsa8xt3FNA",
+          "version": 2,
+          "fileExtension": "f3d"
+        }
+      ],
+      "subfolders": []
+    },
+    {
+      "folder": "04_Bancada_Components_Backup",
+      "files": [
+        {
+          "name": "01_Mesa_Base_Bancada",
+          "id": "urn:adsk.wipprod:dm.lineage:SIIU42p5RzSOFdprfuqOYA",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "02_Sapata_Niveladora_Borracha",
+          "id": "urn:adsk.wipprod:dm.lineage:Z7qsXIuESpm6h77wz9Mptg",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "03_Placa_Base_Desalinhamento_Motor",
+          "id": "urn:adsk.wipprod:dm.lineage:qIF1_zzsRZSuMkFxFnUNpw",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "04_Motor_Eletrico_Trifasico",
+          "id": "urn:adsk.wipprod:dm.lineage:dMnilWX6SkeON58TrwrhEw",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "05_Acoplamento_Flexivel_Mandibula",
+          "id": "urn:adsk.wipprod:dm.lineage:4h8Qv8wTQqCtNnnphnwYcg",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "06_Eixo_Rotativo_Retificado_20mm",
+          "id": "urn:adsk.wipprod:dm.lineage:53VkmgIRTBWKlWuQFBxoJQ",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "07_Mancal_Pillow_Block_UCP204",
+          "id": "urn:adsk.wipprod:dm.lineage:MEBYwsdYT-GX5-KEEnTzIA",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "08_Disco_Desbalanceamento_Calibrado",
+          "id": "urn:adsk.wipprod:dm.lineage:ZXvxbGVuRg6hiH9B-pieZw",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "09_Subplaca_Troca_Rapida_Mancal",
+          "id": "urn:adsk.wipprod:dm.lineage:SmW3PjBGRMqEbgWmn2d-uQ",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "10_Parafuso_Fixacao_M10_Allen",
+          "id": "urn:adsk.wipprod:dm.lineage:M9U0H4kuSeSrGpW7l8BxIA",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "11_Bloco_Encosto_Push_Pull_Lateral",
+          "id": "urn:adsk.wipprod:dm.lineage:pieoXmuWRFeryuoEoZCahw",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "12_Parafuso_Jacking_Elevacao_M8",
+          "id": "urn:adsk.wipprod:dm.lineage:ss4J_B1UQCmER8tO3rJIJA",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "13_Manipulo_Push_Pull_M8",
+          "id": "urn:adsk.wipprod:dm.lineage:KOxai9SWRIuRCd8jEGdpTA",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "14_Cupula_Estrutural_2020",
+          "id": "urn:adsk.wipprod:dm.lineage:l0irU6G0QOmZsuiZiGJa4A",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "15_Botao_Emergencia_NR12",
+          "id": "urn:adsk.wipprod:dm.lineage:EiThV-uaRJGwGPUJJnpksw",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "16_Microswitch_Seguranca_Tampa",
+          "id": "urn:adsk.wipprod:dm.lineage:K5dGDeTJRs632WrP3WDY6w",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "17_Passa_Cabo_Borracha_Grommet",
+          "id": "urn:adsk.wipprod:dm.lineage:1NSvdFgtSiCF6QrY254Zmw",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "18_Dobradica_Articulada_Mesa",
+          "id": "urn:adsk.wipprod:dm.lineage:8T8Js3lfQDqvcWQLBHv9Hg",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "19_Alca_Puxador_Tampa",
+          "id": "urn:adsk.wipprod:dm.lineage:vWpsQUyjRYuvL-dBxCkMbg",
+          "version": 1,
+          "fileExtension": "f3d"
+        },
+        {
+          "name": "amemiya_bancada_testes_assembly",
+          "id": "urn:adsk.wipprod:dm.lineage:gTSY6sBjTl-WEcBG8ILgzw",
+          "version": 1,
+          "fileExtension": "f3d"
+        }
+      ],
+      "subfolders": []
+    },
+    {
+      "folder": "_Lixeira",
+      "files": [
+        {
+          "name": "01_Mesa_Base_Bancada",
+          "id": "urn:adsk.wipprod:dm.lineage:eyY_HN0VQ0qeWI63k7mffQ",
+          "version": 3,
+          "fileExtension": "f3d"
+        }
+      ],
+      "subfolders": []
+    }
+  ]
+}

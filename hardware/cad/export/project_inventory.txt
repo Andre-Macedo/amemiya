@@ -1,0 +1,73 @@
+=== PROJECT: Amemiya ===
+=== ROOT FILES (1) ===
+  amemiya_bancada_testes_assembly (v14) [id: urn:adsk.wipprod:dm.lineage:SEe17S73Sg-FXlNfxfRNRQ]
+
+=== FOLDER: 01_Probe_Tower_Components (2 files) ===
+  02_Probe_Tower_Vibracao_Montada (v1) [id: urn:adsk.wipprod:dm.lineage:TDNw85bwREqsABda4fKhRg]
+  01_Base_Adaptadora_Mancal_Probe_Vertical_3D (v4) [id: urn:adsk.wipprod:dm.lineage:ws4SlzerSEi42AAR8LZrlg]
+
+=== FOLDER: 02_Main_Node_Components (13 files) ===
+  02_Placa_PCB_KiCad_Main_Node (v1) [id: urn:adsk.wipprod:dm.lineage:urflNAUOQOWCqpZVhP4SUQ]
+  03_Tampa_Superior_IHM (v1) [id: urn:adsk.wipprod:dm.lineage:OOFvj3yZQo29CqyS6COaEg]
+  04_Tampa_Inferior_Compartimento_Bateria (v1) [id: urn:adsk.wipprod:dm.lineage:50qyFkKuQaSAl2fYft_ZCg]
+  05_Conector_Industrial_GX16_8Vias (v1) [id: urn:adsk.wipprod:dm.lineage:ktwXU6VuQPCwPPQmcEU_gw]
+  06_Conector_Jack_P2_35mm_Painel (v1) [id: urn:adsk.wipprod:dm.lineage:FN4vKYjdT0GkikQISLvBvw]
+  07_Conector_Industrial_GX12_3Vias (v1) [id: urn:adsk.wipprod:dm.lineage:xcqx_i3uQWedc5a0pauqsQ]
+  08_Antena_LoRa_SMA (v1) [id: urn:adsk.wipprod:dm.lineage:RMermizWSgiom-kl7Bh91g]
+  09_Display_OLED_096_I2C (v1) [id: urn:adsk.wipprod:dm.lineage:tPrr29e9RWeGBn26nebW_w]
+  10_Parafuso_M3_Allen (v1) [id: urn:adsk.wipprod:dm.lineage:dRQ9x9rURJ604XLqZYSrTw]
+  11_Suporte_Bateria_Dupla_2x18650 (v1) [id: urn:adsk.wipprod:dm.lineage:9MwUXC_dT2SoyZYMxh6XtQ]
+  13_Modulo_BMS_TP4056_USBC (v1) [id: urn:adsk.wipprod:dm.lineage:Q5oGxQCdRaWyffOkGJuU4Q]
+  12_Bateria_18650_LiIon (v1) [id: urn:adsk.wipprod:dm.lineage:vkCYGK5dT2CW1gSek4sLUA]
+  01_Gabinete_Base_Main_Node (v1) [id: urn:adsk.wipprod:dm.lineage:mUSFdzjURZGlnj-2gwzRYQ]
+
+=== FOLDER: 03_Tacho_Probe_Components (3 files) ===
+  01_Suporte_Tacometro_Ajustavel_3D (v3) [id: urn:adsk.wipprod:dm.lineage:i_CDeXE_TOy2ylyV485r7A]
+  02_Colar_Bipartido_Eixo_Ima_3D (v5) [id: urn:adsk.wipprod:dm.lineage:hIYKHflcSJ--HKqvGirUFg]
+  03_Sonda_Tacometro_Sensor (v1) [id: urn:adsk.wipprod:dm.lineage:c8kaXPYfQeaiH_gbePCNSg]
+
+=== FOLDER: 04_Bancada_Components (19 files) ===
+  01_Mesa_Base_Bancada (v5) [id: urn:adsk.wipprod:dm.lineage:a--luHmDRf-jW4AxK50oQg]
+  02_Sapata_Niveladora_Borracha (v1) [id: urn:adsk.wipprod:dm.lineage:s6KVgWAvQja2HfUUKM80eA]
+  03_Placa_Base_Desalinhamento_Motor (v2) [id: urn:adsk.wipprod:dm.lineage:M9mf9XvCQxm5_MGBQo4n2A]
+  04_Motor_Eletrico_Trifasico (v4) [id: urn:adsk.wipprod:dm.lineage:Ep84Dy-NShebPzSuBF-ilA]
+  05_Acoplamento_Flexivel_Mandibula (v1) [id: urn:adsk.wipprod:dm.lineage:HnwFW5qvQwqr6DOlJ89kiQ]
+  06_Eixo_Rotativo_Retificado_20mm (v1) [id: urn:adsk.wipprod:dm.lineage:pDWYh9G-Q3WpisYx-slbgQ]
+  07_Mancal_Pillow_Block_UCP204 (v2) [id: urn:adsk.wipprod:dm.lineage:3hiuSI32RkSOCSeXiC-xMw]
+  08_Disco_Desbalanceamento_Calibrado (v2) [id: urn:adsk.wipprod:dm.lineage:noFksY9cTOKv8ptiHwXBDQ]
+  09_Subplaca_Troca_Rapida_Mancal (v4) [id: urn:adsk.wipprod:dm.lineage:0Ixc5e7PQQqib5N1u4iCxw]
+  10_Parafuso_Fixacao_M10_Allen (v1) [id: urn:adsk.wipprod:dm.lineage:-Ctjwd6GTsaQcNmR8FN_xg]
+  11_Bloco_Encosto_Push_Pull_Lateral (v4) [id: urn:adsk.wipprod:dm.lineage:enc78G9tTUSGwRcu3GpPhg]
+  12_Parafuso_Jacking_Elevacao_M8 (v2) [id: urn:adsk.wipprod:dm.lineage:zny5D7T9TTK29WrYnQiPbQ]
+  13_Manipulo_Push_Pull_M8 (v2) [id: urn:adsk.wipprod:dm.lineage:eo6qxtnlQU2pVpOiNWe2Hg]
+  14_Cupula_Estrutural_2020 (v5) [id: urn:adsk.wipprod:dm.lineage:QqgVlCHNTEKsl2_eGjvyiA]
+  15_Botao_Emergencia_NR12 (v2) [id: urn:adsk.wipprod:dm.lineage:XT3lLtzbTmSD2sSzXe6jUw]
+  16_Microswitch_Seguranca_Tampa (v2) [id: urn:adsk.wipprod:dm.lineage:8vu81RipQe6VQar43op5Xw]
+  17_Passa_Cabo_Borracha_Grommet (v2) [id: urn:adsk.wipprod:dm.lineage:WAjfDPwAREeauf_bLWXoPQ]
+  18_Dobradica_Articulada_Mesa (v2) [id: urn:adsk.wipprod:dm.lineage:ll1x2JBaTjKAGGGLUBHE0w]
+  19_Alca_Puxador_Tampa (v2) [id: urn:adsk.wipprod:dm.lineage:8Mg1oY36QQupVsa8xt3FNA]
+
+=== FOLDER: 04_Bancada_Components_Backup (20 files) ===
+  01_Mesa_Base_Bancada (v1) [id: urn:adsk.wipprod:dm.lineage:SIIU42p5RzSOFdprfuqOYA]
+  02_Sapata_Niveladora_Borracha (v1) [id: urn:adsk.wipprod:dm.lineage:Z7qsXIuESpm6h77wz9Mptg]
+  03_Placa_Base_Desalinhamento_Motor (v1) [id: urn:adsk.wipprod:dm.lineage:qIF1_zzsRZSuMkFxFnUNpw]
+  04_Motor_Eletrico_Trifasico (v1) [id: urn:adsk.wipprod:dm.lineage:dMnilWX6SkeON58TrwrhEw]
+  05_Acoplamento_Flexivel_Mandibula (v1) [id: urn:adsk.wipprod:dm.lineage:4h8Qv8wTQqCtNnnphnwYcg]
+  06_Eixo_Rotativo_Retificado_20mm (v1) [id: urn:adsk.wipprod:dm.lineage:53VkmgIRTBWKlWuQFBxoJQ]
+  07_Mancal_Pillow_Block_UCP204 (v1) [id: urn:adsk.wipprod:dm.lineage:MEBYwsdYT-GX5-KEEnTzIA]
+  08_Disco_Desbalanceamento_Calibrado (v1) [id: urn:adsk.wipprod:dm.lineage:ZXvxbGVuRg6hiH9B-pieZw]
+  09_Subplaca_Troca_Rapida_Mancal (v1) [id: urn:adsk.wipprod:dm.lineage:SmW3PjBGRMqEbgWmn2d-uQ]
+  10_Parafuso_Fixacao_M10_Allen (v1) [id: urn:adsk.wipprod:dm.lineage:M9U0H4kuSeSrGpW7l8BxIA]
+  11_Bloco_Encosto_Push_Pull_Lateral (v1) [id: urn:adsk.wipprod:dm.lineage:pieoXmuWRFeryuoEoZCahw]
+  12_Parafuso_Jacking_Elevacao_M8 (v1) [id: urn:adsk.wipprod:dm.lineage:ss4J_B1UQCmER8tO3rJIJA]
+  13_Manipulo_Push_Pull_M8 (v1) [id: urn:adsk.wipprod:dm.lineage:KOxai9SWRIuRCd8jEGdpTA]
+  14_Cupula_Estrutural_2020 (v1) [id: urn:adsk.wipprod:dm.lineage:l0irU6G0QOmZsuiZiGJa4A]
+  15_Botao_Emergencia_NR12 (v1) [id: urn:adsk.wipprod:dm.lineage:EiThV-uaRJGwGPUJJnpksw]
+  16_Microswitch_Seguranca_Tampa (v1) [id: urn:adsk.wipprod:dm.lineage:K5dGDeTJRs632WrP3WDY6w]
+  17_Passa_Cabo_Borracha_Grommet (v1) [id: urn:adsk.wipprod:dm.lineage:1NSvdFgtSiCF6QrY254Zmw]
+  18_Dobradica_Articulada_Mesa (v1) [id: urn:adsk.wipprod:dm.lineage:8T8Js3lfQDqvcWQLBHv9Hg]
+  19_Alca_Puxador_Tampa (v1) [id: urn:adsk.wipprod:dm.lineage:vWpsQUyjRYuvL-dBxCkMbg]
+  amemiya_bancada_testes_assembly (v1) [id: urn:adsk.wipprod:dm.lineage:gTSY6sBjTl-WEcBG8ILgzw]
+
+=== FOLDER: _Lixeira (1 files) ===
+  01_Mesa_Base_Bancada (v3) [id: urn:adsk.wipprod:dm.lineage:eyY_HN0VQ0qeWI63k7mffQ]

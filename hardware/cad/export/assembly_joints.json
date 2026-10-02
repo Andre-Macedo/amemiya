@@ -1,0 +1,314 @@
+{
+  "doc": "amemiya_bancada_testes_assembly v14",
+  "isSaved": true,
+  "joints": [
+    {
+      "name": "R\u00edgido 266",
+      "type": "Joint",
+      "motion": "0",
+      "occOne": "13_Manipulo_Push_Pull_M8 v2:2",
+      "occTwo": "11_Bloco_Encosto_Push_Pull_Lateral v4:2"
+    },
+    {
+      "name": "R\u00edgido 267",
+      "type": "Joint",
+      "motion": "0",
+      "occOne": "13_Manipulo_Push_Pull_M8 v2:1",
+      "occTwo": "11_Bloco_Encosto_Push_Pull_Lateral v4:1"
+    },
+    {
+      "name": "Junta_Rigida_Sapata_1",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "02_Sapata_Niveladora_Borracha v1:1",
+      "occTwo": "01_Mesa_Base_Bancada v5:1"
+    },
+    {
+      "name": "Junta_Rigida_Sapata_2",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "02_Sapata_Niveladora_Borracha v1:2",
+      "occTwo": "01_Mesa_Base_Bancada v5:1"
+    },
+    {
+      "name": "Junta_Rigida_Sapata_3",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "02_Sapata_Niveladora_Borracha v1:3",
+      "occTwo": "01_Mesa_Base_Bancada v5:1"
+    },
+    {
+      "name": "Junta_Rigida_Sapata_4",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "02_Sapata_Niveladora_Borracha v1:4",
+      "occTwo": "01_Mesa_Base_Bancada v5:1"
+    },
+    {
+      "name": "Junta_Rigida_Placa_Desalinhamento",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "03_Placa_Base_Desalinhamento_Motor v2:1",
+      "occTwo": "01_Mesa_Base_Bancada v5:1"
+    },
+    {
+      "name": "Junta_Rigida_Jacking_1",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "12_Parafuso_Jacking_Elevacao_M8 v2:1",
+      "occTwo": "03_Placa_Base_Desalinhamento_Motor v2:1"
+    },
+    {
+      "name": "Junta_Rigida_Jacking_2",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "12_Parafuso_Jacking_Elevacao_M8 v2:2",
+      "occTwo": "03_Placa_Base_Desalinhamento_Motor v2:1"
+    },
+    {
+      "name": "Junta_Rigida_Jacking_3",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "12_Parafuso_Jacking_Elevacao_M8 v2:3",
+      "occTwo": "03_Placa_Base_Desalinhamento_Motor v2:1"
+    },
+    {
+      "name": "Junta_Rigida_Jacking_4",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "12_Parafuso_Jacking_Elevacao_M8 v2:4",
+      "occTwo": "03_Placa_Base_Desalinhamento_Motor v2:1"
+    },
+    {
+      "name": "Junta_Rigida_M10_Mesa_1",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "10_Parafuso_Fixacao_M10_Allen v1:1",
+      "occTwo": "01_Mesa_Base_Bancada v5:1"
+    },
+    {
+      "name": "Junta_Rigida_M10_Mesa_2",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "10_Parafuso_Fixacao_M10_Allen v1:2",
+      "occTwo": "01_Mesa_Base_Bancada v5:1"
+    },
+    {
+      "name": "Junta_Rigida_M10_Mesa_3",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "10_Parafuso_Fixacao_M10_Allen v1:3",
+      "occTwo": "01_Mesa_Base_Bancada v5:1"
+    },
+    {
+      "name": "Junta_Rigida_M10_Mesa_4",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "10_Parafuso_Fixacao_M10_Allen v1:4",
+      "occTwo": "01_Mesa_Base_Bancada v5:1"
+    },
+    {
+      "name": "Junta_Rigida_Bloco_Lateral_Esq",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "11_Bloco_Encosto_Push_Pull_Lateral v4:1",
+      "occTwo": "01_Mesa_Base_Bancada v5:1"
+    },
+    {
+      "name": "Junta_Rigida_Parafuso_Bloco_Esq",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "10_Parafuso_Fixacao_M10_Allen v1:5",
+      "occTwo": "11_Bloco_Encosto_Push_Pull_Lateral v4:1"
+    },
+    {
+      "name": "Junta_Rigida_Bloco_Lateral_Dir",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "11_Bloco_Encosto_Push_Pull_Lateral v4:2",
+      "occTwo": "01_Mesa_Base_Bancada v5:1"
+    },
+    {
+      "name": "Junta_Rigida_Parafuso_Bloco_Dir",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "10_Parafuso_Fixacao_M10_Allen v1:6",
+      "occTwo": "11_Bloco_Encosto_Push_Pull_Lateral v4:2"
+    },
+    {
+      "name": "Junta_Rigida_Motor_Placa",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "04_Motor_Eletrico_Trifasico v4:1",
+      "occTwo": "03_Placa_Base_Desalinhamento_Motor v2:1"
+    },
+    {
+      "name": "Junta_Rigida_Acoplamento",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "05_Acoplamento_Flexivel_Mandibula v1:1",
+      "occTwo": "01_Mesa_Base_Bancada v5:1"
+    },
+    {
+      "name": "Junta_Rigida_Subplaca_1",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "09_Subplaca_Troca_Rapida_Mancal v4:1",
+      "occTwo": "01_Mesa_Base_Bancada v5:1"
+    },
+    {
+      "name": "Junta_Rigida_Mancal_1",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "07_Mancal_Pillow_Block_UCP204 v2:1",
+      "occTwo": "09_Subplaca_Troca_Rapida_Mancal v4:1"
+    },
+    {
+      "name": "Junta_Rigida_Parafuso_Mancal_1",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "10_Parafuso_Fixacao_M10_Allen v1:7",
+      "occTwo": "07_Mancal_Pillow_Block_UCP204 v2:1"
+    },
+    {
+      "name": "Junta_Rigida_Parafuso_Mancal_1 (1)",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "10_Parafuso_Fixacao_M10_Allen v1:8",
+      "occTwo": "07_Mancal_Pillow_Block_UCP204 v2:1"
+    },
+    {
+      "name": "Junta_Rigida_Subplaca_2",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "09_Subplaca_Troca_Rapida_Mancal v4:2",
+      "occTwo": "01_Mesa_Base_Bancada v5:1"
+    },
+    {
+      "name": "Junta_Rigida_Mancal_2",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "07_Mancal_Pillow_Block_UCP204 v2:2",
+      "occTwo": "09_Subplaca_Troca_Rapida_Mancal v4:2"
+    },
+    {
+      "name": "Junta_Rigida_Parafuso_Mancal_2",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "10_Parafuso_Fixacao_M10_Allen v1:9",
+      "occTwo": "07_Mancal_Pillow_Block_UCP204 v2:2"
+    },
+    {
+      "name": "Junta_Rigida_Parafuso_Mancal_2 (1)",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "10_Parafuso_Fixacao_M10_Allen v1:10",
+      "occTwo": "07_Mancal_Pillow_Block_UCP204 v2:2"
+    },
+    {
+      "name": "Junta_Rigida_Eixo_Rotativo",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "06_Eixo_Rotativo_Retificado_20mm v1:1",
+      "occTwo": "01_Mesa_Base_Bancada v5:1"
+    },
+    {
+      "name": "Junta_Rigida_Disco_Desbalanceamento",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "08_Disco_Desbalanceamento_Calibrado v2:1",
+      "occTwo": "06_Eixo_Rotativo_Retificado_20mm v1:1"
+    },
+    {
+      "name": "Junta_Rigida_Base_Vertical_1",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "01_Base_Adaptadora_Mancal_Probe_Vertical_3D v4:1",
+      "occTwo": "07_Mancal_Pillow_Block_UCP204 v2:1"
+    },
+    {
+      "name": "Junta_Rigida_Probe_Torre_1_Vertical",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "02_Probe_Tower_Vibracao_Montada v1:1",
+      "occTwo": "01_Base_Adaptadora_Mancal_Probe_Vertical_3D v4:1"
+    },
+    {
+      "name": "Junta_Rigida_Base_Vertical_2",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "01_Base_Adaptadora_Mancal_Probe_Vertical_3D v4:2",
+      "occTwo": "07_Mancal_Pillow_Block_UCP204 v2:2"
+    },
+    {
+      "name": "Junta_Rigida_Probe_Torre_2_Vertical",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "02_Probe_Tower_Vibracao_Montada v1:2",
+      "occTwo": "01_Base_Adaptadora_Mancal_Probe_Vertical_3D v4:2"
+    },
+    {
+      "name": "Junta_Rigida_Colar_Ima_Eixo",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "02_Colar_Bipartido_Eixo_Ima_3D v5:1",
+      "occTwo": "06_Eixo_Rotativo_Retificado_20mm v1:1"
+    },
+    {
+      "name": "Junta_Rigida_Suporte_Tacometro_Trilho",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "01_Suporte_Tacometro_Ajustavel_3D v3:1",
+      "occTwo": "01_Mesa_Base_Bancada v5:1"
+    },
+    {
+      "name": "Junta_Rigida_Parafuso_M6_Suporte",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "10_Parafuso_Fixacao_M10_Allen v1:11",
+      "occTwo": "01_Suporte_Tacometro_Ajustavel_3D v3:1"
+    },
+    {
+      "name": "Junta_Rigida_Sonda_Tacometro_Braco",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "03_Sonda_Tacometro_Sensor v1:1",
+      "occTwo": "01_Suporte_Tacometro_Ajustavel_3D v3:1"
+    },
+    {
+      "name": "Junta_Rigida_Dobradica_1",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "18_Dobradica_Articulada_Mesa v2:1",
+      "occTwo": "01_Mesa_Base_Bancada v5:1"
+    },
+    {
+      "name": "Junta_Rigida_Dobradica_2",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "18_Dobradica_Articulada_Mesa v2:2",
+      "occTwo": "01_Mesa_Base_Bancada v5:1"
+    },
+    {
+      "name": "Junta_Articulada_Abertura_Cupula_EixoX",
+      "type": "AsBuiltJoint",
+      "motion": "1",
+      "occOne": "14_Cupula_Estrutural_2020 v5:1",
+      "occTwo": "18_Dobradica_Articulada_Mesa v2:1"
+    },
+    {
+      "name": "Junta_Rigida_Microswitch_Seguranca",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "16_Microswitch_Seguranca_Tampa v2:1",
+      "occTwo": "01_Mesa_Base_Bancada v5:1"
+    },
+    {
+      "name": "Junta_Rigida_Botao_Emergencia",
+      "type": "AsBuiltJoint",
+      "motion": "0",
+      "occOne": "15_Botao_Emergencia_NR12 v2:1",
+      "occTwo": "01_Mesa_Base_Bancada v5:1"
+    }
+  ]
+}

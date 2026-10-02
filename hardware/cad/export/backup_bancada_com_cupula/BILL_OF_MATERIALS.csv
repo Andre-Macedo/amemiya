@@ -1,0 +1,44 @@
+Item,Categoria,Descricao,Dimensoes,Quantidade,Unidade,Material,Norma_Referencia,Funcao_Destino
+1,Perfis Estruturais,Perfil de Aluminio Modular 40x80 Canal 8,40x80x700 mm,2,pecas,Aluminio 6063-T5 Anodizado,NBR 12609,Longarinas da mesa base da bancada
+2,Perfis Estruturais,Perfil de Aluminio Modular 2020 Canal 6 (Colunas),20x20x170 mm,4,pecas,Aluminio 6063-T5 Anodizado,NBR 12609,Colunas verticais da cupula NR-12
+3,Perfis Estruturais,Perfil de Aluminio Modular 2020 Canal 6 (Vigas X),20x20x380 mm,4,pecas,Aluminio 6063-T5 Anodizado,NBR 12609,Vigas longitudinais da cupula
+4,Perfis Estruturais,Perfil de Aluminio Modular 2020 Canal 6 (Travessas Y),20x20x175 mm,4,pecas,Aluminio 6063-T5 Anodizado,NBR 12609,Travessas transversais da cupula
+5,Base e Chaparia,Placa de Base Sismica da Bancada,700x220x12.0 mm,1,peca,Aco Carbono ASTM A36 / FC-250,ASTM A36,Base de aterramento sismico e ancoragem
+6,Base e Chaparia,Placa Base Desalinhamento Motor (Oblongos),230x160x15.0 mm,1,peca,Duraluminio 7075-T6 Anodizado,ASTM B221,Placa regulavel para desalinhamento angular e paralelo
+7,Base e Chaparia,Subplacas de Troca Rapida de Mancal,140x40x10.0 mm,2,pecas,Aluminio 6061-T6 Usinado,ASTM B221,Elevacao e centralizacao coaxial dos mancais UCP204 a Z=105mm
+8,Base e Chaparia,Blocos de Apoio Push-Pull Lateral,30x30x25.0 mm,2,pecas,Aco 1045 Enegrecido,SAE 1045,Apoio rosqueado M8 para manipulos de regulagem lateral
+9,Policarbonato NR-12,Painel Superior (Teto da Cupula),380x175x4.0 mm,1,peca,Policarbonato Cristal Compacto,NR-12 / ISO 14120,Fechamento superior transparente antichoque
+10,Policarbonato NR-12,Painel Frontal,380x130x4.0 mm,1,peca,Policarbonato Cristal Compacto,NR-12 / ISO 14120,Fechamento frontal transparente
+11,Policarbonato NR-12,Painel Traseiro com 3 furos diametro 18mm,380x130x4.0 mm,1,peca,Policarbonato Cristal Compacto,NR-12 / ISO 14120,Fechamento traseiro com furos para passa-cabos
+12,Policarbonato NR-12,Paineis Laterais,175x130x4.0 mm,2,pecas,Policarbonato Cristal Compacto,NR-12 / ISO 14120,Fechamento lateral transparente
+13,Passa-Cabos,Passa-Cabo de Borracha (Grommet),Ext 24mm / Furo 18mm / Canal 4mm,3,pecas,Borracha Nitrilica NBR / EPDM,DIN 7716,Passagem estanque de cabos de acelerometros e tacometro
+14,Vedacao,Perfil Borracha Baguete tipo U para Canal 6,Canal 6mm x Encaixe 4mm,3.8,metros,Borracha EPDM 65 Shore A,DIN 7716,Amortecimento e assentamento do policarbonato no perfil 2020
+15,Fixadores,Parafuso Cabeca Cilindrica Allen DIN 912,M10 x 30 mm,4,pecas,Aco Classe 8.8 Zincado,DIN 912 / ISO 4762,Fixacao e aperto da placa do motor nos canais 8
+16,Fixadores,Parafuso Cabeca Cilindrica Allen DIN 912,M10 x 35 mm,4,pecas,Aco Classe 8.8 Zincado,DIN 912 / ISO 4762,Fixacao dos mancais UCP204 e subplacas
+17,Fixadores,Parafuso Cabeca Cilindrica Allen DIN 912,M10 x 20 mm,2,pecas,Aco Classe 8.8 Zincado,DIN 912 / ISO 4762,Fixacao dos blocos push-pull nos canais 8
+18,Fixadores,Parafuso Sextavado Ponta Plana Jacking,M8 x 35 mm,4,pecas,Aco Classe 8.8 Enegrecido,DIN 933 / DIN 913,Parafusos jacking de elevacao e nivelamento angular
+19,Fixadores,Parafuso Cabeca Abaulada Allen ISO 7380,M5 x 10 mm,16,pecas,Aco Inox AISI 304,ISO 7380,Montagem das cantoneiras de uniao da cupula 2020
+20,Fixadores,Parafuso Cabeca Abaulada Allen ISO 7380,M5 x 12 mm,4,pecas,Aco Inox AISI 304,ISO 7380,Fixacao das dobradicas na cupula 2020
+21,Fixadores,Parafuso Cabeca Cilindrica Allen DIN 912,M6 x 16 mm,4,pecas,Aco Classe 8.8 Zincado,DIN 912 / ISO 4762,Fixacao das dobradicas no perfil 40x80 da base
+22,Fixadores,Parafuso Cabeca Cilindrica Allen DIN 912,M6 x 20 mm,2,pecas,Aco Classe 8.8 Enegrecido,DIN 912 / ISO 4762,Fixacao da alca tipo ponte frontal no perfil 2020
+23,Fixadores,Parafuso Cabeca Cilindrica Allen DIN 912,M8 x 25 mm,4,pecas,Aco Classe 8.8 Zincado,DIN 912 / ISO 4762,Fixacao das sapatas do motor na placa usinada
+24,Fixadores,Porca T Martelo Drop-In Canal 8,Rosca M10,10,pecas,Aco Carbono Zincado,Padrao Canal 8,Ancoragem nos perfis 40x80 (motor, mancais e blocos)
+25,Fixadores,Porca T Martelo Drop-In Canal 8,Rosca M6,4,pecas,Aco Carbono Zincado,Padrao Canal 8,Ancoragem inferior das dobradicas na base
+26,Fixadores,Porca T Martelo Drop-In Canal 6,Rosca M5,20,pecas,Aco Carbono Zincado,Padrao Canal 6,Ancoragem das cantoneiras e dobradicas na cupula 2020
+27,Fixadores,Porca T Martelo Drop-In Canal 6,Rosca M6,2,pecas,Aco Carbono Zincado,Padrao Canal 6,Ancoragem da alca tipo ponte na frente da cupula
+28,Fixadores,Contraporca Sextavada Baixa DIN 439,Rosca M8,4,pecas,Aco Carbono Zincado,DIN 439 / ISO 4035,Travamento dos parafusos jacking de altura
+29,Fixadores,Arruela Lisa Reforcada DIN 125A,M10,10,pecas,Aco Carbono Zincado,DIN 125A / ISO 7089,Distribuicao de carga sob cabecas de parafusos M10
+30,Fixadores,Arruela Lisa DIN 125A,M5,16,pecas,Aco Inox AISI 304,DIN 125A / ISO 7089,Apoio sob parafusos M5 das cantoneiras
+31,Ferragens,Manipulo Estrela Push-Pull Haste M8,M8 x 40 mm / Cabeca diametro 40mm,2,pecas,Haste Aco / Poliamida Preta,DIN 6336,Ajuste manual fino de deslocamento angular e paralelo
+32,Ferragens,Cantoneira de Ligacao 90 graus para Perfil 2020,20x20x17 mm (2 furos),8,pecas,Aluminio Fundido,Padrao 2020,Uniao rigida dos 8 vertices da gaiola 2020
+33,Ferragens,Sapata Niveladora Antivibratoria Articulada,Fuso M10x50 mm / Base diametro 50mm,4,pecas,Haste Aco Zincado / Base NBR,DIN 934,Nivelamento da bancada e amortecimento de vibracoes
+34,Ferragens,Dobradica Industrial Articulada,Articulacao 0 a 180 graus,2,pecas,Poliamida Reforcada / Pino Inox,Norma Industrial,Articulacao cinemica da cupula sobre a mesa base
+35,Ferragens,Alca Tipo Ponte Industrial,Entre-furos 116 mm / 140x40x20 mm,1,peca,Poliamida Preta Fosca,Norma Ergonomia,Abertura e fechamento seguro da tampa basculante
+36,Eletromecanicos,Motor Eletrico Trifasico Carcaca 63,0.25 kW (1/3 CV) 4P 220/380V B3,1,unidade,Aluminio / Cobre (WEG),IEC 60034,Acionamento motriz principal com variacao por inversor
+37,Eletromecanicos,Acoplamento Flexivel de Mandibulas,Diametro 30mm / Furos 11x20mm,1,unidade,Cubos Aluminio / Aranha Poliuretano,DIN 740,Absorcao de pulsos torcionais e desacoplamento angular
+38,Eletromecanicos,Mancal Pillow Block Bipartido UCP204,Rolamento de esferas autocompensador diametro 20mm,2,unidades,Ferro Fundido / Aco Cromo,ISO 113,Apoio rotativo do eixo com pino graxeiro de relubrificacao
+39,Eletromecanicos,Eixo Rotativo Retificado,Diametro 20mm h7 x 420mm,1,unidade,Aco SAE 1045 Trefilado e Retificado,ABNT NBR 1045,Eixo condutor dos rotores e medicao de vibracao
+40,Eletromecanicos,Disco de Desbalanceamento Calibrado,Diametro 120mm x 12mm / 16 furos M6,1,unidade,Aco Inox AISI 304,Projeto Amemiya,Disco rotativo para aplicacao calibrada de massas teste
+41,Seguranca NR-12,Botao de Parada de Emergencia tipo Cogumelo,Diametro 40mm Girar-para-Destravar 2NF,1,unidade,Polimero / Contatos Ruptura Positiva,NR-12 / IEC 60947-5-5,Parada de emergencia imediata com desarme de seguranca
+42,Seguranca NR-12,Placa de Sinalizacao Amarela de Emergencia,Diametro 60mm Amarela de Advertencia,1,unidade,Policarbonato / Vinil Amarelo,ABNT NBR 7195,Sinalizacao visual de atencao do botao de emergencia
+43,Seguranca NR-12,Chave Fim-de-Curso / Microswitch de Intertravamento,Atuacao por rolete / Contatos 1NA+1NF,1,unidade,Corpo Termoplastico IP67,NR-12 / ISO 14119,Intertravamento de seguranca da abertura da cupula

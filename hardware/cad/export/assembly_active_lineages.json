@@ -1,0 +1,156 @@
+{
+  "urn:adsk.wipprod:dm.lineage:a--luHmDRf-jW4AxK50oQg": {
+    "name": "01_Mesa_Base_Bancada",
+    "version": 5,
+    "folder": "04_Bancada_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:a--luHmDRf-jW4AxK50oQg",
+    "occ_name": "01_Mesa_Base_Bancada v5:1"
+  },
+  "urn:adsk.wipprod:dm.lineage:s6KVgWAvQja2HfUUKM80eA": {
+    "name": "02_Sapata_Niveladora_Borracha",
+    "version": 1,
+    "folder": "04_Bancada_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:s6KVgWAvQja2HfUUKM80eA",
+    "occ_name": "02_Sapata_Niveladora_Borracha v1:4"
+  },
+  "urn:adsk.wipprod:dm.lineage:M9mf9XvCQxm5_MGBQo4n2A": {
+    "name": "03_Placa_Base_Desalinhamento_Motor",
+    "version": 2,
+    "folder": "04_Bancada_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:M9mf9XvCQxm5_MGBQo4n2A",
+    "occ_name": "03_Placa_Base_Desalinhamento_Motor v2:1"
+  },
+  "urn:adsk.wipprod:dm.lineage:zny5D7T9TTK29WrYnQiPbQ": {
+    "name": "12_Parafuso_Jacking_Elevacao_M8",
+    "version": 2,
+    "folder": "04_Bancada_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:zny5D7T9TTK29WrYnQiPbQ",
+    "occ_name": "12_Parafuso_Jacking_Elevacao_M8 v2:4"
+  },
+  "urn:adsk.wipprod:dm.lineage:-Ctjwd6GTsaQcNmR8FN_xg": {
+    "name": "10_Parafuso_Fixacao_M10_Allen",
+    "version": 1,
+    "folder": "04_Bancada_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:-Ctjwd6GTsaQcNmR8FN_xg",
+    "occ_name": "10_Parafuso_Fixacao_M10_Allen v1:11"
+  },
+  "urn:adsk.wipprod:dm.lineage:enc78G9tTUSGwRcu3GpPhg": {
+    "name": "11_Bloco_Encosto_Push_Pull_Lateral",
+    "version": 4,
+    "folder": "04_Bancada_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:enc78G9tTUSGwRcu3GpPhg",
+    "occ_name": "11_Bloco_Encosto_Push_Pull_Lateral v4:2"
+  },
+  "urn:adsk.wipprod:dm.lineage:eo6qxtnlQU2pVpOiNWe2Hg": {
+    "name": "13_Manipulo_Push_Pull_M8",
+    "version": 2,
+    "folder": "04_Bancada_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:eo6qxtnlQU2pVpOiNWe2Hg",
+    "occ_name": "13_Manipulo_Push_Pull_M8 v2:2"
+  },
+  "urn:adsk.wipprod:dm.lineage:Ep84Dy-NShebPzSuBF-ilA": {
+    "name": "04_Motor_Eletrico_Trifasico",
+    "version": 4,
+    "folder": "04_Bancada_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:Ep84Dy-NShebPzSuBF-ilA",
+    "occ_name": "04_Motor_Eletrico_Trifasico v4:1"
+  },
+  "urn:adsk.wipprod:dm.lineage:HnwFW5qvQwqr6DOlJ89kiQ": {
+    "name": "05_Acoplamento_Flexivel_Mandibula",
+    "version": 1,
+    "folder": "04_Bancada_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:HnwFW5qvQwqr6DOlJ89kiQ",
+    "occ_name": "05_Acoplamento_Flexivel_Mandibula v1:1"
+  },
+  "urn:adsk.wipprod:dm.lineage:0Ixc5e7PQQqib5N1u4iCxw": {
+    "name": "09_Subplaca_Troca_Rapida_Mancal",
+    "version": 4,
+    "folder": "04_Bancada_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:0Ixc5e7PQQqib5N1u4iCxw",
+    "occ_name": "09_Subplaca_Troca_Rapida_Mancal v4:2"
+  },
+  "urn:adsk.wipprod:dm.lineage:3hiuSI32RkSOCSeXiC-xMw": {
+    "name": "07_Mancal_Pillow_Block_UCP204",
+    "version": 2,
+    "folder": "04_Bancada_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:3hiuSI32RkSOCSeXiC-xMw",
+    "occ_name": "07_Mancal_Pillow_Block_UCP204 v2:2"
+  },
+  "urn:adsk.wipprod:dm.lineage:pDWYh9G-Q3WpisYx-slbgQ": {
+    "name": "06_Eixo_Rotativo_Retificado_20mm",
+    "version": 1,
+    "folder": "04_Bancada_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:pDWYh9G-Q3WpisYx-slbgQ",
+    "occ_name": "06_Eixo_Rotativo_Retificado_20mm v1:1"
+  },
+  "urn:adsk.wipprod:dm.lineage:noFksY9cTOKv8ptiHwXBDQ": {
+    "name": "08_Disco_Desbalanceamento_Calibrado",
+    "version": 2,
+    "folder": "04_Bancada_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:noFksY9cTOKv8ptiHwXBDQ",
+    "occ_name": "08_Disco_Desbalanceamento_Calibrado v2:1"
+  },
+  "urn:adsk.wipprod:dm.lineage:ws4SlzerSEi42AAR8LZrlg": {
+    "name": "01_Base_Adaptadora_Mancal_Probe_Vertical_3D",
+    "version": 4,
+    "folder": "01_Probe_Tower_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:ws4SlzerSEi42AAR8LZrlg",
+    "occ_name": "01_Base_Adaptadora_Mancal_Probe_Vertical_3D v4:2"
+  },
+  "urn:adsk.wipprod:dm.lineage:TDNw85bwREqsABda4fKhRg": {
+    "name": "02_Probe_Tower_Vibracao_Montada",
+    "version": 1,
+    "folder": "01_Probe_Tower_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:TDNw85bwREqsABda4fKhRg",
+    "occ_name": "02_Probe_Tower_Vibracao_Montada v1:2"
+  },
+  "urn:adsk.wipprod:dm.lineage:hIYKHflcSJ--HKqvGirUFg": {
+    "name": "02_Colar_Bipartido_Eixo_Ima_3D",
+    "version": 5,
+    "folder": "03_Tacho_Probe_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:hIYKHflcSJ--HKqvGirUFg",
+    "occ_name": "02_Colar_Bipartido_Eixo_Ima_3D v5:1"
+  },
+  "urn:adsk.wipprod:dm.lineage:i_CDeXE_TOy2ylyV485r7A": {
+    "name": "01_Suporte_Tacometro_Ajustavel_3D",
+    "version": 3,
+    "folder": "03_Tacho_Probe_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:i_CDeXE_TOy2ylyV485r7A",
+    "occ_name": "01_Suporte_Tacometro_Ajustavel_3D v3:1"
+  },
+  "urn:adsk.wipprod:dm.lineage:c8kaXPYfQeaiH_gbePCNSg": {
+    "name": "03_Sonda_Tacometro_Sensor",
+    "version": 1,
+    "folder": "03_Tacho_Probe_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:c8kaXPYfQeaiH_gbePCNSg",
+    "occ_name": "03_Sonda_Tacometro_Sensor v1:1"
+  },
+  "urn:adsk.wipprod:dm.lineage:ll1x2JBaTjKAGGGLUBHE0w": {
+    "name": "18_Dobradica_Articulada_Mesa",
+    "version": 2,
+    "folder": "04_Bancada_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:ll1x2JBaTjKAGGGLUBHE0w",
+    "occ_name": "18_Dobradica_Articulada_Mesa v2:2"
+  },
+  "urn:adsk.wipprod:dm.lineage:QqgVlCHNTEKsl2_eGjvyiA": {
+    "name": "14_Cupula_Estrutural_2020",
+    "version": 5,
+    "folder": "04_Bancada_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:QqgVlCHNTEKsl2_eGjvyiA",
+    "occ_name": "14_Cupula_Estrutural_2020 v5:1"
+  },
+  "urn:adsk.wipprod:dm.lineage:8vu81RipQe6VQar43op5Xw": {
+    "name": "16_Microswitch_Seguranca_Tampa",
+    "version": 2,
+    "folder": "04_Bancada_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:8vu81RipQe6VQar43op5Xw",
+    "occ_name": "16_Microswitch_Seguranca_Tampa v2:1"
+  },
+  "urn:adsk.wipprod:dm.lineage:XT3lLtzbTmSD2sSzXe6jUw": {
+    "name": "15_Botao_Emergencia_NR12",
+    "version": 2,
+    "folder": "04_Bancada_Components",
+    "id": "urn:adsk.wipprod:dm.lineage:XT3lLtzbTmSD2sSzXe6jUw",
+    "occ_name": "15_Botao_Emergencia_NR12 v2:1"
+  }
+}

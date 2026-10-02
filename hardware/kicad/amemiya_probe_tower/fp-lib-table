@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "amemiya_tower")(type "KiCad")(uri "C:/Users/andrl/OneDrive/Documentos/Projetos Pessoal/amemiya/hardware/kicad/amemiya_probe_tower/amemiya_tower.pretty")(options "")(descr "Amemiya Custom Tower Footprints"))
+)
