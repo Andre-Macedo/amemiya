@@ -165,4 +165,5 @@ Abaixo, detalha-se cada estudo referenciado pelo Sci-Bot, o resumo de suas desco
 | **Modelos de ML** | Supervised Only (Roberts 2025) vs Unsupervised (Di Maggio 2025) | Híbrido: Autoencoder/Isolation Forest (Cold) + XGBoost (Warm) | Resolve o problema da ausência de rótulos de falha no início da operação fabril. |
 
 ---
-*Documento elaborado para fins de governança técnica, auditoria metrológica e embasamento científico do projeto Amemiya.*
+*Documento elaborado para fins de governança técnica, auditoria metrológica e embasamento científico do projeto Amemiya.*  
+*Consulte também as diretrizes de operação e MLOps em: [Regras de Negócio de Amostragem, Inferência e MLOps](file:///C:/Users/andrl/OneDrive/Documentos/Projetos%20Pessoal/amemiya/docs/iot/REGRAS_DE_NEGOCIO_MLOPS_E_AMOSTRAGEM.md).*
