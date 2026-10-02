@@ -49,7 +49,7 @@ class IoTMLDatasetApiController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|string|in:supervised_xgboost,unsupervised_iforest',
+            'type' => 'required|string|in:diagnostic_multiclass,baseline_normal,benchmark_golden_set,run_to_failure,supervised_xgboost,unsupervised_iforest',
             'target_machine_id' => 'nullable|string|exists:machines,id',
             'description' => 'nullable|string|max:1000',
         ]);
@@ -96,21 +96,38 @@ class IoTMLDatasetApiController extends Controller
     public function labelLog(Request $request, string $logId): JsonResponse
     {
         $validated = $request->validate([
-            'ground_truth_label' => 'required|string|in:saudavel,desbalanceamento,folga_mecanica,falha_rolamento,falso_positivo',
+            'ground_truth_label' => 'required|string|in:saudavel,desbalanceamento,folga_mecanica,falha_rolamento,falso_positivo,falso_positivo_operacional,descarte_outlier',
             'dataset_id' => 'nullable|string|exists:iot_ml_datasets,id',
             'session_id' => 'nullable|string|max:100',
         ]);
 
         $log = IoTDeviceLog::with(['node', 'machine'])->findOrFail($logId);
 
+        // Se o operador optou por descartar como ruído/choque espúrio, não polui datasets de treino
+        if ($validated['ground_truth_label'] === 'descarte_outlier') {
+            return response()->json([
+                'message' => 'Evento marcado como ruído externo espúrio e descartado sem poluir o baseline.',
+                'data' => [
+                    'log_id' => $log->id,
+                    'status' => 'discarded',
+                ],
+            ]);
+        }
+
+        // Falso alarme operacional legítimo é mapeado para 'saudavel' como Hard Negative
+        $isHardNegative = $validated['ground_truth_label'] === 'falso_positivo_operacional';
+        $finalGroundTruth = $isHardNegative ? 'saudavel' : $validated['ground_truth_label'];
+
         // Se o dataset não foi informado, busca ou cria um dataset padrão para a máquina
         $dataset = null;
         if (! empty($validated['dataset_id'])) {
             $dataset = IoTMLDataset::findOrFail($validated['dataset_id']);
         } else {
-            $datasetType = $validated['ground_truth_label'] === 'saudavel' && $request->boolean('is_baseline')
-                ? 'unsupervised_iforest'
-                : 'supervised_xgboost';
+            $datasetType = ($finalGroundTruth === 'saudavel' && $request->boolean('is_baseline'))
+                ? 'baseline_normal'
+                : 'diagnostic_multiclass';
+
+            $typeLabel = $datasetType === 'baseline_normal' ? 'Linha de Base' : 'Diagnóstico Multiclasse';
 
             $dataset = IoTMLDataset::firstOrCreate(
                 [
@@ -119,7 +136,7 @@ class IoTMLDatasetApiController extends Controller
                     'target_machine_id' => $log->machine_id,
                 ],
                 [
-                    'name' => ($log->machine?->name ?? 'Geral').' - Dataset '.($datasetType === 'unsupervised_iforest' ? 'Baseline iForest' : 'XGBoost'),
+                    'name' => ($log->machine?->name ?? 'Geral').' - Dataset '.$typeLabel,
                     'slug' => Str::slug(($log->machine?->name ?? 'geral').'-'.$datasetType).'-'.substr((string) Str::ulid(), -6),
                     'description' => 'Dataset criado automaticamente a partir da triagem de eventos de campo.',
                     'status' => 'collecting',
@@ -138,13 +155,13 @@ class IoTMLDatasetApiController extends Controller
                 'node_id' => $log->node_id,
                 'machine_id' => $log->machine_id,
                 'session_id' => $validated['session_id'] ?? ('burst_'.now()->format('Ymd_His')),
-                'origin' => 'drawer_triaged',
+                'origin' => $isHardNegative ? 'hard_negative_triaged' : 'drawer_triaged',
                 'rpm' => $log->rpm,
                 'rms_global' => $log->rms_global,
                 'windows_count' => 1,
                 'predicted_label' => $log->cloud_ml_status ?? $log->ml_status,
                 'predicted_confidence' => $log->cloud_ml_confidence ?? $log->ml_confidence,
-                'ground_truth_label' => $validated['ground_truth_label'],
+                'ground_truth_label' => $finalGroundTruth,
                 'is_validated' => true,
                 'validated_by_user_id' => auth()->id(),
                 'validated_at' => now(),

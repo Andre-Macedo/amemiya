@@ -238,4 +238,72 @@ class IoTMLDatasetTest extends TestCase
             'status' => 'in_production',
         ]);
     }
+
+    public function test_it_supports_decoupled_dataset_types(): void
+    {
+        $response = $this->withHeader('X-Tenant-ID', $this->tenant->id)
+            ->postJson('/api/v1/iot-datasets', [
+                'name' => 'Linha de Base Pós-Manutenção Motor 01',
+                'type' => 'baseline_normal',
+                'target_machine_id' => $this->machine->id,
+            ]);
+
+        $response->assertStatus(201)
+            ->assertJsonPath('data.type', 'baseline_normal');
+    }
+
+    public function test_it_can_label_a_log_as_operational_false_positive_as_hard_negative(): void
+    {
+        $log = IoTDeviceLog::create([
+            'tenant_id' => $this->tenant->id,
+            'node_id' => $this->node->id,
+            'machine_id' => $this->machine->id,
+            'level' => 'warning',
+            'event_type' => 'transient_spike',
+            'ml_status' => 'desbalanceamento',
+            'cloud_ml_status' => 'suspeita',
+            'rpm' => 1780,
+            'rms_global' => 2.1,
+            'features' => ['z_rms' => 2.1],
+        ]);
+
+        $response = $this->withHeader('X-Tenant-ID', $this->tenant->id)
+            ->postJson("/api/v1/iot-logs/{$log->id}/label", [
+                'ground_truth_label' => 'falso_positivo_operacional',
+            ]);
+
+        $response->assertStatus(200);
+
+        // Deve ser gravado como 'saudavel' com origem 'hard_negative_triaged'
+        $this->assertDatabaseHas('iot_ml_bursts', [
+            'device_log_id' => $log->id,
+            'ground_truth_label' => 'saudavel',
+            'origin' => 'hard_negative_triaged',
+        ]);
+    }
+
+    public function test_it_discards_outlier_noise_without_polluting_dataset(): void
+    {
+        $log = IoTDeviceLog::create([
+            'tenant_id' => $this->tenant->id,
+            'node_id' => $this->node->id,
+            'machine_id' => $this->machine->id,
+            'level' => 'critical',
+            'event_type' => 'hammer_strike',
+            'features' => ['z_rms' => 9.9],
+        ]);
+
+        $response = $this->withHeader('X-Tenant-ID', $this->tenant->id)
+            ->postJson("/api/v1/iot-logs/{$log->id}/label", [
+                'ground_truth_label' => 'descarte_outlier',
+            ]);
+
+        $response->assertStatus(200)
+            ->assertJsonPath('data.status', 'discarded');
+
+        // Não deve criar registro na tabela de bursts para não poluir o dataset
+        $this->assertDatabaseMissing('iot_ml_bursts', [
+            'device_log_id' => $log->id,
+        ]);
+    }
 }
