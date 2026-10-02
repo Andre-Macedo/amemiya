@@ -1,175 +1,174 @@
-# Sistema de Metrologia Lean Tech
+# Sistema de Metrologia Lean Tech (Amemiya)
 
-Repositório do Sistema de Metrologia Lean Tech, uma aplicação web desenvolvida em Laravel e Filament para gestão de instrumentos de medição, calibrações e processos metrológicos, assegurando conformidade e rastreabilidade.
+[![Backend CI](https://github.com/Andre-Macedo/amemiya/actions/workflows/ci.yml/badge.svg)](https://github.com/Andre-Macedo/amemiya/actions/workflows/ci.yml)
+[![PHP Version](https://img.shields.io/badge/PHP-8.3%2B-blue.svg)](https://www.php.net/)
+[![Laravel Version](https://img.shields.io/badge/Laravel-12.x-red.svg)](https://laravel.com/)
+[![Filament](https://img.shields.io/badge/Filament-4.x-orange.svg)](https://filamentphp.com/)
 
----
-
-## 1. Objetivo
-
-Este documento detalha o processo de configuração e execução do ambiente de desenvolvimento local da aplicação utilizando Docker. O objetivo é permitir que todos os membros da equipe, independentemente do nível técnico, possam executar e testar o sistema.
-
----
-
-## 2. Pré-requisitos de Software
-
-As seguintes ferramentas são necessárias para a configuração do ambiente de desenvolvimento:
-
-1.  **Git:**
-    * **Descrição:** Sistema de controle de versões distribuído, utilizado para clonar o repositório do projeto.
-    * **Instalação:** Acessar [git-scm.com/downloads](https://git-scm.com/downloads) e seguir as instruções específicas para o seu sistema operacional (Windows, macOS ou Linux). Para Windows, baixe o instalador e siga as opções padrão ("Next").
-
-2.  **Docker Desktop:**
-    * **Descrição:** Plataforma para desenvolvimento, envio e execução de aplicações em containers. Abstrai as dependências de sistema (PHP, Nginx, MySQL, etc.), encapsulando-as em ambientes isolados.
-    * **Instalação:** Acessar [www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/) e seguir as instruções de instalação para o seu sistema operacional. Após a instalação, garantir que o Docker Desktop esteja em execução (verificar o ícone da baleia na bandeja do sistema).
-
-3.  **PhpStorm (Opcional - Recomendado para Desenvolvimento):**
-    * **Descrição:** Ambiente de Desenvolvimento Integrado (IDE) robusto para PHP, facilitando a edição de código, depuração e integração com ferramentas de desenvolvimento, incluindo um terminal integrado que usaremos.
-    * **Instalação:** Acessar [www.jetbrains.com/phpstorm/](https://www.jetbrains.com/phpstorm/).
-    * **Licenciamento:** Licenças educacionais gratuitas estão disponíveis para estudantes através do [Programa Educacional da JetBrains](https://www.jetbrains.com/community/education/#students).
+Plataforma integrada de metrologia industrial, gestão de conformidade (ISO/IEC 17025, ILAC-G8, OIML D10, FDA 21 CFR Part 11) e monitoramento contínuo com IoT e inteligência artificial (XGBoost).
 
 ---
 
-## 3. Configuração do Projeto (Passo a Passo com PhpStorm)
+## 1. Visão Geral da Arquitetura
 
-Os passos seguintes detalham o processo para iniciar a aplicação utilizando o PhpStorm e Docker.
+```mermaid
+graph TD
+    subgraph Frontend & Clients
+        UI["Next.js 16 Frontend (metrology-sass-front)"]
+        Admin["Filament 4 Admin Panel (:8000)"]
+        Sensors["Sensores Industriais / ESP32 Nodes"]
+    end
 
-1.  **Abrir o Projeto no PhpStorm:**
-    * Abra o PhpStorm.
-    * Na tela de boas-vindas, clique em "**Get from VCS**".
-    * No campo "URL", cole a **URL do repositório Git** do projeto.
-    * Escolha a pasta no seu computador onde deseja salvar o projeto (campo "Directory").
-    * Clique em "**Clone**". O PhpStorm fará o download do código.
+    subgraph Backend Core (Amemiya)
+        Nginx["Nginx (:8000)"]
+        App["amemiya-app (PHP 8.3 FPM)"]
+        Reverb["Laravel Reverb (:8080 WebSockets)"]
+        Worker["Queue Worker (Laravel Queues)"]
+        Bridge["MQTT Bridge (iot:mqtt-bridge)"]
+    end
 
-2.  **Criar Arquivo de Configuração (`.env`):**
-    * No painel "Project" do PhpStorm (geralmente à esquerda), localize o arquivo chamado `.env.example`.
-    * Clique com o botão direito sobre ele e escolha "**Copy**".
-    * Clique com o botão direito na **raiz do projeto** (a pasta principal listada no painel "Project") e escolha "**Paste**".
-    * Na janela que aparecer, nomeie o novo arquivo como `.env` (apenas ponto-env) e clique "OK".
+    subgraph Data & Messaging
+        DB[("MySQL 8.0 (:3307)")]
+        Redis[("Redis 7.x (:6379)")]
+        MQTT["Mosquitto Broker (:1883)"]
+    end
 
-3.  **Abrir o Terminal Integrado no PhpStorm:**
-    * Na barra inferior do PhpStorm, clique na aba "**Terminal**". Isso abrirá um painel de linha de comando já no diretório correto do projeto.
+    subgraph Machine Learning
+        ML["ML Service (FastAPI / XGBoost :8000)"]
+    end
 
-4.  **Iniciar os Containers Docker:**
-    * No Terminal do PhpStorm, **copie e cole** o seguinte comando e pressione Enter:
-        ```bash
-        docker-compose up -d --build
-        ```
-    * Aguarde a conclusão. Na primeira vez, pode levar alguns minutos. Quando o prompt do terminal reaparecer, o processo estará concluído.
+    Sensors -->|MQTT QoS 1| MQTT
+    MQTT -->|iot:mqtt-bridge| Bridge
+    Bridge --> Redis
+    Bridge --> App
 
-5.  **Instalar Dependências PHP (via Terminal do PhpStorm):**
-    * Copie e cole o seguinte comando e pressione Enter:
-        ```bash
-        docker-compose exec app composer install
-        ```
-    * Aguarde a instalação das bibliotecas.
+    UI -->|REST API| Nginx
+    UI -->|WebSockets| Reverb
+    Admin --> Nginx
+    Nginx --> App
 
-6.  **Gerar Chave da Aplicação (via Terminal do PhpStorm):**
-    * Copie e cole o seguinte comando e pressione Enter:
-        ```bash
-        docker-compose exec app php artisan key:generate
-        ```
-
-7.  **Preparar o Banco de Dados (via Terminal do PhpStorm):**
-    * Execute as migrações globais e dos módulos:
-        ```bash
-        docker-compose exec app php artisan migrate
-        docker-compose exec app php artisan module:migrate Metrology
-        docker-compose exec app php artisan module:migrate IoT
-        ```
-    * Execute os seeders de dados iniciais:
-        ```bash
-        docker-compose exec app php artisan module:seed Metrology
-        ```
-      
-8.  **Linkar Armazenamento (via Terminal do PhpStorm):**
-    * Copie e cole o seguinte comando e pressione Enter:
-        ```bash
-        docker-compose exec app php artisan storage:link
-        ```
-
-**Configuração concluída!** A aplicação está instalada e pronta para ser acessada.
+    App --> DB
+    App --> Redis
+    App --> ML
+    Worker --> Redis
+    Worker --> DB
+    App -->|Broadcast| Reverb
+```
 
 ---
 
-## 4. Criação do Usuário Administrador (Via Filament)
+## 2. Módulos da Aplicação
 
-O acesso ao painel de administração requer um usuário.
+O sistema é construído sobre uma **arquitetura modular** (`nwidart/laravel-modules`):
 
-1.  No **Terminal integrado do PhpStorm**, execute o comando:
-    ```bash
-    docker-compose exec app php artisan make:filament-user
-    ```
-2.  Siga as instruções no terminal, fornecendo:
-    * `Name`: Seu nome completo.
-    * `Email address`: Seu endereço de e-mail.
-    * `Password`: Uma senha segura (não será visível durante a digitação). Confirme a senha quando solicitado.
-3.  **Anote o e-mail e a senha que você criou.**
+- **[`Modules/Metrology/`](Modules/Metrology)**: Motor metrológico completo. Gestão de calibrações, instrumentos, padrões de referência RBC, cálculo de incerteza de medição conforme GUM, bandas de guarda (ILAC-G8), otimização de intervalos (OIML D10), cartas de controle de Shewhart (ILAC-G24), laudos forenses com assinatura digital SHA-256 e trilha encadeada de auditoria imutável (FDA 21 CFR Part 11).
+- **[`Modules/IoT/`](Modules/IoT)**: Ingestão de telemetria industrial de vibração e temperatura em tempo real via Mosquitto MQTT, classificação de severidade conforme ISO 20816-3 e integração com modelo preditivo de anomalias.
+- **[`Modules/System/`](Modules/System)**: Multi-tenancy central, perfis e matriz de permissões via Filament Shield, auditoria Spatie Activitylog e usuários.
+- **[`hardware/`](hardware)**: Projetos completos de eletrônica (KiCad) e mecânica (Autodesk Fusion 360 / STEP) para os nós sensores, gateway LoRa e bancada industrial com proteção NR-12.
 
 ---
 
-## 5. Acesso aos Serviços
+## 3. Guia Rápido de Instalação (Docker)
 
-Abra seu navegador web:
+### Pré-requisitos
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (com suporte a Docker Compose v2)
+- [Git](https://git-scm.com/)
 
-* **Aplicação Principal (Painel Filament):**
-    * URL: [**http://localhost:8000**](http://localhost:8000)
-    * Autenticação: Utilize o e-mail e senha criados no passo 4.
+### Passo a Passo
 
-* **phpMyAdmin (Gerenciamento do Banco de Dados):**
-    * URL: [**http://localhost:8080**](http://localhost:8080)
-    * Servidor: `db`
-    * Usuário: `root`
-    * Senha: `rootpass`
+1. **Clonar o repositório:**
+   ```bash
+   git clone git@github.com:Andre-Macedo/amemiya.git
+   cd amemiya
+   ```
 
-* **MailHog (Visualizador de E-mails de Teste):**
-    * URL: [**http://localhost:8025**](http://localhost:8025)
+2. **Configurar variáveis de ambiente:**
+   ```bash
+   cp .env.example .env
+   ```
 
----
+3. **Subir os containers:**
+   ```bash
+   docker compose up -d --build
+   ```
 
-## 6. Arquitetura Modular e Estrutura do Projeto
+4. **Instalar dependências e preparar a aplicação:**
+   ```bash
+   docker compose exec app composer install
+   docker compose exec app php artisan key:generate
+   docker compose exec app php artisan migrate
+   docker compose exec app php artisan module:migrate Metrology
+   docker compose exec app php artisan module:migrate IoT
+   docker compose exec app php artisan module:seed Metrology
+   docker compose exec app php artisan storage:link
+   ```
 
-Este projeto adota uma **arquitetura modular** (`nwidart/laravel-modules`). A funcionalidade está organizada em módulos independentes com baixo acoplamento:
-
-* **`Modules/Metrology/`**: Módulo metrológico completo. Gestão de calibrações, instrumentos, padrões de referência RBC, cálculo de incerteza (GUM), cartas de controle de Shewhart (ILAC-G24), laudos de impacto e integridade forense criptográfica (ISO 17025 / FDA 21 CFR Part 11).
-* **`Modules/IoT/`**: Monitoramento contínuo em tempo real. Ponte MQTT Mosquitto, telemetria de vibração e temperatura, classificação de severidade ISO 20816-3 e microserviço de inteligência artificial (XGBoost).
-* **`Modules/System/`**: Multi-tenancy central, perfis e permissões via Filament Shield, auditoria de acessos e usuários.
-* **`hardware/`**: Projetos de eletrônica e mecânica. Esquemáticos KiCad modulares, placas de circuito impresso (Main Node, Gateway LoRa, Torre de Sensores), arquivos de fabricação e modelos 3D CAD/STEP para montagem de bancadas industriais (NR-12).
-
----
-
-## 7. Parar o Ambiente Docker
-
-Quando terminar de usar a aplicação, você pode parar os containers.
-
-* **Opção 1 (via Terminal do PhpStorm):**
-    ```bash
-    docker-compose down
-    ```
-* **Opção 2 (via Docker Desktop):**
-    1.  Abra o Docker Desktop.
-    2.  Vá à seção "Containers".
-    3.  Localize o grupo de containers do projeto (terá o nome da pasta do projeto).
-    4.  Clique no botão "Stop" associado ao grupo.
-
-*(Para iniciar novamente, use `docker-compose up -d` no terminal ou o botão "Start" no Docker Desktop.)*
+5. **Criar o usuário administrador do Filament:**
+   ```bash
+   docker compose exec app php artisan make:filament-user
+   ```
 
 ---
 
-## 8. Documentação Adicional
+## 4. Portas e Serviços Locais
 
-Para mais detalhes técnicos sobre as tecnologias utilizadas:
-
-* **Laravel:** [laravel.com/docs/](https://laravel.com/docs/)
-* **Filament:** [filamentphp.com/docs/](https://filamentphp.com/docs/)
-* **Docker:** [docs.docker.com/](https://docs.docker.com/)
-* **Nwidart/Laravel-Modules:** [nwidart.com/laravel-modules/v11/introduction](https://nwidart.com/laravel-modules/v11/introduction)
+| Serviço | Porta Local | Descrição |
+| :--- | :--- | :--- |
+| **Painel Filament / API** | [http://localhost:8000](http://localhost:8000) | Aplicação web principal |
+| **Frontend Next.js** | [http://localhost:3000](http://localhost:3000) | Interface do cliente e monitor IoT |
+| **phpMyAdmin** | [http://localhost:8080](http://localhost:8080) | Gerenciador web do MySQL (root/rootpass) |
+| **MailHog (SMTP)** | [http://localhost:8025](http://localhost:8025) | Caixa de entrada para e-mails de teste |
+| **Mosquitto MQTT** | `localhost:1883` | Broker de mensagens IoT |
+| **Redis** | `localhost:6379` | Cache e filas de processamento |
+| **MySQL 8.0** | `localhost:3307` | Banco de dados relacional |
+| **Laravel Reverb** | `localhost:8080` | Servidor de WebSockets |
 
 ---
 
-## 9. Resolução de Problemas Comuns (Troubleshooting)
+## 5. Scripts de Qualidade e Testes
 
-* **Erro "port is already allocated" no `docker-compose up`:** Outra aplicação está usando uma das portas (8000, 8080, 3307, etc.). Feche a aplicação conflitante ou pare outros projetos Docker. Tente `docker-compose down` e depois `docker-compose up -d --build`.
-* **localhost:8000 não carrega ("Connection Refused"):** Verifique no Docker Desktop se os containers `amemiya-app` e `amemiya-nginx` estão com status "Running" (verde). Se não, tente iniciá-los. Verifique os logs no Docker Desktop (clique no container > Logs).
-* **Comandos `docker-compose exec` falham:** Verifique se os containers estão realmente em execução (`docker ps` no terminal ou no Docker Desktop).
+Antes de submeter código, execute os scripts de verificação:
 
-Para outros problemas, por favor, reporte à equipe de desenvolvimento.
+```bash
+# Executar todos os testes automatizados (Pest)
+docker compose exec app composer test
+
+# Verificação de formatação de código (Laravel Pint)
+docker compose exec app composer format:test
+
+# Correção automática de formatação
+docker compose exec app composer format
+
+# Análise estática de tipos (PHPStan / Larastan)
+docker compose exec app composer analyse
+
+# Validação completa de qualidade (Pint + Larastan + Pest)
+docker compose exec app composer quality
+```
+
+---
+
+## 6. Fluxo de Contribuição e Branches
+
+- **Branch principal de desenvolvimento:** **`develop`**
+- **Branch de produção:** **`main`**
+- **Todas as Pull Requests devem ter como destino a branch `develop`.**
+- Consulte o guia completo em [`CONTRIBUTING.md`](CONTRIBUTING.md) para detalhes sobre Conventional Commits e padrões de arquitetura.
+
+---
+
+## 7. Índice de Documentação Técnica
+
+- **Metrologia e Qualidade:**
+  - [`Modules/Metrology/docs/BUSINESS_RULES.md`](Modules/Metrology/docs/BUSINESS_RULES.md) — Manual canônico de regras de negócio, normas ISO e cálculos.
+  - [`docs/metrology/METROLOGY_MODULE_GUIDE.md`](docs/metrology/METROLOGY_MODULE_GUIDE.md) — Guia arquitetural completo, diagramas ER e conformidade normativa.
+  - [`docs/metrology/USER_ACCEPTANCE_TESTS.md`](docs/metrology/USER_ACCEPTANCE_TESTS.md) — Roteiros de testes de aceitação de usuário (UAT).
+- **IoT, Telemetria e MLOps:**
+  - [`docs/iot/DECISOES_TECNICAS_E_REFERENCIAS_CIENTIFICAS.md`](docs/iot/DECISOES_TECNICAS_E_REFERENCIAS_CIENTIFICAS.md) — Fundamentação científica e amostragem de vibração.
+  - [`docs/iot/REGRAS_DE_NEGOCIO_MLOPS_E_AMOSTRAGEM.md`](docs/iot/REGRAS_DE_NEGOCIO_MLOPS_E_AMOSTRAGEM.md) — Pipeline de machine learning e triagem de anomalias.
+  - [`docs/iot/MQTT_SECURITY.md`](docs/iot/MQTT_SECURITY.md) — Diretrizes de segurança, isolamento e ACL do Mosquitto.
+  - [`docs/iot/RELATORIO_PCBS.md`](docs/iot/RELATORIO_PCBS.md) — Especificações de eletrônica e esquemáticos.
+- **Arquitetura Geral:**
+  - [`docs/architecture/TENANCY_ARCHITECTURE.md`](docs/architecture/TENANCY_ARCHITECTURE.md) — Isolamento de dados multi-tenant.
+  - [`docs/architecture/WEBSOCKETS_REVERB_GUIDE.md`](docs/architecture/WEBSOCKETS_REVERB_GUIDE.md) — Guia de integração Reverb WebSockets.
+  - [`docs/architecture/IMPROVEMENT_PLAN.md`](docs/architecture/IMPROVEMENT_PLAN.md) — Roadmap de melhorias e evolução contínua.

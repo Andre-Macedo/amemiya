@@ -85,6 +85,14 @@
         "test": [
             "@php artisan config:clear --ansi",
             "@php artisan test"
+        ],
+        "format": "pint",
+        "format:test": "pint --test",
+        "analyse": "phpstan analyse",
+        "quality": [
+            "pint --test",
+            "phpstan analyse",
+            "@php artisan test"
         ]
     },
     "extra": {
