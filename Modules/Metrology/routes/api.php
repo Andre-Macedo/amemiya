@@ -72,6 +72,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('metrology/instrument-types', InstrumentTypeApiController::class)->names('metrology.instrument-types');
     Route::get('instruments/{instrument}/intermediate-checks', [IntermediateCheckApiController::class, 'index']);
     Route::post('intermediate-checks', [IntermediateCheckApiController::class, 'store']);
+    Route::get('instruments/{instrument}/intermediate-checks/shewhart', [IntermediateCheckApiController::class, 'shewhart']);
 
     Route::get('/instruments/{instrument}/checklists', [InstrumentChecklistController::class, 'index']);
     Route::get('/instruments/{instrument}/checklist', [InstrumentChecklistController::class, 'show']);

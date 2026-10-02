@@ -174,6 +174,14 @@ class Instrument extends Model implements CalibratableItem
             ->latest();
     }
 
+    /**
+     * @return HasMany<IntermediateCheck, $this>
+     */
+    public function intermediateChecks(): HasMany
+    {
+        return $this->hasMany(IntermediateCheck::class);
+    }
+
     protected static function factory(): InstrumentFactory
     {
         return InstrumentFactory::new();

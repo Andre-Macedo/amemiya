@@ -26,6 +26,9 @@ class IntermediateCheckApiController extends Controller
             'instrument_id' => 'required|exists:instruments,id',
             'check_date' => 'required|date',
             'result' => 'required|in:passed,failed',
+            'nominal_value' => 'nullable|numeric',
+            'measured_value' => 'nullable|numeric',
+            'deviation' => 'nullable|numeric',
             'reference_standard_id' => 'nullable|exists:reference_standards,id',
             'performed_by' => 'nullable|exists:users,id',
             'temperature' => 'nullable|numeric',
@@ -41,11 +44,6 @@ class IntermediateCheckApiController extends Controller
         try {
             $check = IntermediateCheck::create($validated);
 
-            // Optional: Auto-update instrument status if failed
-            // if ($check->result === 'failed') {
-            //      $check->instrument->update(['status' => 'restricted']);
-            // }
-
             DB::commit();
 
             return new IntermediateCheckApiResource($check->load(['performer', 'referenceStandard']));
@@ -54,5 +52,18 @@ class IntermediateCheckApiController extends Controller
 
             return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+
+    /**
+     * Retorna os dados estatísticos da Carta de Controle de Shewhart (ILAC-G24 Método 2).
+     */
+    public function shewhart(
+        string $instrumentId,
+        \Modules\Metrology\Services\ShewhartControlChartService $service
+    ): \Illuminate\Http\JsonResponse {
+        $instrument = \Modules\Metrology\Models\Instrument::findOrFail($instrumentId);
+        $analysis = $service->analyze($instrument);
+
+        return response()->json($analysis);
     }
 }
