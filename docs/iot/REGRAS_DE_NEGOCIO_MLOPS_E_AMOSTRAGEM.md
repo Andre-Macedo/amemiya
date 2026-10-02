@@ -71,9 +71,14 @@ Os conjuntos de dados na tabela `iot_ml_datasets` são desacoplados de nomes de 
 - **Consumidores:** Algoritmos de novidade não supervisionados (Isolation Forest, Autoencoders, Mahalanobis Distance) e calibradores de envelopes ISO 20816.
 
 ### 3. `benchmark_golden_set` (Conjunto de Teste / Auditoria Cega)
-- **Conteúdo:** Conjunto congelado de dados de alta integridade cobrindo todas as classes e condições severas.
-- **Origem:** Ensaios de bancada selecionados manualmente e nunca alterados.
-- **Regra Rígida:** **Nunca** entra no treinamento de nenhum modelo. Serve exclusivamente para auditar modelos novos antes de serem promovidos para a produção (*Gatekeeper*).
+- **O que é na bancada física?** É uma corrida de bancada gravada exatamente como as outras (mesmo motor, mesmo nó ESP32-S3, mesmas 36 features), porém realizada em uma sessão separada e **congelada para sempre**.
+- **A diferença prática entre o Treino e o Benchmark:**
+  - *Arquivo de Treino:* É consumido no comando `fit()` do algoritmo para ajustar os pesos das árvores. É mutável (novos ensaios podem ser somados a ele ao longo dos meses).
+  - *Arquivo de Benchmark:* É consumido **exclusivamente** no comando `predict()` para avaliar a nota da IA. **Nenhum algoritmo é autorizado a treinar com ele** (para não "decorar o gabarito").
+- **Dois motivos críticos para existir:**
+  1. **Eliminar a "Decoreba" (Vazamento Temporal / Autocorrelação):** Se sortearmos aleatoriamente 20% das janelas de uma mesma corrida contínua para testar (`train_test_split`), a janela de $1,0\text{ s}$ cai no treino e a de $1,3\text{ s}$ cai no teste. O modelo acerta 99% apenas porque decorou o milissegundo vizinho. O Benchmark em um ensaio isolado garante que o modelo aprendeu a física do defeito, e não o milissegundo daquele ensaio.
+  2. **Prevenir o "Esquecimento Catastrófico":** Quando você treinar o modelo `v2.0` daqui a alguns meses para aprender uma falha nova (ex: folga mecânica), o Benchmark antigo garante que o modelo novo não desaprendeu a diagnosticar o desbalanceamento calibrado meses atrás. Se a acurácia no Benchmark cair, o deploy é bloqueado.
+- **Regra Rígida:** **Nunca** entra no treinamento de nenhum modelo. Serve exclusivamente como a régua fixa de comparação (*Gatekeeper*).
 
 ### 4. `run_to_failure` (Histórico de Degradação / Vida Útil)
 - **Conteúdo:** Séries temporais contínuas desde o início da operação normal até a quebra mecânica ou parada por alarme crítico (Curva P-F).
