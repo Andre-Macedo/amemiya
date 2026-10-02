@@ -263,15 +263,18 @@ flowchart LR
 # Execução da suíte completa de testes de metrologia (98 testes)
 php artisan test Modules/Metrology/tests
 
-# Verificação forense da integridade da cadeia de auditoria
+# Verificação forense da integridade da cadeia de auditoria (Anti-Tampering)
 php artisan metrology:verify-audit-chain
 
 # Verificação forense de tenant específico
 php artisan metrology:verify-audit-chain --tenant="01JABC..."
 
-# Varredura de instrumentos com calibração vencendo
-php artisan metrology:check-calibration-due
+# Notificação e alerta de instrumentos com calibração a vencer (30, 15, 0 dias)
+php artisan metrology:check-due
 
-# Geração automática de Ordens de Serviço preventivas
-php artisan metrology:generate-auto-work-orders
+# Verificação periódica de status e disparo de relatório de calibração por e-mail
+php artisan metrology:check-status
+
+# Geração automática de Ordens de Serviço (OS) preventivas para instrumentos a vencer
+php artisan metrology:generate-auto-os
 ```

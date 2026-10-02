@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Modules\Metrology\Actions;
 
 use Barryvdh\DomPDF\Facade\Pdf;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Metrology\Enums\CalibrationResult;
 use Modules\Metrology\Models\Calibration;
@@ -13,7 +12,6 @@ use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\ReferenceStandard;
 use Modules\Metrology\Services\PdfSignerService;
 use Modules\System\Models\Setting;
-use Modules\System\Models\User;
 use Throwable;
 
 class GenerateStandardImpactReportAction
@@ -104,7 +102,7 @@ class GenerateStandardImpactReportAction
 
             $impactedCalibrations[] = [
                 'calibration_id' => $cal->id,
-                'cert_code' => $cal->certificate_code ?? $cal->certificate_number ?? ('CERT-' . substr((string) $cal->id, -6)),
+                'cert_code' => $cal->certificate_code ?? $cal->certificate_number ?? ('CERT-'.substr((string) $cal->id, -6)),
                 'date' => $cal->calibration_date ? $cal->calibration_date->format('d/m/Y') : '-',
                 'instrument_name' => $instrumentName,
                 'tag' => $tag,
@@ -126,7 +124,7 @@ class GenerateStandardImpactReportAction
             'low_count' => $lowCount,
         ];
 
-        $reportCode = 'RTI-' . ($standard->stock_number ?? 'STD' . $standard->id) . '-' . now()->format('Ymd-His');
+        $reportCode = 'RTI-'.($standard->stock_number ?? 'STD'.$standard->id).'-'.now()->format('Ymd-His');
 
         $identity = [
             'lab_name' => Setting::getValue('lab_name', config('app.name', 'Sistema de Metrologia Lean Tech')),
@@ -143,7 +141,7 @@ class GenerateStandardImpactReportAction
             'start_date' => $startDate,
             'end_date' => $endDate,
             'stats' => $stats,
-            'calibrations_hashes' => array_map(fn($c) => $c['cert_code'] . ':' . $c['risk'], $impactedCalibrations),
+            'calibrations_hashes' => array_map(fn ($c) => $c['cert_code'].':'.$c['risk'], $impactedCalibrations),
             'timestamp' => now()->toIso8601String(),
         ];
         $documentHash = hash('sha256', (string) json_encode($fingerprintPayload));
@@ -178,10 +176,19 @@ class GenerateStandardImpactReportAction
         $pdfContent = $pdf->output();
 
         // Opcional: Assinatura digital com chave privada do laboratório
-        $certPath = config('metrology.certificate_path');
-        $certPass = config('metrology.certificate_password');
+        $rawCertPath = Setting::getValue('lab_certificate_path') ?: config('metrology.certificate_path');
+        $certPass = (string) (Setting::getValue('lab_certificate_password') ?: config('metrology.certificate_password') ?: '');
 
-        if ($certPath && file_exists($certPath)) {
+        $certPath = null;
+        if (! empty($rawCertPath)) {
+            if (file_exists($rawCertPath)) {
+                $certPath = $rawCertPath;
+            } elseif (file_exists(storage_path("app/{$rawCertPath}"))) {
+                $certPath = storage_path("app/{$rawCertPath}");
+            }
+        }
+
+        if ($certPath) {
             try {
                 $pdfContent = $this->signer->sign($pdfContent, $certPath, $certPass);
             } catch (Throwable $exception) {

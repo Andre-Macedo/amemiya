@@ -110,7 +110,7 @@ sequenceDiagram
         Note over Action,Calc: Etapa 2 — Cálculo de incerteza por ponto
         loop Para cada ChecklistItem numérico
             Action->>Calc: calculate(MeasurementCalculationData)
-            Note over Calc: Tipo A: u_a = s/√n (variância amostral)<br/>Tipo B resolução: u_res = (R/2)/√3<br/>Tipo B padrão: u_std = U_pad/k_pad<br/>Térmica (se T informado): u_th via ISO/TR 16015<br/>uc = √(uA²+uRes²+uStd²+uTh²)<br/>veff = Welch-Satterthwaite ⚠️PENDENTE<br/>k = t-Student(veff) ⚠️PENDENTE<br/>U = uc × k
+            Note over Calc: Tipo A: u_a = s/√n (variância amostral)<br/>Tipo B resolução: u_res = (R/2)/√3<br/>Tipo B padrão: u_std = U_pad/k_pad<br/>Térmica (se T informado): u_th via ISO/TR 16015<br/>uc = √(uA²+uRes²+uStd²+uTh²)<br/>veff = Welch-Satterthwaite (MetrologyMath::calculateVeff)<br/>k = t-Student(veff) (MetrologyMath::getKFromVeff)<br/>U = uc × k
             Calc-->>Action: UncertaintyResult {bias, U, budget, k, veff}
             Action->>DB: Salva ChecklistItem {readings, bias, U, budget_json}
         end
@@ -119,7 +119,7 @@ sequenceDiagram
     rect rgb(220,255,220)
         Note over Action,DB: Etapa 3 — Decisão final
         Action->>Action: Pega pior caso (maior |bias| entre os pontos)
-        Action->>Action: MpeCalculator.resolve(instrument, nominalValue) ⚠️PENDENTE
+        Action->>Action: MpeCalculator::resolve(instrument, nominalValue)
         Action->>Action: Aplica DecisionRuleStrategy configurada
         Note over Action: SimpleAcceptance: |erro| ≤ MPE<br/>UncertaintyAccounted: |erro|+U ≤ MPE<br/>GuardBand: |erro| ≤ MPE - U×w (ILAC-G8)
         Action->>DB: Atualiza Calibration {result, deviation, uncertainty}
@@ -178,14 +178,14 @@ flowchart TD
     A["Técnico realiza verificação intermediária<br/>(ex: peça padrão, bloco padrão)"] --> B["Cria IntermediateCheck<br/>{check_date, result, temperature, humidity}"]
     B --> C{Resultado?}
     C -->|pass| D["Registro salvo — instrumento mantido em uso ativo"]
-    C -->|fail| E["Registro salvo como 'fail'"]
-    E --> F["⚠️ BUG: Nenhuma ação automática disparada"]
-    F --> G["Coordenador deve manualmente:<br/>1. Mudar status para in_calibration<br/>2. Abrir NonConformity"]
-    G --> H["Inicia fluxo de calibração completo"]
+    C -->|fail| E["Registro salvo como 'failed'"]
+    E --> F["Automação disparada via IntermediateCheckObserver"]
+    F --> G["1. Instrumento bloqueado automaticamente (ItemStatus::Rejected)<br/>2. Abertura automática de Não Conformidade (NonConformity) de alta prioridade"]
+    G --> H["Triagem de Impacto e Recalibração / Manutenção"]
 ```
 
-> [!WARNING]
-> A falha na verificação intermediária **não dispara automação**. Este é um gap de conformidade com ISO 17025. Detalhado como Feature F-03 na Seção 4.
+> [!NOTE]
+> A conformidade com a ISO 17025 §6.4.10 está plenamente atendida: falhas na verificação intermediária disparam bloqueio imediato do instrumento e abertura de RNC via [`IntermediateCheckObserver`](file:///C:/Users/andrl/OneDrive/Documentos/Projetos%20Pessoal/amemiya/Modules/Metrology/app/Observers/IntermediateCheckObserver.php).
 
 ---
 
@@ -234,14 +234,14 @@ flowchart LR
 
     UA & UB1 & UB2 & UTH --> COMB["uc = √(uA²+uRes²+uStd²+uTh²)"]
 
-    COMB & UA --> VEFF["veff = uc⁴/(uA⁴/(n-1))<br/>Welch-Satterthwaite GUM §G.4<br/>⚠️ PENDENTE IMPLEMENTAÇÃO"]
-    VEFF --> K["k = t(veff, 95.45%)<br/>Tabela t-Student GUM Tabela G.2<br/>⚠️ PENDENTE IMPLEMENTAÇÃO"]
+    COMB & UA --> VEFF["veff = uc⁴/(uA⁴/(n-1))<br/>Welch-Satterthwaite (MetrologyMath::calculateVeff)"]
+    VEFF --> K["k = t(veff, 95.45%)<br/>Tabela t-Student (MetrologyMath::getKFromVeff)"]
     K & COMB --> U["U = uc × k<br/>Incerteza Expandida Final"]
 
     subgraph "Decisão (DecisionRuleStrategy)"
         BIAS --> |"|erro|"| DEC
         U --> DEC
-        MPE["MPE resolvido<br/>pelo MpeCalculator<br/>⚠️ PENDENTE"] --> DEC
+        MPE["MPE resolvido<br/>pelo MpeCalculator"] --> DEC
         DEC{Regra de Decisão}
         DEC -->|Simple| S["approved se |e| ≤ MPE"]
         DEC -->|UncertaintyAccounted| UA2["approved se |e|+U ≤ MPE"]
@@ -314,10 +314,10 @@ flowchart LR
 
 | Requisito | Status |
 |---|---|
-| Simple Response Method | ✅ (com bug de reset) |
-| Control Chart Method | ❌ Ausente |
+| Simple Response Method | ✅ Implementado (`CalibrationIntervalService`) |
+| Control Chart Method | ✅ Implementado (`ShewhartControlChartService`) |
 | Histórico mínimo antes de sugestão | ✅ (3 calibrações) |
-| Reset de intervalo após reprovação | ❌ **BUG — não funciona** |
+| Reset de intervalo após reprovação | ✅ Implementado (reseta para 3 meses conforme ILAC-G24 §6.3) |
 
 ---
 
@@ -329,10 +329,7 @@ flowchart LR
 | Evidência de rastreabilidade metrológica | ✅ Via `ReferenceStandard` |
 | Histórico de manutenção | ✅ Via `MaintenanceRecord` |
 | Acesso controlado com auditoria | ✅ Via autenticação e `LogsActivity` |
-| Campo "instrumento crítico de segurança" | ❌ **Ausente** |
-
-> [!IMPORTANT]
-> A NR-12 não exige software digital — o sistema atende os requisitos documentais, mas sem o campo de "instrumento crítico" não é possível gerar relatórios de conformidade específicos para NR-12.
+| Campo "instrumento crítico de segurança" | ✅ Implementado (`Instrument.criticality` com enum `SafetyNr12` e método `isCritical()`) |
 
 ---
 
@@ -347,9 +344,11 @@ flowchart LR
 
 ---
 
-## 3. Correções Passo a Passo
+## 3. Correções Arquiteturais Implementadas no Código [CONCLUÍDO ✅]
 
-### CORREÇÃO 1 — CalibrationValidator: adicionar `Scrapped`
+> Todas as correções técnicas abaixo foram implementadas, testadas na suíte Pest e integradas ao módulo Metrology.
+
+### CORREÇÃO 1 — CalibrationValidator: adicionar `Scrapped` [CONCLUÍDO ✅]
 **Prioridade:** Crítica | **Tempo:** 5 min
 
 **Arquivo:** `Modules/Metrology/app/Services/CalibrationValidator.php`
@@ -841,43 +840,43 @@ $column = 'instrument_id'; // duplicada — sem efeito
 
 ---
 
-## 4. Features que Faltam para Software Profissional
+## 4. Features e Maturidade de Software Metrológico
 
-### Tier 1 — Alta Prioridade (competitividade e conformidade)
+### Tier 1 — Alta Prioridade (Conformidade Normativa)
 
-| # | Feature | Norma | Benchmark |
+| # | Feature | Norma | Status |
 |---|---|---|---|
-| F-01 | Campo "instrumento crítico de segurança" com filtros e relatório | NR-12, NR-13 | — |
-| F-02 | Análise de tendência linear com projeção de data de reprovação | ILAC-G24 | Fluke MET/TEAM, Tractian |
-| F-03 | Automação em falha de verificação intermediária (NC + status) | ISO 17025 §6.4.10 | Beamex CMX |
-| F-04 | Notificações proativas de vencimento (30/15/0 dias) | ISO 9001 §7.1.5 | Todos |
-| F-05 | Dashboard de saúde do parque de instrumentos (% por status, custo, taxa de reprovação) | Gestão | Todos |
-| F-06 | Gestão de acreditação de fornecedores (RBC/RBLE, validade, escopo, bloqueio automático) | ISO 17025 §7.4 | Fluke MET/TEAM |
+| F-01 | Campo "instrumento crítico de segurança" com filtros e relatório | NR-12, NR-13 | ✅ **Implementado** (`Instrument.criticality`) |
+| F-02 | Análise de tendência linear com projeção de data de reprovação | ILAC-G24 | ✅ **Implementado** (`IntervalOptimizationService` / `CalibrationIntervalService`) |
+| F-03 | Automação em falha de verificação intermediária (NC + status) | ISO 17025 §6.4.10 | ✅ **Implementado** (`IntermediateCheckObserver`) |
+| F-04 | Notificações proativas de vencimento (30/15/0 dias) | ISO 9001 §7.1.5 | ✅ **Implementado** (`metrology:check-due`) |
+| F-05 | Dashboard de saúde do parque de instrumentos (% por status, custo, taxa de reprovação) | Gestão | ✅ **Implementado** (Filament Widgets & API) |
+| F-06 | Gestão de acreditação de fornecedores (RBC/RBLE, validade, escopo, bloqueio automático) | ISO 17025 §7.4 | 🟡 Parcial (tabela `supplier_accreditations` existente) |
 
 ---
 
 ### Tier 2 — Médio Prazo
 
-| # | Feature | Justificativa |
-|---|---|---|
-| F-07 | Gráficos de controle de Shewhart para verificações intermediárias | ILAC-G24 Método 2 (Control Chart) |
-| F-08 | Histórico de localização NFC/RFID com linha do tempo visual | `LogisticsService` existe, falta UI |
-| F-09 | Análise crítica de pedidos antes de aceitar OS externa | ISO 17025 §7.3 |
-| F-10 | Campo explícito de rastreabilidade ao INMETRO/RBC no ReferenceStandard | ISO 17025 §6.4 |
-| F-11 | Relatório de conformidade ISO/NR para auditorias (estado do parque em data específica) | Auditorias ISO 9001 |
-| F-12 | Conteúdo obrigatório completo no certificado PDF (ISO 17025 §7.8.2) | ISO 17025 §7.8.2 |
+| # | Feature | Justificativa | Status |
+|---|---|---|---|
+| F-07 | Gráficos de controle de Shewhart para verificações intermediárias | ILAC-G24 Método 2 (Control Chart) | ✅ **Implementado** (`ShewhartControlChartService`) |
+| F-08 | Histórico de localização NFC/RFID com linha do tempo visual | `LogisticsService` existe, falta UI | 🟡 Em andamento |
+| F-09 | Análise crítica de pedidos antes de aceitar OS externa | ISO 17025 §7.3 | ⏳ Planejado |
+| F-10 | Campo explícito de rastreabilidade ao INMETRO/RBC no ReferenceStandard | ISO 17025 §6.4 | ✅ **Implementado** (`certificate_number`, `calibration_agency`) |
+| F-11 | Relatório de conformidade ISO/NR para auditorias (estado do parque em data específica) | Auditorias ISO 9001 | ⏳ Planejado |
+| F-12 | Conteúdo obrigatório completo no certificado PDF (ISO 17025 §7.8.2) | ISO 17025 §7.8.2 | ✅ **Implementado** (`GenerateCertificatePdfAction`) |
 
 ---
 
 ### Tier 3 — Diferencial Competitivo
 
-| # | Feature | Justificativa |
-|---|---|---|
-| F-13 | Bridge IoT → Metrology: anomalia com alta confiança gera Work Order de inspeção automática | Principal diferencial do produto vs. Tractian/Dynamox |
-| F-14 | API pública de verificação de autenticidade do certificado via `verification_hash` | Transparência e confiabilidade para clientes |
-| F-15 | OCR de certificados externos (extração automática de desvio, incerteza, datas) | Redução de retrabalho na calibração externa |
-| F-16 | Cálculo e gestão de CMC (Capacidade de Medição e Calibração) | Exigência para laboratórios RBC (ISO 17025 Anexo A) |
-| F-17 | Rastreabilidade retroativa de impacto (Impact Assessment) | Setor farmacêutico, aeroespacial, automotivo |
+| # | Feature | Justificativa | Status |
+|---|---|---|---|
+| F-13 | Bridge IoT → Metrology: anomalia com alta confiança gera Work Order de inspeção automática | Principal diferencial do produto vs. concorrentes | 🟡 Em integração via MQTT Bridge |
+| F-14 | API pública de verificação de autenticidade do certificado via `verification_hash` | Transparência e integridade forense | ✅ **Implementado** (`PublicCalibrationController`) |
+| F-15 | OCR de certificados externos (extração automática de desvio, incerteza, datas) | Redução de retrabalho na calibração externa | ⏳ Planejado (visão computacional) |
+| F-16 | Cálculo e gestão de CMC (Capacidade de Medição e Calibração) | Exigência para laboratórios RBC (ISO 17025 Anexo A) | 🟡 Em andamento |
+| F-17 | Rastreabilidade retroativa de impacto (Impact Assessment) | Setor farmacêutico, aeroespacial, automotivo | ✅ **Implementado** (`GenerateStandardImpactReportAction`) |
 
 ---
 

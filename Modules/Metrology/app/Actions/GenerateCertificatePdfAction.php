@@ -72,26 +72,33 @@ class GenerateCertificatePdfAction
 
         $pdfContent = $pdf->output();
 
-        // Assinatura Digital (se configurada)
-        $certPath = config('metrology.certificate_path');
-        $certPass = config('metrology.certificate_password');
+        // Assinatura Digital X.509 / PKCS#12 (se configurada via Setting ou .env)
+        $rawCertPath = Setting::getValue('lab_certificate_path') ?: config('metrology.certificate_path');
+        $certPass = (string) (Setting::getValue('lab_certificate_password') ?: config('metrology.certificate_password') ?: '');
+
+        $certPath = null;
+        if (! empty($rawCertPath)) {
+            if (file_exists($rawCertPath)) {
+                $certPath = $rawCertPath;
+            } elseif (file_exists(storage_path("app/{$rawCertPath}"))) {
+                $certPath = storage_path("app/{$rawCertPath}");
+            }
+        }
 
         if ($certPath) {
-            if (file_exists($certPath)) {
-                $rubricPath = null;
-                $performer = $calibration->performedBy;
+            $rubricPath = null;
+            $performer = $calibration->performedBy;
 
-                if ($performer instanceof User) {
-                    if ($performer->signature_image_path) {
-                        $rubricPath = storage_path("app/{$performer->signature_image_path}");
-                    }
+            if ($performer instanceof User) {
+                if ($performer->signature_image_path) {
+                    $rubricPath = storage_path("app/{$performer->signature_image_path}");
                 }
+            }
 
-                try {
-                    $pdfContent = $this->signer->sign($pdfContent, $certPath, $certPass, $rubricPath);
-                } catch (Throwable $exception) {
-                    logger()->error("PDF Signing Failed: {$exception->getMessage()}");
-                }
+            try {
+                $pdfContent = $this->signer->sign($pdfContent, $certPath, $certPass, $rubricPath);
+            } catch (Throwable $exception) {
+                logger()->error("PDF Signing Failed: {$exception->getMessage()}");
             }
         }
 
