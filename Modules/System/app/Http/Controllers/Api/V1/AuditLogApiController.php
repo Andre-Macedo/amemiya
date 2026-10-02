@@ -11,6 +11,7 @@ use Modules\Metrology\Models\Calibration;
 use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\ReferenceStandard;
 use Modules\Metrology\Models\WorkOrder;
+use Modules\System\Services\AuditChainService;
 use Spatie\Activitylog\Models\Activity;
 
 class AuditLogApiController extends Controller
@@ -47,6 +48,9 @@ class AuditLogApiController extends Controller
 
             return [
                 'id' => (string) $log->id,
+                'sequence_number' => $log->sequence_number,
+                'previous_hash' => $log->previous_hash,
+                'record_hash' => $log->record_hash,
                 'event' => (string) ($log->event ?? 'updated'),
                 'description' => (string) ($log->description ?? ''),
                 'user_name' => $log->causer?->name ?? 'Sistema',
@@ -68,5 +72,16 @@ class AuditLogApiController extends Controller
             'per_page' => $paginated->perPage(),
             'total' => $paginated->total(),
         ]);
+    }
+
+    /**
+     * Valida a integridade criptográfica da cadeia forense de auditoria.
+     */
+    public function verifyChain(Request $request, AuditChainService $auditChainService): JsonResponse
+    {
+        $tenantId = $request->user()?->tenant_id;
+        $report = $auditChainService->verifyChain($tenantId);
+
+        return response()->json($report);
     }
 }

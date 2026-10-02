@@ -55,6 +55,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Global Search & Audit
     Route::get('/search', [GlobalSearchController::class, 'index']);
     Route::get('/audit-logs', [AuditLogApiController::class, 'index']);
+    Route::get('/audit-logs/verify-chain', [AuditLogApiController::class, 'verifyChain']);
 
     // Instruments
     Route::post('/instruments/scan', [LogisticsApiController::class, 'scan']);

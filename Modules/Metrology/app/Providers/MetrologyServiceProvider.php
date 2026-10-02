@@ -11,6 +11,7 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Metrology\Console\CheckInstrumentStatus;
 use Modules\Metrology\Console\Commands\CheckCalibrationDue;
 use Modules\Metrology\Console\Commands\GenerateAutoWorkOrders;
+use Modules\Metrology\Console\Commands\VerifyAuditChainCommand;
 use Modules\Metrology\Events\CalibrationSaved;
 use Modules\Metrology\Listeners\ProcessCalibrationListener;
 use Modules\Metrology\Models\IntermediateCheck;
@@ -68,6 +69,7 @@ class MetrologyServiceProvider extends ServiceProvider
             CheckInstrumentStatus::class,
             CheckCalibrationDue::class,
             GenerateAutoWorkOrders::class,
+            VerifyAuditChainCommand::class,
         ]);
     }
 
