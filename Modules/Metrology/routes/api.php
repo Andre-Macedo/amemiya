@@ -82,6 +82,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/standards/export', [ReferenceStandardApiController::class, 'export']);
     Route::apiResource('standards', ReferenceStandardApiController::class);
     Route::get('/standards/{standard}/impact-analysis', [StandardImpactApiController::class, 'index']);
+    Route::get('/standards/{standard}/impact-analysis/pdf', [StandardImpactApiController::class, 'pdf']);
     Route::apiResource('reference-standard-types', ReferenceStandardTypeApiController::class);
 
     // Procedures (Templates) CRUD

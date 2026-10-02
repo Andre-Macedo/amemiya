@@ -1,45 +1,74 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Metrology\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Modules\Metrology\Models\Calibration;
+use Illuminate\Http\Response;
+use Modules\Metrology\Actions\GenerateStandardImpactReportAction;
 use Modules\Metrology\Models\ReferenceStandard;
 
 class StandardImpactApiController extends Controller
 {
+    public function __construct(
+        protected GenerateStandardImpactReportAction $reportAction
+    ) {}
+
     /**
-     * Retorna a lista de calibrações afetadas por um padrão específico.
-     * Rastreabilidade Reversa: Padrão -> Instrumentos Calibrados.
+     * Retorna a análise de impacto metrológico reversa (Padrão -> Instrumentos Calibrados).
      */
-    public function index(Request $request, ReferenceStandard $standard)
+    public function index(Request $request, ReferenceStandard $standard): JsonResponse
     {
         $request->validate([
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date',
+            'reason' => 'nullable|string|max:500',
         ]);
 
-        // Busca calibrações onde ALGUM item do checklist usou este padrão
-        $query = Calibration::query()
-            ->with(['calibratedItem', 'performedBy'])
-            ->whereHas('checklist.items', function (Builder $q) use ($standard) {
-                $q->where('reference_standard_id', $standard->id);
-            })
-            // Opcional: Se houver uma tabela pivot direta calibration_reference_standard, adicionar aqui também
-            ->where('status', '!=', 'draft'); // Apenas calibrações finalizadas importam
+        $reportData = $this->reportAction->buildReportData(
+            $standard,
+            $request->input('start_date'),
+            $request->input('end_date'),
+            $request->input('reason')
+        );
 
-        if ($request->filled('start_date')) {
-            $query->whereDate('calibration_date', '>=', $request->input('start_date'));
-        }
+        return response()->json([
+            'data' => $reportData['impactedCalibrations'],
+            'stats' => $reportData['stats'],
+            'meta' => [
+                'total' => $reportData['stats']['total_calibrations'],
+            ],
+            'report_code' => $reportData['reportCode'],
+            'document_hash' => $reportData['documentHash'],
+        ]);
+    }
 
-        if ($request->filled('end_date')) {
-            $query->whereDate('calibration_date', '<=', $request->input('end_date'));
-        }
+    /**
+     * Gera e realiza download do Laudo Formal de Impacto e Recall em PDF (ISO/IEC 17025 §7.10).
+     */
+    public function pdf(Request $request, ReferenceStandard $standard): Response
+    {
+        $request->validate([
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
+            'reason' => 'nullable|string|max:500',
+        ]);
 
-        $calibrations = $query->latest('calibration_date')->paginate(20);
+        $pdfContent = $this->reportAction->execute(
+            $standard,
+            $request->input('start_date'),
+            $request->input('end_date'),
+            $request->input('reason')
+        );
 
-        return response()->json($calibrations);
+        $fileName = 'Laudo_Impacto_' . ($standard->stock_number ?? 'STD-' . $standard->id) . '.pdf';
+
+        return response($pdfContent, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => "attachment; filename=\"{$fileName}\"",
+        ]);
     }
 }
