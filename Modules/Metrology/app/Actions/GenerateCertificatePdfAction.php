@@ -95,6 +95,14 @@ class GenerateCertificatePdfAction
             }
         }
 
+        // Calcula e persiste o hash criptográfico SHA-256 para garantia de integridade (ISO 17025)
+        $pdfHash = hash('sha256', $pdfContent);
+        if ($calibration->exists && $calibration->pdf_hash !== $pdfHash) {
+            $calibration->withoutEvents(function () use ($calibration, $pdfHash) {
+                $calibration->updateQuietly(['pdf_hash' => $pdfHash]);
+            });
+        }
+
         return $pdfContent;
     }
 }

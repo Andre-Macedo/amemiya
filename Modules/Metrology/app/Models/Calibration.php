@@ -25,6 +25,7 @@ use Modules\System\Models\User;
  * @property ?string $tenant_id
  * @property string $verification_hash
  * @property ?string $certificate_code
+ * @property ?string $pdf_hash
  * @property ?string $certificate_path
  * @property CalibrationResult $result
  * @property ?Carbon $calibration_date
@@ -109,6 +110,7 @@ class Calibration extends Model
         'conformity_statement',
         'certificate_path',
         'certificate_code',
+        'pdf_hash',
         'performed_by_id',
         'provider_id',
         'approved_by_id',

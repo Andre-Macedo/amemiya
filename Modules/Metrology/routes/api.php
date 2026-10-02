@@ -35,6 +35,7 @@ use Modules\System\Http\Controllers\Api\V1\AuditLogApiController;
 // Public Routes (No Auth)
 Route::get('/public/instruments/{id}', [PublicInstrumentController::class, 'show']);
 Route::get('/public/certificates/verify/{hash}', [PublicCalibrationController::class, 'show']);
+Route::post('/public/certificates/verify-file', [PublicCalibrationController::class, 'verifyFile']);
 
 // Client Portal (White-label) - Login Público
 Route::post('/public/portal/login', [PublicClientPortalController::class, 'login']);
