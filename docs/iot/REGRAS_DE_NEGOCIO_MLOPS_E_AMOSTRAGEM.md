@@ -134,3 +134,36 @@ Para evitar que o microcontrolador acorde o rádio e consuma bateria por ruídos
 1. **Janela de Confirmação:** O firmware mantém um buffer circular das últimas 3 janelas processadas ($3 \times 320\text{ ms} = 960\text{ ms}$).
 2. **Regra de Disparo:** O rádio LoRa/Wi-Fi só entra em transmissão de rajada (*burst*) se a condição de anomalia for detectada em **pelo menos 3 janelas sucessivas**.
 3. **Picos Isolados (< 500 ms):** São contabilizados apenas em um contador interno de ruído mecânico transiente, sem gerar pacotes na rede MQTT.
+
+---
+
+## 7. Avaliação Determinística Metrológica: Norma ISO 20816-3 (ABNT NBR ISO 20816-3)
+
+Enquanto os modelos de Machine Learning (XGBoost / Random Forest) realizam a **discriminação qualitativa da causa raiz** (ex: pista externa, desbalanceamento ou falta de lubrificação), a norma técnica internacional **ISO 20816-3** rege a **severidade quantitativa da vibração** com força normativa para auditorias industriais e laudos metrológicos.
+
+### 7.1. Formulação Física e Conversão de Grandezas
+A norma ISO 20816-3 baseia-se na velocidade RMS ($v_{RMS}$ em $\text{mm/s}$) na faixa larga de $10\text{ Hz a }1.000\text{ Hz}$. A partir da aceleração RMS ($a_{RMS}$ medida em $g$) e da velocidade de rotação fundamental ($\text{RPM}$):
+
+$$f_{rot} = \frac{\text{RPM}}{60}\quad [\text{Hz}]$$
+
+$$v_{RMS} = \frac{a_{RMS} \times 9.80665 \times 1.000}{2\pi \times f_{rot}} = \frac{a_{RMS} \times 9806.65 \times 60}{2\pi \times \text{RPM}}\quad [\text{mm/s}]$$
+
+### 7.2. Zonas de Severidade (Grupo 2: Motores de 15 kW a 300 kW, Base Rígida)
+
+| Zona de Severidade | Faixa de Velocidade ($v_{RMS}$) | Significado Metrológico e Ação Operacional |
+| :---: | :---: | :--- |
+| **Zona A** | $\le 1,4\text{ mm/s}$ | **Excelente:** Vibração típica de máquinas recém-instaladas ou comissionadas. |
+| **Zona B** | $1,4 < v \le 2,8\text{ mm/s}$ | **Aceitável / Boa:** Máquinas em operação irrestrita de longo prazo sem restrições. |
+| **Zona C** | $2,8 < v \le 4,5\text{ mm/s}$ | **Alerta:** Operação restrita. Máquina aceitável apenas temporariamente; programar manutenção preventiva. |
+| **Zona D** | $> 4,5\text{ mm/s}$ | **Perigo:** Vibração perigosa / inaceitável. Risco iminente de dano mecânico ou fadiga estrutural. Recomenda-se parada imediata. |
+
+*(Nota: O sistema também suporta bases flexíveis — limites de $2,3$, $4,5$ e $7,1\text{ mm/s}$ — e máquinas de grande porte do Grupo 1).*
+
+### 7.3. Integração Arquitetural no Pipeline de Telemetria
+1. **Ingestão no Backend (`ProcessTelemetryJob.php`):** A cada burst recebido, o serviço `ISO20816SeverityService` calcula $v_{RMS}$ e determina a `iso_zone`.
+2. **Disparo de Evento Crítico:** Amostras em **Zona C** ou **Zona D** disparam a flag de criticidade no banco de dados e no broadcast WebSockets.
+3. **Visualização Front-end:** Exibição do `ISO20816SeverityGauge` no card de telemetria em tempo real e na inspeção detalhada de logs.
+4. **Desempate com a IA:**
+   - **IA acusa defeito + Zona A:** Alerta preventivo incipiente (estágio inicial de rolamento) ou potencial ruído transitório. Não requer parada de emergência.
+   - **IA normal + Zona D:** Vibração estrutural grave (ex: ressonância externa ou soltura de fixação). Ação imediata exigida mesmo que os componentes internos estejam intactos.
+

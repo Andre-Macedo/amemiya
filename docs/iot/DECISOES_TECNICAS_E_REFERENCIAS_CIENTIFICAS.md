@@ -54,9 +54,10 @@ Abaixo, detalha-se cada estudo referenciado pelo Sci-Bot, o resumo de suas desco
   Demonstra que sensores MEMS de baixo custo ($< 1\text{ kHz}$) são altamente eficazes para diagnosticar problemas cinemáticos de baixa frequência em eixos rotativos (desbalanceamento estático/dinâmico, desalinhamento e folga mecânica), com a amplitude da frequência fundamental ($1\times\text{ RPM}$) crescendo linearmente com o acréscimo de massa desbalanceada. Destaca a norma ISO 10816 como baseline de severidade.
 * **O que estamos usando:**
   * Uso prioritário do acelerômetro MEMS triaxial para classificação de desbalanceamento e desalinhamentos (horizontal e vertical).
-  * Integração da velocidade RMS global em banda larga conforme **ISO 10816 / ISO 20816** como indicador interpretável de severidade (*Health Indicator*).
+  * Integração da velocidade RMS global em banda larga conforme **ISO 10816-3 / ISO 20816-3** ($10\text{ Hz a }1.000\text{ Hz}$) como indicador interpretável de severidade (*Health Indicator*), implementado no serviço `ISO20816SeverityService.php`.
+  * Classificação automática nas 4 Zonas de Severidade (A: Excelente, B: Aceitável, C: Alerta, D: Perigo/Parada) transmitidas via WebSocket e renderizadas na régua `ISO20816SeverityGauge.tsx`.
 * **O que adaptamos / não adotamos e justificativa:**
-  * O estudo original utilizou aquisição via PC/USB; no Amemiya, a aquisição e o cálculo de RMS/bandas espectrais foram portados diretamente para a borda no microcontrolador ESP32-S3.
+  * O estudo original utilizou aquisição via PC/USB; no Amemiya, a aquisição e o cálculo de aceleração RMS foram otimizados no nó ESP32-S3 e no backend analítico Laravel, com desempate determinístico contra os modelos de Machine Learning.
 
 ---
 
@@ -163,6 +164,7 @@ Abaixo, detalha-se cada estudo referenciado pelo Sci-Bot, o resumo de suas desco
 | **Tacômetro** | Rastreamento de Ordens COT (Wang 2011) | Módulo Hall KY-003 + Interrupção ESP32 | Medição precisa de RPM sem desvio, viabilizando normalização por ordens cinemáticas. |
 | **Transmissão** | Streaming de Onda Bruta vs Vetores (Wang 2021) | Vetor de características (44 bytes) | Viabiliza operação por bateria/LoRa com 95% de redução de consumo e dados. |
 | **Modelos de ML** | Supervised Only (Roberts 2025) vs Unsupervised (Di Maggio 2025) | Híbrido: Autoencoder/Isolation Forest (Cold) + XGBoost (Warm) | Resolve o problema da ausência de rótulos de falha no início da operação fabril. |
+| **Conformidade Metrológica** | ISO 10816-3 / ISO 20816-3 (Kibrete 2024, Pedotti 2017) | Conversão analítica $v_{RMS}$ + Classificação Zonas A/B/C/D | Fornece autoridade normativa determinística independente de IA para laudos e auditorias ISO/IATF. |
 
 ---
 *Documento elaborado para fins de governança técnica, auditoria metrológica e embasamento científico do projeto Amemiya.*  

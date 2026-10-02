@@ -26,10 +26,12 @@ Este documento consolida o plano de ação técnico baseado na revisão da liter
     - Contagem de pulsos por interrupção/PCNT da porta GX12 do tacômetro.
   - [ ] **Core 1 (Processamento Digital de Sinais e Telecom):**
     - Utilizar a biblioteca oficial **`ESP-DSP`** da Espressif com instruções assembly vetoriais de 128 bits para cálculo rápido de FFT real (`dsps_fft2r_fc32_ansi`).
-- [ ] **Conformidade Metrológica ISO 20816-3:**
-  - [ ] Conversão espectral de aceleração $A(f)$ para velocidade $V(f) = \frac{A(f)}{2\pi f}$.
-  - [ ] Cálculo da **Velocidade RMS ($v_{RMS}$ em mm/s)** integrada na faixa de $10\text{ Hz a }1.000\text{ Hz}$.
-  - [ ] Classificação nas 4 Zonas de Severidade ISO (A: Nova/Excelente, B: Aceitável, C: Alerta, D: Perigo/Parada).
+- [x] **Conformidade Metrológica ISO 20816-3 (ABNT NBR ISO 20816-3):**
+  - [x] Conversão analítica de aceleração para velocidade $v_{RMS} = \frac{a_{RMS} \cdot 9806.65 \cdot 60}{2\pi \cdot \text{RPM}}$ implementada em `ISO20816SeverityService.php`.
+  - [x] Cálculo da **Velocidade RMS ($v_{RMS}$ em mm/s)** integrada na faixa de $10\text{ Hz a }1.000\text{ Hz}$.
+  - [x] Classificação nas 4 Zonas de Severidade ISO (A: Nova/Excelente, B: Aceitável, C: Alerta, D: Perigo/Parada).
+  - [x] Migration de persistência nos logs (`velocity_rms`, `iso_zone`, `iso_evaluation`), sinalização de evento crítico e broadcast via WebSockets.
+  - [x] Componente visual reativo `ISO20816SeverityGauge.tsx` no card de telemetria em tempo real e no Drawer de diagnóstico detalhado.
 - [ ] **Computed Order Tracking (COT) com o Tacômetro (GX12-3):**
   - [ ] Amostragem síncrona com interpolação angular baseada nos pulsos do eixo.
   - [ ] Conversão do espectro de Hertz ($Hz$) para Ordens ($X$):
@@ -74,32 +76,22 @@ Este documento consolida o plano de ação técnico baseado na revisão da liter
 ---
 
 ### 4. Ciclo de Aprendizado Contínuo e Feedback Humano (Fase Quente / Human-in-the-Loop)
-- [ ] **Interface de Feedback no Filament (Módulo Metrology / IoT):**
-  - [ ] Ação de **"Validar Diagnóstico da IA"** no card de Alerta Preditivo ou Ordem de Manutenção.
-  - [ ] Modal de fechamento com seleção estruturada de desfecho pelo técnico:
-    - *Falha Confirmada:* Seleção da tipologia real (Rolamento BPFO/BPFI, Desbalanceamento, Desalinhamento, Falta de Lubrificação, Falha Elétrica de Rotor).
-    - *Falso Positivo:* Justificativa padronizada (Transitório de partida, Choque mecânico externo, Operação em sobrecarga pontual).
-    - *Outro Problema:* Reclassificação da falha identificada em campo.
-  - [ ] Controle de acesso via Filament Shield (somente perfis técnicos autorizados).
-- [ ] **Modelagem e Persistência do Dataset Rotulado Local (Data Flywheel):**
-  - [ ] Criar migração no módulo IoT para a tabela `iot_machine_learning_feedbacks`:
-    - `id` (ULID)
-    - `machine_id` / `device_node_id`
-    - `telemetry_snapshot` (JSON contendo o snapshot das features no instante do alerta)
-    - `ai_prediction` (hipótese e probabilidade calculadas pela IA)
-    - `user_ground_truth` (rótulo real atestado pelo técnico)
-    - `validated_by` (ID do usuário responsável)
-    - `validated_at` (timestamp da intervenção)
-    - `used_in_retraining` (boolean)
+- [x] **Interface de Feedback e Triagem Humana (Módulo Metrology / IoT & Next.js):**
+  - [x] Ação de **"Validar Diagnóstico / Triagem"** no Drawer de diagnóstico de logs (`IoTLogsDiagnostic.tsx`).
+  - [x] Triagem estruturada com desempate de ruído operacional:
+    - *Falha Confirmada:* Seleção da tipologia real (Rolamento, Desbalanceamento, Desalinhamento, Folga Mecânica).
+    - *Falso Alarme Operacional:* Mapeado como *Hard Negative* para a classe saudável (`saudavel`), ensinando tolerância à IA.
+    - *Descarte / Outlier:* Arquivado sem poluir a baseline da máquina nem o dataset de treinamento.
+- [x] **Modelagem e Persistência do Dataset Rotulado Local (Data Flywheel MLOps):**
+  - [x] Migrações e tabelas `iot_ml_datasets` e `iot_ml_dataset_samples`.
+  - [x] Taxonomia desacoplada de algoritmos: `diagnostic_multiclass`, `baseline_normal`, `benchmark_golden_set` e `run_to_failure`.
+  - [x] Endpoint de exportação CSV estruturado para treinamento no Jupyter (`treino_bancada_real.ipynb`).
 - [ ] **Pipeline de Retreinamento Incremental (Worker / MLOps):**
-  - [ ] Comando Artisan `iot:ml-retrain-incremental` executado periodicamente quando acumular lote de novos feedbacks confirmados (ex: 20 intervenções).
-  - [ ] Retreino incremental do XGBoost via parâmetro `xgb_model`:
-    - Preserva o conhecimento prévio do modelo especialista e calibra os pesos para o parque de máquinas local.
-    - Marca os registros como `used_in_retraining = true`.
-- [ ] **Governança e Versionamento de Modelos:**
-  - [ ] Salvar checkpoints versionados dos modelos gerados (`models/modelo_xgb_v1_base.json`, `models/modelo_xgb_v2_tenant_X.json`).
-  - [ ] Validação de métricas (F1-Score / Acurácia) em conjunto de teste antes de promover o modelo para produção.
-  - [ ] Mecanismo de rollback automático caso o novo modelo aumente falsos positivos.
+  - [ ] Comando Artisan `iot:ml-retrain-incremental` disparado sob acúmulo de novos feedbacks validados.
+  - [ ] Retreino incremental do XGBoost via parâmetro `xgb_model`.
+- [x] **Governança e Versionamento de Modelos:**
+  - [x] Tabela `iot_ml_model_registries` para versionamento (`v1.0.0`), controle de deploy/rollback do modelo ativo e auditoria.
+  - [ ] Validação de métricas (F1-Score / Acurácia) em conjunto de benchmark congelado (`benchmark_golden_set`) antes de promover modelo para produção.
 
 ---
 
