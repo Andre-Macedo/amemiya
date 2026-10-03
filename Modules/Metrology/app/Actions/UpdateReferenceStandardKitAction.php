@@ -22,13 +22,17 @@ class UpdateReferenceStandardKitAction
      */
     public function execute(Calibration $calibration, KitUpdateData $kitData): void
     {
+        $parent = $calibration->calibratedItem;
+        $months = ($parent instanceof ReferenceStandard) ? $parent->getCalibrationFrequencyMonths() : 24;
+        $nextDate = $calibration->calibration_date ? $calibration->calibration_date->copy()->addMonths($months) : now()->addMonths($months);
+
         foreach ($kitData->items as $itemData) {
             $child = ReferenceStandard::find($itemData->childId);
 
             if ($child) {
                 $child->update([
                     'actual_value' => $itemData->newActualValue,
-                    'calibration_due' => $calibration->calibration_date->copy()->addMonths(24),
+                    'calibration_due' => $nextDate,
                     'status' => ItemStatus::Active,
                 ]);
             }

@@ -61,6 +61,10 @@
 - [ ] **Segurança de Dados e Multi-Tenancy (Audit ISO 17025 - Rodada 4):**
   - [ ] **Middleware de Guarda `EnsureTenantIsInitialized`:** Abortar com erro HTTP 400 em rotas de API protegidas caso o header `X-Tenant-ID` não seja fornecido, prevenindo bypass acidental do Global Scope `BelongsToTenant`.
   - [ ] **Criptografia em Repouso de Chaves Privadas PEM:** Criptografar simetricamente o arquivo `certificate.pem` no disco local com a `APP_KEY`, fornecendo defesa em profundidade contra extração não autorizada no filesystem.
+- [ ] **Rastreabilidade Reversa e Recall Metrológico (Audit ISO 17025 - Rodada 5):**
+  - [ ] **Integração de Recall com ERPs (SAP / TOTVS):** Disparo de webhooks industriais com a lista de ativos em risco CRITICAL para busca retroativa e bloqueio automático de lotes de produção (OPs) manufaturados na janela de exposição.
+  - [ ] **Simulador Interativo de Janela de Exposição na UI:** Permitir aos gestores da qualidade simular no frontend cenários "what-if" de deriva do padrão antes de formalizar o laudo de recall.
+
 
 
 
