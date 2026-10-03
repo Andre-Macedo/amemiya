@@ -1,10 +1,33 @@
 <?php
 
+use App\Models\Plan;
+use App\Models\Tenant;
 use Laravel\Sanctum\Sanctum;
 use Modules\System\Models\Setting;
 use Modules\System\Models\User;
 
 beforeEach(function () {
+    $this->tenant = Tenant::create([
+        'name' => 'Testing Tenant',
+        'slug' => 'testing',
+    ]);
+    tenancy()->initialize($this->tenant);
+
+    $plan = Plan::create([
+        'name' => 'Enterprise',
+        'slug' => 'enterprise',
+        'price' => 100,
+    ]);
+
+    $this->tenant->subscriptions()->create([
+        'plan_id' => $plan->id,
+        'name' => 'default',
+        'status' => 'active',
+        'gateway' => 'manual',
+        'gateway_id' => 'man_123',
+        'ends_at' => now()->addYear(),
+    ]);
+
     $this->user = User::factory()->create();
     Sanctum::actingAs($this->user);
 });

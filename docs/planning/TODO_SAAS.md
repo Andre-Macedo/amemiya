@@ -58,6 +58,10 @@
 - [ ] **Governança, Custódia e Auditoria Forense (Audit ISO 17025 - Rodada 3):**
   - [ ] **Ancoragem Externa do Chain Head (FDA 21 CFR Part 11 / WORM):** Permitir exportação programada ou assinatura externa do `chain_head_hash` para armazenamento imutável à prova de adulteração por DBA root (Object Lock / RFC 3161).
   - [ ] **Interface Visual de Custódia / Leitor de Câmera (F-08):** Criar tela de movimentação e checkout de instrumentos no Filament compatível com scanner de código de barras e câmera móvel além do RFID/NFC existente.
+- [ ] **Segurança de Dados e Multi-Tenancy (Audit ISO 17025 - Rodada 4):**
+  - [ ] **Middleware de Guarda `EnsureTenantIsInitialized`:** Abortar com erro HTTP 400 em rotas de API protegidas caso o header `X-Tenant-ID` não seja fornecido, prevenindo bypass acidental do Global Scope `BelongsToTenant`.
+  - [ ] **Criptografia em Repouso de Chaves Privadas PEM:** Criptografar simetricamente o arquivo `certificate.pem` no disco local com a `APP_KEY`, fornecendo defesa em profundidade contra extração não autorizada no filesystem.
+
 
 
 
