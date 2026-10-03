@@ -8,8 +8,8 @@ class UncertaintyAccounted implements DecisionRuleStrategy
 {
     public function evaluate(float $error, float $uncertainty, float $limit): bool
     {
-        // Rule: Passed if (Error + Uncertainty) <= Limit
-        // Conservative approach
-        return ($error + $uncertainty) <= $limit;
+        // Regra ILAC-G8:09/2019 com Incerteza Contabilizada (Zona de Aceitação Estrita):
+        // Conforme se (|Erro| + U) <= Limite (MPE).
+        return (abs($error) + abs($uncertainty)) <= abs($limit);
     }
 }

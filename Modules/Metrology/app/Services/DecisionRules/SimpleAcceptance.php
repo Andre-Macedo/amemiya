@@ -8,8 +8,8 @@ class SimpleAcceptance implements DecisionRuleStrategy
 {
     public function evaluate(float $error, float $uncertainty, float $limit): bool
     {
-        // Rule: Passed if Error <= Limit
-        // Uncertainty is ignored (Shared Risk)
-        return $error <= $limit;
+        // Regra ILAC-G8:09/2019 Aceitação Simples (Shared Risk):
+        // Conforme se |Erro| <= Limite (MPE). Incerteza é desconsiderada na fronteira.
+        return abs($error) <= abs($limit);
     }
 }

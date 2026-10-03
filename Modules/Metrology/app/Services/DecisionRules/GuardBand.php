@@ -10,12 +10,15 @@ class GuardBand implements DecisionRuleStrategy
 
     public function evaluate(float $error, float $uncertainty, float $limit): bool
     {
-        // Rule (Standard ISO 17025/ILAC-G8 Binary Decision):
-        // Pass if Error <= (Limit - w * Uncertainty)
-        // w is the multiplier (usually 1.0 for 95% coverage probability)
+        // Regra ILAC-G8:09/2019 Banda de Guarda (Guard Banding):
+        // Conforme se |Erro| <= Limite - w * U
+        // w é o multiplicador da faixa de proteção (tipicamente 1.0 para PFA <= 2.5% ou r = 1.0)
+        $guardBand = abs($this->multiplier) * abs($uncertainty);
+        $reducedLimit = abs($limit) - $guardBand;
 
-        $guardBand = $this->multiplier * $uncertainty;
-        $reducedLimit = $limit - $guardBand;
+        if ($reducedLimit < 0) {
+            return false;
+        }
 
         return abs($error) <= $reducedLimit;
     }

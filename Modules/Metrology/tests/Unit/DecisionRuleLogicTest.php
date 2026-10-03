@@ -10,8 +10,14 @@ test('simple acceptance rule evaluates correctly', function () {
     // Error (0.05) <= Limit (0.05) -> Pass
     expect($strategy->evaluate(0.05, 0.02, 0.05))->toBeTrue();
 
+    // Negative Error (-0.05) within Limit (0.05) -> Pass
+    expect($strategy->evaluate(-0.05, 0.02, 0.05))->toBeTrue();
+
     // Error (0.06) > Limit (0.05) -> Fail
     expect($strategy->evaluate(0.06, 0.02, 0.05))->toBeFalse();
+
+    // Negative Error (-0.06) outside Limit (0.05) -> Fail
+    expect($strategy->evaluate(-0.06, 0.02, 0.05))->toBeFalse();
 });
 
 test('uncertainty accounted rule evaluates correctly', function () {
@@ -20,8 +26,14 @@ test('uncertainty accounted rule evaluates correctly', function () {
     // Error (0.04) + Uncertainty (0.02) = 0.06 > Limit (0.05) -> Fail
     expect($strategy->evaluate(0.04, 0.02, 0.05))->toBeFalse();
 
+    // Negative Error (-0.04) + Uncertainty (0.02) = 0.06 > Limit (0.05) -> Fail
+    expect($strategy->evaluate(-0.04, 0.02, 0.05))->toBeFalse();
+
     // Error (0.02) + Uncertainty (0.02) = 0.04 <= Limit (0.05) -> Pass
     expect($strategy->evaluate(0.02, 0.02, 0.05))->toBeTrue();
+
+    // Negative Error (-0.02) + Uncertainty (0.02) = 0.04 <= Limit (0.05) -> Pass
+    expect($strategy->evaluate(-0.02, 0.02, 0.05))->toBeTrue();
 });
 
 test('guard band rule evaluates correctly', function () {
@@ -32,6 +44,15 @@ test('guard band rule evaluates correctly', function () {
     // Error (0.03) <= Reduced (0.03) -> Pass
     expect($strategy->evaluate(0.03, 0.02, 0.05))->toBeTrue();
 
+    // Negative Error (-0.03) <= Reduced (0.03) -> Pass
+    expect($strategy->evaluate(-0.03, 0.02, 0.05))->toBeTrue();
+
     // Error (0.04) > Reduced (0.03) -> Fail (Falls into Guard Band zone)
     expect($strategy->evaluate(0.04, 0.02, 0.05))->toBeFalse();
+
+    // Negative Error (-0.04) > Reduced (0.03) -> Fail
+    expect($strategy->evaluate(-0.04, 0.02, 0.05))->toBeFalse();
+
+    // Uncertainty exceeds Limit (Guard Band collapses to 0/negative) -> Fail
+    expect($strategy->evaluate(0.01, 0.06, 0.05))->toBeFalse();
 });
