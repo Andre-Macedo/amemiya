@@ -65,9 +65,10 @@
   - [ ] **Integração de Recall com ERPs (SAP / TOTVS):** Disparo de webhooks industriais com a lista de ativos em risco CRITICAL para busca retroativa e bloqueio automático de lotes de produção (OPs) manufaturados na janela de exposição.
   - [ ] **Simulador Interativo de Janela de Exposição na UI:** Permitir aos gestores da qualidade simular no frontend cenários "what-if" de deriva do padrão antes de formalizar o laudo de recall.
 - [ ] **Frontend Next.js & Metrologia Operacional (Audit ISO 17025 - Rodada 6):**
-  - [ ] **Impressão de Etiquetas Térmicas (Stickers Metrológicos):** Geração e impressão de etiquetas adesivas (50x30mm e Zebra ZPL) com Tag, Data, Validade, Status e QR Code público de autenticidade logo após a aprovação da calibração.
-  - [ ] **Override de MPE no Instrumento Individual:** Permitir customização de limites de erro máximo admissível por ativo no formulário de criação/edição.
-  - [ ] **Validador Estrito de CNPJ/CPF (Módulo 11):** Verificação matemática oficial dos dígitos verificadores cadastrais de clientes e fornecedores.
+  - [ ] **Endpoint `POST /calibrations/calculate` (Correção de Bug 404):** Expor endpoint na API conectado ao `UncertaintyCalculator::calculate()` para calcular incerteza GUM e orçamento em tempo real durante a execução do wizard sem persistência antecipada.
+  - [ ] **Geração de Etiquetas no Fluxo de Calibração Aprovada:** Endpoint e atalho na UI para emissão de etiqueta adesiva contendo as novas datas e dados de validação da calibração aprovada.
+  - [ ] **Override de MPE no Instrumento Individual:** Suportar customização de limites de erro máximo admissível por ativo no formulário de criação/edição.
+  - [ ] **Validador Estrito de CNPJ/CPF (Módulo 11):** Verificação matemática oficial dos dígitos verificadores cadastrais no frontend (Zod) e backend (FormRequest).
   - [ ] **Modo de Coleta Offline (PWA / IndexedDB):** Suporte à coleta de dados de calibração em áreas industriais sem conexão de rede (benchmark Beamex bMobile / IndySoft).
   - [ ] **Importação em Lote de Leituras (Clipboard / CSV):** Recurso de copiar/colar matrizes de repetições diretamente de planilhas para agilizar calibrações multiponto.
 
