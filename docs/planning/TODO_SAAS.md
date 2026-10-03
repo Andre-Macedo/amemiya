@@ -55,6 +55,10 @@
   - [ ] **Data de Recebimento do Item (§7.8.2.1h):** Incluir campo `received_date` no fluxo e exibi-lo no certificado para registrar a entrada do ativo no laboratório.
   - [ ] **Distinção de Datas de Execução e Emissão (§7.8.2.1j):** Evidenciar no cabeçalho do laudo a separação clara entre a data de realização do ensaio (`calibration_date`) e a data formal de emissão/publicação do documento (`issued_at`).
   - [ ] **Toggle de Validade / Próxima Calibração (§7.8.4.3):** Adicionar configuração por tenant/cliente para ocultar ou exibir a recomendação de próxima calibração, garantindo estrita conformidade com a proibição de estipular prazos sem acordo formal prévio do cliente.
+- [ ] **Governança, Custódia e Auditoria Forense (Audit ISO 17025 - Rodada 3):**
+  - [ ] **Ancoragem Externa do Chain Head (FDA 21 CFR Part 11 / WORM):** Permitir exportação programada ou assinatura externa do `chain_head_hash` para armazenamento imutável à prova de adulteração por DBA root (Object Lock / RFC 3161).
+  - [ ] **Interface Visual de Custódia / Leitor de Câmera (F-08):** Criar tela de movimentação e checkout de instrumentos no Filament compatível com scanner de código de barras e câmera móvel além do RFID/NFC existente.
+
 
 
 
