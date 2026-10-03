@@ -51,3 +51,11 @@ Este documento descreve o mapa de evolução técnica e conformidade normativa (
 - **Funcionalidades:**
     - Ciclo de vida: Rascunho -> Em Revisão -> Aprovado -> Obsoleto.
     - Histórico preservado: calibrações executadas retêm vínculo à versão do procedimento vigente na data de execução.
+
+## 7. Evolução Contínua do Motor Matemático & Incerteza (Auditoria ISO 17025 / Benchmark Fluke & Beamex)
+**Status:** **Planejado / Roadmap ⏳**
+- **Metas Técnicas:**
+    - **MPE de Escala Composta:** Suporte a tolerância parametrizada $\pm (a\% \text{ leitura} + b\% \text{ escala} + c \text{ dígitos})$ no modelo `Instrument` e `MpeCalculator`, eliminando o caso degenerado de tolerância zero quando $nominal = 0$.
+    - **Conservadorismo Estrito de $\nu_{eff}$ (EA-4/02 & GUM §G.4.2):** Aplicar truncamento inferior ($\lfloor \nu_{eff} \rfloor$) ou interpolação linear decrescente na tabela Student-$t$ de [`MetrologyMath::getKFromVeff()`](../Services/MetrologyMath.php), garantindo matematicamente $p \ge 95,45\%$.
+    - **Balanço Multivariado de Padrões RBC:** Permitir a inclusão simultânea de múltiplos padrões de referência (ex: banho termostático + termômetro padrão) no somatório quadrático da incerteza Tipo B em [`UncertaintyCalculator`](../Services/UncertaintyCalculator.php).
+

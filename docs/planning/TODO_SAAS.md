@@ -45,6 +45,11 @@
 - [x] **Software Validation Report:** System-generated math precision validation certificate.
 - [x] **CMC Engine:** Block certificate issuance if uncertainty is below authorized scope.
 - [x] **Reason for Change:** Mandatory justification popup for editing historical data.
+- [ ] **Technical Evolution (Audit ISO 17025 - Rodada 1):**
+  - [ ] **MPE Composto / Escala Mista (Benchmark Fluke/Beamex):** Suportar fórmula $\pm (a\% \text{ leitura} + b\% \text{ escala} + c \text{ dígitos})$ no cadastro de instrumentos, evitando tolerância nula quando nominal é zero.
+  - [ ] **Truncamento Conservador de $\nu_{eff}$ (EA-4/02 & GUM §G.4.2):** Aplicar $\lfloor \nu_{eff} \rfloor$ ou interpolação linear na tabela Student-$t$ garantindo probabilidade de cobertura estrita $\ge 95,45\%$.
+  - [ ] **Múltiplos Padrões no Balanço GUM:** Suporte a combinação quadrática de múltiplos padrões de referência ativos para o mesmo ponto de calibração.
+
 
 ## 🚀 Priority 10: Enterprise Ecosystem & SAP Integration
 - [ ] **Secure API Key Management:** Rotatable, scoped API keys for machine-to-machine integrations.
