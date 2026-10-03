@@ -59,3 +59,12 @@ Este documento descreve o mapa de evolução técnica e conformidade normativa (
     - **Conservadorismo Estrito de $\nu_{eff}$ (EA-4/02 & GUM §G.4.2):** Aplicar truncamento inferior ($\lfloor \nu_{eff} \rfloor$) ou interpolação linear decrescente na tabela Student-$t$ de [`MetrologyMath::getKFromVeff()`](../Services/MetrologyMath.php), garantindo matematicamente $p \ge 95,45\%$.
     - **Balanço Multivariado de Padrões RBC:** Permitir a inclusão simultânea de múltiplos padrões de referência (ex: banho termostático + termômetro padrão) no somatório quadrático da incerteza Tipo B em [`UncertaintyCalculator`](../Services/UncertaintyCalculator.php).
 
+## 8. Conformidade Estrita de Laudos e Certificados de Calibração (ISO/IEC 17025 §7.8.2 e §7.8.4)
+**Status:** **Planejado / Roadmap ⏳**
+- **Metas Técnicas:**
+    - **Dados do Solicitante / Cliente no Layout PDF (§7.8.2.1e):** Inclusão de bloco de identificação cadastral completa do cliente tomador do serviço no laudo compilado por [`GenerateCertificatePdfAction`](../Actions/GenerateCertificatePdfAction.php).
+    - **Condição e Data de Recebimento do Instrumento (§7.8.2.1g e §7.8.2.1h):** Persistência e exibição formal dos atributos `as_received_condition` e `received_date` no ciclo de vida e impressão do laudo.
+    - **Data de Emissão Distinta (§7.8.2.1j):** Discriminar no PDF a data de realização técnica (`calibration_date`) da data de emissão/autorização (`issued_at` / `approved_at`).
+    - **Controle de Declaração de Validade / Vencimento (§7.8.4.3):** Toggle configurável para ocultar ou exibir a recomendação de periodicidade/próxima calibração, assegurando cumprimento da norma que veda estipular validade sem consentimento formal prévio do cliente.
+
+
