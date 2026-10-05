@@ -122,6 +122,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/checklists/{checklistTemplate}', [InstrumentChecklistController::class, 'show']);
     Route::get('/metrology/options', [CalibrationApiController::class, 'options']);
     Route::get('/dashboard/stats', [DashboardApiController::class, 'stats']);
+    Route::get('/metrology/dashboard/stats', [DashboardApiController::class, 'stats']);
+    Route::get('/dashboard', [DashboardApiController::class, 'stats']);
+    Route::get('/metrology/dashboard', [DashboardApiController::class, 'stats']);
 
     // Materials
     Route::apiResource('materials', MaterialApiController::class);

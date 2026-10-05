@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Modules\Metrology\Models\Calibration;
 use Modules\Metrology\Models\Instrument;
+use Modules\Metrology\Models\ReferenceStandard;
 
 /**
  * API Controller for aggregating metrology-specific dashboard statistics.
@@ -23,12 +24,15 @@ class DashboardApiController extends Controller
     public function stats(): JsonResponse
     {
         $totalInstruments = Instrument::count();
+        $totalStandards = ReferenceStandard::count();
         $activeInstruments = Instrument::where('status', 'active')->count();
+        $overdueCount = Instrument::where('status', 'expired')->count();
+        $inCalibrationCount = Instrument::where('status', 'in_calibration')->count();
 
         // Compliance Rate Calculation
         $complianceRate = $totalInstruments > 0
             ? round(($activeInstruments / $totalInstruments) * 100, 1)
-            : 100;
+            : 100.0;
 
         // Upcoming Calibration Due Dates (Next 30 days)
         $upcomingDue = Instrument::where('status', 'active')
@@ -46,11 +50,20 @@ class DashboardApiController extends Controller
         return response()->json([
             'kpi' => [
                 'total_instruments' => $totalInstruments,
+                'total_standards' => $totalStandards,
                 'active_count' => $activeInstruments,
-                'overdue_count' => Instrument::where('status', 'expired')->count(),
-                'in_calibration_count' => Instrument::where('status', 'in_calibration')->count(),
+                'overdue_count' => $overdueCount,
+                'in_calibration_count' => $inCalibrationCount,
                 'compliance_rate' => $complianceRate,
             ],
+            // Compatibilidade direta com clientes mobile e web
+            'total_instruments' => $totalInstruments,
+            'total_standards' => $totalStandards,
+            'active_count' => $activeInstruments,
+            'overdue_count' => $overdueCount,
+            'calibration_count' => $inCalibrationCount,
+            'in_calibration_count' => $inCalibrationCount,
+            'compliance_rate' => $complianceRate,
             'upcoming_due' => $upcomingDue->map(fn ($i) => [
                 'id' => $i->id,
                 'name' => $i->name,
