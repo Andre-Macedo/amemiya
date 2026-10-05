@@ -10,8 +10,15 @@ class MachineApiController extends Controller
 {
     public function index()
     {
-        $machines = Machine::query()->latest()->get();
+        $machines = Machine::query()->with(['station'])->latest()->get();
 
         return JsonResource::collection($machines);
+    }
+
+    public function show(Machine $machine)
+    {
+        $machine->load(['station', 'nodes']);
+
+        return new JsonResource($machine);
     }
 }

@@ -35,6 +35,7 @@ Route::middleware([
 
         // Rotas raiz para compatibilidade com clientes mobile e web
         Route::apiResource('stations', StationApiController::class);
+        Route::apiResource('machines', MachineApiController::class)->only(['index', 'show']);
         Route::apiResource('suppliers', SupplierApiController::class);
 
         Route::prefix('system')->group(function () {
@@ -58,7 +59,7 @@ Route::middleware([
             Route::apiResource('stations', StationApiController::class)->names('system.stations');
 
             // Machines
-            Route::get('machines', [MachineApiController::class, 'index']);
+            Route::apiResource('machines', MachineApiController::class)->only(['index', 'show'])->names('system.machines');
 
             // Suppliers
             Route::apiResource('suppliers', SupplierApiController::class)->names('system.suppliers');
