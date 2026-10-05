@@ -389,118 +389,124 @@ class MetrologyDatabaseSeeder extends Seeder
             $typeRelogio->id => 0.001,
         ]);
 
-        // -- 7. Create Calibrations (Agora usando os novos templates) --
-        foreach ($instruments as $instrument) {
-            $freq = $instrument->instrumentType->calibration_frequency_months ?? 12;
-            $numberOfCalibrations = rand(1, 3);
+        // -- 7. Create Calibrations (Agora usando os novos templates sem disparar listeners em massa) --
+        Calibration::withoutEvents(function () use ($instruments, $users, $labExterno, $kitBlocos, $calibratorMesa, $regua) {
+            foreach ($instruments as $instrument) {
+                $freq = $instrument->instrumentType->calibration_frequency_months ?? 12;
+                $numberOfCalibrations = rand(1, 3);
 
-            for ($i = 0; $i < $numberOfCalibrations; $i++) {
-                $isLatest = ($i == 0);
-                $result = 'approved';
+                for ($i = 0; $i < $numberOfCalibrations; $i++) {
+                    $isLatest = ($i == 0);
+                    $result = 'approved';
 
-                // Lógica para determinar a data
-                if ($isLatest && $instrument->status === 'rejected') {
-                    // Se o instrumento está REJEITADO atualmente, a última calibração TEM que ser rejeitada
-                    $result = 'rejected';
-                    $date = $instrument->calibration_due; // A data da rejeição é a data do vencimento/atual
-                } else {
-                    // Histórico normal (aprovado)
-                    $date = $instrument->calibration_due->copy()->subMonths($freq * ($i + ($instrument->status === 'active' ? 1 : 0)));
-                }
+                    // Lógica para determinar a data
+                    if ($isLatest && $instrument->status === 'rejected') {
+                        // Se o instrumento está REJEITADO atualmente, a última calibração TEM que ser rejeitada
+                        $result = 'rejected';
+                        $date = $instrument->calibration_due; // A data da rejeição é a data do vencimento/atual
+                    } else {
+                        // Histórico normal (aprovado)
+                        $date = $instrument->calibration_due->copy()->subMonths($freq * ($i + ($instrument->status === 'active' ? 1 : 0)));
+                    }
 
-                // CORREÇÃO 1: Se a data calculada for futura, não cria histórico (pula)
-                if ($date->isFuture()) {
-                    continue;
-                }
+                    // Se a data calculada for futura, não cria histórico (pula)
+                    if ($date->isFuture()) {
+                        continue;
+                    }
 
-                $isExternal = fake()->boolean(30);
-                $isInternal = ! $isExternal; // CORREÇÃO 2: Define explicitamente
+                    $isExternal = fake()->boolean(30);
+                    $isInternal = ! $isExternal;
 
-                $calibration = Calibration::factory()->create([
-                    'calibrated_item_id' => $instrument->id,
-                    'calibrated_item_type' => Instrument::class,
-                    'type' => $isExternal ? 'external_rbc' : 'internal',
-                    'provider_id' => $isExternal ? $labExterno->id : null,
-                    'calibration_date' => $date,
-                    'result' => $result,
-                    // Se rejeitado, força um desvio alto. Se aprovado, desvio baixo.
-                    'deviation' => $result === 'rejected' ? 0.99 : 0.001,
-                    'performed_by_id' => $users->random()->id,
-                    'certificate_path' => $isExternal ? 'fake/cert.pdf' : null,
-                ]);
+                    $calibration = Calibration::factory()->create([
+                        'tenant_id' => tenant('id'),
+                        'calibrated_item_id' => $instrument->id,
+                        'calibrated_item_type' => Instrument::class,
+                        'type' => $isExternal ? 'external_rbc' : 'internal',
+                        'provider_id' => $isExternal ? $labExterno->id : null,
+                        'calibration_date' => $date,
+                        'result' => $result,
+                        // Se rejeitado, força um desvio alto. Se aprovado, desvio baixo.
+                        'deviation' => $result === 'rejected' ? 0.99 : 0.001,
+                        'performed_by_id' => $users->random()->id,
+                        'certificate_path' => $isExternal ? 'fake/cert.pdf' : null,
+                    ]);
 
-                // CORREÇÃO 3: Checklist apenas para Calibrações INTERNAS e APROVADAS
-                if ($isInternal && $result === 'approved' && $instrument->instrumentType) {
-                    $template = $instrument->instrumentType->checklistTemplates()->first();
+                    // Checklist apenas para Calibrações INTERNAS e APROVADAS
+                    if ($isInternal && $result === 'approved' && $instrument->instrumentType) {
+                        $template = $instrument->instrumentType->checklistTemplates()->first();
 
-                    if ($template) {
-                        $checklist = Checklist::create([
-                            'calibration_id' => $calibration->id,
-                            'checklist_template_id' => $template->id,
-                            'completed' => true,
-                        ]);
-
-                        foreach ($template->items as $templateItem) {
-                            $stdId = null;
-
-                            if ($templateItem->question_type === 'numeric') {
-                                if ($templateItem->nominal_value) {
-                                    $stdId = ReferenceStandard::where('parent_id', $kitBlocos->id)
-                                        ->where('nominal_value', $templateItem->nominal_value)
-                                        ->first()?->id;
-                                } elseif ($templateItem->reference_standard_type_id === $calibratorMesa->reference_standard_type_id) {
-                                    $stdId = $calibratorMesa->id;
-                                }
-                            }
-                            $checklist->items()->create([
-                                'checklist_id' => $checklist->id,
-                                'step' => $templateItem->step,
-                                'nominal_value' => $templateItem->nominal_value,
-                                'question_type' => $templateItem->question_type,
-                                'order' => $templateItem->order,
+                        if ($template) {
+                            $checklist = Checklist::create([
+                                'tenant_id' => tenant('id'),
+                                'calibration_id' => $calibration->id,
+                                'checklist_template_id' => $template->id,
                                 'completed' => true,
-                                'result' => 'approved',
-                                'required_readings' => $templateItem->required_readings,
-                                'reference_standard_id' => $stdId,
-                                'as_found_readings' => $templateItem->question_type === 'numeric'
-                                    ? [
-                                        $templateItem->nominal_value + 0.004,
-                                        $templateItem->nominal_value,
-                                        $templateItem->nominal_value + 0.002,
-                                    ]
-                                    : null,
-                                'as_left_readings' => $templateItem->question_type === 'numeric'
-                                    ? [
-                                        $templateItem->nominal_value + 0.001,
-                                        $templateItem->nominal_value,
-                                        $templateItem->nominal_value + 0.001,
-                                    ]
-                                    : null,
-                                'adjusted' => false,
                             ]);
+
+                            foreach ($template->items as $templateItem) {
+                                $stdId = null;
+
+                                if ($templateItem->question_type === 'numeric') {
+                                    if ($templateItem->nominal_value) {
+                                        $stdId = ReferenceStandard::where('parent_id', $kitBlocos->id)
+                                            ->where('nominal_value', $templateItem->nominal_value)
+                                            ->first()?->id;
+                                    } elseif ($templateItem->reference_standard_type_id === $calibratorMesa->reference_standard_type_id) {
+                                        $stdId = $calibratorMesa->id;
+                                    }
+                                }
+                                $checklist->items()->create([
+                                    'tenant_id' => tenant('id'),
+                                    'checklist_id' => $checklist->id,
+                                    'step' => $templateItem->step,
+                                    'nominal_value' => $templateItem->nominal_value,
+                                    'question_type' => $templateItem->question_type,
+                                    'order' => $templateItem->order,
+                                    'completed' => true,
+                                    'result' => 'approved',
+                                    'required_readings' => $templateItem->required_readings,
+                                    'reference_standard_id' => $stdId,
+                                    'as_found_readings' => $templateItem->question_type === 'numeric'
+                                        ? [
+                                            $templateItem->nominal_value + 0.004,
+                                            $templateItem->nominal_value,
+                                            $templateItem->nominal_value + 0.002,
+                                        ]
+                                        : null,
+                                    'as_left_readings' => $templateItem->question_type === 'numeric'
+                                        ? [
+                                            $templateItem->nominal_value + 0.001,
+                                            $templateItem->nominal_value,
+                                            $templateItem->nominal_value + 0.001,
+                                        ]
+                                        : null,
+                                    'adjusted' => false,
+                                ]);
+                            }
+                            $calibration->update(['checklist_id' => $checklist->id]);
                         }
-                        $calibration->update(['checklist_id' => $checklist->id]);
                     }
                 }
             }
-        }
 
-        // -- 8. Calibração dos Padrões (Mantido igual) --
-        $standardsToCalibrate = collect([$kitBlocos, $regua]);
+            // -- 8. Calibração dos Padrões (Mantido igual) --
+            $standardsToCalibrate = collect([$kitBlocos, $regua]);
 
-        foreach ($standardsToCalibrate as $std) {
-            Calibration::factory()->create([
-                'calibrated_item_id' => $std->id,
-                'calibrated_item_type' => ReferenceStandard::class,
-                'type' => 'external_rbc',
-                'provider_id' => $labExterno->id,
-                'result' => 'approved',
-                // Data baseada no vencimento (para bater com o status active/expired)
-                'calibration_date' => $std->calibration_due->copy()->subMonths(
-                    $std->referenceStandardType->calibration_frequency_months
-                ),
-            ]);
-        }
+            foreach ($standardsToCalibrate as $std) {
+                Calibration::factory()->create([
+                    'tenant_id' => tenant('id'),
+                    'calibrated_item_id' => $std->id,
+                    'calibrated_item_type' => ReferenceStandard::class,
+                    'type' => 'external_rbc',
+                    'provider_id' => $labExterno->id,
+                    'result' => 'approved',
+                    // Data baseada no vencimento (para bater com o status active/expired)
+                    'calibration_date' => $std->calibration_due->copy()->subMonths(
+                        $std->referenceStandardType->calibration_frequency_months
+                    ),
+                ]);
+            }
+        });
 
         // -- 9. Checagens Intermediárias (Shewhart Intermediate Checks) --
         $activeInstruments = Instrument::where('status', 'active')->take(5)->get();
@@ -525,7 +531,7 @@ class MetrologyDatabaseSeeder extends Seeder
                     'nominal_value' => $nominal,
                     'measured_value' => $measuredVal,
                     'deviation' => $simulatedDev,
-                    'performed_by' => 'Técnico Metrologista',
+                    'performed_by' => $users->first()->id,
                     'temperature' => 20.0 + round((mt_rand(-5, 5) / 10), 1),
                     'humidity' => 50.0 + round((mt_rand(-20, 20) / 10), 1),
                     'notes' => 'Checagem intermediária periódica de rotina Shewhart.',
