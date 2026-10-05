@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\System\Http\Requests;
 
+use App\Rules\CpfCnpj;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Modules\System\Models\Supplier;
@@ -39,6 +40,7 @@ class UpdateSupplierRequest extends FormRequest
                 'string',
                 'max:255',
                 Rule::unique('suppliers', 'cnpj')->ignore($supplier instanceof Supplier ? $supplier->id : (int) $supplier),
+                new CpfCnpj,
             ],
             'email' => ['nullable', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:255'],

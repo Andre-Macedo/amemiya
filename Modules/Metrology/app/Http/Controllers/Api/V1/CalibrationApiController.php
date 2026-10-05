@@ -11,6 +11,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Modules\Metrology\Actions\ApproveCalibrationAction;
+use Modules\Metrology\Actions\CalculateCalibrationUncertaintyAction;
 use Modules\Metrology\Actions\CreateCalibrationAction;
 use Modules\Metrology\Actions\RejectCalibrationAction;
 use Modules\Metrology\DTOs\CalibrationSubmissionDTO;
@@ -172,5 +173,23 @@ class CalibrationApiController extends Controller
         $action->execute($calibration);
 
         return response()->json(['message' => 'Calibration returned for correction.']);
+    }
+
+    /**
+     * Calculates expanded uncertainty and budget preview without saving.
+     */
+    public function calculate(Request $request, CalculateCalibrationUncertaintyAction $action): JsonResponse
+    {
+        $validated = $request->validate([
+            'instrument_id' => ['nullable'],
+            'checklist_template_id' => ['nullable'],
+            'temperature' => ['nullable', 'numeric'],
+            'items' => ['nullable', 'array'],
+            'standard_id' => ['nullable'],
+        ]);
+
+        $result = $action->execute($validated);
+
+        return response()->json($result);
     }
 }

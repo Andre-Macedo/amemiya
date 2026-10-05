@@ -96,8 +96,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/metrology/calibrations', [CalibrationApiController::class, 'store']);
     Route::post('/calibrations/{id}/approve', [CalibrationApiController::class, 'approve']);
     Route::post('/calibrations/{id}/reject', [CalibrationApiController::class, 'reject']);
+    Route::post('/calibrations/calculate', [CalibrationApiController::class, 'calculate']);
     Route::post('/metrology/calibrations/{id}/approve', [CalibrationApiController::class, 'approve']);
     Route::post('/metrology/calibrations/{id}/reject', [CalibrationApiController::class, 'reject']);
+    Route::post('/metrology/calibrations/calculate', [CalibrationApiController::class, 'calculate']);
     Route::get('/calibrations/{id}/traceability-chain', [TraceabilityController::class, 'show']);
 
     // Non-Conformities (NC)

@@ -122,10 +122,15 @@ class Calibration extends Model
         'procedure_snapshot',
         'tenant_id',
         'lab_client_id',
+        'as_received_condition',
+        'received_date',
+        'show_calibration_due',
     ];
 
     protected $casts = [
         'calibration_date' => 'date',
+        'received_date' => 'date',
+        'show_calibration_due' => 'boolean',
         'result' => CalibrationResult::class,
         'approved_at' => 'datetime',
         'calculation_data' => 'array',

@@ -70,6 +70,9 @@
         <div class="info-item"><span class="label">Fabricante / Modelo:</span> {{ $instrument->manufacturer ?? 'N/A' }} / {{ $instrument->model ?? 'N/A' }}</div>
         <div class="info-item"><span class="label">Nº de Série:</span> {{ $instrument->serial_number ?? 'N/A' }}</div>
         <div class="info-item"><span class="label">Faixa de Medição / Resolução:</span> {{ $instrument->measuring_range ?? '-' }} / {{ $instrument->resolution ?? '-' }}</div>
+        @if(!empty($record->as_received_condition))
+            <div class="info-item"><span class="label">Estado de Recebimento:</span> {{ $record->as_received_condition }} (ISO/IEC 17025 §7.8.2.1g)</div>
+        @endif
         @if($instrument && method_exists($instrument, 'getMaximumPermissibleError') && $instrument->getMaximumPermissibleError() > 0)
             <div class="info-item"><span class="label">Erro Máximo Permissível (MPE):</span> ±{{ $instrument->getMaximumPermissibleError() }} (Critério de Aceitação)</div>
         @endif
@@ -86,8 +89,16 @@
 
     <div class="section">
         <div class="section-title">2. Dados da Calibração e Condições Ambientais</div>
-        <div class="info-item"><span class="label">Data de Execução:</span> {{ $record->calibration_date ? $record->calibration_date->format('d/m/Y') : '-' }}</div>
-        <div class="info-item"><span class="label">Próxima Calibração (Sugerida):</span> {{ $instrument && $instrument->calibration_due ? $instrument->calibration_due->format('d/m/Y') : '-' }}</div>
+        @if(!empty($record->received_date))
+            <div class="info-item"><span class="label">Data de Recebimento do Ativo:</span> {{ $record->received_date->format('d/m/Y') }} (ISO/IEC 17025 §7.8.2.1h)</div>
+        @endif
+        <div class="info-item"><span class="label">Data de Execução do Ensaio:</span> {{ $record->calibration_date ? $record->calibration_date->format('d/m/Y') : '-' }}</div>
+        <div class="info-item"><span class="label">Data de Emissão do Laudo:</span> {{ $record->approved_at ? $record->approved_at->format('d/m/Y') : ($record->created_at ? $record->created_at->format('d/m/Y') : '-') }}</div>
+        @if($record->show_calibration_due !== false)
+            <div class="info-item"><span class="label">Próxima Calibração (Sugerida):</span> {{ $instrument && $instrument->calibration_due ? $instrument->calibration_due->format('d/m/Y') : '-' }}</div>
+        @else
+            <div class="info-item"><span class="label">Periodicidade de Calibração:</span> A periodicidade e validade devem ser determinadas pelo cliente (ISO/IEC 17025 §7.8.4.3).</div>
+        @endif
         <div class="info-item"><span class="label">Condições Ambientais:</span> Temperatura: {{ $record->temperature ?? '20.0' }} °C ± 1.0 °C | Umidade: {{ $record->humidity ?? '50.0' }} % ± 5.0 % RH</div>
         <div class="info-item"><span class="label">Procedimento Metrológico:</span> Conforme método GUM (JCGM 100:2008) e procedimento interno padronizado.</div>
     </div>

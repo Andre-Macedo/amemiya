@@ -51,10 +51,10 @@
   - [ ] **Múltiplos Padrões no Balanço GUM:** Suporte a combinação quadrática de múltiplos padrões de referência ativos para o mesmo ponto de calibração.
 - [ ] **Conformidade de Laudos e Certificados (Audit ISO 17025 - Rodada 2):**
   - [ ] **Dados do Solicitante / Cliente no PDF (§7.8.2.1e):** Renderizar seção dedicada com Razão Social, CNPJ/CPF, endereço e contato do cliente no certificado PDF quando associado a `lab_client_id`.
-  - [ ] **Estado de Recebimento do Instrumento (§7.8.2.1g):** Adicionar campo `as_received_condition` (ex: íntegro, limpo, desgastado, descalibrado) na calibração e exibi-lo no laudo PDF.
-  - [ ] **Data de Recebimento do Item (§7.8.2.1h):** Incluir campo `received_date` no fluxo e exibi-lo no certificado para registrar a entrada do ativo no laboratório.
-  - [ ] **Distinção de Datas de Execução e Emissão (§7.8.2.1j):** Evidenciar no cabeçalho do laudo a separação clara entre a data de realização do ensaio (`calibration_date`) e a data formal de emissão/publicação do documento (`issued_at`).
-  - [ ] **Toggle de Validade / Próxima Calibração (§7.8.4.3):** Adicionar configuração por tenant/cliente para ocultar ou exibir a recomendação de próxima calibração, garantindo estrita conformidade com a proibição de estipular prazos sem acordo formal prévio do cliente.
+  - [x] **Estado de Recebimento do Instrumento (§7.8.2.1g):** Adicionado campo `as_received_condition` (ex: íntegro, limpo, desgastado) na tabela `calibrations` e renderizado no laudo PDF.
+  - [x] **Data de Recebimento do Item (§7.8.2.1h):** Incluído campo `received_date` no fluxo e exibido formalmente no certificado PDF.
+  - [x] **Distinção de Datas de Execução e Emissão (§7.8.2.1j):** Evidenciado no cabeçalho do laudo a separação clara entre a data de realização (`calibration_date`) e a data formal de emissão/publicação do documento (`approved_at`).
+  - [x] **Toggle de Validade / Próxima Calibração (§7.8.4.3):** Adicionado controle `show_calibration_due` na calibração e no laudo PDF para omitir a recomendação de periodicidade quando não acordada previamente com o cliente.
 - [ ] **Governança, Custódia e Auditoria Forense (Audit ISO 17025 - Rodada 3):**
   - [ ] **Ancoragem Externa do Chain Head (FDA 21 CFR Part 11 / WORM):** Permitir exportação programada ou assinatura externa do `chain_head_hash` para armazenamento imutável à prova de adulteração por DBA root (Object Lock / RFC 3161).
   - [ ] **Interface Visual de Custódia / Leitor de Câmera (F-08):** Criar tela de movimentação e checkout de instrumentos no Filament compatível com scanner de código de barras e câmera móvel além do RFID/NFC existente.
@@ -65,10 +65,10 @@
   - [ ] **Integração de Recall com ERPs (SAP / TOTVS):** Disparo de webhooks industriais com a lista de ativos em risco CRITICAL para busca retroativa e bloqueio automático de lotes de produção (OPs) manufaturados na janela de exposição.
   - [ ] **Simulador Interativo de Janela de Exposição na UI:** Permitir aos gestores da qualidade simular no frontend cenários "what-if" de deriva do padrão antes de formalizar o laudo de recall.
 - [ ] **Frontend Next.js & Metrologia Operacional (Audit ISO 17025 - Rodada 6):**
-  - [ ] **Endpoint `POST /calibrations/calculate` (Correção de Bug 404):** Expor endpoint na API conectado ao `UncertaintyCalculator::calculate()` para calcular incerteza GUM e orçamento em tempo real durante a execução do wizard sem persistência antecipada.
-  - [ ] **Geração de Etiquetas no Fluxo de Calibração Aprovada:** Endpoint e atalho na UI para emissão de etiqueta adesiva contendo as novas datas e dados de validação da calibração aprovada.
-  - [ ] **Override de MPE no Instrumento Individual:** Suportar customização de limites de erro máximo admissível por ativo no formulário de criação/edição.
-  - [ ] **Validador Estrito de CNPJ/CPF (Módulo 11):** Verificação matemática oficial dos dígitos verificadores cadastrais no frontend (Zod) e backend (FormRequest).
+  - [x] **Endpoint `POST /calibrations/calculate` (Correção de Bug 404):** Exposto endpoint na API conectado a `CalculateCalibrationUncertaintyAction` retornando incerteza GUM e orçamento em tempo real.
+  - [x] **Geração de Etiquetas no Fluxo de Calibração Aprovada:** Botão direto de impressão de etiqueta adicionado na tela de calibração aprovada (`calibrations/[id]/page.tsx`).
+  - [x] **Override de MPE no Instrumento Individual:** Suporte completo aos campos `mpe_value`, `mpe_type`, `resolution` e `measuring_range` no formulário e no modelo.
+  - [x] **Validador Estrito de CNPJ/CPF (Módulo 11):** Implementada regra `App\Rules\CpfCnpj` no backend e `lib/validators/cpf-cnpj.ts` no frontend.
   - [ ] **Modo de Coleta Offline (PWA / IndexedDB):** Suporte à coleta de dados de calibração em áreas industriais sem conexão de rede (benchmark Beamex bMobile / IndySoft).
   - [ ] **Importação em Lote de Leituras (Clipboard / CSV):** Recurso de copiar/colar matrizes de repetições diretamente de planilhas para agilizar calibrações multiponto.
 

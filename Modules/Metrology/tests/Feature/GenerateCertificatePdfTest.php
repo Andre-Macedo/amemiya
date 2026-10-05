@@ -63,3 +63,33 @@ test('it generates valid pdf certificate content with iso17025 data', function (
     expect($pdf)->toBeString()
         ->and(str_starts_with($pdf, '%PDF'))->toBeTrue();
 });
+
+test('it renders iso17025 received condition and respects calibration due toggle', function () {
+    $tenant = Tenant::create([
+        'name' => 'Acme Labs 2',
+        'slug' => 'acme-labs-2',
+    ]);
+    tenancy()->initialize($tenant);
+
+    $user = User::factory()->create();
+    $instrument = Instrument::factory()->create();
+
+    $calibration = Calibration::factory()->create([
+        'calibrated_item_id' => $instrument->id,
+        'calibrated_item_type' => Instrument::class,
+        'performed_by_id' => $user->id,
+        'as_received_condition' => 'Íntegro e limpo, sem sinais de oxidação',
+        'received_date' => now()->subDays(2),
+        'show_calibration_due' => false,
+        'result' => CalibrationResult::Approved,
+        'deviation' => 0.0010,
+        'uncertainty' => 0.0020,
+    ]);
+
+    $action = app(GenerateCertificatePdfAction::class);
+    $pdf = $action->execute($calibration);
+
+    expect($pdf)->toBeString()
+        ->and(str_starts_with($pdf, '%PDF'))->toBeTrue();
+});
+

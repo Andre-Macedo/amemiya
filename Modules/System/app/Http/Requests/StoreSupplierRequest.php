@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\System\Http\Requests;
 
+use App\Rules\CpfCnpj;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
@@ -30,7 +31,7 @@ class StoreSupplierRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'trade_name' => ['nullable', 'string', 'max:255'],
-            'cnpj' => ['nullable', 'string', 'max:255', 'unique:suppliers,cnpj'],
+            'cnpj' => ['nullable', 'string', 'max:255', 'unique:suppliers,cnpj', new CpfCnpj],
             'email' => ['nullable', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:255'],
             'is_manufacturer' => ['boolean'],
