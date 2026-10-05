@@ -31,7 +31,7 @@ class StationApiController extends Controller
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Station::query()->withCount('instruments');
+        $query = Station::query()->withCount(['instruments', 'machines']);
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -75,7 +75,7 @@ class StationApiController extends Controller
      */
     public function show(Station $station): StationApiResource
     {
-        $station->load(['instruments', 'nodes']);
+        $station->load(['machines', 'instruments', 'nodes']);
 
         return new StationApiResource($station);
     }

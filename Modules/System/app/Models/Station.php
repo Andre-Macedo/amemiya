@@ -66,6 +66,14 @@ class Station extends Model
     }
 
     /**
+     * Máquinas industriais alocadas nesta estação/posto de trabalho.
+     */
+    public function machines(): HasMany
+    {
+        return $this->hasMany(Machine::class, 'station_id');
+    }
+
+    /**
      * Instrumentos alocados nesta estação.
      */
     public function instruments(): HasMany
