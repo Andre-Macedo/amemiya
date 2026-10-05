@@ -22,6 +22,11 @@ return [
     'allowed_origins' => [
         env('FRONTEND_URL', 'http://localhost:3000'),
         'http://localhost:3000',
+        'http://localhost:8081',
+        'http://localhost:8082',
+        'http://localhost:19006',
+        'http://127.0.0.1:8081',
+        'http://127.0.0.1:8082',
         'http://amemiya.localhost:3000',
         'https://leantech.andremacedo.dev.br',
         'https://*.leantech.andremacedo.dev.br',
@@ -29,7 +34,9 @@ return [
     ],
 
     'allowed_origins_patterns' => [
-        '/^http:\/\/.*\.localhost:3000$/',
+        '/^http:\/\/localhost(:\d+)?$/',
+        '/^http:\/\/127\.0\.0\.1(:\d+)?$/',
+        '/^http:\/\/.*\.localhost(:\d+)?$/',
         '/^https:\/\/.*\.andremacedo\.dev\.br$/',
     ],
 
