@@ -7,7 +7,11 @@ use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\IoT\Models\IoTGateway;
+use Modules\IoT\Models\IoTNode;
+use Modules\Metrology\Models\Instrument;
 
 class Station extends Model
 {
@@ -59,5 +63,34 @@ class Station extends Model
         }
 
         return implode(' > ', $path);
+    }
+
+    /**
+     * Instrumentos alocados nesta estação.
+     */
+    public function instruments(): HasMany
+    {
+        return $this->hasMany(Instrument::class, 'current_station_id');
+    }
+
+    /**
+     * Gateways IoT alocados nesta estação.
+     */
+    public function gateways(): HasMany
+    {
+        return $this->hasMany(IoTGateway::class, 'station_id');
+    }
+
+    /**
+     * Nós IoT conectados através dos gateways desta estação.
+     */
+    public function nodes(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            IoTNode::class,
+            IoTGateway::class,
+            'station_id',
+            'gateway_id'
+        );
     }
 }

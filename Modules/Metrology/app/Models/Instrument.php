@@ -120,19 +120,6 @@ class Instrument extends Model implements CalibratableItem
         });
     }
 
-    public function getCriticalityAttribute($value): InstrumentCriticality
-    {
-        if ($value instanceof InstrumentCriticality) {
-            return $value;
-        }
-
-        if (is_string($value)) {
-            return InstrumentCriticality::tryFrom($value) ?? InstrumentCriticality::OperationalReference;
-        }
-
-        return InstrumentCriticality::OperationalReference;
-    }
-
     public function isCritical(): bool
     {
         return $this->criticality->isSafetyOrQualityCritical();

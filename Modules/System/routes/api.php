@@ -33,6 +33,10 @@ Route::middleware([
 
     Route::middleware(['auth:sanctum', VerifySubscription::class])->group(function () {
 
+        // Rotas raiz para compatibilidade com clientes mobile e web
+        Route::apiResource('stations', StationApiController::class);
+        Route::apiResource('suppliers', SupplierApiController::class);
+
         Route::prefix('system')->group(function () {
             // Perfil base (Movido do api.php raiz para cá)
             Route::get('/user', fn (Request $request) => $request->user());
@@ -51,13 +55,13 @@ Route::middleware([
             Route::get('billing', [BillingApiController::class, 'index']);
 
             // Stations
-            Route::apiResource('stations', StationApiController::class);
+            Route::apiResource('stations', StationApiController::class)->names('system.stations');
 
             // Machines
             Route::get('machines', [MachineApiController::class, 'index']);
 
             // Suppliers
-            Route::apiResource('suppliers', SupplierApiController::class);
+            Route::apiResource('suppliers', SupplierApiController::class)->names('system.suppliers');
 
             // Users & Roles
             Route::apiResource('users', UserApiController::class);
