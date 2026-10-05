@@ -17,10 +17,14 @@ use Modules\Metrology\Models\Instrument;
  */
 class CreateCalibrationAction
 {
+    public function __construct(
+        protected ?CalculateCalibrationUncertaintyAction $uncertaintyAction = null
+    ) {
+        $this->uncertaintyAction = $uncertaintyAction ?? app(CalculateCalibrationUncertaintyAction::class);
+    }
+
     /**
      * Executes the calibration creation process.
-     *
-     * Args:
      *     dto: The validated calibration data.
      *
      * Returns:
@@ -69,6 +73,10 @@ class CreateCalibrationAction
             });
             $checklistItemsData = [];
 
+            $calculatedMaxFoundDev = 0.0;
+            $calculatedMaxLeftDev = 0.0;
+            $hasCalculatedDev = false;
+
             foreach ($templateItems as $templateItem) {
                 $appResponse = $appItemsMap->get($templateItem->id) ?? $appItemsMap->get($templateItem->step);
 
@@ -84,13 +92,42 @@ class CreateCalibrationAction
                     if ($templateItem->question_type === 'numeric') {
                         $rawFound = $appResponse['as_found_readings'] ?? $appResponse['readings'] ?? null;
                         if (! empty($rawFound)) {
-                            $asFoundReadings = is_array($rawFound) ? $rawFound : [$rawFound];
+                            $asFoundReadings = is_array($rawFound) ? array_map('floatval', $rawFound) : [(float) $rawFound];
                             $isCompleted = true;
+
+                            $nominal = $templateItem->nominal_value;
+                            if ($nominal === null) {
+                                $clean = preg_replace('/[^0-9.]/', '', (string) $templateItem->step);
+                                $nominal = $clean !== '' ? (float) $clean : null;
+                            }
+
+                            if ($nominal !== null && count($asFoundReadings) > 0) {
+                                $meanFound = array_sum($asFoundReadings) / count($asFoundReadings);
+                                $devFound = $meanFound - $nominal;
+                                if (abs($devFound) >= abs($calculatedMaxFoundDev)) {
+                                    $calculatedMaxFoundDev = $devFound;
+                                    $hasCalculatedDev = true;
+                                }
+                            }
                         }
 
                         $rawLeft = $appResponse['as_left_readings'] ?? null;
                         if (! empty($rawLeft)) {
-                            $asLeftReadings = is_array($rawLeft) ? $rawLeft : [$rawLeft];
+                            $asLeftReadings = is_array($rawLeft) ? array_map('floatval', $rawLeft) : [(float) $rawLeft];
+
+                            $nominal = $templateItem->nominal_value;
+                            if ($nominal === null) {
+                                $clean = preg_replace('/[^0-9.]/', '', (string) $templateItem->step);
+                                $nominal = $clean !== '' ? (float) $clean : null;
+                            }
+
+                            if ($nominal !== null && count($asLeftReadings) > 0) {
+                                $meanLeft = array_sum($asLeftReadings) / count($asLeftReadings);
+                                $devLeft = $meanLeft - $nominal;
+                                if (abs($devLeft) >= abs($calculatedMaxLeftDev)) {
+                                    $calculatedMaxLeftDev = $devLeft;
+                                }
+                            }
                         }
 
                         $adjusted = (bool) ($appResponse['adjusted'] ?? false);
@@ -128,7 +165,29 @@ class CreateCalibrationAction
                 ]);
             }
 
-            // 4. Link checklist and trigger model events
+            // 4. Canonical server-side recalculation of deviations and GUM uncertainty
+            if ($hasCalculatedDev) {
+                $calibration->as_found_deviation = round($calculatedMaxFoundDev, 4);
+                $calibration->as_left_deviation = ($calculatedMaxLeftDev !== 0.0) ? round($calculatedMaxLeftDev, 4) : null;
+                $calibration->deviation = ($calculatedMaxLeftDev !== 0.0) ? round($calculatedMaxLeftDev, 4) : round($calculatedMaxFoundDev, 4);
+            }
+
+            try {
+                $uncertaintyResult = $this->uncertaintyAction?->execute([
+                    'instrument_id' => $dto->instrumentId,
+                    'checklist_template_id' => $dto->templateId,
+                    'temperature' => $dto->temperature,
+                    'items' => $dto->items,
+                ]);
+
+                if (! empty($uncertaintyResult['uncertainty']) && $uncertaintyResult['uncertainty'] > 0) {
+                    $calibration->uncertainty = $uncertaintyResult['uncertainty'];
+                }
+            } catch (\Throwable) {
+                // Keep DTO uncertainty as fallback
+            }
+
+            // 5. Link checklist and trigger model events
             $calibration->checklist_id = $checklist->id;
             $calibration->saveQuietly();
             $calibration->setRelation('checklist', $checklist);
@@ -137,3 +196,4 @@ class CreateCalibrationAction
         });
     }
 }
+
