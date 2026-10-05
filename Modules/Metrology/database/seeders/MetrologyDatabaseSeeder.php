@@ -11,6 +11,7 @@ use Modules\Metrology\Models\ChecklistTemplate;
 use Modules\Metrology\Models\ChecklistTemplateItem;
 use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\InstrumentType;
+use Modules\Metrology\Models\IntermediateCheck;
 use Modules\Metrology\Models\ReferenceStandard;
 use Modules\Metrology\Models\ReferenceStandardType;
 use Modules\System\Models\Station;
@@ -35,6 +36,7 @@ class MetrologyDatabaseSeeder extends Seeder
     public function run(): void
     {
         Schema::disableForeignKeyConstraints();
+        IntermediateCheck::truncate();
         ChecklistItem::truncate();
         Checklist::truncate();
         Station::truncate();
@@ -50,8 +52,26 @@ class MetrologyDatabaseSeeder extends Seeder
 
         // -- 1. Criar Usuários --
         $users = collect([
-            User::firstOrCreate(['email' => 'tech1@example.com'], ['name' => 'Técnico Metrologista 1', 'password' => bcrypt('password')]),
-            User::firstOrCreate(['email' => 'tech2@example.com'], ['name' => 'Técnico Metrologista 2', 'password' => bcrypt('password')]),
+            User::firstOrCreate(
+                ['email' => 'tech1@example.com'],
+                [
+                    'name' => 'Técnico Metrologista 1',
+                    'password' => bcrypt('password'),
+                    'tenant_id' => tenant('id'),
+                    'terms_accepted_at' => now(),
+                    'privacy_policy_accepted_at' => now(),
+                ]
+            ),
+            User::firstOrCreate(
+                ['email' => 'tech2@example.com'],
+                [
+                    'name' => 'Técnico Metrologista 2',
+                    'password' => bcrypt('password'),
+                    'tenant_id' => tenant('id'),
+                    'terms_accepted_at' => now(),
+                    'privacy_policy_accepted_at' => now(),
+                ]
+            ),
         ]);
 
         // -- 2. FORNECEDORES (Suppliers) --
@@ -435,20 +455,28 @@ class MetrologyDatabaseSeeder extends Seeder
                             $checklist->items()->create([
                                 'checklist_id' => $checklist->id,
                                 'step' => $templateItem->step,
+                                'nominal_value' => $templateItem->nominal_value,
                                 'question_type' => $templateItem->question_type,
                                 'order' => $templateItem->order,
                                 'completed' => true,
                                 'result' => 'approved',
                                 'required_readings' => $templateItem->required_readings,
-                                'reference_standard_id' => $templateItem->reference_standard_id,
+                                'reference_standard_id' => $stdId,
                                 'as_found_readings' => $templateItem->question_type === 'numeric'
                                     ? [
-                                        $templateItem->nominal_value + 0.01,
+                                        $templateItem->nominal_value + 0.004,
                                         $templateItem->nominal_value,
-                                        $templateItem->nominal_value + 0.01,
+                                        $templateItem->nominal_value + 0.002,
                                     ]
                                     : null,
-
+                                'as_left_readings' => $templateItem->question_type === 'numeric'
+                                    ? [
+                                        $templateItem->nominal_value + 0.001,
+                                        $templateItem->nominal_value,
+                                        $templateItem->nominal_value + 0.001,
+                                    ]
+                                    : null,
+                                'adjusted' => false,
                             ]);
                         }
                         $calibration->update(['checklist_id' => $checklist->id]);
@@ -472,6 +500,37 @@ class MetrologyDatabaseSeeder extends Seeder
                     $std->referenceStandardType->calibration_frequency_months
                 ),
             ]);
+        }
+
+        // -- 9. Checagens Intermediárias (Shewhart Intermediate Checks) --
+        $activeInstruments = Instrument::where('status', 'active')->take(5)->get();
+        $standardBlock = ReferenceStandard::where('nominal_value', 25.0)->whereNotNull('parent_id')->first()
+            ?? ReferenceStandard::first();
+
+        foreach ($activeInstruments as $inst) {
+            $nominal = 25.000;
+            // Gera histórico de 12 checagens nos últimos 24 dias para gráficos Shewhart
+            for ($k = 12; $k >= 1; $k--) {
+                $checkDate = now()->subDays($k * 2);
+                $simulatedDev = round((mt_rand(-3, 3) / 1000), 4);
+                $measuredVal = $nominal + $simulatedDev;
+                $isPassed = abs($simulatedDev) <= ($inst->mpe ?? 0.02);
+
+                IntermediateCheck::create([
+                    'tenant_id' => tenant('id'),
+                    'instrument_id' => $inst->id,
+                    'reference_standard_id' => $standardBlock?->id,
+                    'check_date' => $checkDate,
+                    'result' => $isPassed ? 'passed' : 'failed',
+                    'nominal_value' => $nominal,
+                    'measured_value' => $measuredVal,
+                    'deviation' => $simulatedDev,
+                    'performed_by' => 'Técnico Metrologista',
+                    'temperature' => 20.0 + round((mt_rand(-5, 5) / 10), 1),
+                    'humidity' => 50.0 + round((mt_rand(-20, 20) / 10), 1),
+                    'notes' => 'Checagem intermediária periódica de rotina Shewhart.',
+                ]);
+            }
         }
     }
 }

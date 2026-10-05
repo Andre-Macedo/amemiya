@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Models\Plan;
@@ -8,7 +10,9 @@ use App\Models\Subscription;
 use App\Models\Tenant;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Modules\IoT\Database\Seeders\IoTDatabaseSeeder;
 use Modules\Metrology\Database\Seeders\MetrologyDatabaseSeeder;
+use Modules\System\Database\Seeders\SystemDatabaseSeeder;
 use Modules\System\Models\User;
 
 class DatabaseSeeder extends Seeder
@@ -18,63 +22,78 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Garantir que o Role super-admin existe (agora usando nosso modelo com HasUlids)
+        // Garantir que o Role super-admin existe
         Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'web']);
 
-        // 1. Criar um Plano Base
-        $plan = Plan::create([
-            'name' => 'Plano Industrial Ilimitado',
-            'slug' => 'industrial-unlimited',
-            'price' => 2000.00,
-            'max_instruments' => 0, // Ilimitado
-            'max_users' => 0,       // Ilimitado
-        ]);
+        // 1. Plano Base
+        $plan = Plan::firstOrCreate(
+            ['slug' => 'industrial-unlimited'],
+            [
+                'name' => 'Plano Industrial Ilimitado',
+                'price' => 2000.00,
+                'max_instruments' => 0, // Ilimitado
+                'max_users' => 0,       // Ilimitado
+            ]
+        );
 
-        // 2. Criar um Tenant de Exemplo
-        $tenant = Tenant::create([
-            'name' => 'Amemiya Indústria',
-            'slug' => 'amemiya',
-            'plan_id' => $plan->id,
-            'status' => 'active',
-        ]);
+        // 2. Tenant Padrão
+        $tenant = Tenant::firstOrCreate(
+            ['slug' => 'amemiya'],
+            [
+                'name' => 'Amemiya Indústria',
+                'plan_id' => $plan->id,
+                'status' => 'active',
+            ]
+        );
 
-        // 3. Criar Assinatura Ativa para o Tenant
-        Subscription::create([
-            'tenant_id' => $tenant->id,
-            'plan_id' => $plan->id,
-            'gateway' => 'manual',
-            'status' => 'active',
-            'name' => 'default',
-            'starts_at' => now(),
-        ]);
+        // 3. Assinatura Ativa
+        Subscription::firstOrCreate(
+            ['tenant_id' => $tenant->id, 'name' => 'default'],
+            [
+                'plan_id' => $plan->id,
+                'gateway' => 'manual',
+                'status' => 'active',
+                'starts_at' => now(),
+            ]
+        );
 
-        // 4. O domínio 'amemiya.localhost' será criado automaticamente pelo Listener CreateTenantDomain
+        // 4. Usuário Administrador Tenant
+        $user = User::updateOrCreate(
+            ['email' => 'admin@amemiya.com'],
+            [
+                'name' => 'Administrador Amemiya',
+                'password' => Hash::make('12345678'),
+                'tenant_id' => $tenant->id,
+                'terms_accepted_at' => now(),
+                'privacy_policy_accepted_at' => now(),
+            ]
+        );
 
-        // 3. Criar Usuário vinculado ao Tenant
-        $user = User::create([
-            'name' => 'Administrador Amemiya',
-            'email' => 'admin@amemiya.com',
-            'password' => Hash::make('12345678'),
-            'tenant_id' => $tenant->id,
-        ]);
+        $user->syncRoles(['super-admin']);
 
-        $user->assignRole('super-admin');
-
-        // Inicializa o Tenancy manualmente para o restante do seeder (Metrologia)
+        // 5. Inicializa o Tenancy para os seeders modulares
         tenancy()->initialize($tenant);
 
-        $this->call(MetrologyDatabaseSeeder::class);
+        $this->call([
+            MetrologyDatabaseSeeder::class,
+            SystemDatabaseSeeder::class,
+            IoTDatabaseSeeder::class,
+        ]);
 
         tenancy()->end();
 
-        // 4. Usuário Super Admin Central (Sem Tenant)
-        $superAdmin = User::create([
-            'name' => 'Super Admin Global',
-            'email' => 'super@admin.com',
-            'password' => Hash::make('admin123'),
-            'tenant_id' => null, // Global
-        ]);
+        // 6. Usuário Super Admin Central (Sem Tenant)
+        $superAdmin = User::updateOrCreate(
+            ['email' => 'super@admin.com'],
+            [
+                'name' => 'Super Admin Global',
+                'password' => Hash::make('admin123'),
+                'tenant_id' => null, // Global
+                'terms_accepted_at' => now(),
+                'privacy_policy_accepted_at' => now(),
+            ]
+        );
 
-        $superAdmin->assignRole('super-admin');
+        $superAdmin->syncRoles(['super-admin']);
     }
 }
