@@ -58,6 +58,16 @@ class Checklist extends Model
     }
 
     /**
+     * Alias de compatibilidade com ProcessCalibrationAction e snapshots de auditoria.
+     *
+     * @return BelongsTo<ChecklistTemplate, Checklist>
+     */
+    public function template(): BelongsTo
+    {
+        return $this->checklistTemplate();
+    }
+
+    /**
      * @return HasMany<ChecklistItem>
      */
     public function items(): HasMany

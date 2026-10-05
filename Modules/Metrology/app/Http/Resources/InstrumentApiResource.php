@@ -59,6 +59,15 @@ class InstrumentApiResource extends JsonResource
             'current_station_id' => $this->current_station_id,
             'material_id' => $this->material_id,
             'calibration_frequency' => (int) $this->getCalibrationFrequencyMonths(),
+            'default_checklist_template' => $this->instrumentType ? (function () {
+                $template = $this->instrumentType->checklistTemplates()->where('is_active', true)->first();
+                return $template ? [
+                    'id' => (string) $template->id,
+                    'name' => $template->name,
+                    'version' => (int) $template->version,
+                    'items_count' => (int) $template->items()->count(),
+                ] : null;
+            })() : null,
 
             // Relationships
             'station' => new StationApiResource($this->whenLoaded('station')),

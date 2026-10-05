@@ -95,6 +95,7 @@ class Calibration extends Model
         'verification_hash',
         'calibrated_item_id',
         'calibrated_item_type',
+        'checklist_id',
         'date',
         'calibration_date',
         'technician',
@@ -162,6 +163,9 @@ class Calibration extends Model
         return $this->morphTo();
     }
 
+    /**
+     * @return HasOne<Checklist, $this>
+     */
     public function checklist(): HasOne
     {
         return $this->hasOne(Checklist::class);

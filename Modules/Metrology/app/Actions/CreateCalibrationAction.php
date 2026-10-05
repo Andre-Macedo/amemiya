@@ -36,7 +36,6 @@ class CreateCalibrationAction
             $calibration = Calibration::create([
                 'calibrated_item_type' => Instrument::class,
                 'calibrated_item_id' => $dto->instrumentId,
-                'checklist_id' => null,
                 'calibration_date' => $dto->date,
                 'type' => 'internal',
                 'result' => $dto->result,
@@ -73,7 +72,9 @@ class CreateCalibrationAction
             foreach ($templateItems as $templateItem) {
                 $appResponse = $appItemsMap->get($templateItem->id) ?? $appItemsMap->get($templateItem->step);
 
-                $readingsJson = null;
+                $asFoundReadings = null;
+                $asLeftReadings = null;
+                $adjusted = false;
                 $resultItem = null;
                 $notesItem = null;
                 $standardId = null;
@@ -81,12 +82,19 @@ class CreateCalibrationAction
 
                 if ($appResponse) {
                     if ($templateItem->question_type === 'numeric') {
-                        $rawReadings = $appResponse['as_found_readings'] ?? $appResponse['readings'] ?? null;
-                        if (! empty($rawReadings)) {
-                            $readingsArray = is_array($rawReadings) ? $rawReadings : [$rawReadings];
-                            $readingsJson = json_encode($readingsArray);
+                        $rawFound = $appResponse['as_found_readings'] ?? $appResponse['readings'] ?? null;
+                        if (! empty($rawFound)) {
+                            $asFoundReadings = is_array($rawFound) ? $rawFound : [$rawFound];
                             $isCompleted = true;
                         }
+
+                        $rawLeft = $appResponse['as_left_readings'] ?? null;
+                        if (! empty($rawLeft)) {
+                            $asLeftReadings = is_array($rawLeft) ? $rawLeft : [$rawLeft];
+                        }
+
+                        $adjusted = (bool) ($appResponse['adjusted'] ?? false);
+
                         $possibleStandardId = $appResponse['standard_id'] ?? $appResponse['reference_standard_id'] ?? null;
                         if (! empty($possibleStandardId)) {
                             $standardId = (string) $possibleStandardId;
@@ -104,27 +112,26 @@ class CreateCalibrationAction
                     }
                 }
 
-                $checklistItemsData[] = [
-                    'checklist_id' => $checklist->id,
+                $checklist->items()->create([
                     'step' => $templateItem->step,
+                    'nominal_value' => $templateItem->nominal_value,
                     'question_type' => $templateItem->question_type,
                     'order' => $templateItem->order,
                     'required_readings' => $templateItem->required_readings,
                     'completed' => $isCompleted,
-                    'readings' => $readingsJson,
+                    'as_found_readings' => $asFoundReadings,
+                    'as_left_readings' => $asLeftReadings,
+                    'adjusted' => $adjusted,
                     'result' => $resultItem,
                     'notes' => $notesItem,
                     'reference_standard_id' => $standardId,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
+                ]);
             }
 
-            ChecklistItem::insert($checklistItemsData);
-
             // 4. Link checklist and trigger model events
-            $calibration->update(['checklist_id' => $checklist->id]);
-            $calibration->touch();
+            $calibration->checklist_id = $checklist->id;
+            $calibration->saveQuietly();
+            $calibration->setRelation('checklist', $checklist);
 
             return $calibration;
         });
