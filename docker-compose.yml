@@ -110,5 +110,14 @@ services:
         depends_on:
             - app
 
+    ml-service:
+        build:
+            context: ./Modules/IoT/ml_service
+            dockerfile: Dockerfile
+        container_name: amemiya-ml-service
+        ports:
+            - "5001:8000"
+        restart: unless-stopped
+
 volumes:
     db_data:
