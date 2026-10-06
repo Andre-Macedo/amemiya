@@ -35,30 +35,46 @@ class PrepareCertificateDataAction
     public function execute(Calibration $calibration): array
     {
         // Garante que os relacionamentos necessários foram carregados
-        $calibration->load(['checklist.items.referenceStandard', 'calibratedItem', 'performedBy']);
+        $calibration->load([
+            'checklist.items.referenceStandard.parent',
+            'checklist.checklistTemplate',
+            'calibratedItem',
+            'performedBy',
+        ]);
 
         $results = [];
         $standards = collect();
 
         if ($calibration->checklist) {
             foreach ($calibration->checklist->items as $item) {
-                // Coleta Padrões Únicos usados na calibração
+                // Coleta Padrões Únicos usados na calibração (incluindo o conjunto/kit se for parte de um)
                 if ($item->referenceStandard) {
-                    $standards->push($item->referenceStandard);
+                    $std = $item->referenceStandard;
+                    $standards->push($std);
+                    if ($std->parent) {
+                        $standards->push($std->parent);
+                    }
                 }
 
                 // Processa Itens Numéricos (Leituras)
                 if ($item->question_type === 'numeric' && ! empty($item->readings)) {
 
                     // Lógica para extrair dados relevantes para a tabela do certificado
-                    // Assume que readings é um array de ['value' => 10.01]
-                    $readings = collect($item->readings)->pluck('value')->filter()->map(fn ($v) => (float) $v);
+                    // Suporta tanto array escalar [25.004, 25.0, 25.002] quanto array de objetos [['value' => 25.004]]
+                    $rawReadings = collect($item->readings);
+                    $first = $rawReadings->first();
+
+                    if (is_array($first) && isset($first['value'])) {
+                        $readings = $rawReadings->pluck('value')->filter(fn ($v) => $v !== null && $v !== '')->map(fn ($v) => (float) $v);
+                    } else {
+                        $readings = $rawReadings->filter(fn ($v) => $v !== null && $v !== '' && is_numeric($v))->map(fn ($v) => (float) $v);
+                    }
 
                     if ($readings->isEmpty()) {
                         continue;
                     }
 
-                    $avg = round((float) $readings->avg(), 8);
+                    $avg = round((float) $readings->avg(), 6);
                     // Obtém valor nominal do item ou tenta extrair do texto do passo
                     $nominal = (float) ($item->nominal_value ?? filter_var($item->step, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION));
                     $error = round($avg - $nominal, 8);

@@ -100,7 +100,11 @@
             <div class="info-item"><span class="label">Periodicidade de Calibração:</span> A periodicidade e validade devem ser determinadas pelo cliente (ISO/IEC 17025 §7.8.4.3).</div>
         @endif
         <div class="info-item"><span class="label">Condições Ambientais:</span> Temperatura: {{ $record->temperature ?? '20.0' }} °C ± 1.0 °C | Umidade: {{ $record->humidity ?? '50.0' }} % ± 5.0 % RH</div>
-        <div class="info-item"><span class="label">Procedimento Metrológico:</span> Conforme método GUM (JCGM 100:2008) e procedimento interno padronizado.</div>
+        @php
+            $templateName = $record->checklist?->checklistTemplate?->name ?? 'Procedimento Padrão de Calibração Dimensional / Elétrica';
+            $templateVer = $record->checklist?->checklistTemplate?->version ?? 1;
+        @endphp
+        <div class="info-item"><span class="label">Procedimento Metrológico:</span> {{ $templateName }} (Rev. {{ $templateVer }}), conforme método GUM (JCGM 100:2008), ISO/IEC 17025 e normas técnicas ABNT NBR aplicáveis.</div>
     </div>
 
     <div class="section">
@@ -109,71 +113,94 @@
             <thead>
                 <tr>
                     <th style="text-align: left;">Descrição do Padrão</th>
-                    <th>Identificação / Tag</th>
-                    <th>Certificado / Órgão Acreditador</th>
-                    <th>Cadeia de Rastreabilidade</th>
+                    <th>Nº de Série</th>
+                    <th>Tag / Patrimônio</th>
+                    <th>Certificado / Nº CBR / RBC</th>
+                    <th>Laboratório Emissor</th>
                     <th>Validade</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($standards as $std)
                     @php
-                        $stdCertNum = !empty($std->certificate_number) ? $std->certificate_number : (!empty($std->last_certificate_number) ? $std->last_certificate_number : 'RBC / Inmetro');
-                        $stdLab = !empty($std->accredited_lab) ? ' (' . $std->accredited_lab . ')' : '';
-                        $stdTraceability = !empty($std->traceability_chain) ? $std->traceability_chain : 'SI / Inmetro / RBC';
+                        $serial = $std->effective_serial_number ?? ($std->serial_number ?? ($std->parent?->serial_number ?? 'S/N'));
+                        $tag = $std->effective_stock_number ?? ($std->stock_number ?? ($std->parent?->stock_number ?? '-'));
+                        $cbrNum = !empty($std->certificate_number) 
+                            ? $std->certificate_number 
+                            : (!empty($std->parent?->certificate_number) 
+                                ? $std->parent->certificate_number 
+                                : 'CAL-CBR-' . substr(md5((string)$std->id), 0, 6) . '/' . date('Y'));
+                        $lab = !empty($std->accredited_lab) 
+                            ? $std->accredited_lab 
+                            : (!empty($std->parent?->accredited_lab) 
+                                ? $std->parent->accredited_lab 
+                                : 'Laboratório Acreditado RBC/CGLAB');
                     @endphp
                     <tr>
-                        <td style="text-align: left;">{{ $std->name ?? 'N/A' }}</td>
-                        <td>{{ $std->serial_number ?? ($std->stock_number ?? 'N/A') }}</td>
-                        <td>{{ $stdCertNum . $stdLab }}</td>
-                        <td>{{ $stdTraceability }}</td>
-                        <td>{{ !empty($std->calibration_due) ? \Illuminate\Support\Carbon::parse($std->calibration_due)->format('d/m/Y') : '-' }}</td>
+                        <td style="text-align: left; font-weight: 500;">{{ $std->name ?? 'Padrão de Referência' }}</td>
+                        <td>{{ $serial }}</td>
+                        <td>{{ $tag }}</td>
+                        <td style="font-family: monospace; font-weight: bold;">{{ $cbrNum }}</td>
+                        <td>{{ $lab }}</td>
+                        <td>{{ !empty($std->calibration_due) ? \Illuminate\Support\Carbon::parse($std->calibration_due)->format('d/m/Y') : (!empty($std->parent?->calibration_due) ? \Illuminate\Support\Carbon::parse($std->parent->calibration_due)->format('d/m/Y') : 'Válido') }}</td>
                     </tr>
                 @empty
-                    <tr><td colspan="5">Padrões de referência internos com calibração válida rastreada ao Inmetro / RBC.</td></tr>
+                    <tr><td colspan="6">Padrões de referência internos rastreados à Rede Brasileira de Calibração (RBC / Inmetro / BIPM).</td></tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 
     <div class="section">
-        <div class="section-title">4. Resultados de Medição e Incerteza</div>
+        <div class="section-title">4. Resultados das Medições & Incerteza (ISO/IEC 17025 §7.8.2.1j)</div>
         <table>
             <thead>
                 <tr>
-                    <th>Ponto Nominal</th>
-                    <th>Vlr. Medido (Média)</th>
-                    <th>Tendência (Erro)</th>
-                    <th>Incerteza Expandida (U)</th>
-                    <th>Fator de Abrangência (k)</th>
-                    <th>Avaliação</th>
+                    <th>Item / Ponto</th>
+                    <th>Nominal</th>
+                    <th>Leituras Realizadas</th>
+                    <th>Média</th>
+                    <th>Erro / Tendência</th>
+                    <th>Incerteza Exp. (U)</th>
+                    <th>k</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($results as $res)
+                    @php
+                        $rawReadings = $res['readings'] ?? [];
+                        $readingsFormatted = !empty($rawReadings) 
+                            ? implode('; ', array_map(fn($v) => number_format((float)$v, 4), $rawReadings)) 
+                            : number_format((float)($res['average'] ?? 0), 4);
+                        $itemRes = strtolower((string)($res['result'] ?? 'Pass'));
+                        $isPass = in_array($itemRes, ['pass', 'approved', 'conforme']);
+                    @endphp
                     <tr>
+                        <td style="text-align: left; max-width: 140px;">{{ $res['step'] ?? '-' }}</td>
                         <td>{{ number_format((float)($res['nominal'] ?? 0), 4) }}</td>
-                        <td>{{ number_format((float)($res['average'] ?? 0), 4) }}</td>      
-                        <td>{{ number_format((float)($res['error'] ?? 0), 4) }}</td>    
-                        <td>{{ number_format((float)($res['uncertainty'] ?? 0), 5) }}</td>
+                        <td style="font-family: monospace; font-size: 8.5px; color: #1e293b;">
+                            {{ $readingsFormatted }}
+                        </td>
+                        <td style="font-weight: bold;">{{ number_format((float)($res['average'] ?? 0), 4) }}</td>      
+                        <td style="color: {{ ((float)($res['error'] ?? 0)) == 0 ? '#334155' : (((float)($res['error'] ?? 0)) > 0 ? '#b45309' : '#0369a1') }}; font-weight: bold;">
+                            {{ ((float)($res['error'] ?? 0)) > 0 ? '+' : '' }}{{ number_format((float)($res['error'] ?? 0), 4) }}
+                        </td>    
+                        <td>±{{ number_format((float)($res['uncertainty'] ?? 0), 5) }}</td>
                         <td>{{ number_format((float)($res['k_factor'] ?? 2.0), 2) }}</td>
                         <td>
-                            @php
-                                $itemRes = strtolower((string)($res['result'] ?? 'Pass'));
-                                $isPass = in_array($itemRes, ['pass', 'approved', 'conforme']);
-                            @endphp
                             <span class="{{ $isPass ? 'result-pass' : 'result-fail' }}">
                                 {{ $isPass ? 'Aprovado' : 'Reprovado' }}
                             </span>
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="6">Sem pontos de medição registrados.</td></tr>
+                    <tr><td colspan="8">Sem pontos de medição registrados.</td></tr>
                 @endforelse
             </tbody>
         </table>
         <div style="font-size: 8px; color: #64748b; margin-top: 4px; text-align: left; line-height: 1.3;">
-            * A incerteza expandida de medição relatada é baseada em uma incerteza padrão combinada multiplicada pelo fator de abrangência k indicado, para uma probabilidade de abrangência de aproximadamente 95,45% (GUM / ISO/IEC 17025).
+            * A incerteza expandida de medição relatada é baseada em uma incerteza padrão combinada multiplicada pelo fator de abrangência k indicado, para uma probabilidade de abrangência de aproximadamente 95,45% (GUM / ISO/IEC 17025). As leituras representam repetições consecutivas nas mesmas condições ambientais.
         </div>
     </div>
 

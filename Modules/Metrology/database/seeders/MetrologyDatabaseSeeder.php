@@ -142,18 +142,25 @@ class MetrologyDatabaseSeeder extends Seeder
         $calibratorMesa = ReferenceStandard::create([
             'name' => 'Calibrador de Relógio (Mesa Micrométrica)',
             'stock_number' => 'CAL-001',
+            'serial_number' => 'SN-CAL-2024-88',
+            'certificate_number' => 'CBR-10492/2025',
+            'accredited_lab' => 'CertiLab Metrologia RBC nº 0241',
+            'traceability_chain' => 'Inmetro / RBC / BIPM',
             'reference_standard_type_id' => $typeCalibrator->id,
             'calibration_due' => now()->addMonths(12),
         ]);
 
         // --- CENÁRIO A: KIT DE BLOCOS (Gauge Block Set) ---
         $kitBlocos = ReferenceStandard::create([
-            'name' => 'Jogo de Blocos Padrão (47 Peças)',
+            'name' => 'Jogo de Blocos Padrão Grau 0 (47 Peças)',
             'stock_number' => 'JB-001',
-            'serial_number' => 'SN-KIT-999',
+            'serial_number' => 'SN-MIT-470092',
+            'certificate_number' => 'CBR-08421/2025',
+            'accredited_lab' => 'Mitutoyo Sul Americana RBC nº 0015',
+            'traceability_chain' => 'Inmetro / RBC / PTB (Alemanha)',
             'reference_standard_type_id' => $typeBlockSet->id,
             'calibration_due' => now()->addMonths(12),
-            'is_kit' => true, // Se tiver criado a coluna na migration
+            'is_kit' => true,
         ]);
 
         // Criar os Filhos (Peças do Kit usadas nos checklists)
