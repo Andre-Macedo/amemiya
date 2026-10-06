@@ -53,10 +53,16 @@ class IoTHistoryApiController extends Controller
             $confidence = (float) ($record->ml_confidence ?? 0.99);
             $isAnomaly = $record->ml_status === 'anomaly';
 
+            $rpm = isset($features['rpm']) ? (float) $features['rpm'] : (isset($record->rotation_rpm) ? (float) $record->rotation_rpm : 1750.0);
+            $acousticDb = isset($features['acoustic_db']) ? (float) $features['acoustic_db'] : 72.5;
+            $probeTemp = isset($features['probe_temperature']) ? (float) $features['probe_temperature'] : (isset($features['temperature']) ? (float) $features['temperature'] : 24.5);
+
             return array_merge($record->toArray(), [
                 'timestamp' => $record->measured_at?->toIso8601String() ?? $record->created_at?->toIso8601String(),
-                'temperature' => isset($features['temperature']) ? (float) $features['temperature'] : 20.0,
-                'humidity' => isset($features['humidity']) ? (float) $features['humidity'] : 50.0,
+                'probe_temperature' => $probeTemp,
+                'temperature' => $probeTemp,
+                'rpm_measured' => $rpm,
+                'acoustic_db' => $acousticDb,
                 'vibration_rms' => (float) ($record->rms_global ?? 0.0),
                 'accel_x' => (float) ($record->rms_x ?? 0.0),
                 'accel_y' => (float) ($record->rms_y ?? 0.0),
