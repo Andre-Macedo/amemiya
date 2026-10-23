@@ -90,6 +90,8 @@ services:
         command: php artisan queue:work --verbose --tries=3 --timeout=90
         volumes:
             - ./:/var/www/html:cached
+            - /var/www/html/vendor
+            - /var/www/html/node_modules
         depends_on:
             - db
             - redis
