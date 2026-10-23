@@ -1,0 +1,38 @@
+Categoria;Item;Referencia_KiCad;Especificacao_Tecnica;Quantidade;Localizacao;Termo_Busca_MercadoLivre
+Caixa/Gabinete;Quadro de Comando com Placa de Montagem;-;Chapa de Aco Carbono IP54/IP65 ou Plastica ABS. Dimensoes minimas: 300x200x150 mm (Profundidade util minima 150 mm);1 un;Caixa;quadro de comando 300x200x150 placa montagem
+Protecao;Disjuntor Bipolar;Q1;2 Polos, Curva C, 10A, 4.5kA/6kA, Fixacao Trilho DIN;1 un;Trilho DIN Superior;disjuntor bipolar 10a curva c steck weg
+Protecao;Porta-Fusivel Trilho DIN;F1, F2;Base seccionavel para cartucho 10x38 mm (Bipolar ou 2x Unipolar);1 kit;Trilho DIN Superior;porta fusivel trilho din 10x38
+Protecao;Fusivel Cilindrico 10x38;F1, F2;Fusivel de acao rapida / gG 2A 250V/500V;2 un;Trilho DIN Superior;fusivel 10x38 2a
+Alimentacao;Fonte Chaveada 24V;T1;Entrada 100-240V AC, Saida 24V DC / 2.5A a 3A (60W a 75W). Formato Trilho DIN ou Colmeia;1 un;Trilho DIN Superior;fonte trilho din 24v 2.5a
+Comando/Potencia;Contator Tripolar/Bipolar;K1;Bobina 24V DC (CC), 9A AC-3, 1 Contato Auxiliar NA Integrado (13-14);1 un;Trilho DIN Superior;contator steck 24vcc 9a 1na sk1
+Comando/Potencia;Bloco Supressor de Bobina;-;Diodo de protecao contra surto 24V DC (1N4007 ou bloco DI-D);1 un;Trilho DIN Superior;bloco supressor diodo contator 24vcc
+Potencia;Modulo Dimmer AC 220V;DIM1;Regulador de Tensao TRIAC 2000W ou 4000W 220V AC c/ potenciometro;1 un;Trilho DIN Inferior;modulo dimmer 220v 2000w triac bta41
+Conexao;Bornes de Passagem (Fase/Neutro);TB1, TB2, TB4, TB5;Borne tipo SAK / Mola parafuso para trilho DIN 2.5 mm2 a 4 mm2 Cinza;4 un;Trilho DIN Inferior;borne passagem sak 2.5mm cinza
+Conexao;Borne de Passagem (Terra PE);TB3, TB6;Borne de aterramento direto no trilho DIN Verde-Amarelo 2.5 mm2 a 4 mm2;2 un;Trilho DIN Inferior;borne terra trilho din verde amarelo 4mm
+Conexao;Bornes de Comando (Opcionais);-;Borne tipo SAK 2.5 mm2 para tampa, sensor e barramentos 24V/0V;6 a 8 un;Trilho DIN Inferior;borne sak 2.5mm cinza conexel wago
+Conexao;Poste de Fixacao (Parada Final);-;Trava de fixacao lateral para trilho DIN TS-35;4 un;Trilho DIN;poste final trilho din parada borne sak
+Conexao;Tampa Final de Borne;-;Placa de fechamento lateral para ultimo borne da regua;2 un;Trilho DIN;tampa final borne sak 2.5mm
+Montagem;Trilho DIN 35 mm;-;Perfil aco zincado perfurado TS-35 (30 a 50 cm);1 un;Placa de Montagem;trilho din 35mm perfurado 50cm
+Montagem;Canaleta Ranhurada;-;Canaleta de fiacao cinza recortada 30x30 mm (barra de 1m a 2m);1 barra;Placa de Montagem;canaleta ranhurada 30x30 cinza dutoplast
+Interface Porta;Botao de Emergencia Cogumelo;S0;Furacao 22 mm, Cabeca 40 mm, c/ trava girar p/ soltar, Bloco 1NF;1 un;Porta Frontal;botao emergencia 22mm girar destravar 1nf
+Interface Porta;Botao Pulsador Liga;S1;Furacao 22 mm, Faceado Verde, Retorno por mola, Bloco 1NA;1 un;Porta Frontal;botao pulsador 22mm verde 1na
+Interface Porta;Botao Pulsador Desliga;S0 (Manual);Furacao 22 mm, Faceado Vermelho, Retorno por mola, Bloco 1NF;1 un;Porta Frontal;botao pulsador 22mm vermelho 1nf
+Interface Porta;Sinaleiro LED Verde;DS1 (H2);Monobloco LED 22 mm, 24V DC/AC, Cor Verde (Motor Operando);1 un;Porta Frontal;sinaleiro led 22mm 24v verde
+Interface Porta;Sinaleiro LED Vermelho;DS2 (H3);Monobloco LED 22 mm, 24V DC/AC, Cor Vermelha (Tampa Aberta);1 un;Porta Frontal;sinaleiro led 22mm 24v vermelho
+Interface Porta;Tacometro Digital de Painel;DISP1;Display LED 4 digitos CF5135B, 12V-24V DC, entrada NPN. Rasgo 76x39 mm;1 un;Porta Frontal;tacometro digital cf5135b rpm led
+Interface Porta;Knob Dial Potenciometro;-;Manipulador graduado (0-100%) para eixo 6 mm do potenciometro do dimmer;1 un;Porta Frontal;knob potenciometro 6mm dial escala
+Campo/Externo;Motor Monofasico;M1;Motor de Tanquinho 220V ~1/4 CV (180W a 250W), 4 polos (~1650-1750 RPM);1 un;Bancada;motor tanquinho 1/4 cv 220v
+Campo/Externo;Capacitor Permanente;C_MOT;Capacitor de Trabalho em polipropileno 12 uF a 15 uF / 450 VAC;1 un;Bancada / Proximo ao motor;capacitor permanente 12uf 450vac motor tanquinho
+Campo/Externo;Microswitch de Seguranca da Tampa;SQ_TAMPA;Fim de curso SPDT (COM, NC, NO) com alavanca e roldana metalica;1 un;Tampa da Maquina;micro switch alavanca roldana spdt 15a
+Campo/Externo;Sensor Hall RPM;SEN_HALL;Sensor Magnetico NJK-5002C M12 NPN NA (6-36V DC) 3 fios;1 un;Eixo / Polia;sensor hall njk-5002c m12 npn
+Campo/Externo;Ima de Neodimio;-;Pastilha de neodimio N35/N50 disco 10x3 mm;2 un;Eixo / Polia;ima neodimio disco 10x3mm
+Acessorios;Prensa-cabo M20 (ou PG13.5);-;Passagem com vedacao para cabo de rede 220V e cabo do motor;2 un;Fundo da Caixa;prensa cabo m20
+Acessorios;Prensa-cabo M16 (ou PG9/PG11);-;Passagem com vedacao para cabo do sensor Hall e cabo da tampa;2 un;Fundo da Caixa;prensa cabo m16
+Fiacao;Cabo Flexivel 2.5 mm2 Preto;-;Condutor de fase circuito de forca 220V;5 metros;Canaletas / Trilho;cabo flexivel 2.5mm preto
+Fiacao;Cabo Flexivel 2.5 mm2 Azul Claro;-;Condutor neutro / fase 2 circuito de forca;3 metros;Canaletas / Trilho;cabo flexivel 2.5mm azul
+Fiacao;Cabo Flexivel 2.5 mm2 Verde-Amarelo;-;Condutor de aterramento de protecao PE;4 metros;Canaletas / Trilho;cabo flexivel 2.5mm verde amarelo
+Fiacao;Cabo Flexivel 0.75 mm2 Vermelho;-;Condutor de comando positivo +24V DC;10 metros;Canaletas / Porta;cabo flexivel 0.75mm vermelho
+Fiacao;Cabo Flexivel 0.75 mm2 Preto ou Azul Escuro;-;Condutor de comando negativo 0V DC / GND;10 metros;Canaletas / Porta;cabo flexivel 0.75mm preto
+Fiacao;Terminais Ilhos Tubular 2.5 mm2;-;Ponteira pre-isolada simples para bornes e forca;25 un;Conexoes de forca;terminal ilhos tubular 2.5mm
+Fiacao;Terminais Ilhos Tubular 0.75 mm2;-;Ponteira pre-isolada simples para comando e porta;50 un;Conexoes de comando;terminal ilhos tubular 0.75mm
+Fiacao;Espiral Organizadora (Espaguete);-;Protecao flexivel para chicote da articulacao da porta (1/2 pol);1 metro;Articulacao da Porta;espiral organizador cabos spiral tube
