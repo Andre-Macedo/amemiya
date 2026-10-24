@@ -46,11 +46,13 @@ Este documento consolida todos os itens necessários para montagem do painel el�
 
 | Item | Identificador KiCad | Descrição Técnica / Especificação | Qtd | Termo Exato de Busca |
 | :--- | :--- | :--- | :---: | :--- |
-| **Botão de Emergência** | `S0` | Furação 22 mm, Cabeça tipo Cogumelo 40 mm, Com retenção (Girar para destravar / Turn-to-reset), **1 Bloco NF (Vermelho)** | 1 | `botao emergencia 22mm girar destravar 1nf` |
-| **Botão Pulsador Liga** | `S1` | Furação 22 mm, Faceado, Cor Verde, Mola de retorno, **1 Bloco NA (Verde - pinos 3-4)** | 1 | `botao pulsador 22mm verde 1na` |
-| **Botão Pulsador Desliga** | `S0` (Manual) | Furação 22 mm, Faceado, Cor Vermelha, Mola de retorno, **1 Bloco NF (Vermelho - pinos 1-2)** | 1 | `botao pulsador 22mm vermelho 1nf` |
-| **Sinaleiro LED Verde** | `DS1` (H2) | Monobloco LED 22 mm, Alimentação **24V DC/AC**, Cor Verde (Indica: Motor Operando) | 1 | `sinaleiro led 22mm 24v verde` |
-| **Sinaleiro LED Vermelho** | `DS2` (H3) | Monobloco LED 22 mm, Alimentação **24V DC/AC**, Cor Vermelha (Indica: Alarme Tampa Aberta) | 1 | `sinaleiro led 22mm 24v vermelho` |
+| **Botão de Emergência** | `S0` | Furação 22 mm, Cabeça tipo Cogumelo 40 mm, Com retenção (Girar para destravar), **1 Bloco NF (Segurança) + 1 Bloco NA (Sinalização LED)** | 1 | `botao emergencia 22mm girar destravar 1nf 1na` |
+| **Botão Pulsador Liga** | `S_ON` | Furação 22 mm, Faceado, Cor Verde, Mola de retorno, **1 Bloco NA (pinos 13-14)** | 1 | `botao pulsador 22mm verde 1na` |
+| **Botão Pulsador Desliga** | `S_OFF` | Furação 22 mm, Faceado, Cor Vermelha, Mola de retorno, **1 Bloco NF (pinos 11-12)** | 1 | `botao pulsador 22mm vermelho 1nf` |
+| **Sinaleiro LED Branco** | `H1` | Monobloco LED 22 mm, Alimentação **24V DC**, Cor Branca (Indica: Painel 24V Energizado / Standby) | 1 | `sinaleiro led 22mm 24v branco` |
+| **Sinaleiro LED Verde** | `H2` | Monobloco LED 22 mm, Alimentação **24V DC**, Cor Verde (Indica: Motor em Marcha) | 1 | `sinaleiro led 22mm 24v verde` |
+| **Sinaleiro LED Amarelo** | `H3` | Monobloco LED 22 mm, Alimentação **24V DC**, Cor Amarela/Âmbar (Indica: Alarme Tampa Aberta) | 1 | `sinaleiro led 22mm 24v amarelo` |
+| **Sinaleiro LED Vermelho** | `H4` | Monobloco LED 22 mm, Alimentação **24V DC**, Cor Vermelha (Indica: Emergência Acionada / Bloqueio) | 1 | `sinaleiro led 22mm 24v vermelho` |
 | **Tacômetro Digital de Painel** | `DISP1` | Modelo CF5135B (ou similar 4 dígitos LED vermelho/azul), Tensão 12V-24V DC, Entrada de pulso NPN. Rasgo frontal ~ 79 x 42 mm | 1 | `tacometro digital cf5135b rpm led` |
 | **Knob / Dial de Potenciômetro** | — | Knob graduado (0-100%) para eixo de 6 mm do potenciômetro do Dimmer | 1 | `knob potenciometro 6mm dial escala` |
 

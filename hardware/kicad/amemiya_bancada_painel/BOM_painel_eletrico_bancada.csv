@@ -14,11 +14,13 @@ Conexao;Poste de Fixacao (Parada Final);-;Trava de fixacao lateral para trilho D
 Conexao;Tampa Final de Borne;-;Placa de fechamento lateral para ultimo borne da regua;2 un;Trilho DIN;tampa final borne sak 2.5mm
 Montagem;Trilho DIN 35 mm;-;Perfil aco zincado perfurado TS-35 (30 a 50 cm);1 un;Placa de Montagem;trilho din 35mm perfurado 50cm
 Montagem;Canaleta Ranhurada;-;Canaleta de fiacao cinza recortada 30x30 mm (barra de 1m a 2m);1 barra;Placa de Montagem;canaleta ranhurada 30x30 cinza dutoplast
-Interface Porta;Botao de Emergencia Cogumelo;S0;Furacao 22 mm, Cabeca 40 mm, c/ trava girar p/ soltar, Bloco 1NF;1 un;Porta Frontal;botao emergencia 22mm girar destravar 1nf
-Interface Porta;Botao Pulsador Liga;S1;Furacao 22 mm, Faceado Verde, Retorno por mola, Bloco 1NA;1 un;Porta Frontal;botao pulsador 22mm verde 1na
-Interface Porta;Botao Pulsador Desliga;S0 (Manual);Furacao 22 mm, Faceado Vermelho, Retorno por mola, Bloco 1NF;1 un;Porta Frontal;botao pulsador 22mm vermelho 1nf
-Interface Porta;Sinaleiro LED Verde;DS1 (H2);Monobloco LED 22 mm, 24V DC/AC, Cor Verde (Motor Operando);1 un;Porta Frontal;sinaleiro led 22mm 24v verde
-Interface Porta;Sinaleiro LED Vermelho;DS2 (H3);Monobloco LED 22 mm, 24V DC/AC, Cor Vermelha (Tampa Aberta);1 un;Porta Frontal;sinaleiro led 22mm 24v vermelho
+Interface Porta;Botao de Emergencia Cogumelo;S0;Furacao 22 mm, Cabeca 40 mm, c/ trava girar p/ soltar, Blocos 1NF (Seguranca) + 1NA (LED);1 un;Porta Frontal;botao emergencia 22mm girar destravar 1nf 1na
+Interface Porta;Botao Pulsador Liga;S_ON;Furacao 22 mm, Faceado Verde, Retorno por mola, Bloco 1NA;1 un;Porta Frontal;botao pulsador 22mm verde 1na
+Interface Porta;Botao Pulsador Desliga;S_OFF;Furacao 22 mm, Faceado Vermelho, Retorno por mola, Bloco 1NF;1 un;Porta Frontal;botao pulsador 22mm vermelho 1nf
+Interface Porta;Sinaleiro LED Branco;H1;Monobloco LED 22 mm, 24V DC, Cor Branca (Painel Energizado / Standby);1 un;Porta Frontal;sinaleiro led 22mm 24v branco
+Interface Porta;Sinaleiro LED Verde;H2;Monobloco LED 22 mm, 24V DC, Cor Verde (Motor em Marcha);1 un;Porta Frontal;sinaleiro led 22mm 24v verde
+Interface Porta;Sinaleiro LED Amarelo;H3;Monobloco LED 22 mm, 24V DC, Cor Amarela (Alarme Tampa Aberta);1 un;Porta Frontal;sinaleiro led 22mm 24v amarelo
+Interface Porta;Sinaleiro LED Vermelho;H4;Monobloco LED 22 mm, 24V DC, Cor Vermelha (Emergencia Acionada);1 un;Porta Frontal;sinaleiro led 22mm 24v vermelho
 Interface Porta;Tacometro Digital de Painel;DISP1;Display LED 4 digitos CF5135B, 12V-24V DC, entrada NPN. Rasgo 76x39 mm;1 un;Porta Frontal;tacometro digital cf5135b rpm led
 Interface Porta;Knob Dial Potenciometro;-;Manipulador graduado (0-100%) para eixo 6 mm do potenciometro do dimmer;1 un;Porta Frontal;knob potenciometro 6mm dial escala
 Campo/Externo;Motor Monofasico;M1;Motor de Tanquinho 220V ~1/4 CV (180W a 250W), 4 polos (~1650-1750 RPM);1 un;Bancada;motor tanquinho 1/4 cv 220v

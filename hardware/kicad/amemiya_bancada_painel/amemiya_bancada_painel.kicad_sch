@@ -1,6079 +1,1504 @@
 (kicad_sch
-	(version 20250114)
-	(generator "eeschema")
-	(generator_version "9.0")
-	(uuid "b7a24c10-5321-4d92-94b2-a4f5b8209301")
-	(paper "A3")
-	(title_block
-		(title "Painel Eletrico Bancada de Testes (NR-10 / NR-12)")
-		(date "2026-10-19")
-		(rev "v2.1")
-		(company "Lean Tech Metrology & Industrial IoT Solutions")
-		(comment 1 "Motor 220V Tanquinho c/ Dimmer TRIAC e Cap. Permanente")
-		(comment 2 "Fonte 24V DC + Tacometro Digital CF5135B / NJK-5002C")
-		(comment 3 "Seguranca NR-12: Botao Emergencia + Microswitch Tampa")
-	)
-	(lib_symbols
-		(symbol "Industrial:CircuitBreaker_2P"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "Q"
-				(at -8 0 90)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "Disjuntor_2P"
-				(at 8 0 90)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "CircuitBreaker_2P_0_1"
-				(rectangle
-					(start -8 6)
-					(end 8 -6)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(polyline
-					(pts
-						(xy -6.5 -0.5) (xy 3.5 -0.5)
-					)
-					(stroke
-						(width 0.15)
-						(type dash)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -5 5) (xy -5 1.5) (xy -6.5 -1.5) (xy -5 -5)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 5 5) (xy 5 1.5) (xy 3.5 -1.5) (xy 5 -5)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "CircuitBreaker_2P_1_1"
-				(pin passive line
-					(at -5 7.62 270)
-					(length 2.54)
-					(name "1"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -5 -7.62 90)
-					(length 2.54)
-					(name "2"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 5 7.62 270)
-					(length 2.54)
-					(name "3"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 5 -7.62 90)
-					(length 2.54)
-					(name "4"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-					(number "4"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Industrial:Contactor_Aux_NC"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "K"
-				(at 4 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "K1_NF_21-22"
-				(at 4 -2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "Contactor_Aux_NC_0_1"
-				(circle
-					(center -2 0)
-					(radius 0.5)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2 -0.5) (xy 1.5 -0.5)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 2 0)
-					(radius 0.5)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "Contactor_Aux_NC_1_1"
-				(pin passive line
-					(at 0 5.08 270)
-					(length 2.54)
-					(name "21"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-					(number "21NF"
-						(effects
-							(font
-								(size 0.85 0.85)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -5.08 90)
-					(length 2.54)
-					(name "22"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-					(number "22NF"
-						(effects
-							(font
-								(size 0.85 0.85)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Industrial:Contactor_Aux_NO"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "K"
-				(at 4 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "K1_NA_13-14"
-				(at 4 -2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "Contactor_Aux_NO_0_1"
-				(polyline
-					(pts
-						(xy -2 0.5) (xy 1.5 2)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center -2 0)
-					(radius 0.5)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 2 0)
-					(radius 0.5)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "Contactor_Aux_NO_1_1"
-				(pin passive line
-					(at 0 5.08 270)
-					(length 2.54)
-					(name "13"
-						(effects
-							(font
-								(size 0.7 0.7)
-							)
-						)
-					)
-					(number "13NA"
-						(effects
-							(font
-								(size 0.85 0.85)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -5.08 90)
-					(length 2.54)
-					(name "14"
-						(effects
-							(font
-								(size 0.7 0.7)
-							)
-						)
-					)
-					(number "14NA"
-						(effects
-							(font
-								(size 0.85 0.85)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Industrial:Contactor_Coil_24V"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "K"
-				(at 5 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "Bobina_24VDC"
-				(at 5 -2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "Contactor_Coil_24V_0_1"
-				(rectangle
-					(start -4 4)
-					(end 4 -4)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(polyline
-					(pts
-						(xy -4 -4) (xy 4 4)
-					)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(rectangle
-					(start 4 3)
-					(end 14 -3)
-					(stroke
-						(width 0.2)
-						(type dash)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(text "K1"
-					(at -1.2 1.2 0)
-					(effects
-						(font
-							(size 1.5 1.5)
-							(bold yes)
-						)
-					)
-				)
-				(text "SUPRESSOR"
-					(at 9 1 0)
-					(effects
-						(font
-							(size 0.7 0.7)
-						)
-					)
-				)
-				(text "WEG DI-D"
-					(at 9 -1.2 0)
-					(effects
-						(font
-							(size 0.7 0.7)
-							(bold yes)
-						)
-					)
-				)
-			)
-			(symbol "Contactor_Coil_24V_1_1"
-				(pin passive line
-					(at 0 6.54 270)
-					(length 2.54)
-					(name "A1"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-					(number "A1"
-						(effects
-							(font
-								(size 0.9 0.9)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -6.54 90)
-					(length 2.54)
-					(name "A2"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-					(number "A2"
-						(effects
-							(font
-								(size 0.9 0.9)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Industrial:Contactor_Power_2P"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "K"
-				(at -8 0 90)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "Contator_2P"
-				(at 8 0 90)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "Contactor_Power_2P_0_1"
-				(rectangle
-					(start -8 6)
-					(end 8 -6)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(polyline
-					(pts
-						(xy -6 -0.5) (xy 4 -0.5)
-					)
-					(stroke
-						(width 0.15)
-						(type dash)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -5 5) (xy -5 1.5) (xy -6.9 -2)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center -5 -4.5)
-					(radius 0.6)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 5 5) (xy 5 1.5) (xy 3.1 -2)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 5 -4.5)
-					(radius 0.6)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "Contactor_Power_2P_1_1"
-				(pin passive line
-					(at -5 7.62 270)
-					(length 2.54)
-					(name "1"
-						(effects
-							(font
-								(size 0.7 0.7)
-							)
-						)
-					)
-					(number "1L1"
-						(effects
-							(font
-								(size 0.85 0.85)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at -5 -7.62 90)
-					(length 2.54)
-					(name "2"
-						(effects
-							(font
-								(size 0.7 0.7)
-							)
-						)
-					)
-					(number "2T1"
-						(effects
-							(font
-								(size 0.85 0.85)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 5 7.62 270)
-					(length 2.54)
-					(name "3"
-						(effects
-							(font
-								(size 0.7 0.7)
-							)
-						)
-					)
-					(number "3L2"
-						(effects
-							(font
-								(size 0.85 0.85)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 5 -7.62 90)
-					(length 2.54)
-					(name "4"
-						(effects
-							(font
-								(size 0.7 0.7)
-							)
-						)
-					)
-					(number "4T2"
-						(effects
-							(font
-								(size 0.85 0.85)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Industrial:Dimmer_AC_220V"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "DIM"
-				(at -14 0 90)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "Dimmer_220V"
-				(at 14 0 90)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "Dimmer_AC_220V_0_1"
-				(rectangle
-					(start -10 10)
-					(end 10 -10)
-					(stroke
-						(width 0.3)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(polyline
-					(pts
-						(xy -5 -2.5) (xy 5 4.5)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 0 1)
-					(radius 3.5)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 1) (xy 2.5 3.5)
-					)
-					(stroke
-						(width 0.3)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 3.8 4.5) (xy 5 4.5) (xy 5 3.3)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(text "DIMMER 220V"
-					(at 0 7.5 0)
-					(effects
-						(font
-							(size 1.1 1.1)
-							(bold yes)
-						)
-					)
-				)
-				(text "POT. VELOCIDADE"
-					(at 0 -6.5 0)
-					(effects
-						(font
-							(size 0.9 0.9)
-						)
-					)
-				)
-				(text "TRIAC 0-100%"
-					(at 0 -8.5 0)
-					(effects
-						(font
-							(size 0.8 0.8)
-						)
-					)
-				)
-			)
-			(symbol "Dimmer_AC_220V_1_1"
-				(pin power_in line
-					(at -5 12.54 270)
-					(length 2.54)
-					(name "L_IN"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-				)
-				(pin power_out line
-					(at -5 -12.54 90)
-					(length 2.54)
-					(name "L_OUT"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-				)
-				(pin power_in line
-					(at 5 12.54 270)
-					(length 2.54)
-					(name "N_IN"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-				)
-				(pin power_out line
-					(at 5 -12.54 90)
-					(length 2.54)
-					(name "N_OUT"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-					(number "4"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Industrial:Display_Tacometro_RPM"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "DISP"
-				(at 0 16 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "Tacometro_CF5135B"
-				(at 0 -16 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "Display_Tacometro_RPM_0_1"
-				(rectangle
-					(start -22 14)
-					(end 22 -14)
-					(stroke
-						(width 0.3)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(rectangle
-					(start -18 10)
-					(end 18 0)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(text "1750"
-					(at -4 3 0)
-					(effects
-						(font
-							(size 5 5)
-							(bold yes)
-						)
-					)
-				)
-				(text "TACOMETRO DIGITAL LED (12V-24V DC)"
-					(at 0 -10.5 0)
-					(effects
-						(font
-							(size 1.2 1.2)
-							(bold yes)
-						)
-					)
-				)
-				(text "RPM"
-					(at 12 3 0)
-					(effects
-						(font
-							(size 2 2)
-							(bold yes)
-						)
-					)
-				)
-			)
-			(symbol "Display_Tacometro_RPM_1_1"
-				(pin power_in line
-					(at -24.54 4 0)
-					(length 2.54)
-					(name "VCC_(+)"
-						(effects
-							(font
-								(size 1 1)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1 1)
-							)
-						)
-					)
-				)
-				(pin power_in line
-					(at -24.54 -4 0)
-					(length 2.54)
-					(name "GND_(-)"
-						(effects
-							(font
-								(size 1 1)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1 1)
-							)
-						)
-					)
-				)
-				(pin power_out line
-					(at 24.54 6 180)
-					(length 2.54)
-					(name "+V_SENSOR"
-						(effects
-							(font
-								(size 1 1)
-							)
-						)
-					)
-					(number "4"
-						(effects
-							(font
-								(size 1 1)
-							)
-						)
-					)
-				)
-				(pin input line
-					(at 24.54 0 180)
-					(length 2.54)
-					(name "SINAL_(IN)"
-						(effects
-							(font
-								(size 1 1)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1 1)
-							)
-						)
-					)
-				)
-				(pin power_out line
-					(at 24.54 -6 180)
-					(length 2.54)
-					(name "GND_SENSOR"
-						(effects
-							(font
-								(size 1 1)
-							)
-						)
-					)
-					(number "5"
-						(effects
-							(font
-								(size 1 1)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Industrial:Fuse_Cartridge"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "F"
-				(at 0 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "Fuse_2A"
-				(at 0 -2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "Fuse_Cartridge_0_1"
-				(rectangle
-					(start -3.81 1.27)
-					(end 3.81 -1.27)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(polyline
-					(pts
-						(xy -3.81 0) (xy 3.81 0)
-					)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "Fuse_Cartridge_1_1"
-				(pin passive line
-					(at -6.35 0 0)
-					(length 2.54)
-					(name "1"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 6.35 0 180)
-					(length 2.54)
-					(name "2"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Industrial:Motor_Tanquinho_220V"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "M"
-				(at 0 14 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "Motor_Tanquinho"
-				(at 0 -14 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "Motor_Tanquinho_220V_0_1"
-				(circle
-					(center 0 0)
-					(radius 8.5)
-					(stroke
-						(width 0.3)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(polyline
-					(pts
-						(xy 8.5 2) (xy 12 2)
-					)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 8.5 -2) (xy 12 -2)
-					)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(rectangle
-					(start 12 4)
-					(end 18 -4)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(polyline
-					(pts
-						(xy 13.5 2.5) (xy 16.5 2.5)
-					)
-					(stroke
-						(width 0.3)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 13.5 -2.5) (xy 16.5 -2.5)
-					)
-					(stroke
-						(width 0.3)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(text "M"
-					(at 0 2.5 0)
-					(effects
-						(font
-							(size 3.8 3.8)
-							(bold yes)
-						)
-					)
-				)
-				(text "1~ 220V"
-					(at 0 -1.5 0)
-					(effects
-						(font
-							(size 1.5 1.5)
-							(bold yes)
-						)
-					)
-				)
-				(text "1/4 CV"
-					(at 0 -4.5 0)
-					(effects
-						(font
-							(size 1.2 1.2)
-						)
-					)
-				)
-				(text "C_MOT"
-					(at 15 6 0)
-					(effects
-						(font
-							(size 1 1)
-							(bold yes)
-						)
-					)
-				)
-				(text "12uF"
-					(at 15 -6 0)
-					(effects
-						(font
-							(size 1 1)
-						)
-					)
-				)
-			)
-			(symbol "Motor_Tanquinho_220V_1_1"
-				(pin passive line
-					(at -5 11.04 270)
-					(length 2.54)
-					(name "L1"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 5 11.04 270)
-					(length 2.54)
-					(name "L2/N"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 22 0 180)
-					(length 4)
-					(name "PE"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Industrial:Pilot_Lamp_24V"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "H"
-				(at 5 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "Lamp_24V"
-				(at 5 -2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "Pilot_Lamp_24V_0_1"
-				(polyline
-					(pts
-						(xy -2.69 2.69) (xy 2.69 -2.69)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.69 -2.69) (xy 2.69 2.69)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 0 0)
-					(radius 3.81)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-			)
-			(symbol "Pilot_Lamp_24V_1_1"
-				(pin passive line
-					(at 0 6.35 270)
-					(length 2.54)
-					(name "X1"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-					(number "X1"
-						(effects
-							(font
-								(size 0.9 0.9)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -6.35 90)
-					(length 2.54)
-					(name "X2"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-					(number "X2"
-						(effects
-							(font
-								(size 0.9 0.9)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Industrial:SMPS_24V"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "T"
-				(at 0 16 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "SMPS_24V_2.5A"
-				(at 0 -16 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "SMPS_24V_0_1"
-				(rectangle
-					(start -14 14)
-					(end 14 -14)
-					(stroke
-						(width 0.3)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 14) (xy 0 -14)
-					)
-					(stroke
-						(width 0.15)
-						(type dash)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(text "AC IN"
-					(at -7 8.5 0)
-					(effects
-						(font
-							(size 1.5 1.5)
-							(bold yes)
-						)
-					)
-				)
-				(text "220V"
-					(at -7 5.5 0)
-					(effects
-						(font
-							(size 1.2 1.2)
-						)
-					)
-				)
-				(text "FONTE CHAVEADA"
-					(at 0 -10.5 0)
-					(effects
-						(font
-							(size 1.2 1.2)
-							(bold yes)
-						)
-					)
-				)
-				(text "24V 2.5A"
-					(at 5 5.5 0)
-					(effects
-						(font
-							(size 1.1 1.1)
-						)
-					)
-				)
-				(text "DC OUT"
-					(at 7 8.5 0)
-					(effects
-						(font
-							(size 1.5 1.5)
-							(bold yes)
-						)
-					)
-				)
-			)
-			(symbol "SMPS_24V_1_1"
-				(pin power_in line
-					(at -16.54 5.08 0)
-					(length 2.54)
-					(name "L"
-						(effects
-							(font
-								(size 1 1)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 1 1)
-							)
-						)
-					)
-				)
-				(pin power_in line
-					(at -16.54 0 0)
-					(length 2.54)
-					(name "N"
-						(effects
-							(font
-								(size 1 1)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1 1)
-							)
-						)
-					)
-				)
-				(pin power_in line
-					(at -16.54 -5.08 0)
-					(length 2.54)
-					(name "PE"
-						(effects
-							(font
-								(size 1 1)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1 1)
-							)
-						)
-					)
-				)
-				(pin power_out line
-					(at 16.54 5.08 180)
-					(length 2.54)
-					(name "+24V"
-						(effects
-							(font
-								(size 1 1)
-							)
-						)
-					)
-					(number "4"
-						(effects
-							(font
-								(size 1 1)
-							)
-						)
-					)
-				)
-				(pin power_out line
-					(at 16.54 -5.08 180)
-					(length 2.54)
-					(name "0V"
-						(effects
-							(font
-								(size 1 1)
-							)
-						)
-					)
-					(number "5"
-						(effects
-							(font
-								(size 1 1)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Industrial:SW_Emergency_NC"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "S"
-				(at 4 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "E-STOP"
-				(at 4 -2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "SW_Emergency_NC_0_1"
-				(circle
-					(center -2 0)
-					(radius 0.5)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2 -0.5) (xy 1.5 -0.5)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -1.5 1) (xy 1.5 1)
-					)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 3) (xy 0 1)
-					)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(arc
-					(start -2.54 2.54)
-					(mid 0 4)
-					(end 2.54 2.54)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(circle
-					(center 2 0)
-					(radius 0.5)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "SW_Emergency_NC_1_1"
-				(pin passive line
-					(at 0 5.08 270)
-					(length 2.54)
-					(name "1"
-						(effects
-							(font
-								(size 0.7 0.7)
-							)
-						)
-					)
-					(number "1NF"
-						(effects
-							(font
-								(size 0.85 0.85)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -5.08 90)
-					(length 2.54)
-					(name "2"
-						(effects
-							(font
-								(size 0.7 0.7)
-							)
-						)
-					)
-					(number "2NF"
-						(effects
-							(font
-								(size 0.85 0.85)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Industrial:SW_Limit_Safety_SPDT"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "S_TAMPA"
-				(at -8 2 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify right)
-				)
-			)
-			(property "Value" "CHAVE_TAMPA_SPDT"
-				(at -8 -2 0)
-				(effects
-					(font
-						(size 1.1 1.1)
-					)
-					(justify right)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(symbol "SW_Limit_Safety_SPDT_0_1"
-				(circle
-					(center -2.5 2.5)
-					(radius 0.8)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2.5 1.7) (xy -1 0.8)
-					)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 0 1.8)
-					(radius 0.4)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 1.4) (xy 0 -1.4)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 1.4) (xy 4.1 0.2)
-					)
-					(stroke
-						(width 0.2)
-						(type dash)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 0 -1.8)
-					(radius 0.4)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 4.5 0)
-					(radius 0.4)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "SW_Limit_Safety_SPDT_1_1"
-				(pin passive line
-					(at 0 5.08 270)
-					(length 2.54)
-					(name "COM"
-						(effects
-							(font
-								(size 0.7 0.7)
-							)
-						)
-					)
-					(number "COM"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -5.08 90)
-					(length 2.54)
-					(name "NO"
-						(effects
-							(font
-								(size 0.7 0.7)
-							)
-						)
-					)
-					(number "NO"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 7.62 0 180)
-					(length 2.54)
-					(name "NC"
-						(effects
-							(font
-								(size 0.7 0.7)
-							)
-						)
-					)
-					(number "NC"
-						(effects
-							(font
-								(size 0.8 0.8)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Industrial:SW_Push_NC"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "S"
-				(at 4 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "SW_OFF"
-				(at 4 -2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "SW_Push_NC_0_1"
-				(circle
-					(center -2 0)
-					(radius 0.5)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -2 -0.5) (xy 1.5 -0.5)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -1.5 2.5) (xy 1.5 2.5)
-					)
-					(stroke
-						(width 0.3)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 2.5) (xy 0 0.8)
-					)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 2 0)
-					(radius 0.5)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "SW_Push_NC_1_1"
-				(pin passive line
-					(at 0 5.08 270)
-					(length 2.54)
-					(name "1"
-						(effects
-							(font
-								(size 0.7 0.7)
-							)
-						)
-					)
-					(number "1NF"
-						(effects
-							(font
-								(size 0.85 0.85)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -5.08 90)
-					(length 2.54)
-					(name "2"
-						(effects
-							(font
-								(size 0.7 0.7)
-							)
-						)
-					)
-					(number "2NF"
-						(effects
-							(font
-								(size 0.85 0.85)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Industrial:SW_Push_NO"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "S"
-				(at 4 2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "SW_ON"
-				(at 4 -2.54 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(justify left)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "SW_Push_NO_0_1"
-				(polyline
-					(pts
-						(xy -2 0.5) (xy 1.5 2)
-					)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center -2 0)
-					(radius 0.5)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy -1.5 2.5) (xy 1.5 2.5)
-					)
-					(stroke
-						(width 0.3)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 0 2.5) (xy 0 1)
-					)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 2 0)
-					(radius 0.5)
-					(stroke
-						(width 0.2)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-			)
-			(symbol "SW_Push_NO_1_1"
-				(pin passive line
-					(at 0 5.08 270)
-					(length 2.54)
-					(name "3"
-						(effects
-							(font
-								(size 0.7 0.7)
-							)
-						)
-					)
-					(number "3NA"
-						(effects
-							(font
-								(size 0.85 0.85)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -5.08 90)
-					(length 2.54)
-					(name "4"
-						(effects
-							(font
-								(size 0.7 0.7)
-							)
-						)
-					)
-					(number "4NA"
-						(effects
-							(font
-								(size 0.85 0.85)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Industrial:Sensor_Hall_NJK5002C"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "SEN"
-				(at 0 12 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Value" "NJK-5002C"
-				(at 0 -12 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "Sensor_Hall_NJK5002C_0_1"
-				(rectangle
-					(start -16 9)
-					(end 16 -9)
-					(stroke
-						(width 0.3)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(circle
-					(center 10 0)
-					(radius 2.5)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type outline)
-					)
-				)
-				(polyline
-					(pts
-						(xy 16 8) (xy 16 -8)
-					)
-					(stroke
-						(width 0.6)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(rectangle
-					(start 21 3.5)
-					(end 25 -3.5)
-					(stroke
-						(width 0.3)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-				(polyline
-					(pts
-						(xy 29 8) (xy 29 -8)
-					)
-					(stroke
-						(width 0.5)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(text "HALL"
-					(at -2 2.5 0)
-					(effects
-						(font
-							(size 2 2)
-							(bold yes)
-						)
-					)
-				)
-				(text "NJK-5002C (NPN NA)"
-					(at -2 -2.5 0)
-					(effects
-						(font
-							(size 1.1 1.1)
-						)
-					)
-				)
-				(text "LED"
-					(at 10 -4.5 0)
-					(effects
-						(font
-							(size 0.9 0.9)
-						)
-					)
-				)
-				(text "IMA"
-					(at 23 5.5 0)
-					(effects
-						(font
-							(size 0.9 0.9)
-							(bold yes)
-						)
-					)
-				)
-				(text "EIXO"
-					(at 32 0 90)
-					(effects
-						(font
-							(size 0.8 0.8)
-						)
-					)
-				)
-			)
-			(symbol "Sensor_Hall_NJK5002C_1_1"
-				(pin power_in line
-					(at -18.54 6 0)
-					(length 2.54)
-					(name "MARROM_(+)"
-						(effects
-							(font
-								(size 0.9 0.9)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 0.9 0.9)
-							)
-						)
-					)
-				)
-				(pin output line
-					(at -18.54 0 0)
-					(length 2.54)
-					(name "PRETO_(SIG)"
-						(effects
-							(font
-								(size 0.9 0.9)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 0.9 0.9)
-							)
-						)
-					)
-				)
-				(pin power_in line
-					(at -18.54 -6 0)
-					(length 2.54)
-					(name "AZUL_(GND)"
-						(effects
-							(font
-								(size 0.9 0.9)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 0.9 0.9)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-		(symbol "Industrial:Terminal_Passagem"
-			(exclude_from_sim no)
-			(in_bom yes)
-			(on_board yes)
-			(property "Reference" "TB"
-				(at 3.5 0 0)
-				(effects
-					(font
-						(size 1 1)
-					)
-					(justify left)
-				)
-			)
-			(property "Value" "Borne_DIN"
-				(at 3.5 -2.2 0)
-				(effects
-					(font
-						(size 0.8 0.8)
-					)
-					(justify left)
-				)
-			)
-			(property "Footprint" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Datasheet" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(property "Description" ""
-				(at 0 0 0)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-					(hide yes)
-				)
-			)
-			(symbol "Terminal_Passagem_0_1"
-				(circle
-					(center 0 0)
-					(radius 0.6)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(circle
-					(center 0 0)
-					(radius 1.8)
-					(stroke
-						(width 0.254)
-						(type default)
-					)
-					(fill
-						(type background)
-					)
-				)
-			)
-			(symbol "Terminal_Passagem_1_1"
-				(pin passive line
-					(at 0 3.81 270)
-					(length 2.01)
-					(name "IN"
-						(effects
-							(font
-								(size 0.7 0.7)
-							)
-						)
-					)
-					(number "1"
-						(effects
-							(font
-								(size 0.7 0.7)
-							)
-						)
-					)
-				)
-				(pin passive line
-					(at 0 -3.81 90)
-					(length 2.01)
-					(name "OUT"
-						(effects
-							(font
-								(size 0.7 0.7)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 0.7 0.7)
-							)
-						)
-					)
-				)
-			)
-			(embedded_fonts no)
-		)
-	)
-	(polyline
-		(pts
-			(xy 178 20) (xy 325 20) (xy 325 195) (xy 178 195) (xy 178 20)
-		)
-		(stroke
-			(width 0.4)
-			(type default)
-		)
-		(fill
-			(type none)
-		)
-		(uuid 2865fb9a-d522-4c5f-bbb8-856a8c2124c1)
-	)
-	(polyline
-		(pts
-			(xy 20 20) (xy 95 20) (xy 95 195) (xy 20 195) (xy 20 20)
-		)
-		(stroke
-			(width 0.4)
-			(type default)
-		)
-		(fill
-			(type none)
-		)
-		(uuid 3874adf1-f6d1-40e9-9757-3d9f443b335b)
-	)
-	(polyline
-		(pts
-			(xy 328 20) (xy 410 20) (xy 410 238) (xy 328 238) (xy 328 20)
-		)
-		(stroke
-			(width 0.4)
-			(type default)
-		)
-		(fill
-			(type none)
-		)
-		(uuid 3d5651b9-b42d-4680-aac5-5438a71d2426)
-	)
-	(polyline
-		(pts
-			(xy 20 200) (xy 302 200) (xy 302 280) (xy 20 280) (xy 20 200)
-		)
-		(stroke
-			(width 0.4)
-			(type default)
-		)
-		(fill
-			(type none)
-		)
-		(uuid 907c5f46-fc94-4b61-9721-d05442426580)
-	)
-	(polyline
-		(pts
-			(xy 98 20) (xy 175 20) (xy 175 195) (xy 98 195) (xy 98 20)
-		)
-		(stroke
-			(width 0.4)
-			(type default)
-		)
-		(fill
-			(type none)
-		)
-		(uuid ea2d5b24-6de7-4ea5-a016-29837905a567)
-	)
-	(text "- NR-12 (Seguranca em Maquinas)"
-		(exclude_from_sim no)
-		(at 332 45.2 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-			)
-			(justify left top)
-		)
-		(uuid "08a4f4dd-344c-4fd5-8a35-f00a09e4734e")
-	)
-	(text "* SEN: Sensor Hall NJK-5002C M12 NPN NA"
-		(exclude_from_sim no)
-		(at 332 123.4 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "08d049af-707d-491d-babc-333105735447")
-	)
-	(text "SECAO 1: CIRCUITO DE FORCA (220V AC)"
-		(exclude_from_sim no)
-		(at 25 28 0)
-		(effects
-			(font
-				(size 2 2)
-				(bold yes)
-			)
-			(justify left bottom)
-		)
-		(uuid "16ee3fda-b693-47c7-9ff3-4c9ef1fc1e18")
-	)
-	(text "Abertura da tampa acende LED Vermelho H3."
-		(exclude_from_sim no)
-		(at 332 164.2 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-			)
-			(justify left top)
-		)
-		(uuid "175bf183-0756-4d75-97bd-78adf81f67cf")
-	)
-	(text "Fio Preto (Sinal NPN Pulso)"
-		(exclude_from_sim no)
-		(at 150 243 0)
-		(effects
-			(font
-				(size 1 1)
-			)
-			(justify left bottom)
-		)
-		(uuid "1ca159ec-be0b-4f72-ab41-e3689e50ff38")
-	)
-	(text "Display Digital de RPM (12V-24V DC) + Sensor Magnetico M12 c/ Ima de Neodimio no Eixo"
-		(exclude_from_sim no)
-		(at 25 213 0)
-		(effects
-			(font
-				(size 1.2 1.2)
-			)
-			(justify left bottom)
-		)
-		(uuid "2240884b-dd7c-4ce8-bc45-4bdec12f2dd2")
-	)
-	(text "1. DI: Status S0, S_TAMPA, K1, Pulso Tacho"
-		(exclude_from_sim no)
-		(at 332 174.4 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-			)
-			(justify left top)
-		)
-		(uuid "2646de20-19cf-4333-a817-2e690180a19c")
-	)
-	(text "O selo 13-14 abre, impedindo religamento"
-		(exclude_from_sim no)
-		(at 332 157.4 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-			)
-			(justify left top)
-		)
-		(uuid "33bcad87-448e-4cda-a704-2e828be8e12d")
-	)
-	(text "SECAO 4: TACOMETRO DIGITAL DE PAINEL & SENSOR HALL NJK-5002C"
-		(exclude_from_sim no)
-		(at 25 208 0)
-		(effects
-			(font
-				(size 1.8 1.8)
-				(bold yes)
-			)
-			(justify left bottom)
-		)
-		(uuid "359341fa-f254-4c16-8487-71b4fc39f1fa")
-	)
-	(text "Fio Marrom (+24V)"
-		(exclude_from_sim no)
-		(at 150 237 0)
-		(effects
-			(font
-				(size 1 1)
-			)
-			(justify left bottom)
-		)
-		(uuid "3607108f-7afa-46c9-9112-72fe0e3fde6e")
-	)
-	(text "Se a tampa for aberta ou a emergencia"
-		(exclude_from_sim no)
-		(at 332 150.6 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-			)
-			(justify left top)
-		)
-		(uuid "3bcfd344-cd21-4bcf-af89-c4c970bdf5e9")
-	)
-	(text "PAINEL 24V ON (H1)"
-		(exclude_from_sim no)
-		(at 293 133 0)
-		(effects
-			(font
-				(size 0.95 0.95)
-			)
-			(justify left bottom)
-		)
-		(uuid "3c206dda-2929-4d56-a0f1-d81a67406057")
-	)
-	(text "- ABNT NBR 5410 (Instalacoes BT)"
-		(exclude_from_sim no)
-		(at 332 38.4 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-			)
-			(justify left top)
-		)
-		(uuid "3ed83004-ed2f-41f6-9410-a63a2e572bf4")
-	)
-	(text "ESPECIFICACOES COMPONENTES:"
-		(exclude_from_sim no)
-		(at 332 52 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "3ff2334c-3734-4fd0-b8ae-7af6116ce181")
-	)
-	(text "* H3: Sinaleiro LED Vermelho 24V (Alarme Tampa Aberta)"
-		(exclude_from_sim no)
-		(at 332 116.6 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "3ff5f5d1-ac7b-4dc3-bdc8-ea1116aa1a62")
-	)
-	(text "automatico. Exige REARME MANUAL via S_ON."
-		(exclude_from_sim no)
-		(at 332 160.8 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-			)
-			(justify left top)
-		)
-		(uuid "410f1cf2-aa06-48a6-88e2-ebf874323600")
-	)
-	(text "ATERRAMENTO DE PROTECAO (PE):"
-		(exclude_from_sim no)
-		(at 332 130.2 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "42923d39-9d07-4f0d-be1a-f70597f54a2f")
-	)
-	(text "Fio Azul (GND / 0V)"
-		(exclude_from_sim no)
-		(at 150 249 0)
-		(effects
-			(font
-				(size 1 1)
-			)
-			(justify left bottom)
-		)
-		(uuid "48bc5372-021f-4d55-b07b-dbdc2cbe5f71")
-	)
-	(text "+24V DC BARRAMENTO GERAL"
-		(exclude_from_sim no)
-		(at 182 42 0)
-		(effects
-			(font
-				(size 1.3 1.3)
-				(bold yes)
-			)
-			(justify left bottom)
-		)
-		(uuid "4c7e9ed1-6c43-4acc-b793-c797ac40595e")
-	)
-	(text "* DISP: Tacometro Digital CF5135B 4 Digitos"
-		(exclude_from_sim no)
-		(at 332 120 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "4eae484e-8e7e-45a2-80de-b94020a75505")
-	)
-	(text "SECAO 2: FONTE CHAVEADA (24V DC)"
-		(exclude_from_sim no)
-		(at 102 28 0)
-		(effects
-			(font
-				(size 2 2)
-				(bold yes)
-			)
-			(justify left bottom)
-		)
-		(uuid "5122743c-6194-4519-8443-a25f8b823153")
-	)
-	(text "  (Sem blocos de contato adicionais)"
-		(exclude_from_sim no)
-		(at 332 65.6 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-			)
-			(justify left top)
-		)
-		(uuid "51565a2b-967d-4e17-93ae-dc59352b93cb")
-	)
-	(text "(Derivado do Barramento Geral 24V/0V)"
-		(exclude_from_sim no)
-		(at 56 233 0)
-		(effects
-			(font
-				(size 0.85 0.85)
-			)
-			(justify left bottom)
-		)
-		(uuid "5236d84a-62f8-4ccd-bda1-6ce7fad4d317")
-	)
-	(text "Derivacao 220V -> F1/F2 (2A) -> SMPS 24V 2.5A (60W Trilho DIN)"
-		(exclude_from_sim no)
-		(at 102 33 0)
-		(effects
-			(font
-				(size 1 1)
-			)
-			(justify left bottom)
-		)
-		(uuid "53ece862-edcb-45bd-9934-4bd282ed669d")
-	)
-	(text "ALARME: TAMPA ABERTA (H3)"
-		(exclude_from_sim no)
-		(at 265 133 0)
-		(effects
-			(font
-				(size 0.95 0.95)
-			)
-			(justify left bottom)
-		)
-		(uuid "552c40f7-a922-4f24-b62c-08124a166f7f")
-	)
-	(text "NR-12: Botao Emergencia (S0) + Microswitch Tampa SPDT + Retencao K1 (13-14)"
-		(exclude_from_sim no)
-		(at 182 33 0)
-		(effects
-			(font
-				(size 1.2 1.2)
-			)
-			(justify left bottom)
-		)
-		(uuid "58059ddc-3bf6-46c5-8626-d8ddd04d5bf2")
-	)
-	(text "  Controle TRIAC c/ Potenciometro de Painel"
-		(exclude_from_sim no)
-		(at 332 72.4 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-			)
-			(justify left top)
-		)
-		(uuid "5ae306c4-a9f5-4c0f-8ded-502acf3d2988")
-	)
-	(text "DIRETO DA FONTE 24V"
-		(exclude_from_sim no)
-		(at 293 137 0)
-		(effects
-			(font
-				(size 0.8 0.8)
-			)
-			(justify left bottom)
-		)
-		(uuid "5e1c6747-397e-4f01-a526-1b6dbbce3bc2")
-	)
-	(text "NOTAS TECNICAS & BOM"
-		(exclude_from_sim no)
-		(at 332 28 0)
-		(effects
-			(font
-				(size 2 2)
-				(bold yes)
-			)
-			(justify left bottom)
-		)
-		(uuid "61e46c6a-e989-4d5c-af88-66e95c5b3a74")
-	)
-	(text "PE Carcaca Dimmer"
-		(exclude_from_sim no)
-		(at 59 122 0)
-		(effects
-			(font
-				(size 0.85 0.85)
-			)
-			(justify left bottom)
-		)
-		(uuid "665d3af5-6d3b-4f6b-b05b-ca2596bfc760")
-	)
-	(text "- NR-10 (Seguranca Eletrica)"
-		(exclude_from_sim no)
-		(at 332 41.8 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-			)
-			(justify left top)
-		)
-		(uuid "7333be3a-e951-4def-82d1-b85c7efc9b29")
-	)
-	(text "MOTOR OPERANDO (H2)"
-		(exclude_from_sim no)
-		(at 238 166 0)
-		(effects
-			(font
-				(size 1 1)
-			)
-			(justify left bottom)
-		)
-		(uuid "771e4a2b-fdd9-4870-a1d3-8c38057030c6")
-	)
-	(text "* T1: Fonte Chaveada Trilho DIN 24V 2.5A"
-		(exclude_from_sim no)
-		(at 332 86 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "86c3cd79-4d22-47b1-a251-e71cc0b7052c")
-	)
-	(text "fonte T1 e painel sao interligados a"
-		(exclude_from_sim no)
-		(at 332 137 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-			)
-			(justify left top)
-		)
-		(uuid "96def3d4-a5cb-4a80-99d9-66cdc228482b")
-	)
-	(text "NORMAS APLICAVEIS:"
-		(exclude_from_sim no)
-		(at 332 35 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "9847b869-1ea4-40a2-b442-92c196874218")
-	)
-	(text "  Capacitor Permanente C_MOT (12-15uF)"
-		(exclude_from_sim no)
-		(at 332 82.6 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-			)
-			(justify left top)
-		)
-		(uuid "98cfa0a8-2233-413a-9d70-d5996d842dc1")
-	)
-	(text "* S_OFF: Botao Desliga Vermelho (NF)"
-		(exclude_from_sim no)
-		(at 332 103 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "9b5d3ca5-4e66-4d35-9f01-d2908963d541")
-	)
-	(text "2. DO: Partida/Parada Remota via reles"
-		(exclude_from_sim no)
-		(at 332 177.8 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-			)
-			(justify left top)
-		)
-		(uuid "9d1bf326-0311-4d28-9316-5b65269498de")
-	)
-	(text "* H2: Sinaleiro LED Verde 24V (Motor ON - Paralelo K1 A1/A2)"
-		(exclude_from_sim no)
-		(at 332 113.2 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "a06ac956-7a45-46b0-b594-ec0fc85de05b")
-	)
-	(text "IMA DE NEODIMIO FIXADO NO EIXO / POLIA DO MOTOR"
-		(exclude_from_sim no)
-		(at 195 268 0)
-		(effects
-			(font
-				(size 1.1 1.1)
-				(bold yes)
-			)
-			(justify left bottom)
-		)
-		(uuid "a32079d1-d28c-4cff-a53d-26f8f7b46d79")
-	)
-	(text "* M1: Motor de Tanquinho 220V"
-		(exclude_from_sim no)
-		(at 332 75.8 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "ace07db3-8564-4f38-b98e-b46c4edc99f1")
-	)
-	(text "SECAO 3: CIRCUITO DE COMANDO & INTERTRAVAMENTO (24V DC)"
-		(exclude_from_sim no)
-		(at 182 28 0)
-		(effects
-			(font
-				(size 2 2)
-				(bold yes)
-			)
-			(justify left bottom)
-		)
-		(uuid "af49cd60-c99f-4f82-96da-2ebdaadc6a39")
-	)
-	(text "EXPANSAO FUTURA PARA CLP:"
-		(exclude_from_sim no)
-		(at 332 171 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "b21c8567-1c16-46eb-ad34-8154204254fc")
-	)
-	(text "  NF: Aciona Sinaleiro H3 Tampa Aberta"
-		(exclude_from_sim no)
-		(at 332 99.6 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-			)
-			(justify left top)
-		)
-		(uuid "b4b221d9-bbb8-4bed-9dd8-3435c1abeb59")
-	)
-	(text "Alimentacao Display (12V-24V DC)"
-		(exclude_from_sim no)
-		(at 56 237 0)
-		(effects
-			(font
-				(size 1 1)
-			)
-			(justify left bottom)
-		)
-		(uuid "b902d457-27db-41c9-865a-1050e04bff09")
-	)
-	(text "barra de equipotencializacao PE da bancada."
-		(exclude_from_sim no)
-		(at 332 140.4 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-			)
-			(justify left top)
-		)
-		(uuid "bbb13f93-ca76-4aa9-a1ef-54620af3167e")
-	)
-	(text "for acionada, K1 desliga imediatamente."
-		(exclude_from_sim no)
-		(at 332 154 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-			)
-			(justify left top)
-		)
-		(uuid "bdd249a1-da62-4ad4-bc4b-5debc5653e8b")
-	)
-	(text "INTERTRAVAMENTO NR-12:"
-		(exclude_from_sim no)
-		(at 332 147.2 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "d02318cb-c267-4b62-a4ba-47edf2cf8f92")
-	)
-	(text "* S_ON: Botao Liga Verde (NA)"
-		(exclude_from_sim no)
-		(at 332 106.4 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "d718ac7d-a0c5-47ac-ae80-c34a1e16a291")
-	)
-	(text "* S0: Botao Emergencia Cogumelo c/ Trava (NF)"
-		(exclude_from_sim no)
-		(at 332 89.4 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "da3f2467-775d-4c1a-82cc-8ca8c047d058")
-	)
-	(text "* DIM1: Dimmer AC 220V 2000W / 4000W"
-		(exclude_from_sim no)
-		(at 332 69 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "dd899cf9-4f22-49de-9456-403d1eab02b1")
-	)
-	(text "Carcaca do motor, chassi do dimmer,"
-		(exclude_from_sim no)
-		(at 332 133.6 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-			)
-			(justify left top)
-		)
-		(uuid "ddb23962-effe-498a-aede-5d77bef0dff6")
-	)
-	(text "PE"
-		(exclude_from_sim no)
-		(at 134 98 0)
-		(effects
-			(font
-				(size 0.9 0.9)
-			)
-			(justify left bottom)
-		)
-		(uuid "e100a63d-aad1-4112-aca5-9029de87e861")
-	)
-	(text "VIA S_TAMPA NC (KW11-3Z)"
-		(exclude_from_sim no)
-		(at 265 137 0)
-		(effects
-			(font
-				(size 0.8 0.8)
-			)
-			(justify left bottom)
-		)
-		(uuid "e276500d-d26e-4348-b1cc-a631371d8049")
-	)
-	(text "  c/ Contato Auxiliar 13-14 (NA) p/ Selo"
-		(exclude_from_sim no)
-		(at 332 62.2 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-			)
-			(justify left top)
-		)
-		(uuid "e28fbfa3-d2f4-4f31-8931-f2914bcbcd05")
-	)
-	(text "PARALELO BOBINA K1"
-		(exclude_from_sim no)
-		(at 238 170 0)
-		(effects
-			(font
-				(size 0.85 0.85)
-			)
-			(justify left bottom)
-		)
-		(uuid "e355d4f8-0af4-46c1-b47e-7f3c1f6eb795")
-	)
-	(text "* K1: Contator Steck SC / WEG CWB (24V CC)"
-		(exclude_from_sim no)
-		(at 332 58.8 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "e8580f3e-a786-4aa0-9195-f9a989c7f1c7")
-	)
-	(text "Distancia de Deteccao: 1mm a 8mm | 1 Pulso por Rotacao (PPR = 1)"
-		(exclude_from_sim no)
-		(at 195 272 0)
-		(effects
-			(font
-				(size 1 1)
-			)
-			(justify left bottom)
-		)
-		(uuid "eb404c57-506f-4b2b-8e6b-1f91bdc82f7f")
-	)
-	(text "  NA: Intertravamento Serie Comando"
-		(exclude_from_sim no)
-		(at 332 96.2 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-			)
-			(justify left top)
-		)
-		(uuid "f1e6957f-0558-4a93-998d-a5ceca784918")
-	)
-	(text "* S_TAMPA: Microswitch Seguranca SPDT (COM, NF, NA)"
-		(exclude_from_sim no)
-		(at 332 92.8 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "f67192eb-2f9e-4818-92e5-274cefc11bb8")
-	)
-	(text "0V / COM BARRAMENTO GERAL"
-		(exclude_from_sim no)
-		(at 182 182 0)
-		(effects
-			(font
-				(size 1.3 1.3)
-				(bold yes)
-			)
-			(justify left bottom)
-		)
-		(uuid "f7e9fbbb-9369-4996-b87c-7e492ed14797")
-	)
-	(text "Rede 220V -> Q1 -> K1 -> Dimmer -> Motor M1"
-		(exclude_from_sim no)
-		(at 25 33 0)
-		(effects
-			(font
-				(size 1 1)
-			)
-			(justify left bottom)
-		)
-		(uuid "fcc234cc-9f96-498f-9f51-94d4ca451ee8")
-	)
-	(text "* H1: Sinaleiro LED Branco 24V (Painel ON)"
-		(exclude_from_sim no)
-		(at 332 109.8 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "fd8e3d7f-1cee-4a86-8680-a4671470b85b")
-	)
-	(text "  Monofasico/Bifasico ~1/4 CV (180W)"
-		(exclude_from_sim no)
-		(at 332 79.2 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-			)
-			(justify left top)
-		)
-		(uuid "fe2aad5d-ab2d-4131-9e9a-488b88748fa4")
-	)
-	(text "* Q1: Disjuntor Bipolar 2P Curva C 10A"
-		(exclude_from_sim no)
-		(at 332 55.4 0)
-		(effects
-			(font
-				(size 1.05 1.05)
-				(bold yes)
-			)
-			(justify left top)
-		)
-		(uuid "ff422cb1-b4ca-4d0a-b5ad-c8c44db834e2")
-	)
-	(junction
-		(at 280 185)
-		(diameter 1)
-		(color 0 0 0 0)
-		(uuid "1969a9ab-64e6-4d37-a7fe-076917a0ecd4")
-	)
-	(junction
-		(at 212 45)
-		(diameter 1)
-		(color 0 0 0 0)
-		(uuid "2ae925dc-723b-4b7a-843e-8e31a7848f9c")
-	)
-	(junction
-		(at 212 136)
-		(diameter 1)
-		(color 0 0 0 0)
-		(uuid "656aeccb-127c-46fd-8e49-acaadb763316")
-	)
-	(junction
-		(at 212 112)
-		(diameter 1)
-		(color 0 0 0 0)
-		(uuid "718eb351-f25c-42e2-b57d-53dc83cb22fd")
-	)
-	(junction
-		(at 212 185)
-		(diameter 1)
-		(color 0 0 0 0)
-		(uuid "7cb63690-1163-42b6-b663-eaad1358778a")
-	)
-	(junction
-		(at 74 124)
-		(diameter 1)
-		(color 0 0 0 0)
-		(uuid "aecebf32-49a1-4b49-ab8f-60b88c7f64fa")
-	)
-	(junction
-		(at 52 86)
-		(diameter 1)
-		(color 0 0 0 0)
-		(uuid "c38e76f4-0e69-40c1-a654-196f7dc66c17")
-	)
-	(junction
-		(at 252 185)
-		(diameter 1)
-		(color 0 0 0 0)
-		(uuid "d6bd5fa4-67ef-422d-b8c1-99b5b1c7f1d1")
-	)
-	(junction
-		(at 42 74)
-		(diameter 1)
-		(color 0 0 0 0)
-		(uuid "f71e5ec1-a2f9-48c6-875e-d0ab627a211d")
-	)
-	(wire
-		(pts
-			(xy 126 88) (xy 131.46 88)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "033b6931-62d5-4207-b2f4-25a5caa728f8")
-	)
-	(wire
-		(pts
-			(xy 212 45) (xy 212 52.92)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0612ad67-01d9-4567-8da2-5db8275dcced")
-	)
-	(wire
-		(pts
-			(xy 202 112) (xy 202 116.92)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "06556bc7-6451-4227-980c-e265477ecbba")
-	)
-	(wire
-		(pts
-			(xy 212 136) (xy 252 136)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "06d45d84-3b54-432d-84f0-e15551e02987")
-	)
-	(wire
-		(pts
-			(xy 74 174) (xy 69 174)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0905486e-9bf7-41d1-be20-d6eb74e84b70")
-	)
-	(wire
-		(pts
-			(xy 52 38) (xy 52 42.19)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "0b5e563c-623b-4aca-b594-10eaa877f9c8")
-	)
-	(wire
-		(pts
-			(xy 129.54 251) (xy 211.46 251)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "169258e4-fb7c-4013-be46-26800659f2b4")
-	)
-	(wire
-		(pts
-			(xy 219.62 78) (xy 280 78)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "19015e15-f203-4ad5-b173-ba191e45ac74")
-	)
-	(wire
-		(pts
-			(xy 42 136.54) (xy 42 144.19)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1ba40db4-94e3-405c-be34-b860fcb515a5")
-	)
-	(wire
-		(pts
-			(xy 212 112) (xy 222 112)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "207c2a1f-f638-42a8-b283-272f7a23ef92")
-	)
-	(wire
-		(pts
-			(xy 252 156.35) (xy 252 185)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "221f1ae6-c82b-41bc-9c80-c8f5aec6a961")
-	)
-	(wire
-		(pts
-			(xy 306 121.35) (xy 306 185)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2387a6cb-f0d6-4546-8fcd-1e16d8d91aea")
-	)
-	(wire
-		(pts
-			(xy 74 151.81) (xy 74 174)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "26a15c37-93ec-4025-a2dc-012ab5fb413c")
-	)
-	(wire
-		(pts
-			(xy 172 185) (xy 212 185)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2b9a16ec-7055-4503-ade1-becbeaa02359")
-	)
-	(wire
-		(pts
-			(xy 131.46 93.08) (xy 131.46 96.5)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "2c9c7a93-752e-4e27-b3ae-c50d2e86cb32")
-	)
-	(wire
-		(pts
-			(xy 129.54 245) (xy 211.46 245)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "361b5fc2-e224-4a31-8eed-c5b728cbf594")
-	)
-	(wire
-		(pts
-			(xy 28 41) (xy 42 41)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "37fa4ab5-0da4-4017-aca6-28cf96018aff")
-	)
-	(polyline
-		(pts
-			(xy 131 98.5) (xy 132 98.5)
-		)
-		(stroke
-			(width 0.4)
-			(type default)
-		)
-		(uuid "3e0d2dc1-a5b8-4873-a742-617e6732add4")
-	)
-	(wire
-		(pts
-			(xy 280 78) (xy 280 108.65)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3f8e5988-f46d-4980-97e8-537a444dad83")
-	)
-	(wire
-		(pts
-			(xy 126 86) (xy 126 88)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "3fb5dda6-8150-40d0-9215-ec524a25b374")
-	)
-	(wire
-		(pts
-			(xy 52 49.81) (xy 52 56.38)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "44f47d92-7e9a-4b01-bf8d-c2767513507c")
-	)
-	(wire
-		(pts
-			(xy 74 124) (xy 74 144.19)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "48bbdac7-90c8-4764-8a84-94c1f45462e3")
-	)
-	(wire
-		(pts
-			(xy 126 74) (xy 126 82.92)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "499c048f-7ed5-43f2-98c8-c5a0f14c114b")
-	)
-	(wire
-		(pts
-			(xy 252 185) (xy 280 185)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4c984c2a-d5e1-4e03-937d-144a01b7813e")
-	)
-	(wire
-		(pts
-			(xy 280 185) (xy 306 185)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "4d8a697d-2e00-4b59-9403-d4a33995da26")
-	)
-	(wire
-		(pts
-			(xy 74 49.81) (xy 74 124)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5216ba25-826b-46f5-8add-50c854a009bf")
-	)
-	(wire
-		(pts
-			(xy 212 156.54) (xy 212 185)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "54717ae2-ebe4-4fac-aa23-ac9396089e2d")
-	)
-	(wire
-		(pts
-			(xy 42 41) (xy 42 42.19)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "54c709e3-b613-46d5-bba6-27f250aecc29")
-	)
-	(wire
-		(pts
-			(xy 222 127.08) (xy 222 136)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "587bc38e-fdfe-401e-b611-0afb29fa302b")
-	)
-	(wire
-		(pts
-			(xy 121.35 74) (xy 126 74)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5a9369d1-6598-4bb5-9f5e-82a889f7af67")
-	)
-	(wire
-		(pts
-			(xy 212 103.08) (xy 212 112)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5f13988e-3149-4211-aad6-ebad58378241")
-	)
-	(wire
-		(pts
-			(xy 222 112) (xy 222 116.92)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "67303aed-3ae3-4830-8254-9d3575fa63a0")
-	)
-	(wire
-		(pts
-			(xy 212 136) (xy 212 143.46)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "6ba5ea1a-bccd-4270-8aa3-616591cd2e91")
-	)
-	(wire
-		(pts
-			(xy 42 151.81) (xy 42 162.96)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7219c660-392a-44b5-beb5-208bf9eb2fcf")
-	)
-	(wire
-		(pts
-			(xy 52 103.62) (xy 52 111.46)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "74bbd110-781d-4065-bf7e-55ec66120af6")
-	)
-	(wire
-		(pts
-			(xy 42 74) (xy 108.65 74)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "75bdcfdc-9e75-4043-9531-1f741d90de2b")
-	)
-	(wire
-		(pts
-			(xy 42 103.62) (xy 42 111.46)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7aa05539-4271-439f-99b8-05d5547bf5fd")
-	)
-	(wire
-		(pts
-			(xy 172 45) (xy 212 45)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "7d3f0fca-2188-4e1f-a32e-54de96b62567")
-	)
-	(wire
-		(pts
-			(xy 172 93.08) (xy 172 185)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8103d959-e611-495f-9835-a833ba89cd55")
-	)
-	(wire
-		(pts
-			(xy 52 86) (xy 52 88.38)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8f2bccbd-f6e4-47c1-9639-a4a47dec5b38")
-	)
-	(wire
-		(pts
-			(xy 212 63.08) (xy 212 72.92)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8fa19bc4-d09e-4dbd-bf74-5ca79c138a32")
-	)
-	(wire
-		(pts
-			(xy 129.54 239) (xy 211.46 239)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "91a27179-e8f3-496d-8664-a21efe6dbc33")
-	)
-	(wire
-		(pts
-			(xy 42 74) (xy 42 88.38)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "93da2c5f-2dc6-45dc-bc3d-3655c15d69f2")
-	)
-	(wire
-		(pts
-			(xy 42 49.81) (xy 42 56.38)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9a896bcf-0b2e-4b99-908a-12b998de402d")
-	)
-	(wire
-		(pts
-			(xy 121.35 86) (xy 126 86)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9d06fdd2-b478-45fe-9431-6995cf64d264")
-	)
-	(wire
-		(pts
-			(xy 28 38) (xy 52 38)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9d4d9254-a0e6-4922-942b-6883a66f50ee")
-	)
-	(wire
-		(pts
-			(xy 212 83.08) (xy 212 92.92)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a04b5dad-0275-4bdb-a61f-31bb80e55a1f")
-	)
-	(wire
-		(pts
-			(xy 280 121.35) (xy 280 185)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a233dd44-22f1-4597-8505-8de7e7e8390d")
-	)
-	(wire
-		(pts
-			(xy 52 151.81) (xy 52 162.96)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a571fe46-1df8-4a92-8093-d89c577b9313")
-	)
-	(wire
-		(pts
-			(xy 306 45) (xy 306 108.65)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a6cb6e00-5384-4525-82d4-05dda9af0005")
-	)
-	(wire
-		(pts
-			(xy 212 112) (xy 202 112)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "aaa3c4a3-9078-41e4-b027-ac5227a82ef8")
-	)
-	(wire
-		(pts
-			(xy 164.54 82.92) (xy 172 82.92)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ae105974-1765-4edf-8b91-91f888cf7877")
-	)
-	(wire
-		(pts
-			(xy 74 124) (xy 57 124)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b72b76d4-cecc-4933-83ab-c89ff57de355")
-	)
-	(wire
-		(pts
-			(xy 74 35) (xy 74 42.19)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c02cd7e7-f074-4a8f-bac8-a2d6c93f6d9a")
-	)
-	(wire
-		(pts
-			(xy 80.46 249) (xy 55 249)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c2a4f516-f45d-40a8-86ff-50d0492e3244")
-	)
-	(wire
-		(pts
-			(xy 80.46 241) (xy 55 241)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c382804f-1c80-44b5-928b-3c5b986ce9d1")
-	)
-	(wire
-		(pts
-			(xy 52 71.62) (xy 52 86)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "c74cf4cd-84a4-47da-8c30-f09193bb69d5")
-	)
-	(wire
-		(pts
-			(xy 42 71.62) (xy 42 74)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "cd31f3d2-336c-4318-8299-b5433a2d844c")
-	)
-	(wire
-		(pts
-			(xy 212 45) (xy 306 45)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "cf3dc339-71f0-428c-9c08-405c0e4bdbdf")
-	)
-	(polyline
-		(pts
-			(xy 130.5 97.5) (xy 132.5 97.5)
-		)
-		(stroke
-			(width 0.4)
-			(type default)
-		)
-		(uuid "def5f1b1-97cf-4338-978c-1f790435137f")
-	)
-	(wire
-		(pts
-			(xy 126 82.92) (xy 131.46 82.92)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e2dcbcbc-9d77-4bd5-8600-c85564774cf4")
-	)
-	(wire
-		(pts
-			(xy 28 35) (xy 74 35)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e4526979-0df8-49df-bb7b-5890236dd698")
-	)
-	(wire
-		(pts
-			(xy 164.54 93.08) (xy 172 93.08)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e723f0b0-cfe2-41c7-9c71-fc6c962be43a")
-	)
-	(polyline
-		(pts
-			(xy 129.5 96.5) (xy 133.5 96.5)
-		)
-		(stroke
-			(width 0.4)
-			(type default)
-		)
-		(uuid "e81767cc-0685-4e40-8e9d-7bf86293d581")
-	)
-	(wire
-		(pts
-			(xy 202 127.08) (xy 202 136)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ebad4111-5a21-400d-b5e7-2cfe48ccd154")
-	)
-	(wire
-		(pts
-			(xy 252 136) (xy 252 143.65)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "ee803eb0-13c5-4123-82ec-cee1442e08bd")
-	)
-	(wire
-		(pts
-			(xy 52 136.54) (xy 52 144.19)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f1101767-e730-4a4b-a794-70b44a531077")
-	)
-	(wire
-		(pts
-			(xy 172 82.92) (xy 172 45)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f37bf901-60e1-4311-a3ef-f106c76097ac")
-	)
-	(wire
-		(pts
-			(xy 212 185) (xy 252 185)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f523d5cb-130f-4cbb-9ba8-560188e427d4")
-	)
-	(wire
-		(pts
-			(xy 52 86) (xy 108.65 86)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "f57db314-0dbc-450e-add7-6d7390db6456")
-	)
-	(wire
-		(pts
-			(xy 202 136) (xy 212 136)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "fe23ff60-8924-4168-be9d-674a1fd4859c")
-	)
-	(label "0V"
-		(at 55 249 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "5690d8db-b43b-49e0-9807-12431d3429b6")
-	)
-	(label "REDE_220V_L1"
-		(at 28 41 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "6950b908-4585-46ba-b019-d990acd6714f")
-	)
-	(label "TERRA_PE"
-		(at 28 35 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "7df0b5fd-1819-414b-91a1-be9f09b859c4")
-	)
-	(label "REDE_220V_L2/N"
-		(at 28 38 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "d76d260f-ece5-4547-ae1a-dcc2fdce1c99")
-	)
-	(label "+24V"
-		(at 55 241 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right)
-		)
-		(uuid "f4806c5d-8345-4c99-88ea-eed525f19de0")
-	)
-	(symbol
-		(lib_id "Industrial:Terminal_Passagem")
-		(at 74 46 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "24657648-f779-475b-920e-f6ae09772a8d")
-		(property "Reference" "TB3"
-			(at 77.5 46 0)
-			(effects
-				(font
-					(size 1 1)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "PE_IN"
-			(at 77.5 44 0)
-			(effects
-				(font
-					(size 0.8 0.8)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 74 46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 74 46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 74 46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "8505f5fd-ea9f-4022-978c-68c78d0b2d67")
-		)
-		(pin "1"
-			(uuid "12368846-961c-44a2-8fec-7986cd1353a9")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "TB3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:Dimmer_AC_220V")
-		(at 47 124 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "30d7f533-92f0-4ebc-9191-685f0a816ac3")
-		(property "Reference" "DIM1"
-			(at 33 124 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "Dimmer_220V"
-			(at 29 124 90)
-			(effects
-				(font
-					(size 1.1 1.1)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 47 124 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 47 124 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 47 124 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "230368b4-ad9b-4faa-b37d-3b91248cef6a")
-		)
-		(pin "1"
-			(uuid "526787f6-62c9-4b44-85a0-9829d1254fe9")
-		)
-		(pin "3"
-			(uuid "5931db0e-114a-48a7-a8e1-5a474ae66864")
-		)
-		(pin "4"
-			(uuid "ca870e2c-2e5b-4594-8332-fd67760ccc4a")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "DIM1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:Contactor_Power_2P")
-		(at 47 96 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "32802e4d-aa2a-40b7-9f3f-d2cf61648abb")
-		(property "Reference" "K1"
-			(at 35 96 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "Contatos_Forca_K1"
-			(at 59 96 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 47 96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 47 96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 47 96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "4T2"
-			(uuid "f63def02-5b0f-453c-88ab-9d900b3af7cf")
-		)
-		(pin "2T1"
-			(uuid "d365b6e1-764d-46de-9c76-0ce273c1ecce")
-		)
-		(pin "1L1"
-			(uuid "46555f95-fc63-4553-ab2f-574cd849391b")
-		)
-		(pin "3L2"
-			(uuid "47636103-307f-43b5-8cf2-2d7090960be0")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "K1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:Terminal_Passagem")
-		(at 42 148 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "33483b6b-c00f-4ac9-afee-549171495bc0")
-		(property "Reference" "TB4"
-			(at 45.5 148 0)
-			(effects
-				(font
-					(size 1 1)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "L1_MOT"
-			(at 45.5 146 0)
-			(effects
-				(font
-					(size 0.8 0.8)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 42 148 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 42 148 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 42 148 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "8e28fb5f-c84c-4a67-836f-9024bc1a7252")
-		)
-		(pin "2"
-			(uuid "b85b506c-3f89-4f96-986c-25dbdfd2215b")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "TB4")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:Terminal_Passagem")
-		(at 52 46 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "34b0ee04-c292-4319-b515-f987142dbb4b")
-		(property "Reference" "TB2"
-			(at 55.5 46 0)
-			(effects
-				(font
-					(size 1 1)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "L2_IN"
-			(at 55.5 44 0)
-			(effects
-				(font
-					(size 0.8 0.8)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 52 46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 52 46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 52 46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "71dd16ef-394d-4355-8dda-037bac10c817")
-		)
-		(pin "2"
-			(uuid "bae8c526-05e2-4964-8c8e-3962cd3fee00")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "TB2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:SW_Limit_Safety_SPDT")
-		(at 212 78 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "3a3bae48-b76c-4227-b343-c57cedf7445b")
-		(property "Reference" "S_TAMPA"
-			(at 204 76 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "CHAVE_TAMPA_SPDT"
-			(at 204 80 0)
-			(effects
-				(font
-					(size 1.1 1.1)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 212 78 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 212 78 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 212 78 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "NO"
-			(uuid "4e973748-9ca8-4cad-b468-7225cdab327c")
-		)
-		(pin "COM"
-			(uuid "a6c4b4ae-dddc-4c3e-ac3a-18d794da24f2")
-		)
-		(pin "NC"
-			(uuid "276e6a87-14e8-477a-9104-b1a07cdaa917")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "S_TAMPA")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:Fuse_Cartridge")
-		(at 115 74 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "3b901dd6-ebaf-4d7f-a44f-df18d805fd25")
-		(property "Reference" "F1"
-			(at 115 70 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "2A_250V"
-			(at 115 78 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 115 74 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 115 74 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 115 74 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "f64051b2-1437-4789-b130-52a78cb7d656")
-		)
-		(pin "1"
-			(uuid "151ae84b-3cce-4e04-bdc8-a3a7a33d5263")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "F1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:SW_Push_NC")
-		(at 212 98 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "4efad41d-5764-46e1-b2f4-ac4bde888496")
-		(property "Reference" "S_OFF"
-			(at 217 96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "DESLIGA_NF"
-			(at 217 100 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 212 98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 212 98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 212 98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1NF"
-			(uuid "508b5e21-1783-42b0-9a44-64d209f03560")
-		)
-		(pin "2NF"
-			(uuid "151e10d9-39d6-4e77-b304-64c7690bda57")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "S_OFF")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:Contactor_Aux_NO")
-		(at 222 122 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "504bf225-9d77-4f04-8f2a-b9d5d1c1af5d")
-		(property "Reference" "K1_SELO"
-			(at 228 120 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "13-14_SELO"
-			(at 228 124 0)
-			(effects
-				(font
-					(size 1.1 1.1)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 222 122 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 222 122 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 222 122 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "14NA"
-			(uuid "151e446f-a0a6-4210-b7af-53b413eb412a")
-		)
-		(pin "13NA"
-			(uuid "2ebf4dac-fa2f-4f1d-86b3-befc3c194100")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "K1_SELO")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:Pilot_Lamp_24V")
-		(at 306 115 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "63badf8e-4bdb-491f-8359-21ce59dbb973")
-		(property "Reference" "H1"
-			(at 311 113 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "BRANCO_24V"
-			(at 311 117 0)
-			(effects
-				(font
-					(size 1.1 1.1)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 306 115 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 306 115 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 306 115 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "X1"
-			(uuid "710fdedc-9bb8-48d1-84ef-f3a4a1d7ae75")
-		)
-		(pin "X2"
-			(uuid "3e234b39-7b9f-4a50-9480-ea41b7391938")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "H1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:SW_Emergency_NC")
-		(at 212 58 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "6c8b58f4-1425-412b-ae3e-abf3a1adea61")
-		(property "Reference" "S0"
-			(at 217 56 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "EMERGENCIA_NF"
-			(at 217 60 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 212 58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 212 58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 212 58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2NF"
-			(uuid "640ba737-cca9-4b4f-b1dc-675bb975ea0a")
-		)
-		(pin "1NF"
-			(uuid "7ba806c5-d299-4a02-bcd4-a50098a0ba63")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "S0")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:SW_Push_NO")
-		(at 202 122 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "7d867641-d5fb-4c13-9a01-66df79d56ea6")
-		(property "Reference" "S_ON"
-			(at 193 122 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify right)
-			)
-		)
-		(property "Value" "LIGA_NA"
-			(at 193 125 0)
-			(effects
-				(font
-					(size 1.1 1.1)
-				)
-				(justify right)
-			)
-		)
-		(property "Footprint" ""
-			(at 202 122 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 202 122 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 202 122 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "4NA"
-			(uuid "06fce0a1-5474-4cc4-84ad-822425c83d72")
-		)
-		(pin "3NA"
-			(uuid "533732a3-d62c-4ab2-be31-6a33d0edae6c")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "S_ON")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:Sensor_Hall_NJK5002C")
-		(at 230 245 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "7e09f603-1cf5-4892-afae-3ae9061b6fdc")
-		(property "Reference" "SEN_HALL"
-			(at 230 233 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "NJK-5002C_M12"
-			(at 230 257 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 230 245 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 230 245 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 230 245 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "3"
-			(uuid "4c4c4aba-4059-40cd-b548-1656edf3c460")
-		)
-		(pin "2"
-			(uuid "6e1a38bc-1f51-415e-ba88-a07b8e926bb2")
-		)
-		(pin "1"
-			(uuid "216aad94-37d1-490c-88b3-76af607bde59")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "SEN_HALL")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:Terminal_Passagem")
-		(at 42 46 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "86b5a927-65df-4c9e-a8c2-6fc72fe8bbbd")
-		(property "Reference" "TB1"
-			(at 45.5 46 0)
-			(effects
-				(font
-					(size 1 1)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "L1_IN"
-			(at 45.5 44 0)
-			(effects
-				(font
-					(size 0.8 0.8)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 42 46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 42 46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 42 46 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "b47a0a99-8919-4a60-90d7-3258bd152e83")
-		)
-		(pin "2"
-			(uuid "baceab0a-bbe1-4305-8484-818df8623676")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "TB1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:SMPS_24V")
-		(at 148 88 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "8778a6e5-7624-4031-ae7c-5aaa6be9db18")
-		(property "Reference" "T1"
-			(at 148 70 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "SMPS_24V_2.5A"
-			(at 148 106 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 148 88 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 148 88 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 148 88 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "fadbc8f5-9f65-4c8c-bf54-167a0b4e9e23")
-		)
-		(pin "4"
-			(uuid "f23217a8-a8b6-43ff-9d72-c59add62556d")
-		)
-		(pin "2"
-			(uuid "bc59751b-f13d-42cb-87df-f425c4182a66")
-		)
-		(pin "5"
-			(uuid "7848a42e-034c-4f7c-8b5b-1d6e68abd9bc")
-		)
-		(pin "3"
-			(uuid "4f08bd66-c10d-4cf1-83a1-c743d053c170")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "T1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:Contactor_Coil_24V")
-		(at 212 150 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "a19b9971-bfb4-404e-9bd0-e711ce56beeb")
-		(property "Reference" "K1"
-			(at 228 148 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "Bobina_24VDC"
-			(at 228 152 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 212 150 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 212 150 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 212 150 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "A1"
-			(uuid "cb3c335d-3fd6-46a4-a21f-c9fc9d5a99ce")
-		)
-		(pin "A2"
-			(uuid "e69ce132-42c0-4cf9-a4ce-d860cc6897bc")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "K1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:Pilot_Lamp_24V")
-		(at 280 115 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "aec6f6f5-fa97-4bf2-bb4d-d6671302b9e1")
-		(property "Reference" "H3"
-			(at 285 113 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "VERM_24V"
-			(at 285 117 0)
-			(effects
-				(font
-					(size 1.1 1.1)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 280 115 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 280 115 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 280 115 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "X1"
-			(uuid "5fe246b9-9ab7-438a-8b09-2468e493d2fd")
-		)
-		(pin "X2"
-			(uuid "49198f4e-6bc2-4c7a-9d9f-96e959e66bec")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "H3")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:CircuitBreaker_2P")
-		(at 47 64 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "bacbb5d7-bdf4-4476-8d20-51af776106c1")
-		(property "Reference" "Q1"
-			(at 35 64 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "Disjuntor_2P_C10A"
-			(at 59 64 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 47 64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 47 64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 47 64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "3a5abac2-141e-4b73-9004-0632e775c28a")
-		)
-		(pin "3"
-			(uuid "c7a03549-7ad7-4a70-9699-bc215f419da9")
-		)
-		(pin "4"
-			(uuid "293db27f-aa9a-4b6b-b8cb-e52937003347")
-		)
-		(pin "1"
-			(uuid "e2570a12-7a5b-4fd8-8378-4c4dc2cc43c9")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "Q1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:Motor_Tanquinho_220V")
-		(at 47 174 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "d1a4f465-b351-432a-b667-6aa3c16215e0")
-		(property "Reference" "M1"
-			(at 47 159 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "Motor_Tanquinho_220V"
-			(at 47 188 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 47 174 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 47 174 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 47 174 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "c3232ad0-d825-4aa4-a77b-a2899fc9381d")
-		)
-		(pin "2"
-			(uuid "5f783c95-1870-402e-af67-8b91ac9f1c90")
-		)
-		(pin "3"
-			(uuid "9605db59-03b6-4ecc-b2e8-f57e7a586792")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "M1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:Fuse_Cartridge")
-		(at 115 86 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "e897d831-0290-4c23-ab2c-0e06e32bbaf6")
-		(property "Reference" "F2"
-			(at 115 82 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "2A_250V"
-			(at 115 90 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 115 86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 115 86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 115 86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "2ea46c3c-f354-4d19-9b66-6463292dcf96")
-		)
-		(pin "2"
-			(uuid "2d3a9c56-ae96-477b-9461-81241b5f8233")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "F2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:Terminal_Passagem")
-		(at 74 148 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "ec0709da-a1b8-426d-bf8f-7cf4291fecd2")
-		(property "Reference" "TB6"
-			(at 77.5 148 0)
-			(effects
-				(font
-					(size 1 1)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "PE_MOT"
-			(at 77.5 146 0)
-			(effects
-				(font
-					(size 0.8 0.8)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 74 148 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 74 148 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 74 148 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "f9b415e9-8c29-43fb-b789-1c12841c953e")
-		)
-		(pin "1"
-			(uuid "31c4c44a-ef5f-4781-8231-c34ae5c68906")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "TB6")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:Display_Tacometro_RPM")
-		(at 105 245 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "f01f776e-4c2a-4f72-9ccd-817a2b7ccc72")
-		(property "Reference" "DISP1"
-			(at 105 228 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "Tacometro_Digital_CF5135B"
-			(at 105 262 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 105 245 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 105 245 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 105 245 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "2"
-			(uuid "e0527b7d-1400-4c3e-ad50-95f694caf929")
-		)
-		(pin "5"
-			(uuid "f4d54033-408a-4b5a-9a3a-c3c3aee1de29")
-		)
-		(pin "1"
-			(uuid "3be2b56c-9507-4f30-a396-ab0b74c30286")
-		)
-		(pin "4"
-			(uuid "2fcecc37-6697-41e9-aa56-ca9e42f1cdff")
-		)
-		(pin "3"
-			(uuid "2a20d3b4-c7f2-44a5-9f20-d528d389770d")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "DISP1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:Terminal_Passagem")
-		(at 52 148 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "f52f68b4-c14a-467e-82f3-b7cc09073279")
-		(property "Reference" "TB5"
-			(at 55.5 148 0)
-			(effects
-				(font
-					(size 1 1)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "L2_MOT"
-			(at 55.5 146 0)
-			(effects
-				(font
-					(size 0.8 0.8)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 52 148 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 52 148 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 52 148 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "1"
-			(uuid "491b7aa0-524e-419f-a28d-440440ca4f2c")
-		)
-		(pin "2"
-			(uuid "2e4522dd-5a91-4940-bf5a-6036733c68f0")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "TB5")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Industrial:Pilot_Lamp_24V")
-		(at 252 150 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(uuid "fcd7bf85-cff5-437e-bd49-590e754ec2a4")
-		(property "Reference" "H2"
-			(at 258 148 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "VERDE_24V"
-			(at 258 152 0)
-			(effects
-				(font
-					(size 1.1 1.1)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" ""
-			(at 252 150 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 252 150 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Description" ""
-			(at 252 150 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(pin "X1"
-			(uuid "d32c793a-8c46-4d0d-989f-bc5ceab09456")
-		)
-		(pin "X2"
-			(uuid "4cd6e157-aecf-4ef2-8fb0-92ef44a891cf")
-		)
-		(instances
-			(project ""
-				(path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
-					(reference "H2")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(sheet_instances
-		(path "/"
-			(page "1")
-		)
-	)
-	(embedded_fonts no)
+  (version 20231120)
+  (generator "kicad")
+  (generator_version "9.0")
+  (uuid "b7a24c10-5321-4d92-94b2-a4f5b8209301")
+  (paper "A3")
+  (title_block
+    (title "Painel Eletrico Bancada de Testes (NR-10 / NR-12)")
+    (date "2026-10-24")
+    (rev "v2.2")
+    (company "Lean Tech Metrology & Industrial IoT Solutions")
+    (comment 1 "Motor 220V Tanquinho c/ Dimmer TRIAC e Cap. Permanente")
+    (comment 2 "Fonte 24V DC + Tacometro Digital CF5135B / NJK-5002C")
+    (comment 3 "Seguranca NR-12: Emergencia (LED Vermelho) + Tampa (LED Amarelo)")
+  )
+  (lib_symbols
+    (symbol "Industrial:Terminal_Passagem"
+      (in_bom yes) (on_board yes)
+      (property "Reference" "TB" (at 3.5 0 0) (effects (font (size 1.0 1.0)) (justify left)))
+      (property "Value" "Borne_DIN" (at 3.5 -2.2 0) (effects (font (size 0.8 0.8)) (justify left)))
+      (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+      (symbol "Terminal_Passagem_0_1"
+        (circle (center 0 0) (radius 1.8) (stroke (width 0.254) (type default)) (fill (type background)))
+        (circle (center 0 0) (radius 0.6) (stroke (width 0.254) (type default)) (fill (type none)))
+      )
+      (symbol "Terminal_Passagem_1_1"
+        (pin passive line (at 0 3.81 270) (length 2.01) (name "IN" (effects (font (size 0.7 0.7)) (hide yes))) (number "1" (effects (font (size 0.7 0.7)) (hide yes))))
+        (pin passive line (at 0 -3.81 90) (length 2.01) (name "OUT" (effects (font (size 0.7 0.7)) (hide yes))) (number "2" (effects (font (size 0.7 0.7)) (hide yes))))
+      )
+    )
+    (symbol "Industrial:CircuitBreaker_2P"
+      (in_bom yes) (on_board yes)
+      (property "Reference" "Q" (at -8.0 0 90) (effects (font (size 1.27 1.27))))
+      (property "Value" "Disjuntor_2P" (at 8.0 0 90) (effects (font (size 1.27 1.27))))
+      (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+      (symbol "CircuitBreaker_2P_0_1"
+        (rectangle (start -8.0 6.0) (end 8.0 -6.0) (stroke (width 0.254) (type default)) (fill (type background)))
+        (polyline (pts (xy -5.0 5.0) (xy -5.0 1.5) (xy -6.5 -1.5) (xy -5.0 -5.0)) (stroke (width 0.254) (type default)) (fill (type none)))
+        (polyline (pts (xy 5.0 5.0) (xy 5.0 1.5) (xy 3.5 -1.5) (xy 5.0 -5.0)) (stroke (width 0.254) (type default)) (fill (type none)))
+        (polyline (pts (xy -6.5 -0.5) (xy 3.5 -0.5)) (stroke (width 0.15) (type dash)) (fill (type none)))
+      )
+      (symbol "CircuitBreaker_2P_1_1"
+        (pin passive line (at -5.0 7.62 270) (length 2.54) (name "1" (effects (font (size 0.8 0.8)))) (number "1" (effects (font (size 0.8 0.8)))))
+        (pin passive line (at -5.0 -7.62 90) (length 2.54) (name "2" (effects (font (size 0.8 0.8)))) (number "2" (effects (font (size 0.8 0.8)))))
+        (pin passive line (at 5.0 7.62 270) (length 2.54) (name "3" (effects (font (size 0.8 0.8)))) (number "3" (effects (font (size 0.8 0.8)))))
+        (pin passive line (at 5.0 -7.62 90) (length 2.54) (name "4" (effects (font (size 0.8 0.8)))) (number "4" (effects (font (size 0.8 0.8)))))
+      )
+    )
+    (symbol "Industrial:Contactor_Power_2P"
+      (in_bom yes) (on_board yes)
+      (property "Reference" "K" (at -8.0 0 90) (effects (font (size 1.27 1.27))))
+      (property "Value" "Contator_2P" (at 8.0 0 90) (effects (font (size 1.27 1.27))))
+      (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+      (symbol "Contactor_Power_2P_0_1"
+        (rectangle (start -8.0 6.0) (end 8.0 -6.0) (stroke (width 0.254) (type default)) (fill (type background)))
+        (polyline (pts (xy -5.0 5.0) (xy -5.0 1.5) (xy -6.9 -2.0)) (stroke (width 0.254) (type default)) (fill (type none)))
+        (circle (center -5.0 -4.5) (radius 0.6) (stroke (width 0.254) (type default)) (fill (type none)))
+        (polyline (pts (xy 5.0 5.0) (xy 5.0 1.5) (xy 3.1 -2.0)) (stroke (width 0.254) (type default)) (fill (type none)))
+        (circle (center 5.0 -4.5) (radius 0.6) (stroke (width 0.254) (type default)) (fill (type none)))
+        (polyline (pts (xy -6.0 -0.5) (xy 4.0 -0.5)) (stroke (width 0.15) (type dash)) (fill (type none)))
+      )
+      (symbol "Contactor_Power_2P_1_1"
+        (pin passive line (at -5.0 7.62 270) (length 2.54) (name "1" (effects (font (size 0.7 0.7)) (hide yes))) (number "1L1" (effects (font (size 0.85 0.85)))))
+        (pin passive line (at -5.0 -7.62 90) (length 2.54) (name "2" (effects (font (size 0.7 0.7)) (hide yes))) (number "2T1" (effects (font (size 0.85 0.85)))))
+        (pin passive line (at 5.0 7.62 270) (length 2.54) (name "3" (effects (font (size 0.7 0.7)) (hide yes))) (number "3L2" (effects (font (size 0.85 0.85)))))
+        (pin passive line (at 5.0 -7.62 90) (length 2.54) (name "4" (effects (font (size 0.7 0.7)) (hide yes))) (number "4T2" (effects (font (size 0.85 0.85)))))
+      )
+    )
+    (symbol "Industrial:Dimmer_AC_220V"
+      (in_bom yes) (on_board yes)
+      (property "Reference" "DIM" (at -14.0 0 90) (effects (font (size 1.27 1.27))))
+      (property "Value" "Dimmer_220V" (at 14.0 0 90) (effects (font (size 1.27 1.27))))
+      (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+      (symbol "Dimmer_AC_220V_0_1"
+        (rectangle (start -10.0 10.0) (end 10.0 -10.0) (stroke (width 0.3) (type default)) (fill (type background)))
+        (circle (center 0 1.0) (radius 3.5) (stroke (width 0.254) (type default)) (fill (type outline)))
+        (polyline (pts (xy 0 1.0) (xy 2.5 3.5)) (stroke (width 0.3) (type default)) (fill (type none)))
+        (polyline (pts (xy -5.0 -2.5) (xy 5.0 4.5)) (stroke (width 0.254) (type default)) (fill (type none)))
+        (polyline (pts (xy 3.8 4.5) (xy 5.0 4.5) (xy 5.0 3.3)) (stroke (width 0.254) (type default)) (fill (type none)))
+        (text "DIMMER 220V" (at 0 7.5 0) (effects (font (size 1.1 1.1) bold)))
+        (text "POT. VELOCIDADE" (at 0 -6.5 0) (effects (font (size 0.9 0.9))))
+        (text "TRIAC 0-100%" (at 0 -8.5 0) (effects (font (size 0.8 0.8))))
+      )
+      (symbol "Dimmer_AC_220V_1_1"
+        (pin power_in line (at -5.0 12.54 270) (length 2.54) (name "L_IN" (effects (font (size 0.8 0.8)))) (number "1" (effects (font (size 0.8 0.8)))))
+        (pin power_in line (at 5.0 12.54 270) (length 2.54) (name "N_IN" (effects (font (size 0.8 0.8)))) (number "2" (effects (font (size 0.8 0.8)))))
+        (pin power_out line (at -5.0 -12.54 90) (length 2.54) (name "L_OUT" (effects (font (size 0.8 0.8)))) (number "3" (effects (font (size 0.8 0.8)))))
+        (pin power_out line (at 5.0 -12.54 90) (length 2.54) (name "N_OUT" (effects (font (size 0.8 0.8)))) (number "4" (effects (font (size 0.8 0.8)))))
+      )
+    )
+    (symbol "Industrial:Motor_Tanquinho_220V"
+      (in_bom yes) (on_board yes)
+      (property "Reference" "M" (at 0 14.0 0) (effects (font (size 1.27 1.27))))
+      (property "Value" "Motor_Tanquinho" (at 0 -14.0 0) (effects (font (size 1.27 1.27))))
+      (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+      (symbol "Motor_Tanquinho_220V_0_1"
+        (circle (center 0 0) (radius 8.5) (stroke (width 0.3) (type default)) (fill (type background)))
+        (text "M" (at 0 2.5 0) (effects (font (size 3.8 3.8) bold)))
+        (text "1~ 220V" (at 0 -1.5 0) (effects (font (size 1.5 1.5) bold)))
+        (text "1/4 CV" (at 0 -4.5 0) (effects (font (size 1.2 1.2))))
+        (rectangle (start 12.0 4.0) (end 18.0 -4.0) (stroke (width 0.254) (type default)) (fill (type background)))
+        (polyline (pts (xy 13.5 2.5) (xy 16.5 2.5)) (stroke (width 0.3) (type default)) (fill (type none)))
+        (polyline (pts (xy 13.5 -2.5) (xy 16.5 -2.5)) (stroke (width 0.3) (type default)) (fill (type none)))
+        (text "C_MOT" (at 15.0 6.0 0) (effects (font (size 1.0 1.0) bold)))
+        (text "12uF" (at 15.0 -6.0 0) (effects (font (size 1.0 1.0))))
+        (polyline (pts (xy 8.5 2.0) (xy 12.0 2.0)) (stroke (width 0.2) (type default)) (fill (type none)))
+        (polyline (pts (xy 8.5 -2.0) (xy 12.0 -2.0)) (stroke (width 0.2) (type default)) (fill (type none)))
+      )
+      (symbol "Motor_Tanquinho_220V_1_1"
+        (pin passive line (at -5.0 11.04 270) (length 2.54) (name "L1" (effects (font (size 0.8 0.8)))) (number "1" (effects (font (size 0.8 0.8)))))
+        (pin passive line (at 5.0 11.04 270) (length 2.54) (name "L2/N" (effects (font (size 0.8 0.8)))) (number "2" (effects (font (size 0.8 0.8)))))
+        (pin passive line (at 22.0 0 180) (length 4.0) (name "PE" (effects (font (size 0.8 0.8)))) (number "3" (effects (font (size 0.8 0.8)))))
+      )
+    )
+    (symbol "Industrial:SMPS_24V"
+      (in_bom yes) (on_board yes)
+      (property "Reference" "T" (at 0 16.0 0) (effects (font (size 1.27 1.27))))
+      (property "Value" "SMPS_24V_2.5A" (at 0 -16.0 0) (effects (font (size 1.27 1.27))))
+      (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+      (symbol "SMPS_24V_0_1"
+        (rectangle (start -14.0 14.0) (end 14.0 -14.0) (stroke (width 0.3) (type default)) (fill (type background)))
+        (polyline (pts (xy 0 14.0) (xy 0 -14.0)) (stroke (width 0.15) (type dash)) (fill (type none)))
+        (text "AC IN" (at -7.0 8.5 0) (effects (font (size 1.5 1.5) bold)))
+        (text "220V" (at -7.0 5.5 0) (effects (font (size 1.2 1.2))))
+        (text "DC OUT" (at 7.0 8.5 0) (effects (font (size 1.5 1.5) bold)))
+        (text "24V 2.5A" (at 5.0 5.5 0) (effects (font (size 1.1 1.1))))
+        (text "FONTE CHAVEADA" (at 0 -10.5 0) (effects (font (size 1.2 1.2) bold)))
+      )
+      (symbol "SMPS_24V_1_1"
+        (pin power_in line (at -16.54 5.08 0) (length 2.54) (name "L" (effects (font (size 1.0 1.0)))) (number "1" (effects (font (size 1.0 1.0)))))
+        (pin power_in line (at -16.54 0 0) (length 2.54) (name "N" (effects (font (size 1.0 1.0)))) (number "2" (effects (font (size 1.0 1.0)))))
+        (pin power_in line (at -16.54 -5.08 0) (length 2.54) (name "PE" (effects (font (size 1.0 1.0)))) (number "3" (effects (font (size 1.0 1.0)))))
+        (pin power_out line (at 16.54 5.08 180) (length 2.54) (name "+24V" (effects (font (size 1.0 1.0)))) (number "4" (effects (font (size 1.0 1.0)))))
+        (pin power_out line (at 16.54 -5.08 180) (length 2.54) (name "0V" (effects (font (size 1.0 1.0)))) (number "5" (effects (font (size 1.0 1.0)))))
+      )
+    )
+    (symbol "Industrial:SW_Emergency_1NC_1NO"
+      (in_bom yes) (on_board yes)
+      (property "Reference" "S" (at 4.0 2.54 0) (effects (font (size 1.27 1.27)) (justify left)))
+      (property "Value" "E-STOP_1NC_1NO" (at 4.0 -2.54 0) (effects (font (size 1.27 1.27)) (justify left)))
+      (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+      (symbol "SW_Emergency_1NC_1NO_0_1"
+        (arc (start -2.54 2.54) (mid 0 4.0) (end 2.54 2.54) (stroke (width 0.254) (type default)) (fill (type outline)))
+        (polyline (pts (xy 0 3.0) (xy 0 1.0)) (stroke (width 0.2) (type default)) (fill (type none)))
+        (polyline (pts (xy -1.5 1.0) (xy 1.5 1.0)) (stroke (width 0.2) (type default)) (fill (type none)))
+        (circle (center -2.0 0) (radius 0.5) (stroke (width 0.2) (type default)) (fill (type none)))
+        (circle (center 2.0 0) (radius 0.5) (stroke (width 0.2) (type default)) (fill (type none)))
+        (polyline (pts (xy -2.0 -0.5) (xy 1.5 -0.5)) (stroke (width 0.254) (type default)) (fill (type none)))
+        (polyline (pts (xy 0 -0.5) (xy 4.5 -0.5)) (stroke (width 0.15) (type dash)) (fill (type none)))
+        (circle (center 4.5 1.8) (radius 0.4) (stroke (width 0.2) (type default)) (fill (type none)))
+        (circle (center 4.5 -1.8) (radius 0.4) (stroke (width 0.2) (type default)) (fill (type none)))
+        (polyline (pts (xy 4.5 1.4) (xy 6.5 -0.5)) (stroke (width 0.254) (type default)) (fill (type none)))
+      )
+      (symbol "SW_Emergency_1NC_1NO_1_1"
+        (pin passive line (at 0 5.08 270) (length 2.54) (name "11" (effects (font (size 0.7 0.7)) (hide yes))) (number "11NF" (effects (font (size 0.85 0.85)))))
+        (pin passive line (at 0 -5.08 90) (length 2.54) (name "12" (effects (font (size 0.7 0.7)) (hide yes))) (number "12NF" (effects (font (size 0.85 0.85)))))
+        (pin passive line (at 4.5 5.08 270) (length 2.54) (name "23" (effects (font (size 0.7 0.7)) (hide yes))) (number "23NA" (effects (font (size 0.85 0.85)))))
+        (pin passive line (at 7.62 0 180) (length 2.54) (name "24" (effects (font (size 0.7 0.7)) (hide yes))) (number "24NA" (effects (font (size 0.85 0.85)))))
+      )
+    )
+    (symbol "Industrial:SW_Limit_Safety_SPDT"
+      (in_bom yes) (on_board yes)
+      (property "Reference" "S" (at 4.0 2.54 0) (effects (font (size 1.27 1.27)) (justify left)))
+      (property "Value" "Microswitch_Tampa" (at 4.0 -2.54 0) (effects (font (size 1.27 1.27)) (justify left)))
+      (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+      (symbol "SW_Limit_Safety_SPDT_0_1"
+        (circle (center -2.5 2.5) (radius 0.8) (stroke (width 0.254) (type default)) (fill (type none)))
+        (polyline (pts (xy -2.5 1.7) (xy -1.0 0.8)) (stroke (width 0.2) (type default)) (fill (type none)))
+        (circle (center 0 1.8) (radius 0.4) (stroke (width 0.2) (type default)) (fill (type none)))
+        (circle (center 0 -1.8) (radius 0.4) (stroke (width 0.2) (type default)) (fill (type none)))
+        (circle (center 4.5 0) (radius 0.4) (stroke (width 0.2) (type default)) (fill (type none)))
+        (polyline (pts (xy 0 1.4) (xy 0 -1.4)) (stroke (width 0.254) (type default)) (fill (type none)))
+        (polyline (pts (xy 0 1.4) (xy 4.1 0.2)) (stroke (width 0.2) (type dash)) (fill (type none)))
+      )
+      (symbol "SW_Limit_Safety_SPDT_1_1"
+        (pin passive line (at 0 5.08 270) (length 2.54) (name "COM" (effects (font (size 0.7 0.7)) (hide yes))) (number "COM" (effects (font (size 0.8 0.8)))))
+        (pin passive line (at 0 -5.08 90) (length 2.54) (name "NC" (effects (font (size 0.7 0.7)) (hide yes))) (number "NC" (effects (font (size 0.8 0.8)))))
+        (pin passive line (at 7.62 0 180) (length 2.54) (name "NO" (effects (font (size 0.7 0.7)) (hide yes))) (number "NO" (effects (font (size 0.8 0.8)))))
+      )
+    )
+    (symbol "Industrial:SW_Push_NC"
+      (in_bom yes) (on_board yes)
+      (property "Reference" "S" (at 4.0 2.54 0) (effects (font (size 1.27 1.27)) (justify left)))
+      (property "Value" "SW_OFF" (at 4.0 -2.54 0) (effects (font (size 1.27 1.27)) (justify left)))
+      (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+      (symbol "SW_Push_NC_0_1"
+        (polyline (pts (xy -1.5 2.5) (xy 1.5 2.5)) (stroke (width 0.3) (type default)) (fill (type none)))
+        (polyline (pts (xy 0 2.5) (xy 0 0.8)) (stroke (width 0.2) (type default)) (fill (type none)))
+        (circle (center -2.0 0) (radius 0.5) (stroke (width 0.2) (type default)) (fill (type none)))
+        (circle (center 2.0 0) (radius 0.5) (stroke (width 0.2) (type default)) (fill (type none)))
+        (polyline (pts (xy -2.0 -0.5) (xy 1.5 -0.5)) (stroke (width 0.254) (type default)) (fill (type none)))
+      )
+      (symbol "SW_Push_NC_1_1"
+        (pin passive line (at 0 5.08 270) (length 2.54) (name "1" (effects (font (size 0.7 0.7)) (hide yes))) (number "1NF" (effects (font (size 0.85 0.85)))))
+        (pin passive line (at 0 -5.08 90) (length 2.54) (name "2" (effects (font (size 0.7 0.7)) (hide yes))) (number "2NF" (effects (font (size 0.85 0.85)))))
+      )
+    )
+    (symbol "Industrial:SW_Push_NO"
+      (in_bom yes) (on_board yes)
+      (property "Reference" "S" (at 4.0 2.54 0) (effects (font (size 1.27 1.27)) (justify left)))
+      (property "Value" "SW_ON" (at 4.0 -2.54 0) (effects (font (size 1.27 1.27)) (justify left)))
+      (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+      (symbol "SW_Push_NO_0_1"
+        (polyline (pts (xy -1.5 2.5) (xy 1.5 2.5)) (stroke (width 0.3) (type default)) (fill (type none)))
+        (polyline (pts (xy 0 2.5) (xy 0 1.0)) (stroke (width 0.2) (type default)) (fill (type none)))
+        (circle (center -2.0 0) (radius 0.5) (stroke (width 0.2) (type default)) (fill (type none)))
+        (circle (center 2.0 0) (radius 0.5) (stroke (width 0.2) (type default)) (fill (type none)))
+        (polyline (pts (xy -2.0 0.5) (xy 1.5 2.0)) (stroke (width 0.254) (type default)) (fill (type none)))
+      )
+      (symbol "SW_Push_NO_1_1"
+        (pin passive line (at 0 5.08 270) (length 2.54) (name "3" (effects (font (size 0.7 0.7)) (hide yes))) (number "3NA" (effects (font (size 0.85 0.85)))))
+        (pin passive line (at 0 -5.08 90) (length 2.54) (name "4" (effects (font (size 0.7 0.7)) (hide yes))) (number "4NA" (effects (font (size 0.85 0.85)))))
+      )
+    )
+    (symbol "Industrial:Contactor_Aux_NO"
+      (in_bom yes) (on_board yes)
+      (property "Reference" "K" (at 4.0 2.54 0) (effects (font (size 1.27 1.27)) (justify left)))
+      (property "Value" "K1_NA_13-14" (at 4.0 -2.54 0) (effects (font (size 1.27 1.27)) (justify left)))
+      (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+      (symbol "Contactor_Aux_NO_0_1"
+        (circle (center -2.0 0) (radius 0.5) (stroke (width 0.2) (type default)) (fill (type none)))
+        (circle (center 2.0 0) (radius 0.5) (stroke (width 0.2) (type default)) (fill (type none)))
+        (polyline (pts (xy -2.0 0.5) (xy 1.5 2.0)) (stroke (width 0.254) (type default)) (fill (type none)))
+      )
+      (symbol "Contactor_Aux_NO_1_1"
+        (pin passive line (at 0 5.08 270) (length 2.54) (name "13" (effects (font (size 0.7 0.7)) (hide yes))) (number "13NA" (effects (font (size 0.85 0.85)))))
+        (pin passive line (at 0 -5.08 90) (length 2.54) (name "14" (effects (font (size 0.7 0.7)) (hide yes))) (number "14NA" (effects (font (size 0.85 0.85)))))
+      )
+    )
+    (symbol "Industrial:Contactor_Aux_NC"
+      (in_bom yes) (on_board yes)
+      (property "Reference" "K" (at 4.0 2.54 0) (effects (font (size 1.27 1.27)) (justify left)))
+      (property "Value" "K1_NF_21-22" (at 4.0 -2.54 0) (effects (font (size 1.27 1.27)) (justify left)))
+      (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+      (symbol "Contactor_Aux_NC_0_1"
+        (circle (center -2.0 0) (radius 0.5) (stroke (width 0.2) (type default)) (fill (type none)))
+        (circle (center 2.0 0) (radius 0.5) (stroke (width 0.2) (type default)) (fill (type none)))
+        (polyline (pts (xy -2.0 -0.5) (xy 1.5 -0.5)) (stroke (width 0.254) (type default)) (fill (type none)))
+      )
+      (symbol "Contactor_Aux_NC_1_1"
+        (pin passive line (at 0 5.08 270) (length 2.54) (name "21" (effects (font (size 0.8 0.8)) (hide yes))) (number "21NF" (effects (font (size 0.85 0.85)))))
+        (pin passive line (at 0 -5.08 90) (length 2.54) (name "22" (effects (font (size 0.8 0.8)) (hide yes))) (number "22NF" (effects (font (size 0.85 0.85)))))
+      )
+    )
+    (symbol "Industrial:Contactor_Coil_24V"
+      (in_bom yes) (on_board yes)
+      (property "Reference" "K" (at 5.0 2.54 0) (effects (font (size 1.27 1.27)) (justify left)))
+      (property "Value" "Bobina_24VDC" (at 5.0 -2.54 0) (effects (font (size 1.27 1.27)) (justify left)))
+      (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+      (symbol "Contactor_Coil_24V_0_1"
+        (rectangle (start -4.0 4.0) (end 4.0 -4.0) (stroke (width 0.254) (type default)) (fill (type background)))
+        (polyline (pts (xy -4.0 -4.0) (xy 4.0 4.0)) (stroke (width 0.2) (type default)) (fill (type none)))
+        (text "K1" (at -1.2 1.2 0) (effects (font (size 1.5 1.5) bold)))
+        (rectangle (start 4.0 3.0) (end 14.0 -3.0) (stroke (width 0.2) (type dash)) (fill (type none)))
+        (text "SUPRESSOR" (at 9.0 1.0 0) (effects (font (size 0.7 0.7))))
+        (text "WEG DI-D" (at 9.0 -1.2 0) (effects (font (size 0.7 0.7) bold)))
+      )
+      (symbol "Contactor_Coil_24V_1_1"
+        (pin passive line (at 0 6.54 270) (length 2.54) (name "A1" (effects (font (size 0.8 0.8)) (hide yes))) (number "A1" (effects (font (size 0.9 0.9)))))
+        (pin passive line (at 0 -6.54 90) (length 2.54) (name "A2" (effects (font (size 0.8 0.8)) (hide yes))) (number "A2" (effects (font (size 0.9 0.9)))))
+      )
+    )
+    (symbol "Industrial:Pilot_Lamp_24V"
+      (in_bom yes) (on_board yes)
+      (property "Reference" "H" (at 5.0 2.54 0) (effects (font (size 1.27 1.27)) (justify left)))
+      (property "Value" "Lamp_24V" (at 5.0 -2.54 0) (effects (font (size 1.27 1.27)) (justify left)))
+      (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+      (symbol "Pilot_Lamp_24V_0_1"
+        (circle (center 0 0) (radius 3.81) (stroke (width 0.254) (type default)) (fill (type background)))
+        (polyline (pts (xy -2.69 -2.69) (xy 2.69 2.69)) (stroke (width 0.254) (type default)) (fill (type none)))
+        (polyline (pts (xy -2.69 2.69) (xy 2.69 -2.69)) (stroke (width 0.254) (type default)) (fill (type none)))
+      )
+      (symbol "Pilot_Lamp_24V_1_1"
+        (pin passive line (at 0 6.35 270) (length 2.54) (name "X1" (effects (font (size 0.8 0.8)) (hide yes))) (number "X1" (effects (font (size 0.9 0.9)))))
+        (pin passive line (at 0 -6.35 90) (length 2.54) (name "X2" (effects (font (size 0.8 0.8)) (hide yes))) (number "X2" (effects (font (size 0.9 0.9)))))
+      )
+    )
+    (symbol "Industrial:Fuse_Cartridge"
+      (in_bom yes) (on_board yes)
+      (property "Reference" "F" (at 0 2.54 0) (effects (font (size 1.27 1.27))))
+      (property "Value" "Fuse_2A" (at 0 -2.54 0) (effects (font (size 1.27 1.27))))
+      (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+      (symbol "Fuse_Cartridge_0_1"
+        (rectangle (start -3.81 1.27) (end 3.81 -1.27) (stroke (width 0.254) (type default)) (fill (type background)))
+        (polyline (pts (xy -3.81 0) (xy 3.81 0)) (stroke (width 0.2) (type default)) (fill (type none)))
+      )
+      (symbol "Fuse_Cartridge_1_1"
+        (pin passive line (at -6.35 0 0) (length 2.54) (name "1" (effects (font (size 0.8 0.8)))) (number "1" (effects (font (size 0.8 0.8)))))
+        (pin passive line (at 6.35 0 180) (length 2.54) (name "2" (effects (font (size 0.8 0.8)))) (number "2" (effects (font (size 0.8 0.8)))))
+      )
+    )
+    (symbol "Industrial:Display_Tacometro_RPM"
+      (in_bom yes) (on_board yes)
+      (property "Reference" "DISP" (at 0 16.0 0) (effects (font (size 1.27 1.27))))
+      (property "Value" "Tacometro_CF5135B" (at 0 -16.0 0) (effects (font (size 1.27 1.27))))
+      (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+      (symbol "Display_Tacometro_RPM_0_1"
+        (rectangle (start -22.0 14.0) (end 22.0 -14.0) (stroke (width 0.3) (type default)) (fill (type background)))
+        (rectangle (start -18.0 10.0) (end 18.0 0) (stroke (width 0.254) (type default)) (fill (type none)))
+        (text "1750" (at -4.0 3.0 0) (effects (font (size 5.0 5.0) bold)))
+        (text "RPM" (at 12.0 3.0 0) (effects (font (size 2.0 2.0) bold)))
+        (text "TACOMETRO DIGITAL LED (12V-24V DC)" (at 0 -10.5 0) (effects (font (size 1.2 1.2) bold)))
+      )
+      (symbol "Display_Tacometro_RPM_1_1"
+        (pin power_in line (at -24.54 4.0 0) (length 2.54) (name "VCC (+)" (effects (font (size 1.0 1.0)))) (number "1" (effects (font (size 1.0 1.0)))))
+        (pin power_in line (at -24.54 -4.0 0) (length 2.54) (name "GND (-)" (effects (font (size 1.0 1.0)))) (number "2" (effects (font (size 1.0 1.0)))))
+        (pin power_out line (at 24.54 6.0 180) (length 2.54) (name "+V SENSOR" (effects (font (size 1.0 1.0)))) (number "4" (effects (font (size 1.0 1.0)))))
+        (pin input line (at 24.54 0 180) (length 2.54) (name "SINAL (IN)" (effects (font (size 1.0 1.0)))) (number "3" (effects (font (size 1.0 1.0)))))
+        (pin power_out line (at 24.54 -6.0 180) (length 2.54) (name "GND SENSOR" (effects (font (size 1.0 1.0)))) (number "5" (effects (font (size 1.0 1.0)))))
+      )
+    )
+    (symbol "Industrial:Sensor_Hall_NJK5002C"
+      (in_bom yes) (on_board yes)
+      (property "Reference" "SEN" (at 0 12.0 0) (effects (font (size 1.27 1.27))))
+      (property "Value" "NJK-5002C" (at 0 -12.0 0) (effects (font (size 1.27 1.27))))
+      (property "Footprint" "" (at 0 0 0) (effects (font (size 1.27 1.27)) (hide yes)))
+      (symbol "Sensor_Hall_NJK5002C_0_1"
+        (rectangle (start -16.0 9.0) (end 16.0 -9.0) (stroke (width 0.3) (type default)) (fill (type background)))
+        (polyline (pts (xy 16.0 8.0) (xy 16.0 -8.0)) (stroke (width 0.6) (type default)) (fill (type none)))
+        (circle (center 10.0 0) (radius 2.5) (stroke (width 0.254) (type default)) (fill (type outline)))
+        (text "HALL" (at -2.0 2.5 0) (effects (font (size 2.0 2.0) bold)))
+        (text "NJK-5002C (NPN NA)" (at -2.0 -2.5 0) (effects (font (size 1.1 1.1))))
+        (text "LED" (at 10.0 -4.5 0) (effects (font (size 0.9 0.9))))
+        (rectangle (start 21.0 3.5) (end 25.0 -3.5) (stroke (width 0.3) (type default)) (fill (type background)))
+        (text "IMA" (at 23.0 5.5 0) (effects (font (size 0.9 0.9) bold)))
+        (polyline (pts (xy 29.0 8.0) (xy 29.0 -8.0)) (stroke (width 0.5) (type default)) (fill (type none)))
+        (text "EIXO" (at 32.0 0 90) (effects (font (size 0.8 0.8))))
+      )
+      (symbol "Sensor_Hall_NJK5002C_1_1"
+        (pin power_in line (at -18.54 6.0 0) (length 2.54) (name "MARROM (+)" (effects (font (size 0.9 0.9)))) (number "1" (effects (font (size 0.9 0.9)))))
+        (pin output line (at -18.54 0 0) (length 2.54) (name "PRETO (SIG)" (effects (font (size 0.9 0.9)))) (number "2" (effects (font (size 0.9 0.9)))))
+        (pin power_in line (at -18.54 -6.0 0) (length 2.54) (name "AZUL (GND)" (effects (font (size 0.9 0.9)))) (number "3" (effects (font (size 0.9 0.9)))))
+      )
+    )
+  )
+  (polyline (pts (xy 20 20) (xy 95 20) (xy 95 195) (xy 20 195) (xy 20 20))
+    (stroke (width 0.4) (type default))
+    (fill (type none))
+    (uuid "956fa23d-2b77-452a-a9d7-455d54bd62a8")
+  )
+  (text "SECAO 1: CIRCUITO DE FORCA (220V AC)" (at 25 28 0)
+    (effects (font (size 2.0 2.0) bold) (justify left bottom))
+    (uuid "9e6aebad-2b46-4464-ae58-dccb845035f9")
+  )
+  (text "Rede 220V -> Q1 -> K1 -> Dimmer -> Motor M1" (at 25 33 0)
+    (effects (font (size 1.0 1.0)) (justify left bottom))
+    (uuid "b58f64ca-591c-4de0-ab80-4ce4ae788b41")
+  )
+  (polyline (pts (xy 98 20) (xy 175 20) (xy 175 195) (xy 98 195) (xy 98 20))
+    (stroke (width 0.4) (type default))
+    (fill (type none))
+    (uuid "546ded9b-87d0-41a0-bc8a-f87f4ea1dfe5")
+  )
+  (text "SECAO 2: FONTE CHAVEADA (24V DC)" (at 102 28 0)
+    (effects (font (size 2.0 2.0) bold) (justify left bottom))
+    (uuid "069950b0-92b6-472a-a6b2-06ac7cf887c1")
+  )
+  (text "Derivacao 220V -> F1/F2 (2A) -> SMPS 24V 2.5A (60W Trilho DIN)" (at 102 33 0)
+    (effects (font (size 1.0 1.0)) (justify left bottom))
+    (uuid "8d09fd94-ba03-415b-83c7-c68d1e842a8b")
+  )
+  (polyline (pts (xy 178 20) (xy 325 20) (xy 325 195) (xy 178 195) (xy 178 20))
+    (stroke (width 0.4) (type default))
+    (fill (type none))
+    (uuid "f50ceca3-0e6e-4e62-9c2b-eff473924a51")
+  )
+  (text "SECAO 3: CIRCUITO DE COMANDO & INTERTRAVAMENTO (24V DC)" (at 182 28 0)
+    (effects (font (size 2.0 2.0) bold) (justify left bottom))
+    (uuid "f7fa0aca-e9e3-4ba3-bd05-d612a30decb4")
+  )
+  (text "NR-12: Botao Emergencia (S0) + Microswitch Tampa SPDT + Retencao K1 (13-14)" (at 182 33 0)
+    (effects (font (size 1.2 1.2)) (justify left bottom))
+    (uuid "8ca93a80-d68a-49f7-9f58-3223a2804424")
+  )
+  (polyline (pts (xy 20 200) (xy 302 200) (xy 302 280) (xy 20 280) (xy 20 200))
+    (stroke (width 0.4) (type default))
+    (fill (type none))
+    (uuid "86db7c66-e5ed-4ad9-b209-b2c443ecf7de")
+  )
+  (text "SECAO 4: TACOMETRO DIGITAL DE PAINEL & SENSOR HALL NJK-5002C" (at 25 208 0)
+    (effects (font (size 1.8 1.8) bold) (justify left bottom))
+    (uuid "45823b2e-926a-48a2-af12-08cd56e1b67f")
+  )
+  (text "Display Digital de RPM (12V-24V DC) + Sensor Magnetico M12 c/ Ima de Neodimio no Eixo" (at 25 213 0)
+    (effects (font (size 1.2 1.2)) (justify left bottom))
+    (uuid "7d81dd09-33a0-4b72-8003-06e0afce3cf1")
+  )
+  (polyline (pts (xy 328 20) (xy 410 20) (xy 410 238) (xy 328 238) (xy 328 20))
+    (stroke (width 0.4) (type default))
+    (fill (type none))
+    (uuid "e4b7d58e-aaeb-482e-bd25-c5d3ff7e7ff1")
+  )
+  (text "NOTAS TECNICAS & BOM" (at 332 28 0)
+    (effects (font (size 2.0 2.0) bold) (justify left bottom))
+    (uuid "449e669a-bc81-4148-b17f-6c76217f0209")
+  )
+  (text "NORMAS APLICAVEIS:" (at 332 35.0 0)
+    (effects (font (size 1.05 1.05) bold) (justify left top))
+    (uuid "4dd73029-bdd9-45d0-a4f4-58df9fdf4d5f")
+  )
+  (text "- ABNT NBR 5410 (Instalacoes BT)" (at 332 38.4 0)
+    (effects (font (size 1.05 1.05)) (justify left top))
+    (uuid "8e2b0815-5058-4f5a-ba3f-8e5af02e2690")
+  )
+  (text "- NR-10 (Seguranca Eletrica)" (at 332 41.8 0)
+    (effects (font (size 1.05 1.05)) (justify left top))
+    (uuid "ce5be636-3d34-446c-a011-45188ef8bbb1")
+  )
+  (text "- NR-12 (Seguranca em Maquinas)" (at 332 45.2 0)
+    (effects (font (size 1.05 1.05)) (justify left top))
+    (uuid "d4257ba3-bb9a-4c0a-b65a-10f9ba979ee6")
+  )
+  (text "ESPECIFICACOES COMPONENTES:" (at 332 52.0 0)
+    (effects (font (size 1.05 1.05) bold) (justify left top))
+    (uuid "b90607af-87fc-4755-a857-3ccc2708a347")
+  )
+  (text "* Q1: Disjuntor Bipolar 2P Curva C 10A" (at 332 55.4 0)
+    (effects (font (size 1.05 1.05) bold) (justify left top))
+    (uuid "9f36a4c1-4cca-456a-bdfd-e4cd4f761608")
+  )
+  (text "* K1: Contator Steck SC / WEG CWB (24V CC)" (at 332 58.8 0)
+    (effects (font (size 1.05 1.05) bold) (justify left top))
+    (uuid "c922d0c4-8ef7-4be7-8c6b-0855cc8e4780")
+  )
+  (text "  c/ Contato Auxiliar 13-14 (NA) p/ Selo" (at 332 62.2 0)
+    (effects (font (size 1.05 1.05)) (justify left top))
+    (uuid "b439bfb7-356d-4615-b0fe-b452fb8a14f6")
+  )
+  (text "  (Sem blocos de contato adicionais)" (at 332 65.6 0)
+    (effects (font (size 1.05 1.05)) (justify left top))
+    (uuid "f1343db1-437c-4495-96b6-8634a3aad391")
+  )
+  (text "* DIM1: Dimmer AC 220V 2000W / 4000W" (at 332 69.0 0)
+    (effects (font (size 1.05 1.05) bold) (justify left top))
+    (uuid "0fb4a205-2def-41f1-be47-49def0b7df4b")
+  )
+  (text "  Controle TRIAC c/ Potenciometro de Painel" (at 332 72.4 0)
+    (effects (font (size 1.05 1.05)) (justify left top))
+    (uuid "84c9b219-e3de-4807-909d-a05cb8bc3c03")
+  )
+  (text "* M1: Motor de Tanquinho 220V" (at 332 75.8 0)
+    (effects (font (size 1.05 1.05) bold) (justify left top))
+    (uuid "1d3b08f5-d696-44f0-8873-1e3ba291e433")
+  )
+  (text "  Monofasico/Bifasico ~1/4 CV (180W)" (at 332 79.2 0)
+    (effects (font (size 1.05 1.05)) (justify left top))
+    (uuid "b3e6d628-f9ce-4ca6-97de-f74b969a1bc7")
+  )
+  (text "  Capacitor Permanente C_MOT (12-15uF)" (at 332 82.6 0)
+    (effects (font (size 1.05 1.05)) (justify left top))
+    (uuid "5ce1a1a1-4139-4525-93f9-c217a452e92f")
+  )
+  (text "* T1: Fonte Chaveada Trilho DIN 24V 2.5A" (at 332 86.0 0)
+    (effects (font (size 1.05 1.05) bold) (justify left top))
+    (uuid "e917af90-efbe-494e-b718-26cbfe6d2f2a")
+  )
+  (text "* S0: Botao Emergencia Cogumelo c/ Trava (1NF + 1NA)" (at 332 89.4 0)
+    (effects (font (size 1.05 1.05) bold) (justify left top))
+    (uuid "deb3ec18-5567-429c-8298-6ee04e0647fb")
+  )
+  (text "* S_TAMPA: Microswitch Seguranca SPDT (COM, NF, NA)" (at 332 92.8 0)
+    (effects (font (size 1.05 1.05) bold) (justify left top))
+    (uuid "73a98c3d-6ff7-46b5-ac2f-657d170dbec7")
+  )
+  (text "  NF: Intertravamento Serie Comando" (at 332 96.2 0)
+    (effects (font (size 1.05 1.05)) (justify left top))
+    (uuid "c9ab7478-7cf5-4fcb-8bfd-00c8913c5588")
+  )
+  (text "  NA: Aciona Sinaleiro H3 Tampa Aberta" (at 332 99.6 0)
+    (effects (font (size 1.05 1.05)) (justify left top))
+    (uuid "ac131263-58b0-448f-8c0d-60112b09fcb0")
+  )
+  (text "* S_OFF: Botao Desliga Vermelho (NF)" (at 332 103.0 0)
+    (effects (font (size 1.05 1.05) bold) (justify left top))
+    (uuid "e8c87041-b76b-4624-925f-9c28f25d71cb")
+  )
+  (text "* S_ON: Botao Liga Verde (NA)" (at 332 106.4 0)
+    (effects (font (size 1.05 1.05) bold) (justify left top))
+    (uuid "8e0b856d-be5e-484c-831f-eb5e602a3f20")
+  )
+  (text "* H1: Sinaleiro LED Branco 24V (Painel ON / Standby)" (at 332 109.8 0)
+    (effects (font (size 1.05 1.05) bold) (justify left top))
+    (uuid "a44d1c90-2244-4150-a294-28e9bc0c74b7")
+  )
+  (text "* H2: Sinaleiro LED Verde 24V (Motor ON - Paralelo K1 A1/A2)" (at 332 113.2 0)
+    (effects (font (size 1.05 1.05) bold) (justify left top))
+    (uuid "a34b8e71-f340-4eae-9353-942e14122b85")
+  )
+  (text "* H3: Sinaleiro LED Amarelo 24V (Alarme Tampa Aberta)" (at 332 116.6 0)
+    (effects (font (size 1.05 1.05) bold) (justify left top))
+    (uuid "6a3b9855-bc61-4bb1-94e8-45f1564999b7")
+  )
+  (text "* H4: Sinaleiro LED Vermelho 24V (Emergencia Acionada S0)" (at 332 120.0 0)
+    (effects (font (size 1.05 1.05) bold) (justify left top))
+    (uuid "3c48f73c-869b-4122-bde7-762b41448a63")
+  )
+  (text "* DISP: Tacometro Digital CF5135B 4 Digitos" (at 332 123.4 0)
+    (effects (font (size 1.05 1.05) bold) (justify left top))
+    (uuid "46a56c74-e774-4a18-94fb-24bec665a310")
+  )
+  (text "* SEN: Sensor Hall NJK-5002C M12 NPN NA" (at 332 126.8 0)
+    (effects (font (size 1.05 1.05) bold) (justify left top))
+    (uuid "619f0d46-5f78-4a52-8034-abf3c6c2c44b")
+  )
+  (text "ATERRAMENTO DE PROTECAO (PE):" (at 332 133.6 0)
+    (effects (font (size 1.05 1.05) bold) (justify left top))
+    (uuid "d59587ab-f744-49ff-b484-8e43a8183420")
+  )
+  (text "Carcaca do motor, chassi do dimmer," (at 332 137.0 0)
+    (effects (font (size 1.05 1.05)) (justify left top))
+    (uuid "e090ffe4-fc6c-4c6a-9969-3f5ee3ae5779")
+  )
+  (text "fonte T1 e painel sao interligados a" (at 332 140.4 0)
+    (effects (font (size 1.05 1.05)) (justify left top))
+    (uuid "aab870c8-8f10-45f0-9dfe-edff024406ac")
+  )
+  (text "barra de equipotencializacao PE da bancada." (at 332 143.8 0)
+    (effects (font (size 1.05 1.05)) (justify left top))
+    (uuid "ac5fa556-ff36-4d1e-a725-36d71332ae93")
+  )
+  (text "INTERTRAVAMENTO NR-12:" (at 332 150.6 0)
+    (effects (font (size 1.05 1.05) bold) (justify left top))
+    (uuid "22b6dd5e-90e6-4b0a-8a12-0e5889fd4318")
+  )
+  (text "Se a tampa for aberta ou a emergencia" (at 332 154.0 0)
+    (effects (font (size 1.05 1.05)) (justify left top))
+    (uuid "27561657-94ed-492a-8c00-89ac4e233f1a")
+  )
+  (text "for acionada, K1 desliga imediatamente." (at 332 157.4 0)
+    (effects (font (size 1.05 1.05)) (justify left top))
+    (uuid "cbb9dd3f-42fc-4286-ac47-206a29eecfb9")
+  )
+  (text "O selo 13-14 abre, impedindo religamento" (at 332 160.8 0)
+    (effects (font (size 1.05 1.05)) (justify left top))
+    (uuid "fd8e61e2-27b7-4fe3-901a-ced391ed749d")
+  )
+  (text "automatico. Exige REARME MANUAL via S_ON." (at 332 164.2 0)
+    (effects (font (size 1.05 1.05)) (justify left top))
+    (uuid "95b24a79-98ae-4394-a39b-b7dc4ddaee68")
+  )
+  (text "Abertura da tampa acende LED Amarelo H3." (at 332 167.6 0)
+    (effects (font (size 1.05 1.05)) (justify left top))
+    (uuid "b4409ac0-a98d-442b-a45d-cdc483cb3b80")
+  )
+  (text "Acionamento da emergencia acende LED Vermelho H4." (at 332 171.0 0)
+    (effects (font (size 1.05 1.05)) (justify left top))
+    (uuid "e21b8c54-0c81-40f9-899e-368b9306a5ae")
+  )
+  (text "EXPANSAO FUTURA PARA CLP:" (at 332 177.8 0)
+    (effects (font (size 1.05 1.05) bold) (justify left top))
+    (uuid "14fde788-4884-453e-b235-08d9a44100a5")
+  )
+  (text "1. DI: Status S0, S_TAMPA, K1, Pulso Tacho" (at 332 181.2 0)
+    (effects (font (size 1.05 1.05)) (justify left top))
+    (uuid "ff6e411c-9e55-4760-8493-22c2d106b40c")
+  )
+  (text "2. DO: Partida/Parada Remota via reles" (at 332 184.6 0)
+    (effects (font (size 1.05 1.05)) (justify left top))
+    (uuid "47ef46fe-547c-43c4-a988-e61e72045fd8")
+  )
+  (label "TERRA_PE" (at 28 35 180)
+    (effects (font (size 1.27 1.27)) (justify right))
+    (uuid "163a542f-aa26-4661-8408-bb4262fbf037")
+  )
+  (wire (pts (xy 28 35) (xy 74 35))
+    (stroke (width 0) (type default))
+    (uuid "5bfaf86d-de17-439c-8a23-e146be7af0fd")
+  )
+  (wire (pts (xy 74 35) (xy 74 42.19))
+    (stroke (width 0) (type default))
+    (uuid "7bcb76f8-b5a7-4bb5-86c9-7b14c5622dfd")
+  )
+  (label "REDE_220V_L2/N" (at 28 38 180)
+    (effects (font (size 1.27 1.27)) (justify right))
+    (uuid "ea29a8ba-f0d8-4f21-b85f-fee6b00b9204")
+  )
+  (wire (pts (xy 28 38) (xy 52 38))
+    (stroke (width 0) (type default))
+    (uuid "98f3d491-0046-49b3-98bc-ff6829e44e6c")
+  )
+  (wire (pts (xy 52 38) (xy 52 42.19))
+    (stroke (width 0) (type default))
+    (uuid "5e8abb05-dbfb-44ba-873c-f86518b1f05c")
+  )
+  (label "REDE_220V_L1" (at 28 41 180)
+    (effects (font (size 1.27 1.27)) (justify right))
+    (uuid "9b91490b-e97b-4fdd-b5f6-e43d03d80b07")
+  )
+  (wire (pts (xy 28 41) (xy 42 41))
+    (stroke (width 0) (type default))
+    (uuid "a49d303b-e31b-4bb4-afc7-a51e62a22821")
+  )
+  (wire (pts (xy 42 41) (xy 42 42.19))
+    (stroke (width 0) (type default))
+    (uuid "aa85c9e0-5aaa-4cc7-bfb7-e2615de7e0e3")
+  )
+  (symbol (lib_id "Industrial:Terminal_Passagem") (at 42 46 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "879e6d30-ed6d-4f62-bd8e-f2e7f481553a")
+    (property "Reference" "TB1" (at 45.5 46 0) (effects (font (size 1.0 1.0)) (justify left)))
+    (property "Value" "L1_IN" (at 45.5 44 0) (effects (font (size 0.8 0.8)) (justify left)))
+    (property "Footprint" "" (at 42 46 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "TB1")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "TB1")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol (lib_id "Industrial:Terminal_Passagem") (at 52 46 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "b66954f8-4a12-42a9-8462-d65ac161f57d")
+    (property "Reference" "TB2" (at 55.5 46 0) (effects (font (size 1.0 1.0)) (justify left)))
+    (property "Value" "L2_IN" (at 55.5 44 0) (effects (font (size 0.8 0.8)) (justify left)))
+    (property "Footprint" "" (at 52 46 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "TB2")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "TB2")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol (lib_id "Industrial:Terminal_Passagem") (at 74 46 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "0f0fc69b-d2ce-4ea5-b24e-71169584b6a5")
+    (property "Reference" "TB3" (at 77.5 46 0) (effects (font (size 1.0 1.0)) (justify left)))
+    (property "Value" "PE_IN" (at 77.5 44 0) (effects (font (size 0.8 0.8)) (justify left)))
+    (property "Footprint" "" (at 74 46 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "TB3")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "TB3")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire (pts (xy 42 49.81) (xy 42 56.38))
+    (stroke (width 0) (type default))
+    (uuid "b33a7420-36ae-4f3b-a2cd-ccb2b0b14c42")
+  )
+  (wire (pts (xy 52 49.81) (xy 52 56.38))
+    (stroke (width 0) (type default))
+    (uuid "7511bcb4-985a-414b-9ef6-26d831dd1876")
+  )
+  (symbol (lib_id "Industrial:CircuitBreaker_2P") (at 47 64 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "310a16bc-1c0b-4313-9315-8c9f5ce82379")
+    (property "Reference" "Q1" (at 35 64 90) (effects (font (size 1.27 1.27))))
+    (property "Value" "Disjuntor_2P_C10A" (at 59 64 90) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "" (at 47 64 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "Q1")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "Q1")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire (pts (xy 42 71.62) (xy 42 88.38))
+    (stroke (width 0) (type default))
+    (uuid "6746c560-4c7e-4b46-b3c7-469762aabbc8")
+  )
+  (junction (at 42 74) (diameter 1.0) (color 0 0 0 0)
+    (uuid "93bb5aa4-3176-40f9-9e17-7877d945e1e7")
+  )
+  (wire (pts (xy 42 74) (xy 105 74))
+    (stroke (width 0) (type default))
+    (uuid "f0d8eb79-e1c6-43c7-ab27-74f652752b5a")
+  )
+  (wire (pts (xy 52 71.62) (xy 52 88.38))
+    (stroke (width 0) (type default))
+    (uuid "3a1becb4-086a-45cb-939a-199ae459217d")
+  )
+  (junction (at 52 86) (diameter 1.0) (color 0 0 0 0)
+    (uuid "5e232e0f-e750-4e00-a4ce-7517cba557cb")
+  )
+  (wire (pts (xy 52 86) (xy 105 86))
+    (stroke (width 0) (type default))
+    (uuid "8669df27-de60-4cc2-adc7-86d14f7cec9c")
+  )
+  (symbol (lib_id "Industrial:Contactor_Power_2P") (at 47 96 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "4b8eeb52-b8c3-4bf1-aad1-29d84578c715")
+    (property "Reference" "K1" (at 35 96 90) (effects (font (size 1.27 1.27))))
+    (property "Value" "Contatos_Forca_K1" (at 59 96 90) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "" (at 47 96 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "K1")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "K1")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire (pts (xy 42 103.62) (xy 42 111.46))
+    (stroke (width 0) (type default))
+    (uuid "9bdb9dc3-0227-4d07-8146-ef9aa79edecb")
+  )
+  (wire (pts (xy 52 103.62) (xy 52 111.46))
+    (stroke (width 0) (type default))
+    (uuid "c88d40c0-171d-4da2-9efc-1cf197de6834")
+  )
+  (symbol (lib_id "Industrial:Dimmer_AC_220V") (at 47 124 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "f5495513-371b-4411-9395-47dc0c0bcb3e")
+    (property "Reference" "DIM1" (at 33 124 90) (effects (font (size 1.27 1.27))))
+    (property "Value" "Dimmer_220V" (at 29 124 90) (effects (font (size 1.1 1.1))))
+    (property "Footprint" "" (at 47 124 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "DIM1")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "DIM1")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire (pts (xy 42 136.54) (xy 42 144.19))
+    (stroke (width 0) (type default))
+    (uuid "70e68cd0-20b4-458b-9724-0701b3512cc1")
+  )
+  (wire (pts (xy 52 136.54) (xy 52 144.19))
+    (stroke (width 0) (type default))
+    (uuid "485491c5-e951-4c46-a557-09fa222da15d")
+  )
+  (symbol (lib_id "Industrial:Terminal_Passagem") (at 42 148 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "98b11977-8445-4659-9b25-34a8cdb8ac22")
+    (property "Reference" "TB4" (at 45.5 148 0) (effects (font (size 1.0 1.0)) (justify left)))
+    (property "Value" "L1_MOT" (at 45.5 146 0) (effects (font (size 0.8 0.8)) (justify left)))
+    (property "Footprint" "" (at 42 148 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "TB4")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "TB4")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol (lib_id "Industrial:Terminal_Passagem") (at 52 148 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "14bfdf8d-8f29-47be-817e-6ee988fcfca7")
+    (property "Reference" "TB5" (at 55.5 148 0) (effects (font (size 1.0 1.0)) (justify left)))
+    (property "Value" "L2_MOT" (at 55.5 146 0) (effects (font (size 0.8 0.8)) (justify left)))
+    (property "Footprint" "" (at 52 148 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "TB5")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "TB5")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol (lib_id "Industrial:Terminal_Passagem") (at 74 148 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "b45a3119-32bd-46c2-b248-1a1ec9a6530b")
+    (property "Reference" "TB6" (at 77.5 148 0) (effects (font (size 1.0 1.0)) (justify left)))
+    (property "Value" "PE_MOT" (at 77.5 146 0) (effects (font (size 0.8 0.8)) (justify left)))
+    (property "Footprint" "" (at 74 148 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "TB6")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "TB6")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire (pts (xy 74 49.81) (xy 74 144.19))
+    (stroke (width 0) (type default))
+    (uuid "e2cb23d3-84c4-4e99-aa9c-3a95575e907e")
+  )
+  (junction (at 74 124) (diameter 1.0) (color 0 0 0 0)
+    (uuid "a0f9dd6e-35f5-4597-b56a-815411f67e52")
+  )
+  (wire (pts (xy 74 124) (xy 57 124))
+    (stroke (width 0) (type default))
+    (uuid "e238e19a-dd9d-43bc-820b-67d4d11f63aa")
+  )
+  (text "PE Carcaca Dimmer" (at 59 122 0)
+    (effects (font (size 0.85 0.85)) (justify left bottom))
+    (uuid "a9e041ee-e101-4e26-bd2d-4268654e172f")
+  )
+  (wire (pts (xy 42 151.81) (xy 42 162.96))
+    (stroke (width 0) (type default))
+    (uuid "c3539228-3082-4f84-9157-6087f73ac58a")
+  )
+  (wire (pts (xy 52 151.81) (xy 52 162.96))
+    (stroke (width 0) (type default))
+    (uuid "963b74d6-8eab-4a1e-9d11-2b3f9bd278a3")
+  )
+  (wire (pts (xy 74 151.81) (xy 74 174))
+    (stroke (width 0) (type default))
+    (uuid "a7d81e61-25ec-4a91-b09a-7778038edbfa")
+  )
+  (wire (pts (xy 74 174) (xy 69 174))
+    (stroke (width 0) (type default))
+    (uuid "bb598fe1-6534-467b-82ab-10d8d25d4563")
+  )
+  (symbol (lib_id "Industrial:Motor_Tanquinho_220V") (at 47 174 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "066bd26f-2dfb-42e0-96dd-f42d67153323")
+    (property "Reference" "M1" (at 47 159 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "Motor_Tanquinho_220V" (at 47 188 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "" (at 47 174 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "M1")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "M1")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol (lib_id "Industrial:Fuse_Cartridge") (at 115 74 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "08fd6bf8-01c0-4ade-aca9-36abfc5aeebc")
+    (property "Reference" "F1" (at 115 70 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "2A_250V" (at 115 78 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "" (at 115 74 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "F1")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "F1")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol (lib_id "Industrial:Fuse_Cartridge") (at 115 86 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "a91878dd-45da-47e0-9d31-bc9343a931b0")
+    (property "Reference" "F2" (at 115 82 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "2A_250V" (at 115 90 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "" (at 115 86 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "F2")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "F2")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol (lib_id "Industrial:SMPS_24V") (at 148 88 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "fcacdd9a-28ad-4a2f-aab4-9ea425e0264f")
+    (property "Reference" "T1" (at 148 70 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "SMPS_24V_2.5A" (at 148 106 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "" (at 148 88 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "T1")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "T1")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire (pts (xy 105 74) (xy 108.65 74))
+    (stroke (width 0) (type default))
+    (uuid "67ac59e5-e6b5-460f-b610-81c6921c5dfe")
+  )
+  (wire (pts (xy 121.35 74) (xy 126 74))
+    (stroke (width 0) (type default))
+    (uuid "541157e7-a23d-4970-8cfd-0dda4d769947")
+  )
+  (wire (pts (xy 126 74) (xy 126 82.92))
+    (stroke (width 0) (type default))
+    (uuid "0a206a98-3d2d-4c0b-bd22-6ce1580f07c0")
+  )
+  (wire (pts (xy 126 82.92) (xy 131.46 82.92))
+    (stroke (width 0) (type default))
+    (uuid "171a466b-e1ec-4326-a2af-cd0df436e24b")
+  )
+  (wire (pts (xy 105 86) (xy 108.65 86))
+    (stroke (width 0) (type default))
+    (uuid "8b9c7ecf-a349-4d22-9ea0-38cf80887055")
+  )
+  (wire (pts (xy 121.35 86) (xy 126 86))
+    (stroke (width 0) (type default))
+    (uuid "ab4990db-8162-490a-a7fc-f45888b213ce")
+  )
+  (wire (pts (xy 126 86) (xy 126 88))
+    (stroke (width 0) (type default))
+    (uuid "c8b06637-038a-4ad8-ad35-babf71be84ff")
+  )
+  (wire (pts (xy 126 88) (xy 131.46 88))
+    (stroke (width 0) (type default))
+    (uuid "20d2da59-0916-4a1a-b323-8264930fed4d")
+  )
+  (wire (pts (xy 131.46 93.08) (xy 131.46 96.5))
+    (stroke (width 0) (type default))
+    (uuid "8fe18368-62ab-4eac-bddf-1f57049edddd")
+  )
+  (polyline (pts (xy 129.5 96.5) (xy 133.5 96.5)) (stroke (width 0.4) (type default)) (fill (type none)))
+  (polyline (pts (xy 130.5 97.5) (xy 132.5 97.5)) (stroke (width 0.4) (type default)) (fill (type none)))
+  (polyline (pts (xy 131.0 98.5) (xy 132.0 98.5)) (stroke (width 0.4) (type default)) (fill (type none)))
+  (text "PE" (at 134 98 0)
+    (effects (font (size 0.9 0.9)) (justify left bottom))
+    (uuid "cc12b9c4-f860-4da6-aa76-ab0f244caec1")
+  )
+  (wire (pts (xy 164.54 82.92) (xy 172 82.92))
+    (stroke (width 0) (type default))
+    (uuid "cc7777b0-6b35-4215-adcb-298cbbbd5462")
+  )
+  (wire (pts (xy 172 82.92) (xy 172 45))
+    (stroke (width 0) (type default))
+    (uuid "80540039-338b-4ca2-b06c-c3ff9b6dc8f6")
+  )
+  (junction (at 172 45) (diameter 1.0) (color 0 0 0 0)
+    (uuid "60c1cde7-10d6-4496-a81d-ad06f38891fe")
+  )
+  (wire (pts (xy 172 45) (xy 212 45))
+    (stroke (width 0) (type default))
+    (uuid "f3962961-8e4f-48d1-9db6-bf0cf5ab2c0a")
+  )
+  (wire (pts (xy 212 45) (xy 216.5 45))
+    (stroke (width 0) (type default))
+    (uuid "1513b940-076a-434d-93eb-8d5c6f35bcd1")
+  )
+  (wire (pts (xy 216.5 45) (xy 314 45))
+    (stroke (width 0) (type default))
+    (uuid "59c43888-bfa6-4471-8187-72e236f40c17")
+  )
+  (text "+24V DC BARRAMENTO GERAL" (at 182 42 0)
+    (effects (font (size 1.3 1.3) bold) (justify left bottom))
+    (uuid "16ca3d91-ba95-4281-8881-b86dd4c00043")
+  )
+  (wire (pts (xy 164.54 93.08) (xy 172 93.08))
+    (stroke (width 0) (type default))
+    (uuid "15ff05a4-4a02-42cc-b3df-88ca65609787")
+  )
+  (wire (pts (xy 172 93.08) (xy 172 185))
+    (stroke (width 0) (type default))
+    (uuid "e9a25c1a-33b0-4e28-be10-272a7c84d0c6")
+  )
+  (junction (at 172 185) (diameter 1.0) (color 0 0 0 0)
+    (uuid "d2101bf8-7c94-473b-9d71-7207298ad371")
+  )
+  (wire (pts (xy 172 185) (xy 212 185))
+    (stroke (width 0) (type default))
+    (uuid "dd8cac24-6b43-4e1d-bc05-0b0f899663b2")
+  )
+  (wire (pts (xy 212 185) (xy 245 185))
+    (stroke (width 0) (type default))
+    (uuid "bdc11244-3a70-4493-892b-f03f4a6a4b1f")
+  )
+  (wire (pts (xy 245 185) (xy 268 185))
+    (stroke (width 0) (type default))
+    (uuid "5cd4fa57-2fd8-4aeb-ae2e-2649375d865e")
+  )
+  (wire (pts (xy 268 185) (xy 291 185))
+    (stroke (width 0) (type default))
+    (uuid "38e61279-46ad-4bfb-8cac-ae7bd0307dea")
+  )
+  (wire (pts (xy 291 185) (xy 314 185))
+    (stroke (width 0) (type default))
+    (uuid "90715abe-460d-4206-9286-2e8b0560152d")
+  )
+  (text "0V / COM BARRAMENTO GERAL" (at 182 182 0)
+    (effects (font (size 1.3 1.3) bold) (justify left bottom))
+    (uuid "9092b0d5-d113-4bf9-9b9c-83d6c23685a2")
+  )
+  (symbol (lib_id "Industrial:SW_Emergency_1NC_1NO") (at 212 58 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "2bff8705-2246-47be-949b-8b9014be1a55")
+    (property "Reference" "S0" (at 204 56 0) (effects (font (size 1.27 1.27)) (justify right)))
+    (property "Value" "EMERGENCIA_1NF_1NA" (at 204 60 0) (effects (font (size 1.1 1.1)) (justify right)))
+    (property "Footprint" "" (at 212 58 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "S0")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "S0")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol (lib_id "Industrial:SW_Limit_Safety_SPDT") (at 212 78 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "aeb957fd-b4a7-40d6-b927-0b9928adfeef")
+    (property "Reference" "S_TAMPA" (at 204 76 0) (effects (font (size 1.27 1.27)) (justify right)))
+    (property "Value" "CHAVE_TAMPA_SPDT" (at 204 80 0) (effects (font (size 1.1 1.1)) (justify right)))
+    (property "Footprint" "" (at 212 78 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "S_TAMPA")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "S_TAMPA")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol (lib_id "Industrial:SW_Push_NC") (at 212 98 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "18906c3b-b972-4024-87cc-b20351947d30")
+    (property "Reference" "S_OFF" (at 217 96 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "DESLIGA_NF" (at 217 100 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Footprint" "" (at 212 98 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "S_OFF")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "S_OFF")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol (lib_id "Industrial:SW_Push_NO") (at 202 122 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "cf6a4260-7740-4983-baeb-7022382b698a")
+    (property "Reference" "S_ON" (at 193 122 0) (effects (font (size 1.27 1.27)) (justify right)))
+    (property "Value" "LIGA_NA" (at 193 125 0) (effects (font (size 1.1 1.1)) (justify right)))
+    (property "Footprint" "" (at 202 122 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "S_ON")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "S_ON")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol (lib_id "Industrial:Contactor_Aux_NO") (at 222 122 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "d2bac060-49a5-4441-8a89-13fac790d059")
+    (property "Reference" "K1_SELO" (at 228 120 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "13-14_SELO" (at 228 124 0) (effects (font (size 1.1 1.1)) (justify left)))
+    (property "Footprint" "" (at 222 122 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "K1_SELO")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "K1_SELO")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (symbol (lib_id "Industrial:Contactor_Coil_24V") (at 212 150 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "e3785b48-4840-421d-8577-c98bee85202a")
+    (property "Reference" "K1" (at 228 148 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "Bobina_24VDC" (at 228 152 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Footprint" "" (at 212 150 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "K1")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "K1")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (junction (at 212 45) (diameter 1.0) (color 0 0 0 0)
+    (uuid "acdd9e95-2b1f-4ddd-8d72-a63bd97a7dce")
+  )
+  (wire (pts (xy 212 45) (xy 212 52.92))
+    (stroke (width 0) (type default))
+    (uuid "3d44d9fa-e516-418d-87d1-4711447d2e3b")
+  )
+  (junction (at 216.5 45) (diameter 1.0) (color 0 0 0 0)
+    (uuid "ded5a052-3ada-4876-8388-9c70a20908e1")
+  )
+  (wire (pts (xy 216.5 45) (xy 216.5 52.92))
+    (stroke (width 0) (type default))
+    (uuid "58d3a0a8-84a5-438c-998a-fd661f02e718")
+  )
+  (wire (pts (xy 212 63.08) (xy 212 72.92))
+    (stroke (width 0) (type default))
+    (uuid "db80a03c-591d-41f4-8cb5-cc4e1e3e9fc2")
+  )
+  (wire (pts (xy 212 83.08) (xy 212 92.92))
+    (stroke (width 0) (type default))
+    (uuid "2d0a8f34-766a-47b5-8176-7673cb10960d")
+  )
+  (wire (pts (xy 212 103.08) (xy 212 112))
+    (stroke (width 0) (type default))
+    (uuid "ea4b7230-1576-40b1-93f8-b84a43a7d83e")
+  )
+  (junction (at 212 112) (diameter 1.0) (color 0 0 0 0)
+    (uuid "dba09980-bcd0-476a-a0a7-00d7bdb84a2c")
+  )
+  (wire (pts (xy 212 112) (xy 202 112))
+    (stroke (width 0) (type default))
+    (uuid "ecff6751-1b54-4b6c-bbdc-e2d4ba54b03e")
+  )
+  (wire (pts (xy 202 112) (xy 202 116.92))
+    (stroke (width 0) (type default))
+    (uuid "71d79fb3-b6b0-4635-b314-138eb3b6c886")
+  )
+  (wire (pts (xy 212 112) (xy 222 112))
+    (stroke (width 0) (type default))
+    (uuid "c8e09950-739d-43ba-9f6f-1d7831ddf233")
+  )
+  (wire (pts (xy 222 112) (xy 222 116.92))
+    (stroke (width 0) (type default))
+    (uuid "525bc703-881b-443b-9540-232d0a7dacab")
+  )
+  (wire (pts (xy 202 127.08) (xy 202 136))
+    (stroke (width 0) (type default))
+    (uuid "0c814cea-bcc1-4d8a-9bf7-cc3ed213df59")
+  )
+  (wire (pts (xy 202 136) (xy 212 136))
+    (stroke (width 0) (type default))
+    (uuid "81183dbb-3975-4d47-914c-451175dda8d6")
+  )
+  (wire (pts (xy 222 127.08) (xy 222 136))
+    (stroke (width 0) (type default))
+    (uuid "716db931-b2bd-4506-b8b4-f986f7b6c336")
+  )
+  (wire (pts (xy 222 136) (xy 212 136))
+    (stroke (width 0) (type default))
+    (uuid "f4969c32-b211-4fac-a79f-8408e7f08259")
+  )
+  (junction (at 212 136) (diameter 1.0) (color 0 0 0 0)
+    (uuid "93d0e626-0357-44e6-90d8-ca4d8315d280")
+  )
+  (wire (pts (xy 212 136) (xy 212 143.46))
+    (stroke (width 0) (type default))
+    (uuid "e974339c-69d8-45a3-a1e0-8197381596b0")
+  )
+  (wire (pts (xy 212 156.54) (xy 212 185))
+    (stroke (width 0) (type default))
+    (uuid "c77a3b18-71c5-4f15-bce1-15eec672eb8a")
+  )
+  (junction (at 212 185) (diameter 1.0) (color 0 0 0 0)
+    (uuid "82ede491-852e-4d44-b708-f2e37b8a1076")
+  )
+  (symbol (lib_id "Industrial:Pilot_Lamp_24V") (at 245 150 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "fc2d1598-60d2-474d-9a01-baad6ad14f79")
+    (property "Reference" "H2" (at 251 148 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "VERDE_24V" (at 251 152 0) (effects (font (size 1.1 1.1)) (justify left)))
+    (property "Footprint" "" (at 245 150 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "H2")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "H2")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire (pts (xy 212 136) (xy 245 136))
+    (stroke (width 0) (type default))
+    (uuid "88a8b0ea-27d2-40cd-8676-4d94dcc0ce25")
+  )
+  (wire (pts (xy 245 136) (xy 245 143.65))
+    (stroke (width 0) (type default))
+    (uuid "9c89dba7-a171-4f4a-9689-5bfe03da63b7")
+  )
+  (wire (pts (xy 245 156.35) (xy 245 185))
+    (stroke (width 0) (type default))
+    (uuid "f1e6c67f-70ad-4499-940d-0b41db467ac7")
+  )
+  (junction (at 245 185) (diameter 1.0) (color 0 0 0 0)
+    (uuid "6b102af9-f148-4190-82f1-3bd07372f9f9")
+  )
+  (text "MOTOR OPERANDO (H2)" (at 232 166 0)
+    (effects (font (size 0.95 0.95)) (justify left bottom))
+    (uuid "6d4babdf-2148-45f2-a8f1-8fb249aae55d")
+  )
+  (text "PARALELO BOBINA K1" (at 232 170 0)
+    (effects (font (size 0.8 0.8)) (justify left bottom))
+    (uuid "50237001-d18b-488e-80c3-3df9c1d43679")
+  )
+  (symbol (lib_id "Industrial:Pilot_Lamp_24V") (at 268 115 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "ff3b6da1-b479-4d8c-9e6e-71c5bf8969f3")
+    (property "Reference" "H3" (at 273 113 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "AMARELO_24V" (at 273 117 0) (effects (font (size 1.1 1.1)) (justify left)))
+    (property "Footprint" "" (at 268 115 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "H3")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "H3")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire (pts (xy 219.62 78) (xy 268 78))
+    (stroke (width 0) (type default))
+    (uuid "693bd2dc-3bad-4481-b0c8-6c02a7608b91")
+  )
+  (wire (pts (xy 268 78) (xy 268 108.65))
+    (stroke (width 0) (type default))
+    (uuid "0e0c411a-91ce-47c4-8983-33826d1d42d0")
+  )
+  (wire (pts (xy 268 121.35) (xy 268 185))
+    (stroke (width 0) (type default))
+    (uuid "6fb3e6a4-b443-4fb7-9313-9b1e776cfc3a")
+  )
+  (junction (at 268 185) (diameter 1.0) (color 0 0 0 0)
+    (uuid "12dc498c-776f-4a68-ba9e-8b109769c5ba")
+  )
+  (text "ALARME: TAMPA ABERTA (H3)" (at 255 133 0)
+    (effects (font (size 0.95 0.95)) (justify left bottom))
+    (uuid "69239ee9-50d0-47b2-bef1-0cc6b813ff7e")
+  )
+  (text "VIA S_TAMPA NA (AMARELO)" (at 255 137 0)
+    (effects (font (size 0.8 0.8)) (justify left bottom))
+    (uuid "574a22d2-7989-4b07-8ac6-1dce6fb5028f")
+  )
+  (symbol (lib_id "Industrial:Pilot_Lamp_24V") (at 291 115 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "8ae865cf-9764-4a86-869f-64b8517060a1")
+    (property "Reference" "H4" (at 296 113 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "VERMELHO_24V" (at 296 117 0) (effects (font (size 1.1 1.1)) (justify left)))
+    (property "Footprint" "" (at 291 115 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "H4")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "H4")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire (pts (xy 219.62 58) (xy 291 58))
+    (stroke (width 0) (type default))
+    (uuid "cddc2673-bb7c-4845-aa8c-eccfeb088404")
+  )
+  (wire (pts (xy 291 58) (xy 291 108.65))
+    (stroke (width 0) (type default))
+    (uuid "425a3aaa-8764-4e85-a246-3c570789cb0c")
+  )
+  (wire (pts (xy 291 121.35) (xy 291 185))
+    (stroke (width 0) (type default))
+    (uuid "8ab51822-b16e-48ed-9542-7010044431d1")
+  )
+  (junction (at 291 185) (diameter 1.0) (color 0 0 0 0)
+    (uuid "70117228-d943-43ed-b0aa-0b9a66246e4e")
+  )
+  (text "EMERGENCIA ACIONADA (H4)" (at 278 133 0)
+    (effects (font (size 0.95 0.95)) (justify left bottom))
+    (uuid "8c65d2a0-d9bf-4402-a4f4-1f298bdec262")
+  )
+  (text "VIA S0 BLOCO 2 NA (VERM)" (at 278 137 0)
+    (effects (font (size 0.8 0.8)) (justify left bottom))
+    (uuid "ccfffc77-7712-4e86-8daa-8c26ceba91a2")
+  )
+  (symbol (lib_id "Industrial:Pilot_Lamp_24V") (at 314 115 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "b00947db-2cf2-40a1-b1b5-76d49f43d80e")
+    (property "Reference" "H1" (at 319 113 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "BRANCO_24V" (at 319 117 0) (effects (font (size 1.1 1.1)) (justify left)))
+    (property "Footprint" "" (at 314 115 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "H1")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "H1")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (junction (at 314 45) (diameter 1.0) (color 0 0 0 0)
+    (uuid "7342451b-37fe-46b5-8f64-2cf46e8d4782")
+  )
+  (wire (pts (xy 314 45) (xy 314 108.65))
+    (stroke (width 0) (type default))
+    (uuid "fc893dd0-f240-413c-a2d2-08f2a38c6258")
+  )
+  (wire (pts (xy 314 121.35) (xy 314 185))
+    (stroke (width 0) (type default))
+    (uuid "7fb1ba22-96fc-495f-8dc5-6d30328178d1")
+  )
+  (junction (at 314 185) (diameter 1.0) (color 0 0 0 0)
+    (uuid "f720d61b-cebd-47d5-8134-598879a6028a")
+  )
+  (text "PAINEL 24V ON (H1)" (at 301 133 0)
+    (effects (font (size 0.95 0.95)) (justify left bottom))
+    (uuid "ba3aabf5-a966-4680-819f-d3c8265df734")
+  )
+  (text "DIRETO DA FONTE 24V" (at 301 137 0)
+    (effects (font (size 0.8 0.8)) (justify left bottom))
+    (uuid "6d00c39d-61d6-43eb-8604-fa0a11dc3988")
+  )
+  (symbol (lib_id "Industrial:Display_Tacometro_RPM") (at 105 245 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "4700f1bc-d992-467e-8d32-b6456daf1c3a")
+    (property "Reference" "DISP1" (at 105 228 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "Tacometro_Digital_CF5135B" (at 105 262 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "" (at 105 245 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "DISP1")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "DISP1")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire (pts (xy 80.46 241) (xy 55 241))
+    (stroke (width 0) (type default))
+    (uuid "6a428774-91af-418b-a8dd-e34d13d0142c")
+  )
+  (label "+24V" (at 55 241 180)
+    (effects (font (size 1.27 1.27)) (justify right))
+    (uuid "4eef9168-cdc9-402f-a407-0f4fed65e76e")
+  )
+  (text "Alimentacao Display (12V-24V DC)" (at 56 237 0)
+    (effects (font (size 1.0 1.0)) (justify left bottom))
+    (uuid "95dc4171-61f1-4566-bf94-1e31cf2856ec")
+  )
+  (text "(Derivado do Barramento Geral 24V/0V)" (at 56 233 0)
+    (effects (font (size 0.85 0.85)) (justify left bottom))
+    (uuid "d69dce6e-b61b-412a-9f9a-b85a23d23629")
+  )
+  (wire (pts (xy 80.46 249) (xy 55 249))
+    (stroke (width 0) (type default))
+    (uuid "c666d799-7997-4f5e-99cd-5bc1632e5b63")
+  )
+  (label "0V" (at 55 249 180)
+    (effects (font (size 1.27 1.27)) (justify right))
+    (uuid "6f42d47f-0816-4e7e-a985-f66fc6574827")
+  )
+  (symbol (lib_id "Industrial:Sensor_Hall_NJK5002C") (at 230 245 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "73314542-f4c1-41ab-85c4-e0e902f48aaf")
+    (property "Reference" "SEN_HALL" (at 230 233 0) (effects (font (size 1.27 1.27))))
+    (property "Value" "NJK-5002C_M12" (at 230 257 0) (effects (font (size 1.27 1.27))))
+    (property "Footprint" "" (at 230 245 0) (effects (font (size 1.27 1.27)) (hide yes)))
+    (instances
+      (project "amemiya_bancada_painel"
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "SEN_HALL")
+          (unit 1)
+        )
+      )
+      (project ""
+        (path "/b7a24c10-5321-4d92-94b2-a4f5b8209301"
+          (reference "SEN_HALL")
+          (unit 1)
+        )
+      )
+    )
+  )
+  (wire (pts (xy 129.54 239) (xy 211.46 239))
+    (stroke (width 0) (type default))
+    (uuid "8a2ee8f1-04b8-4a68-a8f8-008f4b92ba0c")
+  )
+  (text "Fio Marrom (+24V)" (at 150 237 0)
+    (effects (font (size 1.0 1.0)) (justify left bottom))
+    (uuid "875b3fac-ce91-42fd-96a9-cb660bdd6e5b")
+  )
+  (wire (pts (xy 129.54 245) (xy 211.46 245))
+    (stroke (width 0) (type default))
+    (uuid "891fddc4-8d46-4d5b-802c-b2886562d5bf")
+  )
+  (text "Fio Preto (Sinal NPN Pulso)" (at 150 243 0)
+    (effects (font (size 1.0 1.0)) (justify left bottom))
+    (uuid "8bdd4255-7fc1-4eee-99ec-9e2e7de00e59")
+  )
+  (wire (pts (xy 129.54 251) (xy 211.46 251))
+    (stroke (width 0) (type default))
+    (uuid "7d91dd6f-4dd4-49c9-9922-22e2e8bf85a7")
+  )
+  (text "Fio Azul (GND / 0V)" (at 150 249 0)
+    (effects (font (size 1.0 1.0)) (justify left bottom))
+    (uuid "d20006b8-8d3f-4c4a-82ee-a7ac54bd6eaa")
+  )
+  (text "IMA DE NEODIMIO FIXADO NO EIXO / POLIA DO MOTOR" (at 195 268 0)
+    (effects (font (size 1.1 1.1) bold) (justify left bottom))
+    (uuid "385e6879-16df-4bff-a280-51e1ab5dcdc8")
+  )
+  (text "Distancia de Deteccao: 1mm a 8mm | 1 Pulso por Rotacao (PPR = 1)" (at 195 272 0)
+    (effects (font (size 1.0 1.0)) (justify left bottom))
+    (uuid "97e981a7-fa74-4315-a6c3-d493bd27bb65")
+  )
+  (sheet_instances
+    (path "/" (page "1"))
+  )
 )
