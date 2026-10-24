@@ -152,6 +152,7 @@ flowchart TD
     classDef safe fill:#991b1b,stroke:#f87171,stroke-width:2px,color:#fff;
     classDef button fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#fff;
     classDef coil fill:#78350f,stroke:#fbbf24,stroke-width:2px,color:#fff;
+    classDef white fill:#334155,stroke:#e2e8f0,stroke-width:2px,color:#fff;
 
     FONTE_POS["Fonte PS1 (+24V DC)<br/>Borne Vermelho"]:::dc_pos
     FONTE_NEG["Fonte PS1 (0V / GND)<br/>Borne Azul"]:::dc_neg
@@ -192,6 +193,7 @@ flowchart TD
     end
 
     subgraph SINALIZACAO["5. Sinalização Visual LED 22mm (Porta do Painel)"]
+        H0_LED["Sinaleiro LED Branco H0<br/>'PAINEL ENERGIZADO'"]:::white
         H1_LED["Sinaleiro LED Verde H1<br/>'MOTOR EM MARCHA'"]:::button
         H2_LED["Sinaleiro LED Amarelo H2<br/>'TAMPA ABERTA / ALERTA'"]:::ctrl
         H3_LED["Sinaleiro LED Vermelho H3<br/>'EMERGÊNCIA ACIONADA'"]:::safe
@@ -216,6 +218,10 @@ flowchart TD
 
     %% Fechamento do Neutro DC (0V)
     K1_A2 -->|"Azul 0.75mm²"| FONTE_NEG
+
+    %% Lógica do Sinaleiro Branco H0 (Painel Energizado / 24V OK)
+    FONTE_POS ==>|"Direto +24V (Branco/Vermelho 0.5mm²)"| H0_LED
+    H0_LED -->|"Azul 0.5mm²"| FONTE_NEG
 
     %% Lógica do Sinaleiro Verde H1 (Motor Ligado)
     K1_A1 -.->|"Em paralelo com A1"| H1_LED
@@ -318,6 +324,8 @@ Esta tabela é o guia prático de bancada para o eletrotécnico crimpar e conect
 | **W31** | Fonte PS1: Borne (+V) | Botão Emergência S0: Term. 23 (NA) | Alimentação Bloco Auxiliar Emergência | $0.75\text{ mm}^2$ | Vermelho | Ilhós Tubular 0.75mm² |
 | **W32** | Botão Emergência S0: Term. 24 (NA) | Sinaleiro LED Vermelho H3 (+) | Alimentação "Emergência Acionada" | $0.5\text{ mm}^2$ | Vermelho | Ilhós Tubular 0.5mm² |
 | **W33** | Sinaleiro LED Vermelho H3 (-) | Fonte PS1: Borne (-V / GND) | Retorno 0V Sinaleiro Vermelho | $0.5\text{ mm}^2$ | Azul-escuro | Ilhós Tubular 0.5mm² |
+| **W34** | Fonte PS1: Borne (+V) | Sinaleiro LED Branco H0 (+) | Alimentação "Painel Energizado" | $0.5\text{ mm}^2$ | Branco / Vermelho | Ilhós Tubular 0.5mm² |
+| **W35** | Sinaleiro LED Branco H0 (-) | Fonte PS1: Borne (-V / GND) | Retorno 0V Sinaleiro Branco | $0.5\text{ mm}^2$ | Azul-escuro | Ilhós Tubular 0.5mm² |
 
 ---
 
