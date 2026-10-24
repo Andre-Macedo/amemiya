@@ -157,13 +157,20 @@ flowchart TD
     FONTE_NEG["Fonte PS1 (0V / GND)<br/>Borne Azul"]:::dc_neg
 
     subgraph SEGURANCA_EMERGENCIA["1. Emergência com Trava (Painel Frontal)"]
-        S0_11["S0: Term. 11 (NF)"]:::safe
-        S0_12["S0: Term. 12 (NF)"]:::safe
+        subgraph BLOCO_EMERG_NF["Bloco 1: NF (Série de Segurança)"]
+            S0_11["S0: Term. 11 (NF)"]:::safe
+            S0_12["S0: Term. 12 (NF)"]:::safe
+        end
+        subgraph BLOCO_EMERG_NA["Bloco 2: NA (Sinalização de Bloqueio)"]
+            S0_23["S0: Term. 23 (NA)"]:::button
+            S0_24["S0: Term. 24 (NA)"]:::button
+        end
     end
 
     subgraph SEGURANCA_TAMPA["2. Microswitch da Tampa Acrílica (Bancada)"]
         S1_C["S1: Comum (C)"]:::safe
         S1_NC["S1: Contato NF / Segurança<br/>(Fechado com a tampa abaixada)"]:::safe
+        S1_NO["S1: Contato NA / Alarme<br/>(Fecha com a tampa levantada)"]:::ctrl
     end
 
     subgraph BOTAO_DUPLO_22MM["3. Botão Duplo 22mm Metaltex / EL8425"]
@@ -184,9 +191,10 @@ flowchart TD
         K1_A2["Bobina K1 (-A2)"]:::coil
     end
 
-    subgraph SINALIZACAO["5. Sinalização Visual LED 22mm"]
-        H1_LED["Sinaleiro Verde H1<br/>'MOTOR EM MARCHA'"]:::button
-        H2_LED["Sinaleiro Vermelho H2<br/>'TAMPA ABERTA / ALARME'"]:::safe
+    subgraph SINALIZACAO["5. Sinalização Visual LED 22mm (Porta do Painel)"]
+        H1_LED["Sinaleiro LED Verde H1<br/>'MOTOR EM MARCHA'"]:::button
+        H2_LED["Sinaleiro LED Amarelo H2<br/>'TAMPA ABERTA / ALERTA'"]:::ctrl
+        H3_LED["Sinaleiro LED Vermelho H3<br/>'EMERGÊNCIA ACIONADA'"]:::safe
     end
 
     %% Fiação do Circuito de Segurança em Série
@@ -209,13 +217,20 @@ flowchart TD
     %% Fechamento do Neutro DC (0V)
     K1_A2 -->|"Azul 0.75mm²"| FONTE_NEG
 
-    %% Lógica do Sinaleiro Verde (Motor Ligado)
+    %% Lógica do Sinaleiro Verde H1 (Motor Ligado)
     K1_A1 -.->|"Em paralelo com A1"| H1_LED
-    H1_LED -->|"Azul 0.75mm²"| FONTE_NEG
+    H1_LED -->|"Azul 0.5mm²"| FONTE_NEG
 
-    %% Lógica do Sinaleiro Vermelho (Tampa Aberta)
-    S1_C -.->|"Contato NA do Microswitch (Fecha quando tampa levanta)"| H2_LED
-    H2_LED -->|"Azul 0.75mm²"| FONTE_NEG
+    %% Lógica do Sinaleiro Amarelo H2 (Tampa Aberta / Alerta)
+    S1_C -.->|"Alimentação Comum 24V"| S1_NO
+    S1_NO -->|"Contato NA (Fecha ao abrir tampa) - Amarelo/Laranja"| H2_LED
+    H2_LED -->|"Azul 0.5mm²"| FONTE_NEG
+
+    %% Lógica do Sinaleiro Vermelho H3 (Emergência Acionada / Perigo)
+    FONTE_POS -.->|"Derivação +24V (Vermelho 0.75mm²)"| S0_23
+    S0_23 -.->|"Contato NA (Fecha ao travar emergência)"| S0_24
+    S0_24 -->|"Linha Sinal Emergência (Vermelho 0.5mm²)"| H3_LED
+    H3_LED -->|"Azul 0.5mm²"| FONTE_NEG
 ```
 
 ---
@@ -293,13 +308,16 @@ Esta tabela é o guia prático de bancada para o eletrotécnico crimpar e conect
 | **W21** | Contator K1: Borne A2 (- Bobina) | Fonte PS1: Borne (-V / GND) | Retorno 0V DC da Bobina | $0.75\text{ mm}^2$ | Azul-escuro | Ilhós Tubular 0.75mm² |
 | **W22** | Contator K1: Borne A1 | Sinaleiro LED Verde H1 (+) | Alimentação Sinaleiro "Motor ON" | $0.5\text{ mm}^2$ | Vermelho | Ilhós Tubular 0.5mm² |
 | **W23** | Sinaleiro LED Verde H1 (-) | Fonte PS1: Borne (-V / GND) | Retorno 0V Sinaleiro Verde | $0.5\text{ mm}^2$ | Azul-escuro | Ilhós Tubular 0.5mm² |
-| **W24** | Microswitch Tampa S1: Term. NA | Sinaleiro LED Vermelho H2 (+) | Alimentação "Tampa Aberta" | $0.5\text{ mm}^2$ | Laranja | Ilhós Tubular 0.5mm² |
-| **W25** | Sinaleiro LED Vermelho H2 (-) | Fonte PS1: Borne (-V / GND) | Retorno 0V Sinaleiro Vermelho | $0.5\text{ mm}^2$ | Azul-escuro | Ilhós Tubular 0.5mm² |
+| **W24** | Microswitch Tampa S1: Term. NA | Sinaleiro LED Amarelo H2 (+) | Alimentação "Tampa Aberta" (Alerta) | $0.5\text{ mm}^2$ | Amarelo / Laranja | Ilhós Tubular 0.5mm² |
+| **W25** | Sinaleiro LED Amarelo H2 (-) | Fonte PS1: Borne (-V / GND) | Retorno 0V Sinaleiro Amarelo | $0.5\text{ mm}^2$ | Azul-escuro | Ilhós Tubular 0.5mm² |
 | **W26** | Fonte PS1: Borne (+V) | Tacômetro TAC1: Pin 1 (VCC) | Alimentação 24V do Display | $0.5\text{ mm}^2$ | Vermelho | Ilhós Tubular 0.5mm² |
 | **W27** | Fonte PS1: Borne (-V / GND) | Tacômetro TAC1: Pin 2 (GND) | Terra 0V do Display | $0.5\text{ mm}^2$ | Azul-escuro | Ilhós Tubular 0.5mm² |
 | **W28** | Fonte PS1: Borne (+V) | Sensor Hall: Fio Marrom (+VCC) | Alimentação 24V do Sensor Hall | $0.5\text{ mm}^2$ | Marrom | Ilhós Tubular 0.5mm² |
 | **W29** | Fonte PS1: Borne (-V / GND) | Sensor Hall: Fio Azul (GND) | Terra 0V do Sensor Hall | $0.5\text{ mm}^2$ | Azul-escuro | Ilhós Tubular 0.5mm² |
 | **W30** | Sensor Hall: Fio Preto (Sinal NPN)| Tacômetro TAC1: Pin 3 (Signal) | Pulso Digital por Rotação | $0.5\text{ mm}^2$ | Preto | Ilhós Tubular 0.5mm² |
+| **W31** | Fonte PS1: Borne (+V) | Botão Emergência S0: Term. 23 (NA) | Alimentação Bloco Auxiliar Emergência | $0.75\text{ mm}^2$ | Vermelho | Ilhós Tubular 0.75mm² |
+| **W32** | Botão Emergência S0: Term. 24 (NA) | Sinaleiro LED Vermelho H3 (+) | Alimentação "Emergência Acionada" | $0.5\text{ mm}^2$ | Vermelho | Ilhós Tubular 0.5mm² |
+| **W33** | Sinaleiro LED Vermelho H3 (-) | Fonte PS1: Borne (-V / GND) | Retorno 0V Sinaleiro Vermelho | $0.5\text{ mm}^2$ | Azul-escuro | Ilhós Tubular 0.5mm² |
 
 ---
 
