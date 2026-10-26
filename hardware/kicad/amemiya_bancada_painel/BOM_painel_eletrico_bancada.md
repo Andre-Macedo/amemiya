@@ -25,17 +25,17 @@ Este documento consolida todos os itens necessários para montagem do painel el�
 
 | Item | Identificador KiCad | Descrição Técnica / Especificação | Qtd | Termo Exato de Busca |
 | :--- | :--- | :--- | :---: | :--- |
-| **Disjuntor Bipolar** | `Q1` | 2 Polos, Curva C, 10A, 4.5kA/6kA, Fixação Trilho DIN 35mm | 1 | `disjuntor bipolar 10a curva c steck weg` |
-| **Contator Tripolar/Bipolar** | `K1` | Bobina **24V DC (CC)**, Contatos de Força 9A a 12A AC-3, **1 Contato Auxiliar NA embutido (13-14)** | 1 | `contator steck 24vcc 9a 1na sk1` ou `contator weg cwb9 24vcc` |
+| **Disjuntor Bipolar** | `QM1` | 2 Polos, Curva C, 10A, 4.5kA/6kA, Fixação Trilho DIN 35mm | 1 | `disjuntor bipolar 10a curva c steck weg` |
+| **Contator Tripolar/Bipolar** | `KM1` | Bobina **24V DC (CC)**, Contatos de Força 9A a 12A AC-3, **1 Contato Auxiliar NA embutido (13-14)** | 1 | `contator steck 24vcc 9a 1na sk1` ou `contator weg cwb9 24vcc` |
 | **Supressor de Bobina** | — | Supressor de surto tipo diodo para bobina CC (1N4007 ou bloco Steck/WEG DI-D) | 1 | `bloco supressor diodo contator 24vcc` ou `diodo 1n4007` |
-| **Fonte Chaveada 24V** | `T1` | Entrada 100-240V AC, Saída 24V DC / 2.5A a 3A (60W a 75W). *Preferência formato Trilho DIN tipo HDR-60-24 ou colmeia c/ suporte DIN* | 1 | `fonte trilho din 24v 2.5a` ou `fonte colmeia 24v 3a` |
-| **Porta-Fusível Seccionável** | `F1`, `F2` | Base porta-fusível 10x38 mm para trilho DIN (bipolar ou 2 unidades unipolar) | 1 kit | `porta fusivel trilho din 10x38` |
-| **Fusível Cerâmico/Vidro** | `F1`, `F2` | Fusível 10x38 mm tipo gG / ação rápida 2A (250V / 500V) | 2 | `fusivel 10x38 2a` |
-| **Módulo Dimmer AC 220V** | `DIM1` | Regulador de Tensão TRIAC 2000W ou 4000W 220V AC, com dissipador e cabo para potenciômetro | 1 | `modulo dimmer 220v 2000w triac bta41` ou `dimmer 4000w potenciometro` |
-| **Bornes de Passagem (Fase/Neutro)** | `TB1`, `TB2`, `TB4`, `TB5` | Borne tipo SAK / Mola para trilho DIN, secção 2.5 mm² a 4 mm², Cor Cinza ou Azul | 4 | `borne passagem sak 2.5mm cinza` |
-| **Borne de Passagem (Terra)** | `TB3`, `TB6` | Borne de aterramento para fixação direta no trilho DIN (contato elétrico no trilho), Verde/Amarelo, 2.5 mm² a 4 mm² | 2 | `borne terra trilho din verde amarelo 4mm` |
-| **Régua Bornes +24V DC (XT1)** | `XT1.1` a `XT1.4` | Borne SAK 2.5 mm² para distribuição de +24V DC (Alimentação, Emergência NF/NA, Sinaleiro H1 e Tacômetro), Vermelho/Laranja ou Cinza com **Ponte de Ligação / Jumper FBS 4 Polos** | 4 bornes + 1 jumper | `borne sak 2.5mm vermelho laranja` + `ponte conectora fbs jumper borne sak` |
-| **Régua Bornes 0V DC (XT2)** | `XT2.1` a `XT2.6` | Borne SAK 2.5 mm² para barramento de 0V / COM (Fonte T1, Bobina K1, Sinaleiros H1/H2/H3/H4 e Tacômetro), Azul ou Cinza com **Ponte de Ligação / Jumper FBS 6 Polos** | 6 bornes + 1 jumper | `borne sak 2.5mm azul` + `ponte conectora fbs jumper borne sak` |
+| **Fonte Chaveada 24V** | `PS1` | Entrada 100-240V AC, Saída 24V DC / 2.5A a 3A (60W a 75W). *Preferência formato Trilho DIN tipo HDR-60-24 ou colmeia c/ suporte DIN* | 1 | `fonte trilho din 24v 2.5a` ou `fonte colmeia 24v 3a` |
+| **Porta-Fusível Seccionável** | `FU1`, `FU2` | Base porta-fusível 10x38 mm para trilho DIN (bipolar ou 2 unidades unipolar) | 1 kit | `porta fusivel trilho din 10x38` |
+| **Fusível Cerâmico/Vidro** | `FU1`, `FU2` | Fusível 10x38 mm tipo gG / ação rápida 2A (250V / 500V) | 2 | `fusivel 10x38 2a` |
+| **Módulo Dimmer AC 220V** | `TC1` | Regulador de Tensão TRIAC 2000W ou 4000W 220V AC, com dissipador e cabo para potenciômetro | 1 | `modulo dimmer 220v 2000w triac bta41` ou `dimmer 4000w potenciometro` |
+| **Bornes de Passagem (Fase/Neutro)** | `XT0:1`, `XT0:2`, `XT0:4`, `XT0:5` | Borne tipo SAK / Mola para trilho DIN, secção 2.5 mm² a 4 mm², Cor Cinza ou Azul | 4 | `borne passagem sak 2.5mm cinza` |
+| **Borne de Passagem (Terra)** | `XT0:3`, `XT0:6` | Borne de aterramento para fixação direta no trilho DIN (contato elétrico no trilho), Verde/Amarelo, 2.5 mm² a 4 mm² | 2 | `borne terra trilho din verde amarelo 4mm` |
+| **Régua Bornes +24V DC (XT1)** | `XT1:1` a `XT1:4` | Borne SAK 2.5 mm² para distribuição de +24V DC (Alimentação, Emergência NF/NA, Sinaleiro HL1 e Tacômetro), Vermelho/Laranja ou Cinza com **Ponte de Ligação / Jumper FBS 4 Polos** | 4 bornes + 1 jumper | `borne sak 2.5mm vermelho laranja` + `ponte conectora fbs jumper borne sak` |
+| **Régua Bornes 0V DC (XT2)** | `XT2:1` a `XT2:6` | Borne SAK 2.5 mm² para barramento de 0V / COM (Fonte PS1, Bobina KM1, Sinaleiros HL1/HL2/HL3/HL4 e Tacômetro), Azul ou Cinza com **Ponte de Ligação / Jumper FBS 6 Polos** | 6 bornes + 1 jumper | `borne sak 2.5mm azul` + `ponte conectora fbs jumper borne sak` |
 | **Poste de Fixação (Parada)** | — | Poste terminal plástico / metálico para travar os bornes nas extremidades do trilho | 4 | `poste final trilho din parada borne sak` |
 | **Tampa Final de Borne** | — | Placa de fechamento isolante para fechar as laterais abertas das réguas | 4 | `tampa final borne sak 2.5mm` |
 | **Trilho DIN 35 mm** | — | Trilho DIN TS-35 perfurado em aço zincado (comprimento 30 a 50 cm) | 1 | `trilho din 35mm perfurado 50cm` |
@@ -47,14 +47,14 @@ Este documento consolida todos os itens necessários para montagem do painel el�
 
 | Item | Identificador KiCad | Descrição Técnica / Especificação | Qtd | Termo Exato de Busca |
 | :--- | :--- | :--- | :---: | :--- |
-| **Botão de Emergência** | `S0` | Furação 22 mm, Cabeça tipo Cogumelo 40 mm, Com retenção (Girar para destravar), **1 Bloco NF (Segurança) + 1 Bloco NA (Sinalização LED)** | 1 | `botao emergencia 22mm girar destravar 1nf 1na` |
-| **Botão Pulsador Liga** | `S_ON` | Furação 22 mm, Faceado, Cor Verde, Mola de retorno, **1 Bloco NA (pinos 13-14)** | 1 | `botao pulsador 22mm verde 1na` |
-| **Botão Pulsador Desliga** | `S_OFF` | Furação 22 mm, Faceado, Cor Vermelha, Mola de retorno, **1 Bloco NF (pinos 11-12)** | 1 | `botao pulsador 22mm vermelho 1nf` |
-| **Sinaleiro LED Branco** | `H1` | Monobloco LED 22 mm, Alimentação **24V DC**, Cor Branca (Indica: Painel 24V Energizado / Standby) | 1 | `sinaleiro led 22mm 24v branco` |
-| **Sinaleiro LED Verde** | `H2` | Monobloco LED 22 mm, Alimentação **24V DC**, Cor Verde (Indica: Motor em Marcha) | 1 | `sinaleiro led 22mm 24v verde` |
-| **Sinaleiro LED Amarelo** | `H3` | Monobloco LED 22 mm, Alimentação **24V DC**, Cor Amarela/Âmbar (Indica: Alarme Tampa Aberta) | 1 | `sinaleiro led 22mm 24v amarelo` |
-| **Sinaleiro LED Vermelho** | `H4` | Monobloco LED 22 mm, Alimentação **24V DC**, Cor Vermelha (Indica: Emergência Acionada / Bloqueio) | 1 | `sinaleiro led 22mm 24v vermelho` |
-| **Tacômetro Digital de Painel** | `DISP1` | Modelo CF5135B (ou similar 4 dígitos LED vermelho/azul), Tensão 12V-24V DC, Entrada de pulso NPN. Rasgo frontal ~ 79 x 42 mm | 1 | `tacometro digital cf5135b rpm led` |
+| **Botão de Emergência** | `SB0` | Furação 22 mm, Cabeça tipo Cogumelo 40 mm, Com retenção (Girar para destravar), **1 Bloco NF (Segurança) + 1 Bloco NA (Sinalização LED)** | 1 | `botao emergencia 22mm girar destravar 1nf 1na` |
+| **Botão Pulsador Liga** | `SB2` | Furação 22 mm, Faceado, Cor Verde, Mola de retorno, **1 Bloco NA (pinos 3-4 / 13-14)** | 1 | `botao pulsador 22mm verde 1na` |
+| **Botão Pulsador Desliga** | `SB1` | Furação 22 mm, Faceado, Cor Vermelha, Mola de retorno, **1 Bloco NF (pinos 1-2 / 11-12)** | 1 | `botao pulsador 22mm vermelho 1nf` |
+| **Sinaleiro LED Branco** | `HL1` | Monobloco LED 22 mm, Alimentação **24V DC**, Cor Branca (Indica: Painel 24V Energizado / Standby) | 1 | `sinaleiro led 22mm 24v branco` |
+| **Sinaleiro LED Verde** | `HL2` | Monobloco LED 22 mm, Alimentação **24V DC**, Cor Verde (Indica: Motor em Marcha) | 1 | `sinaleiro led 22mm 24v verde` |
+| **Sinaleiro LED Amarelo** | `HL3` | Monobloco LED 22 mm, Alimentação **24V DC**, Cor Amarela/Âmbar (Indica: Alarme Tampa Aberta) | 1 | `sinaleiro led 22mm 24v amarelo` |
+| **Sinaleiro LED Vermelho** | `HL4` | Monobloco LED 22 mm, Alimentação **24V DC**, Cor Vermelha (Indica: Emergência Acionada / Bloqueio) | 1 | `sinaleiro led 22mm 24v vermelho` |
+| **Tacômetro Digital de Painel** | `PA1` | Modelo CF5135B (ou similar 4 dígitos LED vermelho/azul), Tensão 12V-24V DC, Entrada de pulso NPN. Rasgo frontal ~ 79 x 42 mm | 1 | `tacometro digital cf5135b rpm led` |
 | **Knob / Dial de Potenciômetro** | — | Knob graduado (0-100%) para eixo de 6 mm do potenciômetro do Dimmer | 1 | `knob potenciometro 6mm dial escala` |
 
 ---
@@ -65,8 +65,8 @@ Este documento consolida todos os itens necessários para montagem do painel el�
 | :--- | :--- | :--- | :---: | :--- |
 | **Motor Monofásico** | `M1` | Motor de Tanquinho / Lavadora 220V, Potência ~1/4 CV (180W a 250W), 4 polos (~1650-1750 RPM) | 1 | `motor tanquinho 1/4 cv 220v` |
 | **Capacitor Permanente** | `C_MOT` | Capacitor de Partida/Trabalho permanente em polipropileno, **12 µF ou 15 µF / 400-450 VAC** com chicote | 1 | `capacitor permanente 12uf 450vac motor tanquinho` |
-| **Microswitch da Tampa** | `SQ_TAMPA` | Chave fim de curso tipo SPDT (COM, NC, NO) com alavanca e roldana metálica (ex: modelo tipo KW11-3Z, V-156-1C25 ou fim de curso industrial ME-8108) | 1 | `micro switch alavanca roldana spdt 15a` ou `fim de curso me-8108` |
-| **Sensor Hall RPM** | `SEN_HALL` | Sensor Magnético Efeito Hall NJK-5002C, Rosca M12, 3 Fios (Marrom +, Preto Sinal, Azul 0V), NPN NA, Tensão 6-36V DC | 1 | `sensor hall njk-5002c m12 npn` |
+| **Microswitch da Tampa** | `SQ1` | Chave fim de curso tipo SPDT (COM, NC, NO) com alavanca e roldana metálica (ex: modelo tipo KW11-3Z, V-156-1C25 ou fim de curso industrial ME-8108) | 1 | `micro switch alavanca roldana spdt 15a` ou `fim de curso me-8108` |
+| **Sensor Hall RPM** | `BG1` | Sensor Magnético Efeito Hall NJK-5002C, Rosca M12, 3 Fios (Marrom +, Preto Sinal, Azul 0V), NPN NA, Tensão 6-36V DC | 1 | `sensor hall njk-5002c m12 npn` |
 | **Ímã de Neodímio** | — | Pastilha magnética de neodímio N35/N50 (Diâmetro 8 a 10 mm, espessura 2 a 3 mm) para fixação no eixo/polia | 2 | `ima neodimio disco 10x3mm` |
 
 ---
