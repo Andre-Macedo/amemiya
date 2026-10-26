@@ -34,9 +34,10 @@ Este documento consolida todos os itens necessários para montagem do painel el�
 | **Módulo Dimmer AC 220V** | `DIM1` | Regulador de Tensão TRIAC 2000W ou 4000W 220V AC, com dissipador e cabo para potenciômetro | 1 | `modulo dimmer 220v 2000w triac bta41` ou `dimmer 4000w potenciometro` |
 | **Bornes de Passagem (Fase/Neutro)** | `TB1`, `TB2`, `TB4`, `TB5` | Borne tipo SAK / Mola para trilho DIN, secção 2.5 mm² a 4 mm², Cor Cinza ou Azul | 4 | `borne passagem sak 2.5mm cinza` |
 | **Borne de Passagem (Terra)** | `TB3`, `TB6` | Borne de aterramento para fixação direta no trilho DIN (contato elétrico no trilho), Verde/Amarelo, 2.5 mm² a 4 mm² | 2 | `borne terra trilho din verde amarelo 4mm` |
-| **Bornes de Comando (Opcional)** | — | Borne SAK 2.5 mm² para derivações de comando (Tampa, Sensor, 24V/0V) | 6 a 8 | `borne sak 2.5mm cinza conexel wago` |
+| **Régua Bornes +24V DC (XT1)** | `XT1.1` a `XT1.4` | Borne SAK 2.5 mm² para distribuição de +24V DC (Alimentação, Emergência NF/NA, Sinaleiro H1 e Tacômetro), Vermelho/Laranja ou Cinza com **Ponte de Ligação / Jumper FBS 4 Polos** | 4 bornes + 1 jumper | `borne sak 2.5mm vermelho laranja` + `ponte conectora fbs jumper borne sak` |
+| **Régua Bornes 0V DC (XT2)** | `XT2.1` a `XT2.6` | Borne SAK 2.5 mm² para barramento de 0V / COM (Fonte T1, Bobina K1, Sinaleiros H1/H2/H3/H4 e Tacômetro), Azul ou Cinza com **Ponte de Ligação / Jumper FBS 6 Polos** | 6 bornes + 1 jumper | `borne sak 2.5mm azul` + `ponte conectora fbs jumper borne sak` |
 | **Poste de Fixação (Parada)** | — | Poste terminal plástico / metálico para travar os bornes nas extremidades do trilho | 4 | `poste final trilho din parada borne sak` |
-| **Tampa Final de Borne** | — | Placa de fechamento isolante para fechar o último borne aberto da régua | 2 | `tampa final borne sak 2.5mm` |
+| **Tampa Final de Borne** | — | Placa de fechamento isolante para fechar as laterais abertas das réguas | 4 | `tampa final borne sak 2.5mm` |
 | **Trilho DIN 35 mm** | — | Trilho DIN TS-35 perfurado em aço zincado (comprimento 30 a 50 cm) | 1 | `trilho din 35mm perfurado 50cm` |
 | **Canaleta Ranhurada** | — | Canaleta plástica vazada/ranhurada cinza (20x20 mm ou 30x30 mm) para organização | 1 barra (1m) | `canaleta ranhurada 30x30 cinza dutoplast` |
 
@@ -83,6 +84,7 @@ Este documento consolida todos os itens necessários para montagem do painel el�
 | **Cabo Flexível 0.75 mm² Preto ou Azul Escuro** | 300V / 750V Cobre | 10 metros | Linha de 0V DC / GND (Retorno da bobina K1, sinaleiros e display) |
 | **Terminais Ilhós Tubular 2.5 mm²** | Pré-isolado simples (Azul ou Cinza) | 25 un | Conexão nos bornes SAK, disjuntor e contator de força |
 | **Terminais Ilhós Tubular 0.75 mm²** | Pré-isolado simples (Cinza ou Branco) | 50 un | Conexão nas abotoadeiras 22mm, sinaleiros, bobina e microswitch |
+| **Anilhas Marcadoras de Cabo (W01 a W42)** | Marcador de condutor tipo anilha plástica (algarismos 0-9 e letra W) para cabos 0.75 mm² a 2.5 mm² | 1 estojo / kit | Identificação física industrial dos fios conforme esquema e tabela De-Para |
 | **Espiral Organizador (Espaguete)** | Tipo Spiral-Tube 1/2" ou 3/8" | 1 metro | Proteção do chicote de fios móvel que vai da placa de fundo para a porta |
 | **Parafusos Brocantes 4.2 x 13 mm** | Cabeça panela zincada | 1 pacote | Fixação do trilho DIN e canaletas na placa de montagem |
 

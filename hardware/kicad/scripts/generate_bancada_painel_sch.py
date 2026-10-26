@@ -50,6 +50,12 @@ def text_comment(text_str, x, y, size=1.5, bold=True):
     (uuid "{u()}")
   )\n"""
 
+def wire_tag(tag_str, x, y, size=0.8, rot=0):
+    return f"""  (text "{tag_str}" (at {x} {y} {rot})
+    (effects (font (size {size} {size}) bold) (justify bottom))
+    (uuid "{u()}")
+  )\n"""
+
 def text_box(text_str, x, y, size=1.1, line_height=3.8):
     s = ""
     lines = text_str.strip().split("\n")
@@ -119,12 +125,12 @@ def build_schematic():
   (paper "A3")
   (title_block
     (title "Painel Eletrico Bancada de Testes (NR-10 / NR-12)")
-    (date "2026-10-24")
-    (rev "v2.2")
+    (date "2026-10-26")
+    (rev "v2.3")
     (company "Lean Tech Metrology & Industrial IoT Solutions")
     (comment 1 "Motor 220V Tanquinho c/ Dimmer TRIAC e Cap. Permanente")
     (comment 2 "Fonte 24V DC + Tacometro Digital CF5135B / NJK-5002C")
-    (comment 3 "Seguranca NR-12: Emergencia (LED Vermelho) + Tampa (LED Amarelo)")
+    (comment 3 "Anilhamento Industrial [W01-W40] + Reguas XT1/XT2 (24V/0V)")
   )
   (lib_symbols
 """
@@ -516,54 +522,53 @@ def build_schematic():
     sch += text_comment("SECAO 4: TACOMETRO DIGITAL DE PAINEL & SENSOR HALL NJK-5002C", 25, 208, 1.8)
     sch += text_comment("Display Digital de RPM (12V-24V DC) + Sensor Magnetico M12 c/ Ima de Neodimio no Eixo", 25, 213, 1.2, False)
 
-    # Section 5: Notas Tecnicas (328 to 410, 20 to 238) - Cleared from Title Block!
-    sch += draw_box(328, 20, 410, 238, 0.4)
-    sch += text_comment("NOTAS TECNICAS & BOM", 332, 28, 2.0)
+    # Section 5: Notas Tecnicas (328 to 410, 20 to 240) - Cleared from Title Block!
+    sch += draw_box(328, 20, 410, 240, 0.4)
+    sch += text_comment("NOTAS TECNICAS, BORNES & BOM", 332, 28, 2.0)
     sch += text_box("""NORMAS APLICAVEIS:
 - ABNT NBR 5410 (Instalacoes BT)
 - NR-10 (Seguranca Eletrica)
 - NR-12 (Seguranca em Maquinas)
+- IEC 60204-1 (Fiacao & Anilhamento)
 
-ESPECIFICACOES COMPONENTES:
-* Q1: Disjuntor Bipolar 2P Curva C 10A
-* K1: Contator Steck SC / WEG CWB (24V CC)
-  c/ Contato Auxiliar 13-14 (NA) p/ Selo
-  (Sem blocos de contato adicionais)
-* DIM1: Dimmer AC 220V 2000W / 4000W
-  Controle TRIAC c/ Potenciometro de Painel
-* M1: Motor de Tanquinho 220V
-  Monofasico/Bifasico ~1/4 CV (180W)
-  Capacitor Permanente C_MOT (12-15uF)
-* T1: Fonte Chaveada Trilho DIN 24V 2.5A
-* S0: Botao Emergencia Cogumelo c/ Trava (1NF + 1NA)
-* S_TAMPA: Microswitch Seguranca SPDT (COM, NF, NA)
-  NF: Intertravamento Serie Comando
-  NA: Aciona Sinaleiro H3 Tampa Aberta
+REGUAS DE BORNES 24V / 0V:
+* REGUA XT1 (+24V DC - BORNES SAK):
+  XT1:1 - Entrada +24V da Fonte T1
+  XT1:2 - Saida p/ Emergencia S0:11 (NF)
+  XT1:3 - Saida p/ Alarme Emerg. S0:23 (NA)
+  XT1:4 - Saida p/ Sinaleiro Branco H1:X1
+  (Interligados por Ponte Conectora FBS)
+
+* REGUA XT2 (0V DC - BORNES SAK):
+  XT2:1 - Entrada 0V da Fonte T1
+  XT2:2 - Retorno Bobina Contator K1:A2
+  XT2:3 - Retorno Sinaleiro Verde H2:X2
+  XT2:4 - Retorno Sinaleiro Amarelo H3:X2
+  XT2:5 - Retorno Sinaleiro Vermelho H4:X2
+  XT2:6 - Retorno Sinaleiro Branco H1:X2
+  (Interligados por Ponte Conectora FBS)
+
+SISTEMA DE ANILHAMENTO INDUSTRIAL:
+* Fios identificados com tags [W01] a [W42]
+* De-Para completo na documentacao tecnica
+* Bitolas: Forca 1.5mm2 | Comando 0.75/0.5mm2
+
+COMPONENTES DE PAINEL:
+* Q1: Disjuntor Bipolar 2P C10A (DIN)
+* K1: Contator Steck 24V DC c/ NA (13-14)
+* DIM1: Dimmer AC TRIAC 2000W/4000W
+* M1: Motor Tanquinho 220V + Cap 12uF
+* T1: Fonte Chaveada DIN 24V 2.5A
+* S0: Emergencia Cogumelo (1NF + 1NA)
+* S_TAMPA: Fim de Curso SPDT (Tampa)
 * S_OFF: Botao Desliga Vermelho (NF)
 * S_ON: Botao Liga Verde (NA)
-* H1: Sinaleiro LED Branco 24V (Painel ON / Standby)
-* H2: Sinaleiro LED Verde 24V (Motor ON - Paralelo K1 A1/A2)
-* H3: Sinaleiro LED Amarelo 24V (Alarme Tampa Aberta)
-* H4: Sinaleiro LED Vermelho 24V (Emergencia Acionada S0)
-* DISP: Tacometro Digital CF5135B 4 Digitos
-* SEN: Sensor Hall NJK-5002C M12 NPN NA
-
-ATERRAMENTO DE PROTECAO (PE):
-Carcaca do motor, chassi do dimmer,
-fonte T1 e painel sao interligados a
-barra de equipotencializacao PE da bancada.
-
-INTERTRAVAMENTO NR-12:
-Se a tampa for aberta ou a emergencia
-for acionada, K1 desliga imediatamente.
-O selo 13-14 abre, impedindo religamento
-automatico. Exige REARME MANUAL via S_ON.
-Abertura da tampa acende LED Amarelo H3.
-Acionamento da emergencia acende LED Vermelho H4.
-
-EXPANSAO FUTURA PARA CLP:
-1. DI: Status S0, S_TAMPA, K1, Pulso Tacho
-2. DO: Partida/Parada Remota via reles""", 332, 35, 1.05, 3.4)
+* H1: LED Branco 24V (Painel Standby)
+* H2: LED Verde 24V (Motor Operando)
+* H3: LED Amarelo 24V (Tampa Aberta)
+* H4: LED Vermelho 24V (Emergencia)
+* DISP1: Tacometro Digital CF5135B
+* SEN_HALL: Sensor NJK-5002C M12 NPN""", 332, 35, 0.98, 3.1)
 
     # =========================================================================
     # PLACEMENT & WIRING
@@ -614,7 +619,10 @@ EXPANSAO FUTURA PARA CLP:
 
     # Wires from TB1/TB2 to Q1:
     sch += wire(42, 49.81, 42, 56.38) # TB1 Out to Q1 Pin 1
+    sch += wire_tag("[W01]", 39.5, 53)
     sch += wire(52, 49.81, 52, 56.38) # TB2 Out to Q1 Pin 3
+    sch += wire_tag("[W02]", 54.5, 53)
+    sch += wire_tag("[W03]", 76.5, 38)
 
     # Q1 at (47, 64):
     sch += f"""  (symbol (lib_id "Industrial:CircuitBreaker_2P") (at 47 64 0) (unit 1) (in_bom yes) (on_board yes)
@@ -627,12 +635,16 @@ EXPANSAO FUTURA PARA CLP:
 
     # Q1 Out to K1 with derivations to F1/F2:
     sch += wire(42, 71.62, 42, 88.38)
+    sch += wire_tag("[W04]", 39.5, 80)
     sch += junction(42, 74)
     sch += wire(42, 74, 105, 74) # Derivation to F1
+    sch += wire_tag("[W06]", 70, 72.5)
 
     sch += wire(52, 71.62, 52, 88.38)
+    sch += wire_tag("[W05]", 54.5, 80)
     sch += junction(52, 86)
     sch += wire(52, 86, 105, 86) # Derivation to F2
+    sch += wire_tag("[W07]", 70, 84.5)
 
     # K1 at (47, 96) - 2 POLES ONLY (1-2 and 3-4)!
     sch += f"""  (symbol (lib_id "Industrial:Contactor_Power_2P") (at 47 96 0) (unit 1) (in_bom yes) (on_board yes)
@@ -645,7 +657,9 @@ EXPANSAO FUTURA PARA CLP:
 
     # K1 Out straight down to Dimmer DIM1:
     sch += wire(42, 103.62, 42, 111.46)
+    sch += wire_tag("[W08]", 39.5, 107.5)
     sch += wire(52, 103.62, 52, 111.46)
+    sch += wire_tag("[W09]", 54.5, 107.5)
 
     # DIM1 at (47, 124) - Dimmer AC 220V com Controle TRIAC:
     sch += f"""  (symbol (lib_id "Industrial:Dimmer_AC_220V") (at 47 124 0) (unit 1) (in_bom yes) (on_board yes)
@@ -658,7 +672,9 @@ EXPANSAO FUTURA PARA CLP:
 
     # DIM1 Out straight down to TB4, TB5 at Y = 148 mm:
     sch += wire(42, 136.54, 42, 144.19)
+    sch += wire_tag("[W10]", 39.5, 140)
     sch += wire(52, 136.54, 52, 144.19)
+    sch += wire_tag("[W11]", 54.5, 140)
 
     # TB4, TB5, TB6: Bornes Sak de Saida para o Motor at Y = 148 mm
     sch += f"""  (symbol (lib_id "Industrial:Terminal_Passagem") (at 42 148 0) (unit 1) (in_bom yes) (on_board yes)
@@ -689,12 +705,16 @@ EXPANSAO FUTURA PARA CLP:
     sch += wire(74, 49.81, 74, 144.19)
     sch += junction(74, 124)
     sch += wire(74, 124, 57, 124) # Tap to Dimmer chassis earth
+    sch += wire_tag("[W12]", 65, 122.5)
     sch += text_comment("PE Carcaca Dimmer", 59, 122, 0.85, False)
 
     # Straight vertical wires down from TB4/TB5/TB6 to Motor M1 at Y = 174 mm:
     sch += wire(42, 151.81, 42, 162.96)
+    sch += wire_tag("[W10]", 39.5, 157)
     sch += wire(52, 151.81, 52, 162.96)
+    sch += wire_tag("[W11]", 54.5, 157)
     sch += wire(74, 151.81, 74, 174)
+    sch += wire_tag("[W13]", 76.5, 160)
     sch += wire(74, 174, 69, 174) # Into Motor PE pin (47 + 22 = 69 mm)
 
     # Motor M1 at (47, 174):
@@ -736,39 +756,167 @@ EXPANSAO FUTURA PARA CLP:
     sch += wire(121.35, 74, 126, 74)
     sch += wire(126, 74, 126, 82.92)
     sch += wire(126, 82.92, 131.46, 82.92)
+    sch += wire_tag("[W14]", 128.5, 81.5)
 
     sch += wire(105, 86, 108.65, 86)
     sch += wire(121.35, 86, 126, 86)
     sch += wire(126, 86, 126, 88)
     sch += wire(126, 88, 131.46, 88)
+    sch += wire_tag("[W15]", 128.5, 86.5)
 
     # Local Earth Ground Symbol for T1 Pin 3 (PE):
     sch += wire(131.46, 93.08, 131.46, 96.5)
+    sch += wire_tag("[W16]", 134, 95)
     sch += """  (polyline (pts (xy 129.5 96.5) (xy 133.5 96.5)) (stroke (width 0.4) (type default)) (fill (type none)))\n"""
     sch += """  (polyline (pts (xy 130.5 97.5) (xy 132.5 97.5)) (stroke (width 0.4) (type default)) (fill (type none)))\n"""
     sch += """  (polyline (pts (xy 131.0 98.5) (xy 132.0 98.5)) (stroke (width 0.4) (type default)) (fill (type none)))\n"""
     sch += text_comment("PE", 134, 98, 0.9, False)
 
-    # SMPS Outputs & Continuous Barramentos:
-    sch += wire(164.54, 82.92, 172, 82.92)
-    sch += wire(172, 82.92, 172, 45)
-    sch += junction(172, 45)
-    # +24V Rail: explicit contiguous segments
-    sch += wire(172, 45, 212, 45)
-    sch += wire(212, 45, 216.5, 45)
-    sch += wire(216.5, 45, 314, 45)
-    sch += text_comment("+24V DC BARRAMENTO GERAL", 182, 42, 1.3)
+    # -------------------------------------------------------------------------
+    # REGUA DE BORNES XT1 (+24V DC DISTRIBUTION)
+    # -------------------------------------------------------------------------
+    # XT1:1 (X=188, Y=44) - Alimentacao +24V da Fonte T1
+    sch += f"""  (symbol (lib_id "Industrial:Terminal_Passagem") (at 188 44 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "{u()}")
+    (property "Reference" "XT1.1" (at 191.5 44 0) (effects (font (size 0.9 0.9)) (justify left)))
+    (property "Value" "+24V_IN" (at 191.5 42 0) (effects (font (size 0.75 0.75)) (justify left)))
+    (property "Footprint" "" (at 188 44 0) (effects (font (size 1.27 1.27)) (hide yes)))
+{sym_instance("XT1.1")}
+  )\n"""
 
-    sch += wire(164.54, 93.08, 172, 93.08)
-    sch += wire(172, 93.08, 172, 185)
-    sch += junction(172, 185)
-    # 0V / COM Rail: explicit contiguous segments between all branches
-    sch += wire(172, 185, 212, 185)
+    # XT1:2 (X=212, Y=44) - Saida +24V para S0:11 (NF)
+    sch += f"""  (symbol (lib_id "Industrial:Terminal_Passagem") (at 212 44 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "{u()}")
+    (property "Reference" "XT1.2" (at 208 44 0) (effects (font (size 0.9 0.9)) (justify right)))
+    (property "Value" "+24V_S0" (at 208 42 0) (effects (font (size 0.75 0.75)) (justify right)))
+    (property "Footprint" "" (at 212 44 0) (effects (font (size 1.27 1.27)) (hide yes)))
+{sym_instance("XT1.2")}
+  )\n"""
+
+    # XT1:3 (X=224, Y=44) - Saida +24V para S0:23 (NA)
+    sch += f"""  (symbol (lib_id "Industrial:Terminal_Passagem") (at 224 44 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "{u()}")
+    (property "Reference" "XT1.3" (at 227.5 44 0) (effects (font (size 0.9 0.9)) (justify left)))
+    (property "Value" "+24V_EMG" (at 227.5 42 0) (effects (font (size 0.75 0.75)) (justify left)))
+    (property "Footprint" "" (at 224 44 0) (effects (font (size 1.27 1.27)) (hide yes)))
+{sym_instance("XT1.3")}
+  )\n"""
+
+    # XT1:4 (X=314, Y=44) - Saida +24V para H1:X1 (e Tacometro)
+    sch += f"""  (symbol (lib_id "Industrial:Terminal_Passagem") (at 314 44 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "{u()}")
+    (property "Reference" "XT1.4" (at 317.5 44 0) (effects (font (size 0.9 0.9)) (justify left)))
+    (property "Value" "+24V_H1" (at 317.5 42 0) (effects (font (size 0.75 0.75)) (justify left)))
+    (property "Footprint" "" (at 314 44 0) (effects (font (size 1.27 1.27)) (hide yes)))
+{sym_instance("XT1.4")}
+  )\n"""
+
+    # Ponte Conectora FBS (Jumper Bar XT1 +24V) at Y=40.19:
+    sch += wire(188, 40.19, 212, 40.19)
+    sch += junction(188, 40.19)
+    sch += wire(212, 40.19, 224, 40.19)
+    sch += junction(212, 40.19)
+    sch += wire(224, 40.19, 314, 40.19)
+    sch += junction(224, 40.19)
+    sch += junction(314, 40.19)
+    sch += text_comment("PONTE CONECTORA DIN (JUMPER XT1 +24V)", 195, 37.5, 1.0, True)
+    sch += text_comment("REGUA DE BORNES XT1 (+24V DC)", 182, 42.5, 1.1, True)
+
+    # W17: SMPS T1 (+24V) to XT1:1 (Pin 1 at 188, 47.81):
+    sch += wire(164.54, 82.92, 188, 82.92)
+    sch += wire(188, 82.92, 188, 47.81)
+    sch += wire_tag("[W17]", 191, 65)
+
+    # W19: XT1:2 Pin 1 to S0:11 (at 212, 52.92):
+    sch += wire(212, 47.81, 212, 52.92)
+    sch += wire_tag("[W19]", 209, 50.5)
+
+    # W20: XT1:3 Pin 1 to S0:23 (at 216.5, 52.92):
+    sch += wire(224, 47.81, 224, 50)
+    sch += wire(224, 50, 216.5, 50)
+    sch += wire(216.5, 50, 216.5, 52.92)
+    sch += wire_tag("[W20]", 226, 49)
+
+    # W21: XT1:4 Pin 1 to H1:X1 (at 314, 108.65):
+    sch += wire(314, 47.81, 314, 108.65)
+    sch += wire_tag("[W21]", 311, 75)
+
+    # -------------------------------------------------------------------------
+    # REGUA DE BORNES XT2 (0V / COM DISTRIBUTION)
+    # -------------------------------------------------------------------------
+    # XT2:1 (X=188, Y=181.19) - Entrada 0V da Fonte T1
+    sch += f"""  (symbol (lib_id "Industrial:Terminal_Passagem") (at 188 181.19 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "{u()}")
+    (property "Reference" "XT2.1" (at 191.5 181.19 0) (effects (font (size 0.9 0.9)) (justify left)))
+    (property "Value" "0V_IN" (at 191.5 179 0) (effects (font (size 0.75 0.75)) (justify left)))
+    (property "Footprint" "" (at 188 181.19 0) (effects (font (size 1.27 1.27)) (hide yes)))
+{sym_instance("XT2.1")}
+  )\n"""
+
+    # XT2:2 (X=212, Y=181.19) - Retorno 0V da Bobina K1:A2
+    sch += f"""  (symbol (lib_id "Industrial:Terminal_Passagem") (at 212 181.19 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "{u()}")
+    (property "Reference" "XT2.2" (at 215.5 181.19 0) (effects (font (size 0.9 0.9)) (justify left)))
+    (property "Value" "0V_K1" (at 215.5 179 0) (effects (font (size 0.75 0.75)) (justify left)))
+    (property "Footprint" "" (at 212 181.19 0) (effects (font (size 1.27 1.27)) (hide yes)))
+{sym_instance("XT2.2")}
+  )\n"""
+
+    # XT2:3 (X=245, Y=181.19) - Retorno 0V do Sinaleiro Verde H2:X2
+    sch += f"""  (symbol (lib_id "Industrial:Terminal_Passagem") (at 245 181.19 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "{u()}")
+    (property "Reference" "XT2.3" (at 248.5 181.19 0) (effects (font (size 0.9 0.9)) (justify left)))
+    (property "Value" "0V_H2" (at 248.5 179 0) (effects (font (size 0.75 0.75)) (justify left)))
+    (property "Footprint" "" (at 245 181.19 0) (effects (font (size 1.27 1.27)) (hide yes)))
+{sym_instance("XT2.3")}
+  )\n"""
+
+    # XT2:4 (X=268, Y=181.19) - Retorno 0V do Sinaleiro Amarelo H3:X2
+    sch += f"""  (symbol (lib_id "Industrial:Terminal_Passagem") (at 268 181.19 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "{u()}")
+    (property "Reference" "XT2.4" (at 271.5 181.19 0) (effects (font (size 0.9 0.9)) (justify left)))
+    (property "Value" "0V_H3" (at 271.5 179 0) (effects (font (size 0.75 0.75)) (justify left)))
+    (property "Footprint" "" (at 268 181.19 0) (effects (font (size 1.27 1.27)) (hide yes)))
+{sym_instance("XT2.4")}
+  )\n"""
+
+    # XT2:5 (X=291, Y=181.19) - Retorno 0V do Sinaleiro Vermelho H4:X2
+    sch += f"""  (symbol (lib_id "Industrial:Terminal_Passagem") (at 291 181.19 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "{u()}")
+    (property "Reference" "XT2.5" (at 294.5 181.19 0) (effects (font (size 0.9 0.9)) (justify left)))
+    (property "Value" "0V_H4" (at 294.5 179 0) (effects (font (size 0.75 0.75)) (justify left)))
+    (property "Footprint" "" (at 291 181.19 0) (effects (font (size 1.27 1.27)) (hide yes)))
+{sym_instance("XT2.5")}
+  )\n"""
+
+    # XT2:6 (X=314, Y=181.19) - Retorno 0V do Sinaleiro Branco H1:X2
+    sch += f"""  (symbol (lib_id "Industrial:Terminal_Passagem") (at 314 181.19 0) (unit 1) (in_bom yes) (on_board yes)
+    (uuid "{u()}")
+    (property "Reference" "XT2.6" (at 317.5 181.19 0) (effects (font (size 0.9 0.9)) (justify left)))
+    (property "Value" "0V_H1" (at 317.5 179 0) (effects (font (size 0.75 0.75)) (justify left)))
+    (property "Footprint" "" (at 314 181.19 0) (effects (font (size 1.27 1.27)) (hide yes)))
+{sym_instance("XT2.6")}
+  )\n"""
+
+    # Ponte Conectora FBS (Jumper Bar XT2 0V) at Y=185.0:
+    sch += wire(188, 185, 212, 185)
+    sch += junction(188, 185)
     sch += wire(212, 185, 245, 185)
+    sch += junction(212, 185)
     sch += wire(245, 185, 268, 185)
+    sch += junction(245, 185)
     sch += wire(268, 185, 291, 185)
+    sch += junction(268, 185)
     sch += wire(291, 185, 314, 185)
-    sch += text_comment("0V / COM BARRAMENTO GERAL", 182, 182, 1.3)
+    sch += junction(291, 185)
+    sch += junction(314, 185)
+    sch += text_comment("PONTE CONECTORA DIN (JUMPER XT2 0V)", 195, 189, 1.0, True)
+    sch += text_comment("REGUA DE BORNES XT2 (0V / COM)", 182, 173.5, 1.1, True)
+
+    # W18: SMPS T1 (0V) to XT2:1 (Pin 1 at 188, 177.38):
+    sch += wire(164.54, 93.08, 188, 93.08)
+    sch += wire(188, 93.08, 188, 177.38)
+    sch += wire_tag("[W18]", 191, 135)
 
     # 3. CIRCUITO DE COMANDO & INTERTRAVAMENTO NR-12 (SECAO 3)
     # Branch 1 at X = 212 mm
@@ -821,34 +969,47 @@ EXPANSAO FUTURA PARA CLP:
   )\n"""
 
     # Wires Comando Ramo 1:
-    sch += junction(212, 45)
-    sch += wire(212, 45, 212, 52.92) # +24V to S0 Pin 11
+    # W22: S0:12 to S_TAMPA:COM
+    sch += wire(212, 63.08, 212, 72.92)
+    sch += wire_tag("[W22]", 209, 68)
 
-    sch += junction(216.5, 45)
-    sch += wire(216.5, 45, 216.5, 52.92) # +24V to S0 Pin 23 (NA in)
+    # W23: S_TAMPA:NC to S_OFF:1
+    sch += wire(212, 83.08, 212, 92.92)
+    sch += wire_tag("[W23]", 209, 88)
 
-    sch += wire(212, 63.08, 212, 72.92) # S0 Pin 12 to S_TAMPA COM
-    sch += wire(212, 83.08, 212, 92.92) # S_TAMPA NC to S_OFF Pin 1
-
+    # W24: S_OFF:2 to Node (212, 112)
     sch += wire(212, 103.08, 212, 112)
     sch += junction(212, 112)
+    sch += wire_tag("[W24]", 209, 107.5)
+
+    # W25: Node (212, 112) to S_ON:3
     sch += wire(212, 112, 202, 112)
     sch += wire(202, 112, 202, 116.92)
+    sch += wire_tag("[W25]", 200, 114)
+
+    # W26: Node (212, 112) to K1_SELO:13
     sch += wire(212, 112, 222, 112)
     sch += wire(222, 112, 222, 116.92)
+    sch += wire_tag("[W26]", 224, 114)
 
+    # W27: S_ON:4 to Node (212, 136)
     sch += wire(202, 127.08, 202, 136)
     sch += wire(202, 136, 212, 136)
+    sch += wire_tag("[W27]", 200, 134)
+
+    # W28: K1_SELO:14 to Node (212, 136)
     sch += wire(222, 127.08, 222, 136)
     sch += wire(222, 136, 212, 136)
     sch += junction(212, 136)
+    sch += wire_tag("[W28]", 224, 134)
 
-    # Clean straight wire into Coil Pin A1 (at 212, 143.46):
+    # W29: Node (212, 136) to Coil Pin A1 (at 212, 143.46)
     sch += wire(212, 136, 212, 143.46)
+    sch += wire_tag("[W29]", 209, 140)
 
-    # Clean straight wire out of Coil Pin A2 (at 212, 156.54) to 0V Rail at Y = 185:
-    sch += wire(212, 156.54, 212, 185)
-    sch += junction(212, 185)
+    # W31: Coil Pin A2 (at 212, 156.54) to XT2.2 (at 212, 177.38)
+    sch += wire(212, 156.54, 212, 177.38)
+    sch += wire_tag("[W31]", 209, 167)
 
     # Ramo 2: H2 (Motor Operando - VERDE) em PARALELO com a Bobina K1 (A1/A2) at (245, 150)
     sch += f"""  (symbol (lib_id "Industrial:Pilot_Lamp_24V") (at 245 150 0) (unit 1) (in_bom yes) (on_board yes)
@@ -858,12 +1019,13 @@ EXPANSAO FUTURA PARA CLP:
     (property "Footprint" "" (at 245 150 0) (effects (font (size 1.27 1.27)) (hide yes)))
 {sym_instance("H2")}
   )\n"""
-    # Parallel connection from switched +24V node (212, 136) to H2 pin X1:
+    # W30: Parallel connection from switched +24V node (212, 136) to H2 pin X1:
     sch += wire(212, 136, 245, 136)
     sch += wire(245, 136, 245, 143.65)
-    # H2 pin X2 to 0V rail:
-    sch += wire(245, 156.35, 245, 185)
-    sch += junction(245, 185)
+    sch += wire_tag("[W30]", 235, 134.5)
+    # W32: H2 pin X2 to XT2.3 (at 245, 177.38):
+    sch += wire(245, 156.35, 245, 177.38)
+    sch += wire_tag("[W32]", 242, 167)
     sch += text_comment("MOTOR OPERANDO (H2)", 232, 166, 0.95, False)
     sch += text_comment("PARALELO BOBINA K1", 232, 170, 0.8, False)
 
@@ -875,12 +1037,13 @@ EXPANSAO FUTURA PARA CLP:
     (property "Footprint" "" (at 268 115 0) (effects (font (size 1.27 1.27)) (hide yes)))
 {sym_instance("H3")}
   )\n"""
-    # Wire from S_TAMPA pin NO (219.62, 78) across to (268, 78) and down to H3 pin X1:
+    # W36: Wire from S_TAMPA pin NO (219.62, 78) across to (268, 78) and down to H3 pin X1:
     sch += wire(219.62, 78, 268, 78)
     sch += wire(268, 78, 268, 108.65)
-    # H3 pin X2 to 0V rail:
-    sch += wire(268, 121.35, 268, 185)
-    sch += junction(268, 185)
+    sch += wire_tag("[W36]", 250, 76.5)
+    # W33: H3 pin X2 to XT2.4 (at 268, 177.38):
+    sch += wire(268, 121.35, 268, 177.38)
+    sch += wire_tag("[W33]", 265, 150)
     sch += text_comment("ALARME: TAMPA ABERTA (H3)", 255, 133, 0.95, False)
     sch += text_comment("VIA S_TAMPA NA (AMARELO)", 255, 137, 0.8, False)
 
@@ -892,16 +1055,17 @@ EXPANSAO FUTURA PARA CLP:
     (property "Footprint" "" (at 291 115 0) (effects (font (size 1.27 1.27)) (hide yes)))
 {sym_instance("H4")}
   )\n"""
-    # Wire from S0 pin 24 (219.62, 58) across to (291, 58) and down to H4 pin X1:
+    # W37: Wire from S0 pin 24 (219.62, 58) across to (291, 58) and down to H4 pin X1:
     sch += wire(219.62, 58, 291, 58)
     sch += wire(291, 58, 291, 108.65)
-    # H4 pin X2 to 0V rail:
-    sch += wire(291, 121.35, 291, 185)
-    sch += junction(291, 185)
+    sch += wire_tag("[W37]", 270, 56.5)
+    # W34: H4 pin X2 to XT2.5 (at 291, 177.38):
+    sch += wire(291, 121.35, 291, 177.38)
+    sch += wire_tag("[W34]", 288, 150)
     sch += text_comment("EMERGENCIA ACIONADA (H4)", 278, 133, 0.95, False)
     sch += text_comment("VIA S0 BLOCO 2 NA (VERM)", 278, 137, 0.8, False)
 
-    # Ramo 5: H1 (Painel 24V Energizado - BRANCO) direto entre +24V e 0V at (314, 115)
+    # Ramo 5: H1 (Painel 24V Energizado - BRANCO) direto entre XT1:4 (+24V) e XT2:6 (0V) at (314, 115)
     sch += f"""  (symbol (lib_id "Industrial:Pilot_Lamp_24V") (at 314 115 0) (unit 1) (in_bom yes) (on_board yes)
     (uuid "{u()}")
     (property "Reference" "H1" (at 319 113 0) (effects (font (size 1.27 1.27)) (justify left)))
@@ -909,10 +1073,9 @@ EXPANSAO FUTURA PARA CLP:
     (property "Footprint" "" (at 314 115 0) (effects (font (size 1.27 1.27)) (hide yes)))
 {sym_instance("H1")}
   )\n"""
-    sch += junction(314, 45)
-    sch += wire(314, 45, 314, 108.65)
-    sch += wire(314, 121.35, 314, 185)
-    sch += junction(314, 185)
+    # W35: H1 pin X2 to XT2.6 (at 314, 177.38):
+    sch += wire(314, 121.35, 314, 177.38)
+    sch += wire_tag("[W35]", 311, 150)
     sch += text_comment("PAINEL 24V ON (H1)", 301, 133, 0.95, False)
     sch += text_comment("DIRETO DA FONTE 24V", 301, 137, 0.8, False)
 
@@ -931,11 +1094,13 @@ EXPANSAO FUTURA PARA CLP:
     # Pin 2 (GND 0V): at (105 - 24.54, 245 + 4.0) = (80.46, 249)
     sch += wire(80.46, 241, 55, 241)
     sch += net_label("+24V", 55, 241, 180)
+    sch += wire_tag("[W38]", 68, 239.5)
     sch += text_comment("Alimentacao Display (12V-24V DC)", 56, 237, 1.0, False)
-    sch += text_comment("(Derivado do Barramento Geral 24V/0V)", 56, 233, 0.85, False)
+    sch += text_comment("(Derivado dos Bornes XT1/XT2)", 56, 233, 0.85, False)
 
     sch += wire(80.46, 249, 55, 249)
     sch += net_label("0V", 55, 249, 180)
+    sch += wire_tag("[W39]", 68, 247.5)
 
     # Sensor Hall NJK-5002C at X = 230, Y = 245
     sch += f"""  (symbol (lib_id "Industrial:Sensor_Hall_NJK5002C") (at 230 245 0) (unit 1) (in_bom yes) (on_board yes)
@@ -959,15 +1124,18 @@ EXPANSAO FUTURA PARA CLP:
     # Completely straight, clean parallel wires:
     # 1. Marrom (+24V):
     sch += wire(129.54, 239, 211.46, 239)
-    sch += text_comment("Fio Marrom (+24V)", 150, 237, 1.0, False)
+    sch += wire_tag("[W40]", 170, 237.5)
+    sch += text_comment("Fio Marrom (+24V)", 150, 235.5, 0.95, False)
 
     # 2. Preto (Sinal):
     sch += wire(129.54, 245, 211.46, 245)
-    sch += text_comment("Fio Preto (Sinal NPN Pulso)", 150, 243, 1.0, False)
+    sch += wire_tag("[W41]", 170, 243.5)
+    sch += text_comment("Fio Preto (Sinal NPN Pulso)", 150, 241.5, 0.95, False)
 
     # 3. Azul (GND):
     sch += wire(129.54, 251, 211.46, 251)
-    sch += text_comment("Fio Azul (GND / 0V)", 150, 249, 1.0, False)
+    sch += wire_tag("[W42]", 170, 249.5)
+    sch += text_comment("Fio Azul (GND / 0V)", 150, 247.5, 0.95, False)
 
     # Visual note for Neodymium Magnet:
     sch += text_comment("IMA DE NEODIMIO FIXADO NO EIXO / POLIA DO MOTOR", 195, 268, 1.1, True)

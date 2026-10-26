@@ -9,9 +9,10 @@ Comando/Potencia;Bloco Supressor de Bobina;-;Diodo de protecao contra surto 24V 
 Potencia;Modulo Dimmer AC 220V;DIM1;Regulador de Tensao TRIAC 2000W ou 4000W 220V AC c/ potenciometro;1 un;Trilho DIN Inferior;modulo dimmer 220v 2000w triac bta41
 Conexao;Bornes de Passagem (Fase/Neutro);TB1, TB2, TB4, TB5;Borne tipo SAK / Mola parafuso para trilho DIN 2.5 mm2 a 4 mm2 Cinza;4 un;Trilho DIN Inferior;borne passagem sak 2.5mm cinza
 Conexao;Borne de Passagem (Terra PE);TB3, TB6;Borne de aterramento direto no trilho DIN Verde-Amarelo 2.5 mm2 a 4 mm2;2 un;Trilho DIN Inferior;borne terra trilho din verde amarelo 4mm
-Conexao;Bornes de Comando (Opcionais);-;Borne tipo SAK 2.5 mm2 para tampa, sensor e barramentos 24V/0V;6 a 8 un;Trilho DIN Inferior;borne sak 2.5mm cinza conexel wago
+Conexao;Regua Bornes +24V DC;XT1.1 a XT1.4;Borne SAK 2.5 mm2 para distribuicao +24V com jumper FBS 4 polos;4 un;Trilho DIN;borne sak 2.5mm vermelho laranja
+Conexao;Regua Bornes 0V DC;XT2.1 a XT2.6;Borne SAK 2.5 mm2 para barramento 0V/COM com jumper FBS 6 polos;6 un;Trilho DIN;borne sak 2.5mm azul
 Conexao;Poste de Fixacao (Parada Final);-;Trava de fixacao lateral para trilho DIN TS-35;4 un;Trilho DIN;poste final trilho din parada borne sak
-Conexao;Tampa Final de Borne;-;Placa de fechamento lateral para ultimo borne da regua;2 un;Trilho DIN;tampa final borne sak 2.5mm
+Conexao;Tampa Final de Borne;-;Placa de fechamento lateral para ultimo borne da regua;4 un;Trilho DIN;tampa final borne sak 2.5mm
 Montagem;Trilho DIN 35 mm;-;Perfil aco zincado perfurado TS-35 (30 a 50 cm);1 un;Placa de Montagem;trilho din 35mm perfurado 50cm
 Montagem;Canaleta Ranhurada;-;Canaleta de fiacao cinza recortada 30x30 mm (barra de 1m a 2m);1 barra;Placa de Montagem;canaleta ranhurada 30x30 cinza dutoplast
 Interface Porta;Botao de Emergencia Cogumelo;S0;Furacao 22 mm, Cabeca 40 mm, c/ trava girar p/ soltar, Blocos 1NF (Seguranca) + 1NA (LED);1 un;Porta Frontal;botao emergencia 22mm girar destravar 1nf 1na
@@ -37,4 +38,5 @@ Fiacao;Cabo Flexivel 0.75 mm2 Vermelho;-;Condutor de comando positivo +24V DC;10
 Fiacao;Cabo Flexivel 0.75 mm2 Preto ou Azul Escuro;-;Condutor de comando negativo 0V DC / GND;10 metros;Canaletas / Porta;cabo flexivel 0.75mm preto
 Fiacao;Terminais Ilhos Tubular 2.5 mm2;-;Ponteira pre-isolada simples para bornes e forca;25 un;Conexoes de forca;terminal ilhos tubular 2.5mm
 Fiacao;Terminais Ilhos Tubular 0.75 mm2;-;Ponteira pre-isolada simples para comando e porta;50 un;Conexoes de comando;terminal ilhos tubular 0.75mm
+Fiacao;Anilhas Marcadoras de Cabo (W01 a W42);-;Marcador industrial tipo anilha para condutores 0.75mm2 a 2.5mm2;1 estojo;Chicotes / Condutores;anilha marcadora fio cabos 0-9 w
 Fiacao;Espiral Organizadora (Espaguete);-;Protecao flexivel para chicote da articulacao da porta (1/2 pol);1 metro;Articulacao da Porta;espiral organizador cabos spiral tube

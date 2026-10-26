@@ -143,7 +143,11 @@ flowchart TD
 
 ## 4. Diagrama Multifilar de Comando e Segurança (24V DC / NR-12)
 
-O circuito de comando opera em **tensão contínua de segurança (24V DC)**, isolado galvanicamente da rede 220V através da fonte chaveada. Se qualquer dispositivo de segurança abrir (botão de emergência acionado ou tampa acrílica aberta), a bobina do contator desenergiza instantaneamente por gravidade mecânica.
+O circuito de comando opera em **tensão contínua de segurança (24V DC)**, isolado galvanicamente da rede 220V através da fonte chaveada DIN `T1`. A distribuição de alimentação é realizada por **réguas de bornes SAK dedicadas no trilho DIN**:
+- **Régua `XT1` (+24V DC):** 4 bornes interligados por ponte conectora FBS (+24V da fonte, alimentação de segurança S0, alarme e sinaleiro branco/tacômetro).
+- **Régua `XT2` (0V / COM):** 6 bornes interligados por ponte conectora FBS (retorno 0V da fonte, contator K1, sinaleiros H1/H2/H3/H4 e tacômetro).
+
+Todos os condutores recebem **anilhas industriais identificadas de `[W01]` a `[W42]`**.
 
 ```mermaid
 flowchart TD
@@ -153,97 +157,110 @@ flowchart TD
     classDef button fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#fff;
     classDef coil fill:#78350f,stroke:#fbbf24,stroke-width:2px,color:#fff;
     classDef white fill:#334155,stroke:#e2e8f0,stroke-width:2px,color:#fff;
+    classDef yellow fill:#854d0e,stroke:#facc15,stroke-width:2px,color:#fff;
+    classDef terminal fill:#1f2937,stroke:#9ca3af,stroke-width:2px,color:#fff;
 
-    FONTE_POS["Fonte PS1 (+24V DC)<br/>Borne Vermelho"]:::dc_pos
-    FONTE_NEG["Fonte PS1 (0V / GND)<br/>Borne Azul"]:::dc_neg
+    FONTE_T1["Fonte Chaveada DIN T1<br/>Saída 24V DC 2.5A (60W)"]:::dc_pos
 
-    subgraph SEGURANCA_EMERGENCIA["1. Emergência com Trava (Painel Frontal)"]
-        subgraph BLOCO_EMERG_NF["Bloco 1: NF (Série de Segurança)"]
+    subgraph REGUA_XT1["Régua de Bornes XT1 (+24V DC — Ponte FBS)"]
+        XT1_1["Borne XT1.1<br/>Entrada +24V da Fonte"]:::terminal
+        XT1_2["Borne XT1.2<br/>Saída p/ Emergência NF"]:::terminal
+        XT1_3["Borne XT1.3<br/>Saída p/ Alarme Emergência NA"]:::terminal
+        XT1_4["Borne XT1.4<br/>Saída p/ Sinaleiro Branco & Tacômetro"]:::terminal
+    end
+
+    subgraph REGUA_XT2["Régua de Bornes XT2 (0V / COM — Ponte FBS)"]
+        XT2_1["Borne XT2.1<br/>Entrada 0V da Fonte"]:::terminal
+        XT2_2["Borne XT2.2<br/>Retorno Bobina K1:A2"]:::terminal
+        XT2_3["Borne XT2.3<br/>Retorno Sinaleiro Verde H2:X2"]:::terminal
+        XT2_4["Borne XT2.4<br/>Retorno Sinaleiro Amarelo H3:X2"]:::terminal
+        XT2_5["Borne XT2.5<br/>Retorno Sinaleiro Vermelho H4:X2"]:::terminal
+        XT2_6["Borne XT2.6<br/>Retorno Sinaleiro Branco H1:X2"]:::terminal
+    end
+
+    subgraph SEGURANCA_EMERGENCIA["1. Botão de Emergência S0 (Cogumelo 40mm c/ Trava)"]
+        subgraph BLOCO_EMERG_NF["Bloco 1: 1NF (Série de Segurança)"]
             S0_11["S0: Term. 11 (NF)"]:::safe
             S0_12["S0: Term. 12 (NF)"]:::safe
         end
-        subgraph BLOCO_EMERG_NA["Bloco 2: NA (Sinalização de Bloqueio)"]
+        subgraph BLOCO_EMERG_NA["Bloco 2: 1NA (Sinalização de Bloqueio)"]
             S0_23["S0: Term. 23 (NA)"]:::button
             S0_24["S0: Term. 24 (NA)"]:::button
         end
     end
 
-    subgraph SEGURANCA_TAMPA["2. Microswitch da Tampa Acrílica (Bancada)"]
-        S1_C["S1: Comum (C)"]:::safe
-        S1_NC["S1: Contato NF / Segurança<br/>(Fechado com a tampa abaixada)"]:::safe
-        S1_NO["S1: Contato NA / Alarme<br/>(Fecha com a tampa levantada)"]:::ctrl
+    subgraph SEGURANCA_TAMPA["2. Microswitch da Tampa S_TAMPA (Bancada)"]
+        ST_COM["S_TAMPA: Comum (COM)"]:::safe
+        ST_NC["S_TAMPA: Contato NF / Segurança<br/>(Fechado com tampa abaixada)"]:::safe
+        ST_NO["S_TAMPA: Contato NA / Alarme<br/>(Fecha com tampa levantada)"]:::yellow
     end
 
-    subgraph BOTAO_DUPLO_22MM["3. Botão Duplo 22mm Metaltex / EL8425"]
-        subgraph SECAO_DESLIGA["Botão Vermelho (0 / Desliga)"]
-            S2_11["Term. 11 (NF)"]:::safe
-            S2_12["Term. 12 (NF)"]:::safe
+    subgraph BOTOES_COMANDO["3. Abotoadeira Liga / Desliga (Porta do Painel)"]
+        subgraph SECAO_DESLIGA["Botão Desliga Vermelho S_OFF"]
+            SOFF_1["S_OFF: Term. 1 (NF)"]:::safe
+            SOFF_2["S_OFF: Term. 2 (NF)"]:::safe
         end
-        subgraph SECAO_LIGA["Botão Verde (I / Liga)"]
-            S2_13["Term. 13 (NA)"]:::button
-            S2_14["Term. 14 (NA)"]:::button
+        subgraph SECAO_LIGA["Botão Liga Verde S_ON"]
+            SON_3["S_ON: Term. 3 (NA)"]:::button
+            SON_4["S_ON: Term. 4 (NA)"]:::button
         end
     end
 
-    subgraph CONTATOR_SELO_BOBINA["4. Contator Steck K1"]
-        K1_13["Contato Auxiliar 13 (NA)"]:::button
-        K1_14["Contato Auxiliar 14 (NA)"]:::button
-        K1_A1["Bobina K1 (+A1)"]:::coil
-        K1_A2["Bobina K1 (-A2)"]:::coil
+    subgraph CONTATOR_K1["4. Contator Steck K1 (Trilho DIN)"]
+        K1_13["Contato Auxiliar NA 13 (Selo)"]:::button
+        K1_14["Contato Auxiliar NA 14 (Selo)"]:::button
+        K1_A1["Bobina K1: A1 (+24V)"]:::coil
+        K1_A2["Bobina K1: A2 (0V)"]:::coil
     end
 
-    subgraph SINALIZACAO["5. Sinalização Visual LED 22mm (Porta do Painel)"]
-        H0_LED["Sinaleiro LED Branco H0<br/>'PAINEL ENERGIZADO'"]:::white
-        H1_LED["Sinaleiro LED Verde H1<br/>'MOTOR EM MARCHA'"]:::button
-        H2_LED["Sinaleiro LED Amarelo H2<br/>'TAMPA ABERTA / ALERTA'"]:::ctrl
-        H3_LED["Sinaleiro LED Vermelho H3<br/>'EMERGÊNCIA ACIONADA'"]:::safe
+    subgraph SINALIZACAO_PAINEL["5. Sinalização Visual LED 22mm (Porta Frontal)"]
+        H1_LED["Sinaleiro Branco H1<br/>'PAINEL 24V ON'"]:::white
+        H2_LED["Sinaleiro Verde H2<br/>'MOTOR OPERANDO'"]:::button
+        H3_LED["Sinaleiro Amarelo H3<br/>'TAMPA ABERTA (ALERTA)'"]:::yellow
+        H4_LED["Sinaleiro Vermelho H4<br/>'EMERGÊNCIA ACIONADA'"]:::safe
     end
 
-    %% Fiação do Circuito de Segurança em Série
-    FONTE_POS -->|"Vermelho 0.75mm²"| S0_11
-    S0_12 -->|"Vermelho 0.75mm²"| S1_C
-    S1_NC -->|"Vermelho 0.75mm²"| S2_11
+    %% Alimentação Fonte -> Bornes de Distribuição
+    FONTE_T1 -->|"[W17] +24V"| XT1_1
+    FONTE_T1 -->|"[W18] 0V"| XT2_1
 
-    %% Jumper no Bloco do Botão Duplo (12 NF -> 13 NA)
-    S2_12 -->|"Jumper Rápido (Preto 0.75mm²)"| S2_13
+    %% Distribuição XT1 (+24V)
+    XT1_2 -->|"[W19] +24V"| S0_11
+    XT1_3 -->|"[W20] +24V"| S0_23
+    XT1_4 -->|"[W21] +24V"| H1_LED
 
-    %% Paralelo do Selo: 13 do botão -> 13 do contator
-    S2_12 -->|"Derivação Selo (Vermelho)"| K1_13
+    %% Cadeia de Segurança em Série (NR-12)
+    S0_12 -->|"[W22]"| ST_COM
+    ST_NC -->|"[W23]"| SOFF_1
+    SOFF_2 -->|"[W24]"| NO_CMD(("Nó Comando<br/>(212, 112)"))
 
-    %% Saída do Pulso Liga: 14 do botão -> Bobina A1
-    S2_14 -->|"Comando Liga (Vermelho 0.75mm²)"| K1_A1
-    
-    %% Retenção: 14 do contator -> Bobina A1
-    K1_14 -->|"Retorno de Selo (Vermelho)"| K1_A1
+    %% Ramo Liga / Selo em Paralelo
+    NO_CMD -->|"[W25]"| SON_3
+    NO_CMD -->|"[W26]"| K1_13
+    SON_4 -->|"[W27]"| NO_COIL(("Nó Bobina<br/>(212, 136)"))
+    K1_14 -->|"[W28]"| NO_COIL
 
-    %% Fechamento do Neutro DC (0V)
-    K1_A2 -->|"Azul 0.75mm²"| FONTE_NEG
+    %% Acionamento da Bobina e Sinaleiro Verde (Paralelo)
+    NO_COIL -->|"[W29]"| K1_A1
+    NO_COIL -->|"[W30]"| H2_LED
 
-    %% Lógica do Sinaleiro Branco H0 (Painel Energizado / 24V OK)
-    FONTE_POS ==>|"Direto +24V (Branco/Vermelho 0.5mm²)"| H0_LED
-    H0_LED -->|"Azul 0.5mm²"| FONTE_NEG
+    %% Alarmes de Segurança
+    ST_NO -->|"[W36] Alarme Tampa"| H3_LED
+    S0_24 -->|"[W37] Alarme Emergência"| H4_LED
 
-    %% Lógica do Sinaleiro Verde H1 (Motor Ligado)
-    K1_A1 -.->|"Em paralelo com A1"| H1_LED
-    H1_LED -->|"Azul 0.5mm²"| FONTE_NEG
-
-    %% Lógica do Sinaleiro Amarelo H2 (Tampa Aberta / Alerta)
-    S1_C -.->|"Alimentação Comum 24V"| S1_NO
-    S1_NO -->|"Contato NA (Fecha ao abrir tampa) - Amarelo/Laranja"| H2_LED
-    H2_LED -->|"Azul 0.5mm²"| FONTE_NEG
-
-    %% Lógica do Sinaleiro Vermelho H3 (Emergência Acionada / Perigo)
-    FONTE_POS -.->|"Derivação +24V (Vermelho 0.75mm²)"| S0_23
-    S0_23 -.->|"Contato NA (Fecha ao travar emergência)"| S0_24
-    S0_24 -->|"Linha Sinal Emergência (Vermelho 0.5mm²)"| H3_LED
-    H3_LED -->|"Azul 0.5mm²"| FONTE_NEG
+    %% Retornos de 0V para a Régua XT2
+    K1_A2 -->|"[W31] 0V"| XT2_2
+    H2_LED -->|"[W32] 0V"| XT2_3
+    H3_LED -->|"[W33] 0V"| XT2_4
+    H4_LED -->|"[W34] 0V"| XT2_5
+    H1_LED -->|"[W35] 0V"| XT2_6
 ```
 
 ---
 
 ## 5. Circuito do Tacômetro Digital & Sensor Hall
 
-O tacômetro mede com precisão milimétrica a rotação instantânea do eixo motor através da passagem do ímã de neodímio em frente ao sensor Hall:
+O tacômetro mede com precisão a rotação instantânea do eixo motor através da passagem do ímã de neodímio em frente ao sensor Hall `SEN_HALL`:
 
 ```mermaid
 flowchart LR
@@ -252,80 +269,89 @@ flowchart LR
     classDef sig fill:#78350f,stroke:#f59e0b,stroke-width:1.5px,color:#fff;
     classDef dev fill:#1e293b,stroke:#64748b,stroke-width:2px,color:#fff;
 
-    subgraph FONTE_24V["Fonte Chaveada PS1"]
-        VCC_OUT["+24V DC"]:::pwr
-        GND_OUT["0V (GND)"]:::gnd
+    subgraph BORNES_DISTRIBUICAO["Bornes de Distribuição DIN"]
+        XT1_4["Borne XT1.4 (+24V DC)"]:::pwr
+        XT2_6["Borne XT2.6 (0V / GND)"]:::gnd
     end
 
-    subgraph TAC_DISPLAY["Tacômetro Digital 4 Dígitos LED (Painel)"]
-        T_VCC["Pin 1: VCC (+12 a 24V)"]:::pwr
+    subgraph TAC_DISPLAY["Tacômetro Digital 4 Dígitos LED (Painel Frontal DISP1)"]
+        T_VCC["Pin 1: VCC (+12V a +24V)"]:::pwr
         T_GND["Pin 2: GND (0V)"]:::gnd
-        T_SIG["Pin 3: Signal IN (Pulso)"]:::sig
+        T_OUT_VCC["Pin 4: +Vcc Sensor"]:::pwr
+        T_SIG["Pin 3: Signal IN (Pulso NPN)"]:::sig
+        T_OUT_GND["Pin 5: GND Sensor"]:::gnd
     end
 
-    subgraph SENSOR_HALL["Sensor Hall NPN M12 (Bancada Mecânica)"]
-        H_BRN["Marrom (VCC +24V)"]:::pwr
-        H_BLU["Azul (GND 0V)"]:::gnd
-        H_BLK["Preto (Sinal NPN Pulso)"]:::sig
+    subgraph SENSOR_HALL["Sensor Hall M12 NJK-5002C (Bancada Mecânica)"]
+        H_BRN["Pino 1: Marrom (+VCC)"]:::pwr
+        H_BLK["Pino 2: Preto (Sinal NPN)"]:::sig
+        H_BLU["Pino 3: Azul (GND 0V)"]:::gnd
     end
 
     subgraph EIXO_BANCADA["Eixo Rotativo"]
-        MAGNET["Ímã de Neodímio N52<br/>Afixado na polia"]:::dev
+        MAGNET["Ímã de Neodímio N50<br/>Afixado na polia"]:::dev
     end
 
-    VCC_OUT ==> T_VCC
-    VCC_OUT ==> H_BRN
+    XT1_4 -->|"[W38] +24V DC"| T_VCC
+    XT2_6 -->|"[W39] 0V DC"| T_GND
 
-    GND_OUT ==> T_GND
-    GND_OUT ==> H_BLU
+    T_OUT_VCC -->|"[W40] Marrom (+24V)"| H_BRN
+    T_SIG <--|"[W41] Preto (Pulso NPN)"| H_BLK
+    T_OUT_GND -->|"[W42] Azul (GND)"| H_BLU
 
-    H_BLK -->|"Pulso por rotação (NPN Aberto)"| T_SIG
-    MAGNET -.->|"Passagem a 2mm do sensor"| SENSOR_HALL
+    MAGNET -.->|"Passagem a 1-8mm do sensor"| SENSOR_HALL
 ```
 
 ---
 
-## 6. Tabela De-Para Definitiva da Fiação (Wiring Schedule)
+## 6. Tabela De-Para Definitiva da Fiação (Wiring Schedule [W01] a [W42])
 
-Esta tabela é o guia prático de bancada para o eletrotécnico crimpar e conectar cada condutor:
+Esta tabela é o guia prático de montagem em bancada para o painelista crimpar e anilhar cada condutor, em total sincronismo com o esquema KiCad `amemiya_bancada_painel.kicad_sch` (versão v2.3):
 
-| ID Cabo | Origem (De) | Destino (Para) | Função | Bitola | Cor Normatizada | Terminal Recomendado |
+| ID Cabo | Origem (De) | Destino (Para) | Função / Descrição | Bitola | Cor Normatizada | Terminal Recomendado |
 | :---: | :--- | :--- | :--- | :---: | :---: | :---: |
-| **W01** | Prensa-cabo entrada L | Disjuntor Q1: Borne 1 | Fase 220V Geral | $1.5\text{ mm}^2$ | Preto | Ilhós Tubular 1.5mm² |
-| **W02** | Prensa-cabo entrada N | Disjuntor Q1: Borne 3 | Neutro 220V Geral | $1.5\text{ mm}^2$ | Azul-claro | Ilhós Tubular 1.5mm² |
-| **W03** | Prensa-cabo entrada PE | Borne de Aterramento DIN (PE) | Terra Geral da Rede | $1.5\text{ mm}^2$ | Verde/Amarelo | Olhal ou Ilhós 1.5mm² |
-| **W04** | Disjuntor Q1: Borne 2 | Contator K1: Borne 1 (L1) | Fase Potência Comutada | $1.5\text{ mm}^2$ | Preto | Ilhós Tubular 1.5mm² |
-| **W05** | Disjuntor Q1: Borne 4 | Contator K1: Borne 3 (L2) | Neutro Potência Comutado | $1.5\text{ mm}^2$ | Azul-claro | Ilhós Tubular 1.5mm² |
-| **W06** | Disjuntor Q1: Borne 2 | Porta-Fusível F1: Entrada | Alimentação da Fonte 24V | $0.75\text{ mm}^2$ | Preto | Ilhós Tubular 0.75mm² |
-| **W07** | Disjuntor Q1: Borne 4 | Fonte PS1: Terminal N | Neutro da Fonte 24V | $0.75\text{ mm}^2$ | Azul-claro | Ilhós Tubular 0.75mm² |
-| **W08** | Porta-Fusível F1: Saída | Fonte PS1: Terminal L | Fase Protegida por Fusível 2A | $0.75\text{ mm}^2$ | Preto | Ilhós Tubular 0.75mm² |
-| **W09** | Contator K1: Borne 2 (T1) | Módulo Dimmer: Terminal IN-L | Fase Potência para Regulador | $1.5\text{ mm}^2$ | Preto | Ilhós Tubular 1.5mm² |
-| **W10** | Contator K1: Borne 4 (T2) | Módulo Dimmer: Terminal IN-N | Neutro para Regulador | $1.5\text{ mm}^2$ | Azul-claro | Ilhós Tubular 1.5mm² |
-| **W11** | Dimmer: Terminal OUT-L | Prensa-cabo Motor: Pino 1 | Fase Regulada Motor (0-220V) | $1.5\text{ mm}^2$ | Preto | Ilhós Tubular 1.5mm² |
-| **W12** | Dimmer: Terminal OUT-N | Prensa-cabo Motor: Pino 2 | Retorno Neutro Motor | $1.5\text{ mm}^2$ | Azul-claro | Ilhós Tubular 1.5mm² |
-| **W13** | Borne Terra DIN (PE) | Prensa-cabo Motor: Carcaça | Aterramento de Carcaça Motor | $1.5\text{ mm}^2$ | Verde/Amarelo | Ilhós Tubular 1.5mm² |
-| **W14** | Fonte PS1: Borne (+V) | Botão Emergência S0: Term. 11 | Alimentação da Cadeia de Segurança | $0.75\text{ mm}^2$ | Vermelho | Ilhós Tubular 0.75mm² |
-| **W15** | Botão Emergência S0: Term. 12 | Microswitch Tampa S1: Comum (C) | Continuidade de Segurança | $0.75\text{ mm}^2$ | Vermelho | Terminal Faston / Ilhós |
-| **W16** | Microswitch Tampa S1: Term. NF | Botão Duplo S2: Term. 11 (NF Desliga) | Linha Segura para Painel | $0.75\text{ mm}^2$ | Vermelho | Terminal Ilhós 0.75mm² |
-| **W17** | Botão Duplo S2: Term. 12 (NF Desliga)| Botão Duplo S2: Term. 13 (NA Liga) | Jumper de Retenção no Bloco | $0.75\text{ mm}^2$ | Preto | Ilhós Duplo 2x0.75mm² |
-| **W18** | Botão Duplo S2: Term. 12 (NF Desliga)| Contator K1: Borne 13 (NA Selo) | Linha de Alimentação do Selo | $0.75\text{ mm}^2$ | Vermelho | Ilhós Tubular 0.75mm² |
-| **W19** | Botão Duplo S2: Term. 14 (NA Liga) | Contator K1: Borne A1 (+ Bobina) | Comando de Pulso Liga | $0.75\text{ mm}^2$ | Vermelho | Ilhós Tubular 0.75mm² |
-| **W20** | Contator K1: Borne 14 (NA Selo) | Contator K1: Borne A1 (+ Bobina) | Retorno do Selo de Retenção | $0.75\text{ mm}^2$ | Vermelho | Ilhós Duplo 2x0.75mm² |
-| **W21** | Contator K1: Borne A2 (- Bobina) | Fonte PS1: Borne (-V / GND) | Retorno 0V DC da Bobina | $0.75\text{ mm}^2$ | Azul-escuro | Ilhós Tubular 0.75mm² |
-| **W22** | Contator K1: Borne A1 | Sinaleiro LED Verde H1 (+) | Alimentação Sinaleiro "Motor ON" | $0.5\text{ mm}^2$ | Vermelho | Ilhós Tubular 0.5mm² |
-| **W23** | Sinaleiro LED Verde H1 (-) | Fonte PS1: Borne (-V / GND) | Retorno 0V Sinaleiro Verde | $0.5\text{ mm}^2$ | Azul-escuro | Ilhós Tubular 0.5mm² |
-| **W24** | Microswitch Tampa S1: Term. NA | Sinaleiro LED Amarelo H2 (+) | Alimentação "Tampa Aberta" (Alerta) | $0.5\text{ mm}^2$ | Amarelo / Laranja | Ilhós Tubular 0.5mm² |
-| **W25** | Sinaleiro LED Amarelo H2 (-) | Fonte PS1: Borne (-V / GND) | Retorno 0V Sinaleiro Amarelo | $0.5\text{ mm}^2$ | Azul-escuro | Ilhós Tubular 0.5mm² |
-| **W26** | Fonte PS1: Borne (+V) | Tacômetro TAC1: Pin 1 (VCC) | Alimentação 24V do Display | $0.5\text{ mm}^2$ | Vermelho | Ilhós Tubular 0.5mm² |
-| **W27** | Fonte PS1: Borne (-V / GND) | Tacômetro TAC1: Pin 2 (GND) | Terra 0V do Display | $0.5\text{ mm}^2$ | Azul-escuro | Ilhós Tubular 0.5mm² |
-| **W28** | Fonte PS1: Borne (+V) | Sensor Hall: Fio Marrom (+VCC) | Alimentação 24V do Sensor Hall | $0.5\text{ mm}^2$ | Marrom | Ilhós Tubular 0.5mm² |
-| **W29** | Fonte PS1: Borne (-V / GND) | Sensor Hall: Fio Azul (GND) | Terra 0V do Sensor Hall | $0.5\text{ mm}^2$ | Azul-escuro | Ilhós Tubular 0.5mm² |
-| **W30** | Sensor Hall: Fio Preto (Sinal NPN)| Tacômetro TAC1: Pin 3 (Signal) | Pulso Digital por Rotação | $0.5\text{ mm}^2$ | Preto | Ilhós Tubular 0.5mm² |
-| **W31** | Fonte PS1: Borne (+V) | Botão Emergência S0: Term. 23 (NA) | Alimentação Bloco Auxiliar Emergência | $0.75\text{ mm}^2$ | Vermelho | Ilhós Tubular 0.75mm² |
-| **W32** | Botão Emergência S0: Term. 24 (NA) | Sinaleiro LED Vermelho H3 (+) | Alimentação "Emergência Acionada" | $0.5\text{ mm}^2$ | Vermelho | Ilhós Tubular 0.5mm² |
-| **W33** | Sinaleiro LED Vermelho H3 (-) | Fonte PS1: Borne (-V / GND) | Retorno 0V Sinaleiro Vermelho | $0.5\text{ mm}^2$ | Azul-escuro | Ilhós Tubular 0.5mm² |
-| **W34** | Fonte PS1: Borne (+V) | Sinaleiro LED Branco H0 (+) | Alimentação "Painel Energizado" | $0.5\text{ mm}^2$ | Branco / Vermelho | Ilhós Tubular 0.5mm² |
-| **W35** | Sinaleiro LED Branco H0 (-) | Fonte PS1: Borne (-V / GND) | Retorno 0V Sinaleiro Branco | $0.5\text{ mm}^2$ | Azul-escuro | Ilhós Tubular 0.5mm² |
+| **[W01]** | Borne `TB1:2` (Entrada L1) | Disjuntor `Q1:1` | Fase 1 220V entrada geral | $1.5\text{ mm}^2$ | Preto | Ilhós 1.5mm² |
+| **[W02]** | Borne `TB2:2` (Entrada L2/N) | Disjuntor `Q1:3` | Fase 2 / Neutro 220V entrada | $1.5\text{ mm}^2$ | Azul-claro | Ilhós 1.5mm² |
+| **[W03]** | Borne `TB3:2` (Entrada PE) | Barramento Terra `PE` (DIN) | Aterramento geral de proteção | $1.5\text{ mm}^2$ | Verde/Amarelo | Ilhós 1.5mm² |
+| **[W04]** | Disjuntor `Q1:2` (Saída L1) | Derivação: `K1:1L1` e `F1:1` | Fase L1 protegida por Q1 | $1.5\text{ mm}^2$ | Preto | Ilhós Duplo 2x1.5mm² |
+| **[W05]** | Disjuntor `Q1:4` (Saída L2) | Derivação: `K1:3L2` e `F2:1` | Fase L2 protegida por Q1 | $1.5\text{ mm}^2$ | Azul-claro | Ilhós Duplo 2x1.5mm² |
+| **[W06]** | Contator `K1:2T1` (Saída L1) | Dimmer `DIM1:L_IN` | Fase comutada pelo contator | $1.5\text{ mm}^2$ | Preto | Ilhós 1.5mm² |
+| **[W07]** | Contator `K1:4T2` (Saída L2) | Dimmer `DIM1:N_IN` | Neutro comutado por K1 | $1.5\text{ mm}^2$ | Azul-claro | Ilhós 1.5mm² |
+| **[W08]** | Dimmer `DIM1:L_OUT` | Borne `TB4:1` (Saída Motor L) | Fase regulada (0-220V) para motor | $1.5\text{ mm}^2$ | Preto | Ilhós 1.5mm² |
+| **[W09]** | Dimmer `DIM1:N_OUT` | Borne `TB5:1` (Saída Motor N) | Retorno neutro regulado | $1.5\text{ mm}^2$ | Azul-claro | Ilhós 1.5mm² |
+| **[W10]** | Borne `TB4:2` (Saída Painel) | Motor `M1:Fase` (Chicote ext.) | Alimentação fase motor bancada | $1.5\text{ mm}^2$ | Preto (Cabo PP) | Ilhós / Faston motor |
+| **[W11]** | Borne `TB5:2` (Saída Painel) | Motor `M1:Neutro` (Chicote ext.) | Retorno neutro motor bancada | $1.5\text{ mm}^2$ | Azul (Cabo PP) | Ilhós / Faston motor |
+| **[W12]** | Borne `TB6:2` (Saída Terra) | Motor `M1:Carcaça PE` | Aterramento carcaça do motor | $1.5\text{ mm}^2$ | Verde/Amarelo | Terminal Olhal M4/M5 |
+| **[W13]** | Barramento Terra `PE` (DIN) | Borne `TB6:1` | Interligação PE painel ao borne motor | $1.5\text{ mm}^2$ | Verde/Amarelo | Ilhós 1.5mm² |
+| **[W14]** | Porta-Fusível `F1:2` (Saída 2A) | Fonte `T1:L` (Pino 1) | Alimentação AC L da fonte 24V | $0.75\text{ mm}^2$ | Preto | Ilhós 0.75mm² |
+| **[W15]** | Porta-Fusível `F2:2` (Saída 2A) | Fonte `T1:N` (Pino 2) | Alimentação AC N da fonte 24V | $0.75\text{ mm}^2$ | Azul-claro | Ilhós 0.75mm² |
+| **[W16]** | Fonte `T1:PE` (Pino 3) | Barramento Terra `PE` (DIN) | Aterramento carcaça da fonte DIN | $0.75\text{ mm}^2$ | Verde/Amarelo | Ilhós 0.75mm² |
+| **[W17]** | Fonte `T1:+V` (Pino 4, +24V) | Borne Distribuição `XT1.1:1` | Alimentação principal barramento +24V | $0.75\text{ mm}^2$ | Vermelho | Ilhós 0.75mm² |
+| **[W18]** | Fonte `T1:-V` (Pino 5, 0V) | Borne Distribuição `XT2.1:1` | Retorno principal barramento 0V | $0.75\text{ mm}^2$ | Azul-escuro / Preto | Ilhós 0.75mm² |
+| **[W19]** | Borne Distribuição `XT1.2:1` | Emergência `S0:11` (NF entrada) | Alimentação cadeia de segurança NR-12 | $0.75\text{ mm}^2$ | Vermelho | Ilhós 0.75mm² |
+| **[W20]** | Borne Distribuição `XT1.3:1` | Emergência `S0:23` (NA entrada) | Alimentação sinal alarme emergência | $0.75\text{ mm}^2$ | Vermelho | Ilhós 0.75mm² |
+| **[W21]** | Borne Distribuição `XT1.4:1` | Sinaleiro Branco `H1:X1` (+) | Alimentação LED Standby (Painel ON) | $0.5\text{ mm}^2$ | Vermelho / Branco | Ilhós 0.5mm² |
+| **[W22]** | Emergência `S0:12` (NF saída) | Microswitch `S_TAMPA:COM` | Série de segurança porta/tampa | $0.75\text{ mm}^2$ | Vermelho | Faston isolado 6.3mm |
+| **[W23]** | Microswitch `S_TAMPA:NC` (NF) | Botão Desliga `S_OFF:1` (NF) | Série de segurança para porta painel | $0.75\text{ mm}^2$ | Vermelho | Ilhós 0.75mm² |
+| **[W24]** | Botão Desliga `S_OFF:2` (NF) | Nó de Comando `(212, 112)` | Saída do botão desliga | $0.75\text{ mm}^2$ | Vermelho | Ilhós 0.75mm² |
+| **[W25]** | Nó de Comando `(212, 112)` | Botão Liga `S_ON:3` (NA entrada) | Entrada do pulso liga | $0.75\text{ mm}^2$ | Vermelho | Ilhós 0.75mm² |
+| **[W26]** | Nó de Comando `(212, 112)` | Contator `K1_SELO:13` (NA) | Alimentação contato de auto-retenção | $0.75\text{ mm}^2$ | Vermelho | Ilhós 0.75mm² |
+| **[W27]** | Botão Liga `S_ON:4` (NA saída) | Nó Bobina `(212, 136)` | Pulso liga para bobina | $0.75\text{ mm}^2$ | Vermelho | Ilhós 0.75mm² |
+| **[W28]** | Contator `K1_SELO:14` (NA) | Nó Bobina `(212, 136)` | Fechamento do selo de retenção | $0.75\text{ mm}^2$ | Vermelho | Ilhós Duplo 2x0.75mm² |
+| **[W29]** | Nó Bobina `(212, 136)` | Contator `K1:A1` (+ Bobina 24V) | Alimentação positiva da bobina K1 | $0.75\text{ mm}^2$ | Vermelho | Ilhós 0.75mm² |
+| **[W30]** | Nó Bobina `(212, 136)` | Sinaleiro Verde `H2:X1` (+) | Paralelo: LED "Motor Operando" | $0.5\text{ mm}^2$ | Vermelho | Ilhós 0.5mm² |
+| **[W31]** | Contator `K1:A2` (- Bobina 0V) | Borne Distribuição `XT2.2:1` | Retorno 0V bobina do contator | $0.75\text{ mm}^2$ | Azul-escuro / Preto | Ilhós 0.75mm² |
+| **[W32]** | Sinaleiro Verde `H2:X2` (-) | Borne Distribuição `XT2.3:1` | Retorno 0V sinaleiro motor | $0.5\text{ mm}^2$ | Azul-escuro / Preto | Ilhós 0.5mm² |
+| **[W33]** | Sinaleiro Amarelo `H3:X2` (-) | Borne Distribuição `XT2.4:1` | Retorno 0V sinaleiro tampa | $0.5\text{ mm}^2$ | Azul-escuro / Preto | Ilhós 0.5mm² |
+| **[W34]** | Sinaleiro Vermelho `H4:X2` (-) | Borne Distribuição `XT2.5:1` | Retorno 0V sinaleiro emergência | $0.5\text{ mm}^2$ | Azul-escuro / Preto | Ilhós 0.5mm² |
+| **[W35]** | Sinaleiro Branco `H1:X2` (-) | Borne Distribuição `XT2.6:1` | Retorno 0V sinaleiro painel energizado | $0.5\text{ mm}^2$ | Azul-escuro / Preto | Ilhós 0.5mm² |
+| **[W36]** | Microswitch `S_TAMPA:NO` (NA) | Sinaleiro Amarelo `H3:X1` (+) | Sinal de alerta "Tampa Aberta" | $0.5\text{ mm}^2$ | Amarelo / Laranja | Faston / Ilhós 0.5mm² |
+| **[W37]** | Emergência `S0:24` (NA saída) | Sinaleiro Vermelho `H4:X1` (+) | Sinal de alarme "Emergência Acionada" | $0.5\text{ mm}^2$ | Vermelho | Ilhós 0.5mm² |
+| **[W38]** | Borne Distribuição `XT1.4` (+24V) | Tacômetro `DISP1:1` (VCC +24V) | Alimentação display digital RPM | $0.5\text{ mm}^2$ | Vermelho | Ilhós 0.5mm² |
+| **[W39]** | Borne Distribuição `XT2.6` (0V) | Tacômetro `DISP1:2` (GND 0V) | Retorno terra 0V display RPM | $0.5\text{ mm}^2$ | Azul-escuro / Preto | Ilhós 0.5mm² |
+| **[W40]** | Tacômetro `DISP1:4` (+V Sensor) | Sensor Hall `SEN_HALL:1` (Marrom)| Alimentação +24V sensor magnético M12 | $0.5\text{ mm}^2$ | Marrom | Terminal Prensa / Ilhós |
+| **[W41]** | Tacômetro `DISP1:3` (Signal In) | Sensor Hall `SEN_HALL:2` (Preto) | Sinal de pulso rotação NPN coletor aberto | $0.5\text{ mm}^2$ | Preto | Terminal Prensa / Ilhós |
+| **[W42]** | Tacômetro `DISP1:5` (GND Sensor) | Sensor Hall `SEN_HALL:3` (Azul) | Retorno 0V GND sensor magnético M12 | $0.5\text{ mm}^2$ | Azul | Terminal Prensa / Ilhós |
 
 ---
 
