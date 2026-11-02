@@ -22,15 +22,3 @@ pest()->extend(TestCase::class)
 expect()->extend('toBeBetween', function (float $min, float $max) {
     return $this->toBeGreaterThanOrEqual($min)->toBeLessThanOrEqual($max);
 });
-
-/*
-|--------------------------------------------------------------------------
-| Global Database Setup
-|--------------------------------------------------------------------------
-*/
-
-// Use environment variables to force SQLite during tests safely
-if (env('APP_ENV') === 'testing') {
-    config(['database.default' => 'sqlite']);
-    config(['database.connections.sqlite.database' => ':memory:']);
-}

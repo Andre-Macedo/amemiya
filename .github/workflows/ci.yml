@@ -57,6 +57,9 @@ jobs:
       - name: Generate application key
         run: php artisan key:generate
 
+      - name: Discover packages
+        run: php artisan package:discover --ansi
+
       - name: Check code formatting with Pint
         run: ./vendor/bin/pint --test
 
@@ -178,6 +181,9 @@ jobs:
 
       - name: Generate application key
         run: php artisan key:generate
+
+      - name: Discover packages
+        run: php artisan package:discover --ansi
 
       - name: Run ${{ matrix.suite.name }} Tests (Pest)
         env:
