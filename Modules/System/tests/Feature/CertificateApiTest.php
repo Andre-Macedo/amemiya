@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
 use Modules\System\Models\Setting;
 use Modules\System\Models\User;
+use Modules\System\Services\TenantCertificateStorage;
 
 beforeEach(function () {
     Storage::fake('local');
@@ -127,9 +128,26 @@ it('uploads, validates and securely persists a valid pfx certificate', function 
     expect($encryptedPass)->not->toBe('secure_pass_123')
         ->and(Crypt::decryptString($encryptedPass))->toBe('secure_pass_123');
 
-    // Verifica se o arquivo .pem existe no storage seguro
+    // Verifica se o arquivo .pem existe no storage seguro e está criptografado simetricamente em repouso
     $path = Setting::getValue('lab_certificate_path');
     expect(Storage::disk('local')->exists($path))->toBeTrue();
+
+    $rawStoredContent = Storage::disk('local')->get($path);
+    expect($rawStoredContent)->not->toStartWith('-----BEGIN')
+        ->and(Crypt::decryptString($rawStoredContent))->toContain('-----BEGIN CERTIFICATE-----');
+
+    // Valida o serviço de leitura segura TenantCertificateStorage
+    $certStorage = app(TenantCertificateStorage::class);
+    $decrypted = $certStorage->getDecryptedContent($path);
+    expect($decrypted)->toContain('-----BEGIN CERTIFICATE-----');
+
+    $executed = false;
+    $certStorage->withDecryptedTemporaryFile($path, function (string $tmpPath) use (&$executed) {
+        $executed = true;
+        expect(file_exists($tmpPath))->toBeTrue()
+            ->and(file_get_contents($tmpPath))->toContain('-----BEGIN CERTIFICATE-----');
+    });
+    expect($executed)->toBeTrue();
 });
 
 it('can delete the configured certificate and clean settings', function () {

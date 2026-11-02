@@ -13,6 +13,7 @@ use Modules\Metrology\Models\LabClient;
 use Modules\Metrology\Services\PdfSignerService;
 use Modules\System\Models\Setting;
 use Modules\System\Models\User;
+use Modules\System\Services\TenantCertificateStorage;
 use Throwable;
 
 class GenerateCertificatePdfAction
@@ -141,7 +142,10 @@ class GenerateCertificatePdfAction
             }
 
             try {
-                $pdfContent = $this->signer->sign($pdfContent, $certPath, $certPass, $rubricPath);
+                $storage = app(TenantCertificateStorage::class);
+                $pdfContent = $storage->withDecryptedTemporaryFile($certPath, function (string $decryptedCertPath) use ($pdfContent, $certPass, $rubricPath) {
+                    return $this->signer->sign($pdfContent, $decryptedCertPath, $certPass, $rubricPath);
+                });
             } catch (Throwable $exception) {
                 logger()->error("PDF Signing Failed: {$exception->getMessage()}");
             }

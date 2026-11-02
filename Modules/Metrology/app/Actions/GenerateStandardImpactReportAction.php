@@ -13,6 +13,7 @@ use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\ReferenceStandard;
 use Modules\Metrology\Services\PdfSignerService;
 use Modules\System\Models\Setting;
+use Modules\System\Services\TenantCertificateStorage;
 use Throwable;
 
 class GenerateStandardImpactReportAction
@@ -200,7 +201,10 @@ class GenerateStandardImpactReportAction
 
         if ($certPath) {
             try {
-                $pdfContent = $this->signer->sign($pdfContent, $certPath, $certPass);
+                $storage = app(TenantCertificateStorage::class);
+                $pdfContent = $storage->withDecryptedTemporaryFile($certPath, function (string $decryptedCertPath) use ($pdfContent, $certPass) {
+                    return $this->signer->sign($pdfContent, $decryptedCertPath, $certPass);
+                });
             } catch (Throwable $exception) {
                 logger()->error("Standard Impact Report PDF Signing Failed: {$exception->getMessage()}");
             }

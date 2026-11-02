@@ -119,8 +119,8 @@ class CertificateApiController extends Controller
         $relativeDir = "tenants/{$tenantId}/certificates";
         $pemRelativePath = "{$relativeDir}/certificate.pem";
 
-        // Salva com permissões privadas
-        Storage::disk('local')->put($pemRelativePath, $pemContent);
+        // Salva com criptografia simétrica em repouso (AES-256 via APP_KEY)
+        Storage::disk('local')->put($pemRelativePath, Crypt::encryptString($pemContent));
 
         // Extrai metadados amigáveis
         $subjectCn = $x509Data['subject']['CN'] ?? ($x509Data['subject']['commonName'] ?? 'Laboratório Metrológico');
