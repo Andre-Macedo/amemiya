@@ -50,12 +50,14 @@ Route::middleware('auth:sanctum')->prefix('public/portal')->group(function () {
     Route::get('/clients/{client}/certificates', [PublicClientPortalController::class, 'certificates']);
 });
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', 'tenant.enforce'])->group(function () {
 
     // Global Search & Audit
     Route::get('/search', [GlobalSearchController::class, 'index']);
     Route::get('/audit-logs', [AuditLogApiController::class, 'index']);
     Route::get('/audit-logs/verify-chain', [AuditLogApiController::class, 'verifyChain']);
+    Route::post('/audit-logs/anchor', [AuditLogApiController::class, 'anchorChain']);
+    Route::get('/audit-logs/anchors', [AuditLogApiController::class, 'anchors']);
 
     // Instruments
     Route::post('/instruments/scan', [LogisticsApiController::class, 'scan']);

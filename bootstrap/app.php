@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureTenantIsInitialized;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -15,7 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // O Tenancy será inicializado apenas onde for explicitamente necessário (routes/api.php).
+        $middleware->alias([
+            'tenant.enforce' => EnsureTenantIsInitialized::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(function (Request $request, Throwable $e) {

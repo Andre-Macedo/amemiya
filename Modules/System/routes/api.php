@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Middleware\InitializeTenancyByHeader;
 use App\Http\Middleware\VerifySubscription;
 use Illuminate\Support\Facades\Route;
 use Modules\System\Http\Controllers\Api\V1\AccessLogApiController;
@@ -25,9 +24,9 @@ use Modules\System\Http\Controllers\Api\V1\UserCompetenceApiController;
 |--------------------------------------------------------------------------
 */
 
-// Middleware de Tenancy deve vir ANTES do Sanctum para que o banco do tenant seja selecionado
+// Middleware de Tenancy estrito deve vir ANTES do Sanctum para que o tenant seja identificado e validado
 Route::middleware([
-    InitializeTenancyByHeader::class,
+    'tenant.enforce',
     'throttle:api',
 ])->group(function () {
 
@@ -92,6 +91,9 @@ Route::middleware([
 
             // Logs
             Route::get('audit-logs', [AuditLogApiController::class, 'index']);
+            Route::get('audit-logs/verify-chain', [AuditLogApiController::class, 'verifyChain']);
+            Route::post('audit-logs/anchor', [AuditLogApiController::class, 'anchorChain']);
+            Route::get('audit-logs/anchors', [AuditLogApiController::class, 'anchors']);
             Route::get('access-logs', [AccessLogApiController::class, 'index']);
         });
     });
