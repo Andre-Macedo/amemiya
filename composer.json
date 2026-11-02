@@ -13,6 +13,7 @@
         "barryvdh/laravel-dompdf": "^3.1",
         "bezhansalleh/filament-shield": "^4.0",
         "coolsam/modules": "^5.0",
+        "dedoc/scramble": "^0.13.52",
         "filament/filament": "^4.0",
         "flowframe/laravel-trend": "^0.4.0",
         "laravel/framework": "^12.0",

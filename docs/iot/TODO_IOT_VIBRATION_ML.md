@@ -174,35 +174,35 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
 
 ### ETAPA 7: Documentação Técnica & Arquitetura de 3 Camadas (Dedoc Scramble + Docs-as-Code)
 > *Documentação profissional, pública e acessível à banca examinadora, recrutadores e comunidade.*
-- [ ] **Camada 1: Portal Público Dedicado com VitePress (Docs-as-Code / Diátaxis):**
-  - [ ] Inicializar o VitePress na pasta `docs/` e configurar workflow do GitHub Actions (`deploy-docs.yml`) para build e deploy automatizado no GitHub Pages (`docs.leantech.andremacedo.dev.br`).
-  - [ ] Acesso 100% público e aberto (sem barreira de login/senha para a banca examinadora e professores).
-  - [ ] **Quadrante 1 — Tutoriais (Comece Aqui — Aprendizado Prático):**
-    - [ ] `inicio-rapido-docker.md`: Subir ambiente completo em 3 passos e simular telemetria.
-    - [ ] `primeira-bancada-esp32.md`: Guia de conexão física na protoboard e primeiro pacote LoRa.
-  - [ ] **Quadrante 2 — Guias Práticos (How-To — Focado em Tarefas Específicas):**
-    - [ ] `calibrar-adxl345.md`: Procedimento passo a passo do ensaio estático $\pm 1g$.
-    - [ ] `medir-rpm-tacometro.md`: Alinhamento do sensor Hall e debounce.
-    - [ ] `emitir-certificado-web.md`: Cadastro metrológico e emissão de laudo PDF com incerteza $U$.
-    - [ ] `configurar-broker-mqtt.md`: Pareamento de novos gateways e chaves de segurança.
-  - [ ] **Quadrante 3 — Referência Técnica (Consultas Secas & Fatos):**
-    - [ ] `pinagem-hardware.md`: Pinout completo do ESP32-S3, LoRa E32 e conector GX16-10.
-    - [ ] `payload-lora-binario.md`: Especificação da struct C de 27 bytes (campos, tipos e escalas).
-    - [ ] `dicionario-dados-er.md`: DDL do MySQL, tabelas, ULIDs e relacionamentos.
-    - [ ] `api-mqtt-telemetria.md`: Estrutura JSON e tópicos do Mosquitto.
-  - [ ] **Quadrante 4 — Explicações e Decisões de Arquitetura (ADRs):**
-    - [ ] `arquitetura-distribuida.md`: As 5 camadas e desacoplamento assíncrono via Redis.
-    - [ ] `tinyml-vs-cloud.md`: Teoria da inferência híbrida em 2 estágios.
-    - [ ] `dsp-vibracao-fft.md`: Fundamentação da amostragem a 3200Hz e janelamento Hann.
-    - [ ] `norma-iso-20816.md`: Fundamentação física das Zonas A, B, C e D.
-    - [ ] `ADR-001-lora-vs-espnow.md`: Justificativa da adoção de LoRa 915 MHz com payload binário.
-    - [ ] `ADR-002-deep-sleep-power-gating.md`: Estratégia de sono profundo e chaveamento de alimentação.
-    - [ ] `ADR-003-alimentacao-stepup-vs-ldo.md`: Análise de consumo de repouso e escolha do regulador.
-- [ ] **Camada 2: Documentação Automatizada de API com Dedoc Scramble:**
-  - [ ] Instalar o pacote oficial no Laravel: `composer require dedoc/scramble`.
-  - [ ] Configurar rotas da API em `config/scramble.php` para inspecionar rotas `/api/...`, Form Requests e API Resources.
-  - [ ] Expor a interface interativa OpenAPI 3.1 / Swagger em `/docs/api` (zero anotações manuais).
-  - [ ] Adicionar botão de atalho direto no portal VitePress: `[Explorar API Interativa (Scramble) ->]`.
+- [x] **Camada 1: Portal Público Dedicado com VitePress (Docs-as-Code / Diátaxis):**
+  - [x] Inicializar o VitePress na pasta `docs/` e configurar workflow do GitHub Actions (`deploy-docs.yml`) para build e deploy automatizado no GitHub Pages (`docs.leantech.andremacedo.dev.br`).
+  - [x] Acesso 100% público e aberto (sem barreira de login/senha para a banca examinadora e professores).
+  - [x] **Quadrante 1 — Tutoriais (Comece Aqui — Aprendizado Prático):**
+    - [x] `inicio-rapido-docker.md`: Subir ambiente completo em 3 passos e simular telemetria.
+    - [x] `primeira-bancada-esp32.md`: Guia de conexão física na protoboard e primeiro pacote LoRa.
+  - [x] **Quadrante 2 — Guias Práticos (How-To — Focado em Tarefas Específicas):**
+    - [x] `calibrar-adxl345.md`: Procedimento passo a passo do ensaio estático $\pm 1g$.
+    - [x] `medir-rpm-tacometro.md`: Alinhamento do sensor Hall e debounce.
+    - [x] `emitir-certificado-web.md`: Cadastro metrológico e emissão de laudo PDF com incerteza $U$.
+    - [x] `configurar-broker-mqtt.md`: Pareamento de novos gateways e chaves de segurança.
+  - [x] **Quadrante 3 — Referência Técnica (Consultas Secas & Fatos):**
+    - [x] `pinagem-hardware.md`: Pinout completo do ESP32-S3, LoRa E32 e conector GX16-10.
+    - [x] `payload-lora-binario.md`: Especificação da struct C de 27 bytes (campos, tipos e escalas).
+    - [x] `dicionario-dados-er.md`: DDL do MySQL, tabelas, ULIDs e relacionamentos.
+    - [x] `api-mqtt-telemetria.md`: Estrutura JSON e tópicos do Mosquitto.
+  - [x] **Quadrante 4 — Explicações e Decisões de Arquitetura (ADRs):**
+    - [x] `arquitetura-distribuida.md`: As 5 camadas e desacoplamento assíncrono via Redis.
+    - [x] `tinyml-vs-cloud.md`: Teoria da inferência híbrida em 2 estágios.
+    - [x] `dsp-vibracao-fft.md`: Fundamentação da amostragem a 3200Hz e janelamento Hann.
+    - [x] `norma-iso-20816.md`: Fundamentação física das Zonas A, B, C e D.
+    - [x] `ADR-001-lora-vs-espnow.md`: Justificativa da adoção de LoRa 915 MHz com payload binário.
+    - [x] `ADR-002-deep-sleep-power-gating.md`: Estratégia de sono profundo e chaveamento de alimentação.
+    - [x] `ADR-003-alimentacao-stepup-vs-ldo.md`: Análise de consumo de repouso e escolha do regulador.
+- [x] **Camada 2: Documentação Automatizada de API com Dedoc Scramble:**
+  - [x] Instalar o pacote oficial no Laravel: `composer require dedoc/scramble`.
+  - [x] Configurar rotas da API em `config/scramble.php` para inspecionar rotas `/api/...`, Form Requests e API Resources.
+  - [x] Expor a interface interativa OpenAPI 3.1 / Swagger em `/docs/api` (zero anotações manuais).
+  - [x] Adicionar botão de atalho direto no portal VitePress: `[Explorar API Interativa (Scramble) ->]`.
 - [ ] **Camada 3: Catálogo Vivo e Documentação do Front-End (Next.js & Storybook):**
   - [ ] Configurar o build e publicação estática do Storybook (`npm run build-storybook`) como catálogo vivo de componentes em `storybook.leantech.andremacedo.dev.br` ou subpasta dos docs.
   - [ ] Embutir iframes/componentes interativos do Storybook (ex: `ISO20816SeverityGauge.tsx`, medidores e tabelas) dentro das páginas conceituais do VitePress.
@@ -210,7 +210,7 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
   - [ ] Documentar no guia de arquitetura de estado (`03-STATE_AND_DATA.md`) o fluxo reativo entre **TanStack Query** e WebSockets (**Laravel Reverb**).
 - [ ] **Camada 4: Integração de Atalhos nos Sistemas (Next.js & Filament):**
   - [ ] **No Frontend SaaS Next.js (`metrology-sass-front`):** Inserir link no Navbar e rodapé (`"Documentação & Ajuda"`) abrindo o portal VitePress em nova aba.
-  - [ ] **No Backoffice Filament (`amemiya`):** Registrar item de navegação global com ícone `heroicon-o-book-open` (`"Central de Documentação"`) direcionando para o portal externo.
+  - [x] **No Backoffice Filament (`amemiya`):** Registrar item de navegação global com ícone `heroicon-o-book-open` (`"Documentação da API"`) direcionando para `/docs/api`.
 
 
 

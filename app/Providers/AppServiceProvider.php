@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use App\Models\PersonalAccessToken;
+use Dedoc\Scramble\Scramble;
+use Dedoc\Scramble\Support\Generator\OpenApi;
+use Dedoc\Scramble\Support\Generator\SecurityScheme;
 use Filament\Support\Facades\FilamentColor;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -78,6 +81,24 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('viewPulse', function ($user) {
             return $user->hasRole('super-admin');
         });
+
+        // Autorização para Documentação OpenAPI (Scramble)
+        Gate::define('viewApiDocs', function (?User $user): bool {
+            if (app()->environment('local', 'testing')) {
+                return true;
+            }
+
+            return $user !== null && $user->hasRole('super-admin');
+        });
+
+        // Enriquecimento OpenAPI (Scramble)
+        if (class_exists(Scramble::class)) {
+            Scramble::afterOpenApiGenerated(function (OpenApi $openApi): void {
+                $openApi->secure(
+                    SecurityScheme::apiKey('header', 'X-Tenant')
+                );
+            });
+        }
 
         // Registro de Saúde do Servidor (Spatie Health)
         Health::checks([

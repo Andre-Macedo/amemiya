@@ -5,6 +5,9 @@
     "scripts": {
         "build": "vite build",
         "dev": "vite",
+        "docs:dev": "vitepress dev docs",
+        "docs:build": "vitepress build docs",
+        "docs:preview": "vitepress preview docs",
         "test:e2e": "playwright test"
     },
     "devDependencies": {
@@ -19,6 +22,7 @@
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
         "tailwindcss": "^4.1.17",
-        "vite": "^7.0.4"
+        "vite": "^7.0.4",
+        "vitepress": "^1.6.4"
     }
 }

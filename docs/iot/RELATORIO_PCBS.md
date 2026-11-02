@@ -13,28 +13,28 @@ Todas as 3 placas foram projetadas em **100% Through-Hole (PTH)** (montagem manu
 ## 1. Inspeção Visual 3D (Renders Oficiais KiCad 9)
 
 ### A. Sonda Cartucho Torre (24 × 48 mm — para Mancal UCP 204)
-![Sonda Torre Topo](hardware/renders/probe_tower_top.png)
+![Sonda Torre Topo](../../hardware/renders/probe_tower_top.png)
 *Figura 1: Vista frontal da Sonda Torre com soquetes para ADXL345, jumpers do INMP441, conector GX12-8 no topo e DS18B20 na base.*
 
-![Sonda Torre Fundo](hardware/renders/probe_tower_bot.png)
+![Sonda Torre Fundo](../../hardware/renders/probe_tower_bot.png)
 *Figura 2: Vista traseira da Sonda Torre com trilhas de alimentação isoladas (3.3V na esquerda e GND na direita).*
 
 ---
 
 ### B. Sonda Horizontal Clássica (46 × 40 mm)
-![Sonda Horizontal Topo](hardware/renders/probe_top.png)
+![Sonda Horizontal Topo](../../hardware/renders/probe_top.png)
 *Figura 3: Vista superior da Sonda Horizontal com todos os sensores embarcados lado a lado.*
 
-![Sonda Horizontal Fundo](hardware/renders/probe_bot.png)
+![Sonda Horizontal Fundo](../../hardware/renders/probe_bot.png)
 *Figura 4: Vista inferior da Sonda Horizontal com corredores de alimentação independentes.*
 
 ---
 
 ### C. Nó Principal ESP32-S3 (90 × 65 mm)
-![Nó Principal Topo](hardware/renders/main_top.png)
+![Nó Principal Topo](../../hardware/renders/main_top.png)
 *Figura 5: Vista superior do Nó Principal com ESP32-S3, rádio LoRa, display OLED, SCT-013, tacômetro, barra RGB e buzzer.*
 
-![Nó Principal Fundo](hardware/renders/main_bot.png)
+![Nó Principal Fundo](../../hardware/renders/main_bot.png)
 *Figura 6: Vista inferior do Nó Principal com plano de potência e barramentos de alimentação.*
 
 ---

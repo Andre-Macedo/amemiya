@@ -86,6 +86,36 @@ docker-compose exec app ./vendor/bin/phpstan analyse
 docker-compose exec app ./vendor/bin/pint
 ```
 
+### Dev CLI / AI Harness (`dev.py`)
+CLI determinística com suporte a `--json` para automação de tarefas e uso por agentes de IA:
+```bash
+# Verificar saúde das ferramentas (KiCad, Docker, PHP, Node, Libs)
+python dev.py env:check
+
+# Quality gate completo pré-commit (DRC + Vite Build + PHP Syntax + Docs Integrity)
+python dev.py audit
+
+# Hardware: Listar placas, rodar DRC e exportar laser com hachura
+python dev.py pcb:list
+python dev.py pcb:drc amemiya_probe_tower_dual
+python dev.py pcb:laser amemiya_probe_tower_dual
+
+# Frontend: Build Vite, mapeamento de views/React e testes Playwright
+python dev.py frontend:build
+python dev.py frontend:list
+python dev.py frontend:test
+
+# Documentação: Build do portal estático VitePress e suite de testes de integridade
+python dev.py docs:build
+python dev.py docs:test
+
+# IoT: Simular telemetria MQTT sintética (healthy, defect_bearing, overheating)
+python dev.py iot:mock --profile=defect_bearing --count=5
+
+# Limpar caches de todas as camadas (KiCad *-bak, __pycache__, Laravel)
+python dev.py clean
+```
+
 ## 4. Convenções de Desenvolvimento
 
 ### Padrões de Código

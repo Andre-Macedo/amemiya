@@ -10,6 +10,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -48,6 +49,13 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 AdminStatsOverview::class,
                 TenantsChart::class,
+            ])
+            ->navigationItems([
+                NavigationItem::make('Documentação da API')
+                    ->url('/docs/api', shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-book-open')
+                    ->group('Segurança e Acessos')
+                    ->sort(99),
             ])
             ->middleware([
                 EncryptCookies::class,

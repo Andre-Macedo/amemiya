@@ -60,6 +60,10 @@ __pycache__/
 logs/
 pcb_gen_log.txt
 
+# VitePress Build & Cache
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+
 # Root scratch generator scripts
 /generate_*.py
 /build_*.py
