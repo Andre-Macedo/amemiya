@@ -39,7 +39,7 @@ class VerifyAuditChainCommand extends Command
         $this->newLine();
         $this->line("Total de Blocos Auditados: {$report['total_records']}");
         $this->line("Gênesis Hash: {$report['genesis_hash']}");
-        $this->line('Chain Head Hash: ' . ($report['chain_head_hash'] ?? 'Nenhum registro'));
+        $this->line('Chain Head Hash: '.($report['chain_head_hash'] ?? 'Nenhum registro'));
         $this->line("Data da Verificação: {$report['verified_at']}");
         $this->newLine();
 

@@ -6,6 +6,7 @@ namespace Modules\IoT\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 
 /**
  * Serialização de Datasets de Treinamento e Benchmarking MLOps.
@@ -21,8 +22,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property int $total_samples
  * @property int|null $bursts_count
  * @property int|null $models_count
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 class IoTMLDatasetApiResource extends JsonResource
 {

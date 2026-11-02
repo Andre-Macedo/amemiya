@@ -8,7 +8,6 @@ use App\Models\Tenant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Modules\IoT\Models\IoTGateway;
-use Modules\IoT\Models\IoTNode;
 use Modules\System\Models\Machine;
 use Modules\System\Models\Station;
 use Modules\System\Models\User;

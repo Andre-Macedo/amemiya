@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\System\Tests\Feature;
 
+use App\Models\Plan;
+use App\Models\Subscription;
 use App\Models\Tenant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
@@ -28,7 +30,7 @@ class MachineApiTest extends TestCase
     {
         parent::setUp();
 
-        $plan = \App\Models\Plan::create([
+        $plan = Plan::create([
             'name' => 'Enterprise Plan',
             'slug' => 'enterprise-plan',
             'price' => 199.00,
@@ -41,7 +43,7 @@ class MachineApiTest extends TestCase
             'plan_id' => $plan->id,
         ]);
 
-        \App\Models\Subscription::create([
+        Subscription::create([
             'tenant_id' => $this->tenant->id,
             'plan_id' => $plan->id,
             'name' => 'default',
@@ -56,7 +58,7 @@ class MachineApiTest extends TestCase
             'plan_id' => $plan->id,
         ]);
 
-        \App\Models\Subscription::create([
+        Subscription::create([
             'tenant_id' => $this->otherTenant->id,
             'plan_id' => $plan->id,
             'name' => 'default',

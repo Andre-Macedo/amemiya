@@ -1,6 +1,7 @@
 <?php
 
 use Laravel\Sanctum\Sanctum;
+use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\NonConformity;
 use Modules\System\Models\User;
 
@@ -19,10 +20,10 @@ it('can list non-conformities', function () {
 });
 
 it('can create a non-conformity report', function () {
-    $instrument = \Modules\Metrology\Models\Instrument::factory()->create();
+    $instrument = Instrument::factory()->create();
 
     $payload = [
-        'item_type' => \Modules\Metrology\Models\Instrument::class,
+        'item_type' => Instrument::class,
         'item_id' => $instrument->id,
         'title' => 'Desvio metrológico detectado no micrômetro',
         'description' => 'Erro sistemático excedeu o limite do critério de aceitação de 0.005mm.',

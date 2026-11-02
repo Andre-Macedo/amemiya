@@ -6,6 +6,7 @@ namespace Modules\IoT\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 
 /**
  * Serialização padronizada de logs de eventos e anomalias IoT.
@@ -29,8 +30,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property array|null $features
  * @property array|null $sent_command
  * @property string|null $message
- * @property \Illuminate\Support\Carbon|null $measured_at
- * @property \Illuminate\Support\Carbon|null $created_at
+ * @property Carbon|null $measured_at
+ * @property Carbon|null $created_at
  */
 class IoTDeviceLogApiResource extends JsonResource
 {

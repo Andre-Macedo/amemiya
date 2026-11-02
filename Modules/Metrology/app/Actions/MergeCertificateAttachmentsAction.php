@@ -7,6 +7,8 @@ namespace Modules\Metrology\Actions;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Modules\Metrology\Models\Calibration;
+use Modules\Metrology\Models\Instrument;
+use Modules\Metrology\Models\LabClient;
 use Modules\System\Models\Setting;
 use Webklex\PDFMerger\Facades\PDFMergerFacade as PDFMerger;
 
@@ -43,9 +45,9 @@ class MergeCertificateAttachmentsAction
                 'accent_color' => Setting::getValue('lab_accent_color', '#3b82f6'),
             ];
 
-            $clientModel = $calibration->labClient ?? ($instrument instanceof \Modules\Metrology\Models\Instrument ? $instrument->labClient : null);
+            $clientModel = $calibration->labClient ?? ($instrument instanceof Instrument ? $instrument->labClient : null);
             $client = null;
-            if ($clientModel instanceof \Modules\Metrology\Models\LabClient) {
+            if ($clientModel instanceof LabClient) {
                 $metadata = is_array($clientModel->metadata) ? $clientModel->metadata : [];
                 $address = $metadata['address'] ?? $metadata['endereco'] ?? null;
                 $city = $metadata['city'] ?? $metadata['cidade'] ?? null;

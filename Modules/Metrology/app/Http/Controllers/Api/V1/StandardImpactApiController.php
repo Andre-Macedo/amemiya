@@ -64,7 +64,7 @@ class StandardImpactApiController extends Controller
             $request->input('reason')
         );
 
-        $fileName = 'Laudo_Impacto_' . ($standard->stock_number ?? 'STD-' . $standard->id) . '.pdf';
+        $fileName = 'Laudo_Impacto_'.($standard->stock_number ?? 'STD-'.$standard->id).'.pdf';
 
         return response($pdfContent, 200, [
             'Content-Type' => 'application/pdf',

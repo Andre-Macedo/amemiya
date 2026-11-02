@@ -685,12 +685,6 @@ parameters:
 			path: Modules/Metrology/app/Actions/ProcessCalibrationAction.php
 
 		-
-			message: '#^Method Modules\\Metrology\\Contracts\\CalibratableItem\:\:getMaximumPermissibleError\(\) invoked with 1 parameter, 0 required\.$#'
-			identifier: arguments.count
-			count: 1
-			path: Modules/Metrology/app/Actions/ProcessCalibrationAction.php
-
-		-
 			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
 			identifier: argument.unresolvableType
 			count: 1
@@ -2565,7 +2559,7 @@ parameters:
 		-
 			message: '#^Access to an undefined property App\\Models\\Activity\:\:\$record_hash\.$#'
 			identifier: property.notFound
-			count: 7
+			count: 8
 			path: Modules/Metrology/tests/Feature/AuditChainVerificationTest.php
 
 		-
@@ -2577,7 +2571,7 @@ parameters:
 		-
 			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:artisan\(\)\.$#'
 			identifier: method.notFound
-			count: 1
+			count: 2
 			path: Modules/Metrology/tests/Feature/AuditChainVerificationTest.php
 
 		-
@@ -2588,6 +2582,12 @@ parameters:
 
 		-
 			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: Modules/Metrology/tests/Feature/AuditChainVerificationTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
 			identifier: method.notFound
 			count: 1
 			path: Modules/Metrology/tests/Feature/AuditChainVerificationTest.php
@@ -2937,13 +2937,13 @@ parameters:
 		-
 			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Calibration\.$#'
 			identifier: staticMethod.protected
-			count: 2
+			count: 4
 			path: Modules/Metrology/tests/Feature/GenerateCertificatePdfTest.php
 
 		-
 			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
 			identifier: staticMethod.protected
-			count: 2
+			count: 4
 			path: Modules/Metrology/tests/Feature/GenerateCertificatePdfTest.php
 
 		-
@@ -4133,6 +4133,12 @@ parameters:
 			identifier: property.notFound
 			count: 2
 			path: Modules/System/app/Models/AccessLog.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/System/app/Models/AuditChainAnchor.php
 
 		-
 			message: '#^Call to function is_array\(\) with Illuminate\\Support\\Collection\|null will always evaluate to false\.$#'

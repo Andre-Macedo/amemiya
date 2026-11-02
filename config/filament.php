@@ -117,6 +117,4 @@ return [
 
     'system_route_prefix' => 'filament',
 
-
-
 ];

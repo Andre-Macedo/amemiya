@@ -6,6 +6,7 @@ namespace Modules\IoT\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 
 /**
  * Serialização padronizada de Gateways IoT.
@@ -15,9 +16,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property string $device_id
  * @property string|null $station_id
  * @property string $status
- * @property \Illuminate\Support\Carbon|null $last_seen_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $last_seen_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 class IoTGatewayApiResource extends JsonResource
 {

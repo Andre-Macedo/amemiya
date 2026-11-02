@@ -6,6 +6,7 @@ namespace Modules\IoT\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 
 /**
  * Serialização padronizada de séries temporais de vibração e telemetria.
@@ -20,8 +21,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property array|null $features
  * @property string|null $ml_status
  * @property float|null $ml_confidence
- * @property \Illuminate\Support\Carbon|null $measured_at
- * @property \Illuminate\Support\Carbon|null $created_at
+ * @property Carbon|null $measured_at
+ * @property Carbon|null $created_at
  */
 class IoTHistoryApiResource extends JsonResource
 {

@@ -25,7 +25,7 @@ class InitializeTenancyByHeader
 
         if ($tenantIdOrSlug) {
             $tenantModel = config('tenancy.tenant_model');
-            
+
             try {
                 // Tenta encontrar por ID ou por Slug
                 $tenant = $tenantModel::where('id', $tenantIdOrSlug)
@@ -34,6 +34,7 @@ class InitializeTenancyByHeader
 
                 if ($tenant) {
                     $this->tenancy->initialize($tenant);
+
                     return $next($request);
                 }
             } catch (\Exception $e) {

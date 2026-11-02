@@ -21,7 +21,7 @@ class CalculateCalibrationUncertaintyAction
     /**
      * Executes uncertainty calculation across calibration items.
      *
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      * @return array{
      *     uncertainty: float,
      *     k_factor: float,

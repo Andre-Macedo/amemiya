@@ -6,6 +6,7 @@ namespace Modules\System\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 
 /**
  * Serialização padronizada de máquinas industriais monitoradas.
@@ -17,8 +18,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property string|null $description
  * @property string $status
  * @property array|null $metadata
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 class MachineApiResource extends JsonResource
 {

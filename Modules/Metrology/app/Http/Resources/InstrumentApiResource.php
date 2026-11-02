@@ -61,6 +61,7 @@ class InstrumentApiResource extends JsonResource
             'calibration_frequency' => (int) $this->getCalibrationFrequencyMonths(),
             'default_checklist_template' => $this->instrumentType ? (function () {
                 $template = $this->instrumentType->checklistTemplates()->where('is_active', true)->first();
+
                 return $template ? [
                     'id' => (string) $template->id,
                     'name' => $template->name,

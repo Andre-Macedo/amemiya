@@ -24,7 +24,7 @@ class VerifySubscription
 
         // Verifica se o tenant tem acesso operacional (Assinatura Ativa ou Trial)
         if (! $tenant->hasAccess()) {
-            error_log("Subscription FAILED for tenant: " . $tenant->slug);
+            error_log('Subscription FAILED for tenant: '.$tenant->slug);
 
             // Se for uma requisição de API, retornamos 402 Payment Required
             if ($request->expectsJson() || $request->is('api/*')) {

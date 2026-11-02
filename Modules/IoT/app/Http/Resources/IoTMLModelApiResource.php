@@ -6,6 +6,7 @@ namespace Modules\IoT\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 
 /**
  * Serialização de Modelos Preditivos do Model Registry.
@@ -20,9 +21,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property string|null $artifact_path
  * @property array|null $metrics
  * @property string|null $notes
- * @property \Illuminate\Support\Carbon|null $deployed_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $deployed_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 class IoTMLModelApiResource extends JsonResource
 {

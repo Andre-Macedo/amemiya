@@ -91,4 +91,3 @@ class IoTDeviceLogApiController extends Controller
         return new IoTDeviceLogApiResource($log);
     }
 }
-

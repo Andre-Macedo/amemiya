@@ -62,4 +62,3 @@ class IoTNodeApiController extends Controller
         return response()->noContent();
     }
 }
-

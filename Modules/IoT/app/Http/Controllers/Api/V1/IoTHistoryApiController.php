@@ -50,4 +50,3 @@ class IoTHistoryApiController extends Controller
         return IoTHistoryApiResource::collection($history);
     }
 }
-

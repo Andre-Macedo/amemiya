@@ -6,6 +6,7 @@ namespace Modules\IoT\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 
 /**
  * Serialização padronizada de Nós Sensores IoT (Carrier Board).
@@ -17,9 +18,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property string $node_id
  * @property string $status
  * @property array|null $last_payload
- * @property \Illuminate\Support\Carbon|null $last_seen_at
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $last_seen_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 class IoTNodeApiResource extends JsonResource
 {

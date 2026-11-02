@@ -91,7 +91,7 @@ class CalibrationChecklistPersistenceTest extends TestCase
             asLeftDeviation: 0.001
         );
 
-        $action = new CreateCalibrationAction();
+        $action = new CreateCalibrationAction;
         $calibration = $action->execute($dto);
 
         // 1. Verifica integridade da calibração
@@ -117,7 +117,7 @@ class CalibrationChecklistPersistenceTest extends TestCase
         $this->assertNotNull($checklist->template);
         $this->assertEquals($template->id, $checklist->template->id);
 
-        $processAction = new ProcessCalibrationAction();
+        $processAction = new ProcessCalibrationAction;
         $processAction->execute($calibration);
         $calibration->refresh();
 

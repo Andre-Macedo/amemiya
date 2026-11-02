@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\DB;
 use Modules\Metrology\DTOs\CalibrationSubmissionDTO;
 use Modules\Metrology\Models\Calibration;
 use Modules\Metrology\Models\Checklist;
-use Modules\Metrology\Models\ChecklistItem;
 use Modules\Metrology\Models\ChecklistTemplateItem;
 use Modules\Metrology\Models\Instrument;
 
@@ -196,4 +195,3 @@ class CreateCalibrationAction
         });
     }
 }
-

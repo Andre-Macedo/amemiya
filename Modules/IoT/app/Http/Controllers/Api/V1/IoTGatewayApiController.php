@@ -62,4 +62,3 @@ class IoTGatewayApiController extends Controller
         return response()->noContent();
     }
 }
-
