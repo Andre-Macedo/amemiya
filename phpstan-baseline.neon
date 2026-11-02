@@ -1,0 +1,4441 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Static method PhpMqtt\\Client\\Facades\\MQTT\:\:connection\(\) invoked with 2 parameters, 0\-1 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: Modules/IoT/app/Console/MqttBridge.php
+
+		-
+			message: '#^While loop condition is always true\.$#'
+			identifier: while.alwaysTrue
+			count: 1
+			path: Modules/IoT/app/Console/MqttBridge.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>slug" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/IoT/app/Events/AnomalyDetected.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>slug" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/IoT/app/Events/SensorDataReceived.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$ground_truth_label\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/app/Http/Controllers/Api/V1/IoTMLDatasetApiController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/IoT/app/Http/Controllers/Api/V1/IoTMLDatasetApiController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/IoT/app/Http/Controllers/Api/V1/IoTMLDatasetApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTDeviceLog\:\:\$features\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/app/Http/Controllers/Api/V1/IoTMLDatasetApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTDeviceLog\:\:\$machine_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/IoT/app/Http/Controllers/Api/V1/IoTMLDatasetApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTDeviceLog\:\:\$ml_confidence\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/app/Http/Controllers/Api/V1/IoTMLDatasetApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTDeviceLog\:\:\$ml_status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/app/Http/Controllers/Api/V1/IoTMLDatasetApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTDeviceLog\:\:\$node_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/app/Http/Controllers/Api/V1/IoTMLDatasetApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTDeviceLog\:\:\$rms_global\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/app/Http/Controllers/Api/V1/IoTMLDatasetApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTDeviceLog\:\:\$rpm\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/app/Http/Controllers/Api/V1/IoTMLDatasetApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTDeviceLog\:\:\$tenant_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/IoT/app/Http/Controllers/Api/V1/IoTMLDatasetApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTMLDataset\:\:\$slug\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/app/Http/Controllers/Api/V1/IoTMLDatasetApiController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 2
+			path: Modules/IoT/app/Http/Controllers/Api/V1/IoTMLDatasetApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTMLModel\:\:\$model_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/app/Http/Controllers/Api/V1/IoTMLModelApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTMLModel\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/app/Http/Controllers/Api/V1/IoTMLModelApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTMLModel\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/app/Http/Controllers/Api/V1/IoTMLModelApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTMLModel\:\:\$target_device\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/app/Http/Controllers/Api/V1/IoTMLModelApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTMLModel\:\:\$version\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/app/Http/Controllers/Api/V1/IoTMLModelApiController.php
+
+		-
+			message: '#^Parameter \#1 \$view of function view expects view\-string\|null, string given\.$#'
+			identifier: argument.type
+			count: 3
+			path: Modules/IoT/app/Http/Controllers/IoTController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>id" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/IoT/app/Http/Requests/UpdateIoTGatewayRequest.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>id" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/IoT/app/Http/Requests/UpdateIoTNodeRequest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$machine\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$machine_id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$node_id\.$#'
+			identifier: property.notFound
+			count: 7
+			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTGateway\:\:\$device_id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTGateway\:\:\$tenant_id\.$#'
+			identifier: property.notFound
+			count: 4
+			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
+
+		-
+			message: '#^Left side of && is always true\.$#'
+			identifier: booleanAnd.leftAlwaysTrue
+			count: 1
+			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
+
+		-
+			message: '#^Match arm comparison between ''off'' and ''off'' is always true\.$#'
+			identifier: match.alwaysTrue
+			count: 1
+			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
+
+		-
+			message: '#^Parameter \#2 \$gatewayId of class Modules\\IoT\\Events\\AnomalyDetected constructor expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
+
+		-
+			message: '#^Right side of && is always true\.$#'
+			identifier: booleanAnd.rightAlwaysTrue
+			count: 1
+			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
+
+		-
+			message: '#^Right side of \|\| is always false\.$#'
+			identifier: booleanOr.rightAlwaysFalse
+			count: 1
+			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
+
+		-
+			message: '#^Static method PhpMqtt\\Client\\Facades\\MQTT\:\:connection\(\) invoked with 2 parameters, 0\-1 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/IoT/app/Models/IoTDeviceLog.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/IoT/app/Models/IoTGateway.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/IoT/app/Models/IoTMLBurst.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/IoT/app/Models/IoTMLDataset.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/IoT/app/Models/IoTMLModel.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/IoT/app/Models/IoTNode.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/IoT/app/Models/IoTSensorData.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTNode\:\:\$machine_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/database/seeders/IoTDatabaseSeeder.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTNode\:\:\$node_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/database/seeders/IoTDatabaseSeeder.php
+
+		-
+			message: '#^Match arm comparison between ''C'' and ''C'' is always true\.$#'
+			identifier: match.alwaysTrue
+			count: 1
+			path: Modules/IoT/database/seeders/IoTDatabaseSeeder.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>id" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 4
+			path: Modules/IoT/database/seeders/IoTDatabaseSeeder.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\DTOs\\InstrumentChecklistSubmissionData\:\:\$checklist_template_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Actions/SubmitInstrumentChecklistAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\DTOs\\InstrumentChecklistSubmissionData\:\:\$deviation\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Actions/SubmitInstrumentChecklistAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\DTOs\\InstrumentChecklistSubmissionData\:\:\$instrument_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/Actions/SubmitInstrumentChecklistAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\DTOs\\InstrumentChecklistSubmissionData\:\:\$result\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/Actions/SubmitInstrumentChecklistAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\DTOs\\InstrumentChecklistSubmissionData\:\:\$uncertainty\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Actions/SubmitInstrumentChecklistAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ChecklistItemApiResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/ChecklistItemApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ChecklistItemApiResource\:\:\$is_mandatory\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/ChecklistItemApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ChecklistItemApiResource\:\:\$lower_tolerance\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/ChecklistItemApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ChecklistItemApiResource\:\:\$nominal_value\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/ChecklistItemApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ChecklistItemApiResource\:\:\$options\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/ChecklistItemApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ChecklistItemApiResource\:\:\$order\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/ChecklistItemApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ChecklistItemApiResource\:\:\$question\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/ChecklistItemApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ChecklistItemApiResource\:\:\$question_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/ChecklistItemApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ChecklistItemApiResource\:\:\$standard_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/ChecklistItemApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ChecklistItemApiResource\:\:\$upper_tolerance\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/ChecklistItemApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ChecklistTemplateApiResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/ChecklistTemplateApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ChecklistTemplateApiResource\:\:\$description\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/ChecklistTemplateApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ChecklistTemplateApiResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/ChecklistTemplateApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ChecklistTemplateApiResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/ChecklistTemplateApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\InstrumentApiResource\:\:\$calibrations\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\InstrumentApiResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\InstrumentApiResource\:\:\$image_path\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\InstrumentApiResource\:\:\$manufacturer\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\InstrumentApiResource\:\:\$model\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\InstrumentApiResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\InstrumentApiResource\:\:\$next_calibration_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\InstrumentApiResource\:\:\$serial_number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\InstrumentApiResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\InstrumentApiResource\:\:\$stock_number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Call to function method_exists\(\) with Modules\\System\\Models\\User and ''can'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: Modules/Metrology/app/Actions/ApproveCalibrationAction.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>id" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Actions/ApproveCalibrationAction.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Modules\\Metrology\\Models\\Instrument\>\|Modules\\Metrology\\Models\\Instrument\:\:\$resolution\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/CalculateCalibrationUncertaintyAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Calibration\:\:\$checklist_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/CreateCalibrationAction.php
+
+		-
+			message: '#^Comparison operation "\>" between int\<1, max\> and 0 is always true\.$#'
+			identifier: greater.alwaysTrue
+			count: 2
+			path: Modules/Metrology/app/Actions/CreateCalibrationAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Calibration\:\:\$checklist_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/CreateChecklistAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Attachment\:\:\$file_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/ExportInstrumentAuditDossierAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Attachment\:\:\$file_path\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Actions/ExportInstrumentAuditDossierAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Instrument\:\:\$nonConformities\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/ExportInstrumentAuditDossierAction.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Actions/GenerateStandardImpactReportAction.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>items" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Actions/GetInstrumentDriftAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Instrument\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/GetInstrumentLifeCycleAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\NonConformity\:\:\$closed_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/GetInstrumentLifeCycleAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\NonConformity\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/GetInstrumentLifeCycleAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\NonConformity\:\:\$priority\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/GetInstrumentLifeCycleAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\NonConformity\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/GetInstrumentLifeCycleAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\NonConformity\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/GetInstrumentLifeCycleAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\WorkOrder\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/GetInstrumentLifeCycleAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\WorkOrder\:\:\$number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/GetInstrumentLifeCycleAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\WorkOrder\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/GetInstrumentLifeCycleAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\WorkOrder\:\:\$visual_inspection_notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/GetInstrumentLifeCycleAction.php
+
+		-
+			message: '#^Method Webklex\\PDFMerger\\PDFMerger\:\:save\(\) invoked with 2 parameters, 0\-1 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: Modules/Metrology/app/Actions/MergeCertificateAttachmentsAction.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/PrintBatchInstrumentLabelsAction.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$nominal_value\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/ProcessCalibrationAction.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$order\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/ProcessCalibrationAction.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$question_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/ProcessCalibrationAction.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$step\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/ProcessCalibrationAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Contracts\\CalibratableItem\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/ProcessCalibrationAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Contracts\\CalibratableItem\:\:\$instrumentType\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/ProcessCalibrationAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Contracts\\CalibratableItem\:\:\$measuring_range\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/ProcessCalibrationAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Contracts\\CalibratableItem\:\:\$mpe\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/ProcessCalibrationAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Contracts\\CalibratableItem\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Actions/ProcessCalibrationAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Contracts\\CalibratableItem\:\:\$resolution\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/ProcessCalibrationAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Contracts\\CalibratableItem\:\:\$serial_number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/ProcessCalibrationAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Calibration\:\:\$as_found_result\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/ProcessCalibrationAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Calibration\:\:\$procedure_snapshot\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Actions/ProcessCalibrationAction.php
+
+		-
+			message: '#^If condition is always true\.$#'
+			identifier: if.alwaysTrue
+			count: 1
+			path: Modules/Metrology/app/Actions/ProcessCalibrationAction.php
+
+		-
+			message: '#^Method Modules\\Metrology\\Contracts\\CalibratableItem\:\:getMaximumPermissibleError\(\) invoked with 1 parameter, 0 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: Modules/Metrology/app/Actions/ProcessCalibrationAction.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: Modules/Metrology/app/Actions/ProcessCalibrationAction.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>fail_statement_template" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Actions/ProcessCalibrationAction.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>pass_statement_template" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Actions/ProcessCalibrationAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Calibration\:\:\$checklist_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/RectifyCalibrationAction.php
+
+		-
+			message: '#^Property Modules\\Metrology\\Models\\Checklist\:\:\$calibration_id \(int\) does not accept string\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: Modules/Metrology/app/Actions/RectifyCalibrationAction.php
+
+		-
+			message: '#^Property Modules\\Metrology\\Models\\ChecklistItem\:\:\$checklist_id \(int\) does not accept string\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: Modules/Metrology/app/Actions/RectifyCalibrationAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\ChecklistTemplate\:\:\$instrument_type_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/SaveChecklistTemplateAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Calibration\:\:\$calibrated_item_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/SubmitInstrumentChecklistAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Calibration\:\:\$calibrated_item_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/SubmitInstrumentChecklistAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Calibration\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/SubmitInstrumentChecklistAction.php
+
+		-
+			message: '#^Property Modules\\Metrology\\Models\\Calibration\:\:\$calibration_date \(Carbon\\Carbon\|null\) does not accept string\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: Modules/Metrology/app/Actions/SubmitInstrumentChecklistAction.php
+
+		-
+			message: '#^Property Modules\\Metrology\\Models\\Calibration\:\:\$performed_by_id \(string\|null\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: Modules/Metrology/app/Actions/SubmitInstrumentChecklistAction.php
+
+		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 1
+			path: Modules/Metrology/app/Console/CheckInstrumentStatus.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<\(int\|string\),Illuminate\\Database\\Eloquent\\Model\>\:\:each\(\) expects callable\(Illuminate\\Database\\Eloquent\\Model, int\|string\)\: mixed, Closure\(App\\Models\\Tenant\)\: void given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Modules/Metrology/app/Console/Commands/GenerateAutoWorkOrders.php
+
+		-
+			message: '#^Method Modules\\Metrology\\Enums\\CalibrationResult\:\:getColor\(\) never returns array\<string\> so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: Modules/Metrology/app/Enums/CalibrationResult.php
+
+		-
+			message: '#^Method Modules\\Metrology\\Enums\\CalibrationResult\:\:getColor\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: Modules/Metrology/app/Enums/CalibrationResult.php
+
+		-
+			message: '#^Method Modules\\Metrology\\Enums\\CalibrationResult\:\:getLabel\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: Modules/Metrology/app/Enums/CalibrationResult.php
+
+		-
+			message: '#^Method Modules\\Metrology\\Enums\\ItemStatus\:\:getColor\(\) never returns array\<string\> so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: Modules/Metrology/app/Enums/ItemStatus.php
+
+		-
+			message: '#^Method Modules\\Metrology\\Enums\\ItemStatus\:\:getColor\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: Modules/Metrology/app/Enums/ItemStatus.php
+
+		-
+			message: '#^Method Modules\\Metrology\\Enums\\ItemStatus\:\:getLabel\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: Modules/Metrology/app/Enums/ItemStatus.php
+
+		-
+			message: '#^Method Modules\\Metrology\\Exports\\CalibrationsExport\:\:query\(\) has invalid return type Laravel\\Scout\\Builder\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/Metrology/app/Exports/CalibrationsExport.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 3
+			path: Modules/Metrology/app/Exports/CalibrationsExport.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>serial_number" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Exports/CalibrationsExport.php
+
+		-
+			message: '#^Method Modules\\Metrology\\Exports\\InstrumentsExport\:\:query\(\) has invalid return type Laravel\\Scout\\Builder\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/Metrology/app/Exports/InstrumentsExport.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 2
+			path: Modules/Metrology/app/Exports/InstrumentsExport.php
+
+		-
+			message: '#^Method Modules\\Metrology\\Exports\\NonConformitiesExport\:\:query\(\) has invalid return type Laravel\\Scout\\Builder\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/Metrology/app/Exports/NonConformitiesExport.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 3
+			path: Modules/Metrology/app/Exports/NonConformitiesExport.php
+
+		-
+			message: '#^Method Modules\\Metrology\\Exports\\ReferenceStandardsExport\:\:query\(\) has invalid return type Laravel\\Scout\\Builder\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/Metrology/app/Exports/ReferenceStandardsExport.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Exports/ReferenceStandardsExport.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Calibration\:\:\$calculation_data\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Exports/Sheets/CalibrationCalculationSheet.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\Metrology\\Filament\\Clusters\\Metrology\\Pages\\Dashboard\:\:route\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/MetrologyCluster.php
+
+		-
+			message: '#^Match expression does not handle remaining value\: string$#'
+			identifier: match.unhandled
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/AccessLogs/Tables/AccessLogsTable.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$checklistInput\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Calibrations/Pages/CreateCalibration.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$kitItemsInput\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Calibrations/Pages/CreateCalibration.php
+
+		-
+			message: '#^Call to an undefined static method Illuminate\\Support\\Facades\\Notification\:\:make\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Calibrations/Pages/EditCalibration.php
+
+		-
+			message: '#^Cannot access property \$checklist on Illuminate\\Database\\Eloquent\\Model\|int\|string\.$#'
+			identifier: property.nonObject
+			count: 5
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Calibrations/Pages/EditCalibration.php
+
+		-
+			message: '#^Cannot access property \$checklist_id on Illuminate\\Database\\Eloquent\\Model\|int\|string\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Calibrations/Pages/EditCalibration.php
+
+		-
+			message: '#^Cannot access property \$result on Illuminate\\Database\\Eloquent\\Model\|int\|string\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Calibrations/Pages/EditCalibration.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Modules\\Metrology\\Models\\Instrument\>\|Modules\\Metrology\\Models\\Instrument\:\:\$resolution\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Calibrations/Schemas/CalibrationForm.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$nominal_value\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Calibrations/Schemas/CalibrationForm.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$order\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Calibrations/Schemas/CalibrationForm.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$question_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Calibrations/Schemas/CalibrationForm.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$reference_standard_type_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Calibrations/Schemas/CalibrationForm.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$required_readings\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Calibrations/Schemas/CalibrationForm.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$step\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Calibrations/Schemas/CalibrationForm.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Material\:\:\$cte\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Calibrations/Schemas/CalibrationForm.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Illuminate\\Database\\Eloquent\\Model\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Calibrations/Schemas/CalibrationForm.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>actual_value" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Calibrations/Schemas/CalibrationForm.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>cte" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Calibrations/Schemas/CalibrationForm.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>resolution" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Calibrations/Schemas/CalibrationForm.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>uncertainty" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Calibrations/Schemas/CalibrationForm.php
+
+		-
+			message: '#^Class Modules\\Metrology\\Filament\\Clusters\\Metrology\\Resources\\Calibrations\\Schemas\\Instrument not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Calibrations/Schemas/CalibrationInfolist.php
+
+		-
+			message: '#^Call to an undefined method Modules\\Metrology\\Models\\Calibration\:\:replacedBy\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Calibrations/Tables/CalibrationsTable.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Modules\\Metrology\\Filament\\Clusters\\Metrology\\Resources\\ChecklistTemplates\\Schemas\\Wizard\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/ChecklistTemplates/Schemas/ChecklistTemplateForm.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Modules\\Metrology\\Filament\\Clusters\\Metrology\\Resources\\ChecklistTemplates\\Schemas\\Wizard\\Step\.$#'
+			identifier: class.notFound
+			count: 2
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/ChecklistTemplates/Schemas/ChecklistTemplateForm.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\ChecklistTemplate\:\:\$revision_notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/ChecklistTemplates/Tables/ChecklistTemplatesTable.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Tables\\Actions\\Action\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/ChecklistTemplates/Tables/ChecklistTemplatesTable.php
+
+		-
+			message: '#^Parameter \#1 \$columns of method Filament\\Schemas\\Schema\:\:columns\(\) expects array\<string, Closure\|int\|null\>\|Closure\|int\|null, array\{2\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/InstrumentTypes/Schemas/InstrumentTypeInfolist.php
+
+		-
+			message: '#^Call to function is_subclass_of\(\) with class\-string\<static\(Modules\\Metrology\\Filament\\Clusters\\Metrology\\Resources\\Instruments\\Pages\\CreateInstrument\)\> and ''Filament\\\\Resources\\\\Pages\\\\Page'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Instruments/Pages/CreateInstrument.php
+
+		-
+			message: '#^Call to function is_subclass_of\(\) with class\-string\<static\(Modules\\Metrology\\Filament\\Clusters\\Metrology\\Resources\\Instruments\\Pages\\EditInstrument\)\> and ''Filament\\\\Resources\\\\Pages\\\\Page'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Instruments/Pages/EditInstrument.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Instruments/RelationManagers/CalibrationRelationManager.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Calibration\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 5
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Instruments/RelationManagers/CalibrationRelationManager.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Instruments/RelationManagers/CalibrationRelationManager.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between Modules\\Metrology\\Enums\\CalibrationResult and ''approved'' will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Instruments/RelationManagers/CalibrationRelationManager.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 2
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Instruments/RelationManagers/CalibrationRelationManager.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Instruments/Schemas/InstrumentInfolist.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/Instruments/Widgets/InstrumentDriftChart.php
+
+		-
+			message: '#^Parameter \#1 \$nc of method Modules\\Metrology\\Actions\\CloseNonConformityAction\:\:execute\(\) expects Modules\\Metrology\\Models\\NonConformity, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/NonConformities/Pages/EditNonConformity.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 2
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/NonConformities/Schemas/NonConformityForm.php
+
+		-
+			message: '#^Call to function is_subclass_of\(\) with class\-string\<static\(Modules\\Metrology\\Filament\\Clusters\\Metrology\\Resources\\ReferenceStandardTypes\\Pages\\ListReferenceStandardTypes\)\> and ''Filament\\\\Resources\\\\Pages\\\\Page'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/ReferenceStandardTypes/Pages/ListReferenceStandardTypes.php
+
+		-
+			message: '#^Call to function is_subclass_of\(\) with class\-string\<static\(Modules\\Metrology\\Filament\\Clusters\\Metrology\\Resources\\ReferenceStandards\\Pages\\CreateReferenceStandard\)\> and ''Filament\\\\Resources\\\\Pages\\\\Page'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/ReferenceStandards/Pages/CreateReferenceStandard.php
+
+		-
+			message: '#^Call to function is_subclass_of\(\) with class\-string\<static\(Modules\\Metrology\\Filament\\Clusters\\Metrology\\Resources\\ReferenceStandards\\Pages\\EditReferenceStandard\)\> and ''Filament\\\\Resources\\\\Pages\\\\Page'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/ReferenceStandards/Pages/EditReferenceStandard.php
+
+		-
+			message: '#^Call to function is_subclass_of\(\) with class\-string\<static\(Modules\\Metrology\\Filament\\Clusters\\Metrology\\Resources\\ReferenceStandards\\Pages\\ListReferenceStandards\)\> and ''Filament\\\\Resources\\\\Pages\\\\Page'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/ReferenceStandards/Pages/ListReferenceStandards.php
+
+		-
+			message: '#^Call to function is_subclass_of\(\) with class\-string\<static\(Modules\\Metrology\\Filament\\Clusters\\Metrology\\Resources\\ReferenceStandards\\Pages\\ViewReferenceStandard\)\> and ''Filament\\\\Resources\\\\Pages\\\\Page'' will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/ReferenceStandards/Pages/ViewReferenceStandard.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$is_kit\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/ReferenceStandards/RelationManagers/ChildrenRelationManager.php
+
+		-
+			message: '#^Call to an undefined method Livewire\\Component\:\:getOwnerRecord\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/ReferenceStandards/RelationManagers/ChildrenRelationManager.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>unit" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/ReferenceStandards/RelationManagers/ChildrenRelationManager.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Resources/ReferenceStandards/Widgets/DriftChart.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Attachment\:\:\$disk\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/AttachmentApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Attachment\:\:\$file_path\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/AttachmentApiController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/DashboardApiController.php
+
+		-
+			message: '#^Instanceof between Modules\\Metrology\\Enums\\CalibrationResult and UnitEnum will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/DashboardApiController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Modules\\Metrology\\Models\\Calibration\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/DashboardApiController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/DashboardApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\NonConformity\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/GlobalSearchController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\NonConformity\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/GlobalSearchController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>id" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/NonConformityApiController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicCalibrationController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$manufacturer\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicCalibrationController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$model\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicCalibrationController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicCalibrationController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$serial_number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicCalibrationController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$tag_code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicCalibrationController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Calibration\:\:\$technician\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicCalibrationController.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type Modules\\Metrology\\Enums\\CalibrationResult\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicCalibrationController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicCalibrationController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>tag_code" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicCalibrationController.php
+
+		-
+			message: '#^Using nullsafe property access on non\-nullable type Modules\\Metrology\\Enums\\CalibrationResult\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicCalibrationController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 4
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicClientPortalController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$serial_number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicClientPortalController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Calibration\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicClientPortalController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Instrument\:\:\$location\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicClientPortalController.php
+
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicClientPortalController.php
+
+		-
+			message: '#^Instanceof between Modules\\System\\Models\\User\|null and Modules\\Metrology\\Models\\LabClient will always evaluate to false\.$#'
+			identifier: instanceof.alwaysFalse
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicClientPortalController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Modules\\Metrology\\Models\\Calibration\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicClientPortalController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Modules\\Metrology\\Models\\Instrument\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicClientPortalController.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type Modules\\Metrology\\Enums\\CalibrationResult\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicClientPortalController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 4
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicClientPortalController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>serial_number" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicClientPortalController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Modules\\Metrology\\Models\\Instrument\>\|Modules\\Metrology\\Models\\Instrument\:\:\$manufacturer\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicInstrumentController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Collection\<int, Modules\\Metrology\\Models\\Instrument\>\|Modules\\Metrology\\Models\\Instrument\:\:\$model\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicInstrumentController.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicInstrumentController.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between Modules\\Metrology\\Enums\\ItemStatus and ''active'' will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/PublicInstrumentController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\InstrumentType\:\:\$pivot\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/SupplierAccreditationApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Calibration\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/TraceabilityController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 2
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/TraceabilityController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\WorkOrder\:\:\$destination_station_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/WorkOrderApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\WorkOrder\:\:\$item_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/WorkOrderApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\WorkOrder\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/WorkOrderApiController.php
+
+		-
+			message: '#^Class Modules\\Metrology\\Http\\Controllers\\Api\\V1\\Instrument not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Controllers/Api/V1/WorkOrderApiController.php
+
+		-
+			message: '#^Parameter \#1 \$view of function view expects view\-string\|null, string given\.$#'
+			identifier: argument.type
+			count: 3
+			path: Modules/Metrology/app/Http/Controllers/MetrologyController.php
+
+		-
+			message: '#^Cannot call method getLabel\(\) on string\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: Modules/Metrology/app/Http/Requests/StoreCalibrationRequest.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between string and Modules\\Metrology\\Enums\\ItemStatus\:\:Active will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: Modules/Metrology/app/Http/Requests/StoreCalibrationRequest.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>id" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Http/Requests/UpdateInstrumentRequest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\AuditLogApiResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Http/Resources/AuditLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\AuditLogApiResource\:\:\$event\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/AuditLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\AuditLogApiResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/AuditLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\AuditLogApiResource\:\:\$new_values\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/AuditLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\AuditLogApiResource\:\:\$old_values\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/AuditLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\AuditLogApiResource\:\:\$url\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/AuditLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\AuditLogApiResource\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/AuditLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\CalibrationApiResource\:\:\$as_found_deviation\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/CalibrationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\CalibrationApiResource\:\:\$as_found_result\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/CalibrationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\CalibrationApiResource\:\:\$as_left_deviation\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/CalibrationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\CalibrationApiResource\:\:\$as_left_result\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/CalibrationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\CalibrationApiResource\:\:\$calibratedItem\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/CalibrationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\CalibrationApiResource\:\:\$calibrated_item_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/CalibrationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\CalibrationApiResource\:\:\$calibrated_item_type\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Http/Resources/CalibrationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\CalibrationApiResource\:\:\$calibration_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/CalibrationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\CalibrationApiResource\:\:\$checklist\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/CalibrationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\CalibrationApiResource\:\:\$deviation\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/CalibrationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\CalibrationApiResource\:\:\$humidity\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/CalibrationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\CalibrationApiResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Http/Resources/CalibrationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\CalibrationApiResource\:\:\$notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/CalibrationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\CalibrationApiResource\:\:\$performedBy\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/CalibrationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\CalibrationApiResource\:\:\$result\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/CalibrationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\CalibrationApiResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/CalibrationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\CalibrationApiResource\:\:\$temperature\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/CalibrationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\CalibrationApiResource\:\:\$uncertainty\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/CalibrationApiResource.php
+
+		-
+			message: '#^Access to an undefined property UnitEnum\:\:\$value\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/Metrology/app/Http/Resources/CalibrationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ChecklistTemplateApiResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/ChecklistTemplateApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ChecklistTemplateApiResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/ChecklistTemplateApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ChecklistTemplateApiResource\:\:\$instrumentType\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/ChecklistTemplateApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ChecklistTemplateApiResource\:\:\$instrument_type_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/ChecklistTemplateApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ChecklistTemplateApiResource\:\:\$items\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/ChecklistTemplateApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ChecklistTemplateApiResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/ChecklistTemplateApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ChecklistTemplateApiResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/ChecklistTemplateApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\InstrumentApiResource\:\:\$image_path\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\InstrumentApiResource\:\:\$location\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\InstrumentApiResource\:\:\$measuring_range\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\InstrumentApiResource\:\:\$mpe\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\InstrumentApiResource\:\:\$nfc_tag\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Attachment\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Attachment\:\:\$file_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Attachment\:\:\$file_path\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Attachment\:\:\$mime_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Attachment\:\:\$original_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Attachment\:\:\$size\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Modules\\Metrology\\Models\\Attachment\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Using nullsafe method call on non\-nullable type Modules\\Metrology\\Enums\\InstrumentCriticality\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Using nullsafe property access on non\-nullable type Modules\\Metrology\\Enums\\InstrumentCriticality\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/InstrumentApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\InstrumentTypeApiResource\:\:\$calibration_frequency_months\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/InstrumentTypeApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\InstrumentTypeApiResource\:\:\$decision_rule\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/InstrumentTypeApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\InstrumentTypeApiResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/InstrumentTypeApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\InstrumentTypeApiResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/InstrumentTypeApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\IntermediateCheckApiResource\:\:\$check_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/IntermediateCheckApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\IntermediateCheckApiResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/IntermediateCheckApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\IntermediateCheckApiResource\:\:\$deviation\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/IntermediateCheckApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\IntermediateCheckApiResource\:\:\$humidity\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/IntermediateCheckApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\IntermediateCheckApiResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/IntermediateCheckApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\IntermediateCheckApiResource\:\:\$instrument_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/IntermediateCheckApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\IntermediateCheckApiResource\:\:\$measured_value\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/IntermediateCheckApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\IntermediateCheckApiResource\:\:\$nominal_value\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/IntermediateCheckApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\IntermediateCheckApiResource\:\:\$notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/IntermediateCheckApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\IntermediateCheckApiResource\:\:\$performer\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/IntermediateCheckApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\IntermediateCheckApiResource\:\:\$referenceStandard\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/IntermediateCheckApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\IntermediateCheckApiResource\:\:\$reference_standard_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/IntermediateCheckApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\IntermediateCheckApiResource\:\:\$result\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/IntermediateCheckApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\IntermediateCheckApiResource\:\:\$temperature\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/IntermediateCheckApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\MaterialApiResource\:\:\$category\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/MaterialApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\MaterialApiResource\:\:\$cte\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/MaterialApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\MaterialApiResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/MaterialApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\MaterialApiResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/MaterialApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\NonConformityApiResource\:\:\$calibration_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/NonConformityApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\NonConformityApiResource\:\:\$closed_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/NonConformityApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\NonConformityApiResource\:\:\$closer\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/NonConformityApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\NonConformityApiResource\:\:\$corrective_action\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/NonConformityApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\NonConformityApiResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/NonConformityApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\NonConformityApiResource\:\:\$description\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/NonConformityApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\NonConformityApiResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/NonConformityApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\NonConformityApiResource\:\:\$immediate_action\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/NonConformityApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\NonConformityApiResource\:\:\$item\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/NonConformityApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\NonConformityApiResource\:\:\$item_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/NonConformityApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\NonConformityApiResource\:\:\$item_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/NonConformityApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\NonConformityApiResource\:\:\$opener\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/NonConformityApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\NonConformityApiResource\:\:\$preventive_action\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/NonConformityApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\NonConformityApiResource\:\:\$priority\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Http/Resources/NonConformityApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\NonConformityApiResource\:\:\$root_cause_analysis\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/NonConformityApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\NonConformityApiResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/NonConformityApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\NonConformityApiResource\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/NonConformityApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ReferenceStandardApiResource\:\:\$last_calibration_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/ReferenceStandardApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ReferenceStandardApiResource\:\:\$manufacturer\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/ReferenceStandardApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ReferenceStandardApiResource\:\:\$next_calibration_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/ReferenceStandardApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Attachment\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/ReferenceStandardApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Attachment\:\:\$file_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/ReferenceStandardApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Attachment\:\:\$file_path\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/ReferenceStandardApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Attachment\:\:\$mime_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/ReferenceStandardApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Attachment\:\:\$original_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/ReferenceStandardApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Attachment\:\:\$size\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/ReferenceStandardApiResource.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Modules\\Metrology\\Models\\Attachment\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/ReferenceStandardApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ReferenceStandardTypeApiResource\:\:\$description\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/ReferenceStandardTypeApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ReferenceStandardTypeApiResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/ReferenceStandardTypeApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\ReferenceStandardTypeApiResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/ReferenceStandardTypeApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\StationApiResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/StationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\StationApiResource\:\:\$location\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/StationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\StationApiResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/StationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\WorkOrderApiResource\:\:\$courier_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/WorkOrderApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\WorkOrderApiResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/WorkOrderApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\WorkOrderApiResource\:\:\$customer_notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/WorkOrderApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\WorkOrderApiResource\:\:\$destinationStation\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/WorkOrderApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\WorkOrderApiResource\:\:\$destination_station_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/WorkOrderApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\WorkOrderApiResource\:\:\$expected_return_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/WorkOrderApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\WorkOrderApiResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/WorkOrderApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\WorkOrderApiResource\:\:\$item\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Http/Resources/WorkOrderApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\WorkOrderApiResource\:\:\$item_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/WorkOrderApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\WorkOrderApiResource\:\:\$item_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/WorkOrderApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\WorkOrderApiResource\:\:\$number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/WorkOrderApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\WorkOrderApiResource\:\:\$originStation\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/WorkOrderApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\WorkOrderApiResource\:\:\$origin_station_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/WorkOrderApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\WorkOrderApiResource\:\:\$receivedBy\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/WorkOrderApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\WorkOrderApiResource\:\:\$received_by_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/WorkOrderApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\WorkOrderApiResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/WorkOrderApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Http\\Resources\\WorkOrderApiResource\:\:\$visual_inspection_notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Http/Resources/WorkOrderApiResource.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 2
+			path: Modules/Metrology/app/Listeners/ProcessCalibrationListener.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between Modules\\Metrology\\Enums\\CalibrationResult and ''rejected'' will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: Modules/Metrology/app/Listeners/ProcessCalibrationListener.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Models/Attachment.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Models/Calibration.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Models/Checklist.php
+
+		-
+			message: '#^Generic type Illuminate\\Database\\Eloquent\\Relations\\HasMany\<Modules\\Metrology\\Models\\ChecklistItem\> in PHPDoc tag @return does not specify all template types of class Illuminate\\Database\\Eloquent\\Relations\\HasMany\: TRelatedModel, TDeclaringModel$#'
+			identifier: generics.lessTypes
+			count: 1
+			path: Modules/Metrology/app/Models/Checklist.php
+
+		-
+			message: '#^Method Modules\\Metrology\\Models\\Checklist\:\:checklistTemplate\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsTo\<Modules\\Metrology\\Models\\ChecklistTemplate, Modules\\Metrology\\Models\\Checklist\> but returns Illuminate\\Database\\Eloquent\\Relations\\BelongsTo\<Modules\\Metrology\\Models\\ChecklistTemplate, \$this\(Modules\\Metrology\\Models\\Checklist\)\>\.$#'
+			identifier: return.type
+			count: 1
+			path: Modules/Metrology/app/Models/Checklist.php
+
+		-
+			message: '#^Method Modules\\Metrology\\Models\\Checklist\:\:items\(\) should return Illuminate\\Database\\Eloquent\\Relations\\HasMany\<Modules\\Metrology\\Models\\ChecklistItem\> but returns Illuminate\\Database\\Eloquent\\Relations\\HasMany\<Modules\\Metrology\\Models\\ChecklistItem, \$this\(Modules\\Metrology\\Models\\Checklist\)\>\.$#'
+			identifier: return.type
+			count: 1
+			path: Modules/Metrology/app/Models/Checklist.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Models/ChecklistItem.php
+
+		-
+			message: '#^Method Modules\\Metrology\\Models\\ChecklistItem\:\:checklist\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsTo\<Modules\\Metrology\\Models\\Checklist, Modules\\Metrology\\Models\\ChecklistItem\> but returns Illuminate\\Database\\Eloquent\\Relations\\BelongsTo\<Modules\\Metrology\\Models\\Checklist, \$this\(Modules\\Metrology\\Models\\ChecklistItem\)\>\.$#'
+			identifier: return.type
+			count: 1
+			path: Modules/Metrology/app/Models/ChecklistItem.php
+
+		-
+			message: '#^Method Modules\\Metrology\\Models\\ChecklistItem\:\:referenceStandard\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsTo\<Modules\\Metrology\\Models\\ReferenceStandard, Modules\\Metrology\\Models\\ChecklistItem\> but returns Illuminate\\Database\\Eloquent\\Relations\\BelongsTo\<Modules\\Metrology\\Models\\ReferenceStandard, \$this\(Modules\\Metrology\\Models\\ChecklistItem\)\>\.$#'
+			identifier: return.type
+			count: 1
+			path: Modules/Metrology/app/Models/ChecklistItem.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$checklist_template_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Models/ChecklistTemplate.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Models/ChecklistTemplate.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\ChecklistTemplate\:\:\$parent_version_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Models/ChecklistTemplate.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\ChecklistTemplate\:\:\$revision_notes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Models/ChecklistTemplate.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Models/ChecklistTemplateItem.php
+
+		-
+			message: '#^Method Modules\\Metrology\\Models\\ChecklistTemplateItem\:\:checklistTemplate\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsTo\<Modules\\Metrology\\Models\\ChecklistTemplate, Modules\\Metrology\\Models\\ChecklistTemplateItem\> but returns Illuminate\\Database\\Eloquent\\Relations\\BelongsTo\<Modules\\Metrology\\Models\\ChecklistTemplate, \$this\(Modules\\Metrology\\Models\\ChecklistTemplateItem\)\>\.$#'
+			identifier: return.type
+			count: 1
+			path: Modules/Metrology/app/Models/ChecklistTemplateItem.php
+
+		-
+			message: '#^Method Modules\\Metrology\\Models\\ChecklistTemplateItem\:\:referenceStandardType\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsTo\<Modules\\Metrology\\Models\\ReferenceStandardType, Modules\\Metrology\\Models\\ChecklistTemplateItem\> but returns Illuminate\\Database\\Eloquent\\Relations\\BelongsTo\<Modules\\Metrology\\Models\\ReferenceStandardType, \$this\(Modules\\Metrology\\Models\\ChecklistTemplateItem\)\>\.$#'
+			identifier: return.type
+			count: 1
+			path: Modules/Metrology/app/Models/ChecklistTemplateItem.php
+
+		-
+			message: '#^Access to an undefined property \$this\(Modules\\Metrology\\Models\\Instrument\)\:\:\$parent\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Models/Instrument.php
+
+		-
+			message: '#^Access to an undefined property \$this\(Modules\\Metrology\\Models\\Instrument\)\:\:\$parent_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Models/Instrument.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/Metrology/app/Models/Instrument.php
+
+		-
+			message: '#^Generic type Illuminate\\Database\\Eloquent\\Relations\\MorphMany\<Modules\\Metrology\\Models\\Attachment\> in PHPDoc tag @return does not specify all template types of class Illuminate\\Database\\Eloquent\\Relations\\MorphMany\: TRelatedModel, TDeclaringModel$#'
+			identifier: generics.lessTypes
+			count: 1
+			path: Modules/Metrology/app/Models/Instrument.php
+
+		-
+			message: '#^Method Modules\\Metrology\\Models\\Instrument\:\:attachments\(\) should return Illuminate\\Database\\Eloquent\\Relations\\MorphMany\<Modules\\Metrology\\Models\\Attachment\> but returns Illuminate\\Database\\Eloquent\\Relations\\MorphMany\<Modules\\Metrology\\Models\\Attachment, \$this\(Modules\\Metrology\\Models\\Instrument\)\>\.$#'
+			identifier: return.type
+			count: 1
+			path: Modules/Metrology/app/Models/Instrument.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Models/InstrumentMovement.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Models/InstrumentType.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Models/IntermediateCheck.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Models/LabClient.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/Metrology/app/Models/MaintenanceRecord.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Models/Material.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Models/NonConformity.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/Metrology/app/Models/ReferenceStandard.php
+
+		-
+			message: '#^Generic type Illuminate\\Database\\Eloquent\\Relations\\MorphMany\<Modules\\Metrology\\Models\\Attachment\> in PHPDoc tag @return does not specify all template types of class Illuminate\\Database\\Eloquent\\Relations\\MorphMany\: TRelatedModel, TDeclaringModel$#'
+			identifier: generics.lessTypes
+			count: 1
+			path: Modules/Metrology/app/Models/ReferenceStandard.php
+
+		-
+			message: '#^Method Modules\\Metrology\\Models\\ReferenceStandard\:\:attachments\(\) should return Illuminate\\Database\\Eloquent\\Relations\\MorphMany\<Modules\\Metrology\\Models\\Attachment\> but returns Illuminate\\Database\\Eloquent\\Relations\\MorphMany\<Modules\\Metrology\\Models\\Attachment, \$this\(Modules\\Metrology\\Models\\ReferenceStandard\)\>\.$#'
+			identifier: return.type
+			count: 1
+			path: Modules/Metrology/app/Models/ReferenceStandard.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Models/ReferenceStandardType.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Models/SupplierAccreditation.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/Metrology/app/Models/WorkOrder.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/app/Notifications/CalibrationRejectedNotification.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$serial_number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Notifications/CalibrationRejectedNotification.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/Metrology/app/Notifications/CriticalNCNotification.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\NonConformity\:\:\$priority\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/Metrology/app/Notifications/CriticalNCNotification.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\NonConformity\:\:\$title\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Notifications/CriticalNCNotification.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\NonConformity\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Observers/NonConformityObserver.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Contracts\\CalibratableItem\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Services/CalibrationValidator.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Models\\User\:\:\$station_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Services/LogisticsService.php
+
+		-
+			message: '#^Trait Modules\\Metrology\\Traits\\HasAuditLogs is used zero times and is not analysed\.$#'
+			identifier: trait.unused
+			count: 1
+			path: Modules/Metrology/app/Traits/HasAuditLogs.php
+
+		-
+			message: '#^Called ''env'' outside of the config directory which returns null when the config is cached, use ''config''\.$#'
+			identifier: larastan.noEnvCallsOutsideOfConfig
+			count: 2
+			path: Modules/Metrology/config/config.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\System\\Models\\Station\:\:factory\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: Modules/Metrology/database/factories/AccessLogFactory.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/database/factories/AccessLogFactory.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/database/factories/AttachmentFactory.php
+
+		-
+			message: '#^Method Faker\\Generator\:\:filePath\(\) invoked with 1 parameter, 0 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: Modules/Metrology/database/factories/CalibrationFactory.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Calibration\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/database/factories/ChecklistFactory.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/database/factories/NonConformityFactory.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\ReferenceStandardType\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/database/factories/ReferenceStandardFactory.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/database/factories/WorkOrderFactory.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:items\(\)\.$#'
+			identifier: method.notFound
+			count: 5
+			path: Modules/Metrology/database/seeders/MetrologyDatabaseSeeder.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Calibration\.$#'
+			identifier: staticMethod.protected
+			count: 2
+			path: Modules/Metrology/database/seeders/MetrologyDatabaseSeeder.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/database/seeders/MetrologyDatabaseSeeder.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:actingAs\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: Modules/Metrology/tests/Feature/ApprovalFlowTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Calibration\.$#'
+			identifier: staticMethod.protected
+			count: 2
+			path: Modules/Metrology/tests/Feature/ApprovalFlowTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 2
+			path: Modules/Metrology/tests/Feature/ApprovalFlowTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Attachment\:\:\$attachable_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/AttachmentTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Attachment\:\:\$file_path\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/AttachmentTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/tests/Feature/AttachmentTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:assertDatabaseMissing\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/AttachmentTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:deleteJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/AttachmentTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/AttachmentTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/AttachmentTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 3
+			path: Modules/Metrology/tests/Feature/AttachmentTest.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Activity\:\:\$previous_hash\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/Metrology/tests/Feature/AuditChainVerificationTest.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Activity\:\:\$record_hash\.$#'
+			identifier: property.notFound
+			count: 7
+			path: Modules/Metrology/tests/Feature/AuditChainVerificationTest.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Activity\:\:\$sequence_number\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/Metrology/tests/Feature/AuditChainVerificationTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:artisan\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/AuditChainVerificationTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:createSuperAdmin\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/AuditChainVerificationTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/AuditChainVerificationTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 4
+			path: Modules/Metrology/tests/Feature/CalibrationCalculateApiTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/tests/Feature/CalibrationCalculateApiTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\ReferenceStandardType\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/tests/Feature/CalibrationCalculateApiTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 13
+			path: Modules/Metrology/tests/Feature/CalibrationChecklistPersistenceTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Calibration\:\:\$checklist_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/CalibrationChecklistPersistenceTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Calibration\:\:\$procedure_snapshot\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/CalibrationChecklistPersistenceTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\ChecklistItem\:\:\$nominal_value\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/CalibrationChecklistPersistenceTest.php
+
+		-
+			message: '#^Call to method PHPUnit\\Framework\\Assert\:\:assertNotNull\(\) with string will always evaluate to true\.$#'
+			identifier: method.alreadyNarrowedType
+			count: 2
+			path: Modules/Metrology/tests/Feature/CalibrationChecklistPersistenceTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 2
+			path: Modules/Metrology/tests/Feature/CalibrationChecklistPersistenceTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/CalibrationExportTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Calibration\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/tests/Feature/CalibrationExportTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/tests/Feature/CalibrationExportTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/CalibrationProcessTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$instrument\.$#'
+			identifier: property.notFound
+			count: 8
+			path: Modules/Metrology/tests/Feature/CalibrationProcessTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$standard\.$#'
+			identifier: property.notFound
+			count: 4
+			path: Modules/Metrology/tests/Feature/CalibrationProcessTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$template\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/tests/Feature/CalibrationProcessTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/Metrology/tests/Feature/CalibrationProcessTest.php
+
+		-
+			message: '#^Array has 2 duplicate keys with value ''type'' \(''type'', ''type''\)\.$#'
+			identifier: array.duplicateKey
+			count: 1
+			path: Modules/Metrology/tests/Feature/CalibrationProcessTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:assertDatabaseHas\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/CalibrationProcessTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:createSuperAdmin\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/CalibrationProcessTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/tests/Feature/CalibrationProcessTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/tests/Feature/CalibrationRectificationTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Calibration\:\:\$checklist_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/tests/Feature/CalibrationRectificationTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Calibration\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/tests/Feature/CalibrationRectificationTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/tests/Feature/CalibrationRectificationTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/tests/Feature/CalibrationResourceTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/CalibrationResourceTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/tests/Feature/CalibrationResourceTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/CalibrationTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:createSuperAdmin\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/CalibrationTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/tests/Feature/CalibrationTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/CertificateIntegrityTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: Modules/Metrology/tests/Feature/CertificateIntegrityTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Calibration\.$#'
+			identifier: staticMethod.protected
+			count: 5
+			path: Modules/Metrology/tests/Feature/CertificateIntegrityTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 5
+			path: Modules/Metrology/tests/Feature/CertificateIntegrityTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/tests/Feature/CertificateMergingTest.php
+
+		-
+			message: '#^Call to an undefined method Mockery\\ExpectationInterface\|Mockery\\HigherOrderMessage\:\:once\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: Modules/Metrology/tests/Feature/CertificateMergingTest.php
+
+		-
+			message: '#^Call to an undefined method Mockery\\ExpectationInterface\|Mockery\\HigherOrderMessage\:\:with\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/CertificateMergingTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Calibration\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/tests/Feature/CertificateMergingTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/tests/Feature/CertificateMergingTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$password\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/Metrology/tests/Feature/Cfr21SignatureTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/tests/Feature/Cfr21SignatureTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
+			identifier: method.notFound
+			count: 4
+			path: Modules/Metrology/tests/Feature/Cfr21SignatureTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Calibration\.$#'
+			identifier: staticMethod.protected
+			count: 4
+			path: Modules/Metrology/tests/Feature/Cfr21SignatureTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:artisan\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/CheckCalibrationDueTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 3
+			path: Modules/Metrology/tests/Feature/CheckCalibrationDueTest.php
+
+		-
+			message: '#^Strict comparison using \!\=\= between string and null will always evaluate to true\.$#'
+			identifier: notIdentical.alwaysTrue
+			count: 1
+			path: Modules/Metrology/tests/Feature/CheckCalibrationDueTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/Metrology/tests/Feature/ChecklistTemplateTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$items\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/tests/Feature/ChecklistTemplateTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:createSuperAdmin\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/ChecklistTemplateTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$actual_value\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/EventDrivenCalibrationTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 5
+			path: Modules/Metrology/tests/Feature/EventDrivenCalibrationTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/Metrology/tests/Feature/EventDrivenCalibrationTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:assertDatabaseHas\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/EventDrivenCalibrationTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:createSuperAdmin\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/EventDrivenCalibrationTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/tests/Feature/EventDrivenCalibrationTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/tests/Feature/GenerateCertificatePdfTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Calibration\.$#'
+			identifier: staticMethod.protected
+			count: 2
+			path: Modules/Metrology/tests/Feature/GenerateCertificatePdfTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 2
+			path: Modules/Metrology/tests/Feature/GenerateCertificatePdfTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 4
+			path: Modules/Metrology/tests/Feature/InstrumentApiTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 3
+			path: Modules/Metrology/tests/Feature/InstrumentApiTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 9
+			path: Modules/Metrology/tests/Feature/InstrumentTest.php
+
+		-
+			message: '#^Access to an undefined property Pest\\Expectation\<Modules\\Metrology\\Models\\Instrument\|null\>\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/InstrumentTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:createSuperAdmin\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/InstrumentTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 7
+			path: Modules/Metrology/tests/Feature/InstrumentTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:assertDatabaseHas\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: Modules/Metrology/tests/Feature/IntermediateCheckTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:createSuperAdmin\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: Modules/Metrology/tests/Feature/IntermediateCheckTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 2
+			path: Modules/Metrology/tests/Feature/IntermediateCheckTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/Metrology/tests/Feature/MaterialTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/MaterialTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/MaterialTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:assertDatabaseHas\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/MaterialTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:assertDatabaseMissing\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/MaterialTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:deleteJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/MaterialTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/MaterialTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/MaterialTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:putJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/MaterialTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$closed_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/NonConformityTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/Metrology/tests/Feature/NonConformityTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/NonConformityTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/NonConformityTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:assertDatabaseHas\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: Modules/Metrology/tests/Feature/NonConformityTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/NonConformityTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: Modules/Metrology/tests/Feature/NonConformityTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:putJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/NonConformityTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/tests/Feature/NonConformityTest.php
+
+		-
+			message: '#^Access to an undefined property Pest\\Mixins\\Expectation\<mixed\>\:\:\$not\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/PortalClientTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: Modules/Metrology/tests/Feature/PortalClientTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:withHeader\(\)\.$#'
+			identifier: method.notFound
+			count: 4
+			path: Modules/Metrology/tests/Feature/PortalClientTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Calibration\.$#'
+			identifier: staticMethod.protected
+			count: 3
+			path: Modules/Metrology/tests/Feature/PortalClientTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 5
+			path: Modules/Metrology/tests/Feature/PortalClientTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 4
+			path: Modules/Metrology/tests/Feature/ProcessCalibrationActionTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:assertDatabaseHas\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/ProcessCalibrationActionTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:createSuperAdmin\(\)\.$#'
+			identifier: method.notFound
+			count: 5
+			path: Modules/Metrology/tests/Feature/ProcessCalibrationActionTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Calibration\.$#'
+			identifier: staticMethod.protected
+			count: 7
+			path: Modules/Metrology/tests/Feature/ProcessCalibrationActionTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 5
+			path: Modules/Metrology/tests/Feature/ProcessCalibrationActionTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$effective_serial_number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/ReferenceStandardTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 11
+			path: Modules/Metrology/tests/Feature/ReferenceStandardTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$next_calibration_due\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/ReferenceStandardTest.php
+
+		-
+			message: '#^Access to an undefined property Pest\\Expectation\<Illuminate\\Database\\Eloquent\\Model\|null\>\:\:\$certificate_number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/ReferenceStandardTest.php
+
+		-
+			message: '#^Access to an undefined property Pest\\Expectation\<Illuminate\\Database\\Eloquent\\Model\|null\>\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/ReferenceStandardTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:createSuperAdmin\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: Modules/Metrology/tests/Feature/ReferenceStandardTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/ReferenceStandardTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/ReferenceStandardTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Calibration\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/tests/Feature/ReferenceStandardTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\ReferenceStandardType\.$#'
+			identifier: staticMethod.protected
+			count: 5
+			path: Modules/Metrology/tests/Feature/ReferenceStandardTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:actingAs\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/ShewhartControlChartTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 5
+			path: Modules/Metrology/tests/Feature/ShewhartControlChartTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 8
+			path: Modules/Metrology/tests/Feature/StandardImpactReportTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:createSuperAdmin\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/StandardImpactReportTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:get\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/StandardImpactReportTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/StandardImpactReportTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Calibration\.$#'
+			identifier: staticMethod.protected
+			count: 3
+			path: Modules/Metrology/tests/Feature/StandardImpactReportTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 3
+			path: Modules/Metrology/tests/Feature/StandardImpactReportTest.php
+
+		-
+			message: '#^Parameter \#1 \$standard of method Modules\\Metrology\\Actions\\GenerateStandardImpactReportAction\:\:buildReportData\(\) expects Modules\\Metrology\\Models\\ReferenceStandard, Illuminate\\Database\\Eloquent\\Model given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Modules/Metrology/tests/Feature/StandardImpactReportTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$accreditedInstrumentTypes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/SupplierAccreditationScopeTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 8
+			path: Modules/Metrology/tests/Feature/SupplierAccreditationScopeTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/SupplierAccreditationScopeTest.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:accreditedInstrumentTypes\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/SupplierAccreditationScopeTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:assertDatabaseHas\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/SupplierAccreditationScopeTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/SupplierAccreditationScopeTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/SupplierAccreditationScopeTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$accreditation_certificate\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/tests/Feature/SupplierAccreditationTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$accreditation_valid_until\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/SupplierAccreditationTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:createSuperAdmin\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/SupplierAccreditationTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/Metrology/tests/Feature/WorkOrderTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/WorkOrderTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/WorkOrderTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:assertDatabaseHas\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/WorkOrderTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:assertSoftDeleted\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/WorkOrderTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:deleteJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/WorkOrderTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/WorkOrderTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/WorkOrderTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:putJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/WorkOrderTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/tests/Feature/WorkOrderTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/tests/Unit/EnumFactoryTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Instrument\:\:\$mpe\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Unit/InstrumentUnitLogicTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/Metrology/tests/Unit/PrepareCertificateDataActionTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Calibration\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/tests/Unit/PrepareCertificateDataActionTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 1
+			path: Modules/Metrology/tests/Unit/PrepareCertificateDataActionTest.php
+
+		-
+			message: '#^Method Modules\\System\\Exports\\UsersExport\:\:query\(\) has invalid return type Laravel\\Scout\\Builder\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Exports/UsersExport.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Forms\\Components\\Section\.$#'
+			identifier: class.notFound
+			count: 2
+			path: Modules/System/app/Filament/Clusters/System/Resources/PlanResource.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Tables\\Actions\\BulkActionGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/PlanResource.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Tables\\Actions\\DeleteBulkAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/PlanResource.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Tables\\Actions\\EditAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/PlanResource.php
+
+		-
+			message: '#^Invoking callable on an unknown class Filament\\Forms\\Set\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/PlanResource.php
+
+		-
+			message: '#^Parameter \$set of anonymous function has invalid type Filament\\Forms\\Set\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/PlanResource.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Forms\\Components\\Section\.$#'
+			identifier: class.notFound
+			count: 3
+			path: Modules/System/app/Filament/Clusters/System/Resources/SubscriptionResource.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Tables\\Actions\\EditAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/SubscriptionResource.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Forms\\Components\\Grid\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/SupportTicketResource.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Forms\\Components\\Section\.$#'
+			identifier: class.notFound
+			count: 2
+			path: Modules/System/app/Filament/Clusters/System/Resources/SupportTicketResource.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Tables\\Actions\\EditAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/SupportTicketResource.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Tables\\Actions\\CreateAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/SupportTicketResource/RelationManagers/MessagesRelationManager.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Tables\\Actions\\DeleteAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/SupportTicketResource/RelationManagers/MessagesRelationManager.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Tables\\Actions\\EditAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/SupportTicketResource/RelationManagers/MessagesRelationManager.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Forms\\Components\\Fieldset\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/TenantResource.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Forms\\Components\\Tabs\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/TenantResource.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Forms\\Components\\Tabs\\Tab\.$#'
+			identifier: class.notFound
+			count: 3
+			path: Modules/System/app/Filament/Clusters/System/Resources/TenantResource.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Tables\\Actions\\Action\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/TenantResource.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Tables\\Actions\\BulkActionGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/TenantResource.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Tables\\Actions\\DeleteBulkAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/TenantResource.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Tables\\Actions\\EditAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/TenantResource.php
+
+		-
+			message: '#^Invoking callable on an unknown class Filament\\Forms\\Set\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/TenantResource.php
+
+		-
+			message: '#^Parameter \$set of anonymous function has invalid type Filament\\Forms\\Set\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/TenantResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/TenantResource/RelationManagers/ModulesRelationManager.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Tables\\Actions\\BulkActionGroup\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/TenantResource/RelationManagers/ModulesRelationManager.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Tables\\Actions\\CreateAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/TenantResource/RelationManagers/ModulesRelationManager.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Tables\\Actions\\DeleteAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/TenantResource/RelationManagers/ModulesRelationManager.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Tables\\Actions\\DeleteBulkAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/TenantResource/RelationManagers/ModulesRelationManager.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Tables\\Actions\\EditAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/TenantResource/RelationManagers/ModulesRelationManager.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Tables\\Actions\\Action\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/Users/Tables/UsersTable.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Tables\\Actions\\EditAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/Users/Tables/UsersTable.php
+
+		-
+			message: '#^Call to static method make\(\) on an unknown class Filament\\Tables\\Actions\\ViewAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/Resources/Users/Tables/UsersTable.php
+
+		-
+			message: '#^Call to an undefined static method Modules\\System\\Filament\\Clusters\\System\\Pages\\Dashboard\:\:route\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: Modules/System/app/Filament/Clusters/System/SystemCluster.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/AuditLogApiController.php
+
+		-
+			message: '#^Access to an undefined property Spatie\\Activitylog\\Models\\Activity\:\:\$previous_hash\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/AuditLogApiController.php
+
+		-
+			message: '#^Access to an undefined property Spatie\\Activitylog\\Models\\Activity\:\:\$record_hash\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/AuditLogApiController.php
+
+		-
+			message: '#^Access to an undefined property Spatie\\Activitylog\\Models\\Activity\:\:\$sequence_number\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/AuditLogApiController.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Support\\Collection\<int,Spatie\\Activitylog\\Models\\Activity\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/AuditLogApiController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/AuditLogApiController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/AuthApiController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$slug\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/AuthApiController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:domains\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/AuthApiController.php
+
+		-
+			message: '#^Method Stancl\\Tenancy\\Tenancy\:\:impersonate\(\) invoked with 0 parameters, 3\-4 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/AuthApiController.php
+
+		-
+			message: '#^Negated boolean expression is always false\.$#'
+			identifier: booleanNot.alwaysFalse
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/AuthApiController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$activeSubscription\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/BillingApiController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/BillingApiController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/BillingApiController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>max_instruments" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/BillingApiController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>max_users" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/BillingApiController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/CertificateApiController.php
+
+		-
+			message: '#^Call to method execute\(\) on an unknown class Modules\\System\\app\\Actions\\CreateStationAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/StationApiController.php
+
+		-
+			message: '#^Call to method execute\(\) on an unknown class Modules\\System\\app\\Actions\\UpdateStationAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/StationApiController.php
+
+		-
+			message: '#^Parameter \$action of method Modules\\System\\Http\\Controllers\\Api\\V1\\StationApiController\:\:store\(\) has invalid type Modules\\System\\app\\Actions\\CreateStationAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/StationApiController.php
+
+		-
+			message: '#^Parameter \$action of method Modules\\System\\Http\\Controllers\\Api\\V1\\StationApiController\:\:update\(\) has invalid type Modules\\System\\app\\Actions\\UpdateStationAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/StationApiController.php
+
+		-
+			message: '#^Call to method execute\(\) on an unknown class Modules\\System\\app\\Actions\\CreateSupplierAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/SupplierApiController.php
+
+		-
+			message: '#^Call to method execute\(\) on an unknown class Modules\\System\\app\\Actions\\UpdateSupplierAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/SupplierApiController.php
+
+		-
+			message: '#^Parameter \$action of method Modules\\System\\Http\\Controllers\\Api\\V1\\SupplierApiController\:\:store\(\) has invalid type Modules\\System\\app\\Actions\\CreateSupplierAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/SupplierApiController.php
+
+		-
+			message: '#^Parameter \$action of method Modules\\System\\Http\\Controllers\\Api\\V1\\SupplierApiController\:\:update\(\) has invalid type Modules\\System\\app\\Actions\\UpdateSupplierAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/SupplierApiController.php
+
+		-
+			message: '#^Call to method execute\(\) on an unknown class Modules\\System\\app\\Actions\\CreateUserAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/UserApiController.php
+
+		-
+			message: '#^Call to method execute\(\) on an unknown class Modules\\System\\app\\Actions\\UpdateUserAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/UserApiController.php
+
+		-
+			message: '#^Parameter \$action of method Modules\\System\\Http\\Controllers\\Api\\V1\\UserApiController\:\:store\(\) has invalid type Modules\\System\\app\\Actions\\CreateUserAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/UserApiController.php
+
+		-
+			message: '#^Parameter \$action of method Modules\\System\\Http\\Controllers\\Api\\V1\\UserApiController\:\:update\(\) has invalid type Modules\\System\\app\\Actions\\UpdateUserAction\.$#'
+			identifier: class.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/UserApiController.php
+
+		-
+			message: '#^Parameter \#1 \$view of function view expects view\-string\|null, string given\.$#'
+			identifier: argument.type
+			count: 3
+			path: Modules/System/app/Http/Controllers/SystemController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>id" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/System/app/Http/Requests/UpdateMachineRequest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\AccessLogApiResource\:\:\$action\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/AccessLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\AccessLogApiResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/AccessLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\AccessLogApiResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/AccessLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\AccessLogApiResource\:\:\$instrument\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/AccessLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\AccessLogApiResource\:\:\$instrument_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/AccessLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\AccessLogApiResource\:\:\$station\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/AccessLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\AccessLogApiResource\:\:\$station_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/AccessLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\AccessLogApiResource\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/AccessLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\AccessLogApiResource\:\:\$user_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/AccessLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\AuditLogApiResource\:\:\$auditable_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/AuditLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\AuditLogApiResource\:\:\$auditable_type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/AuditLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\AuditLogApiResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/System/app/Http/Resources/AuditLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\AuditLogApiResource\:\:\$event\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/AuditLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\AuditLogApiResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/AuditLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\AuditLogApiResource\:\:\$ip_address\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/AuditLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\AuditLogApiResource\:\:\$new_values\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/AuditLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\AuditLogApiResource\:\:\$old_values\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/AuditLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\AuditLogApiResource\:\:\$url\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/AuditLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\AuditLogApiResource\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/AuditLogApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\AuditLogApiResource\:\:\$user_agent\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/AuditLogApiResource.php
+
+		-
+			message: '#^Call to an undefined method Modules\\System\\Http\\Resources\\MachineApiResource\:\:getFoundationType\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/MachineApiResource.php
+
+		-
+			message: '#^Call to an undefined method Modules\\System\\Http\\Resources\\MachineApiResource\:\:getIsoGroup\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/MachineApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\StationApiResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/StationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\StationApiResource\:\:\$description\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/StationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\StationApiResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/StationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\StationApiResource\:\:\$instruments\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/StationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\StationApiResource\:\:\$is_active\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/StationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\StationApiResource\:\:\$location\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/StationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\StationApiResource\:\:\$machines\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/StationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\StationApiResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/StationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\StationApiResource\:\:\$nodes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/StationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\StationApiResource\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/StationApiResource.php
+
+		-
+			message: '#^Call to an undefined method Modules\\System\\Http\\Resources\\StationApiResource\:\:instruments\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/StationApiResource.php
+
+		-
+			message: '#^Call to an undefined method Modules\\System\\Http\\Resources\\StationApiResource\:\:machines\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/StationApiResource.php
+
+		-
+			message: '#^Call to an undefined method Modules\\System\\Http\\Resources\\StationApiResource\:\:nodes\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/StationApiResource.php
+
+		-
+			message: '#^Call to an undefined method Modules\\System\\Http\\Resources\\StationApiResource\:\:relationLoaded\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: Modules/System/app/Http/Resources/StationApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\SupplierApiResource\:\:\$cnpj\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/SupplierApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\SupplierApiResource\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/SupplierApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\SupplierApiResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/SupplierApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\SupplierApiResource\:\:\$is_calibration_provider\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/SupplierApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\SupplierApiResource\:\:\$is_maintenance_provider\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/SupplierApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\SupplierApiResource\:\:\$is_manufacturer\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/SupplierApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\SupplierApiResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/SupplierApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\SupplierApiResource\:\:\$phone\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/SupplierApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\SupplierApiResource\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/SupplierApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\UserApiResource\:\:\$created_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/UserApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\UserApiResource\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/UserApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\UserApiResource\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/UserApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\UserApiResource\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/UserApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\UserApiResource\:\:\$roles\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/UserApiResource.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Http\\Resources\\UserApiResource\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Resources/UserApiResource.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/System/app/Models/AccessLog.php
+
+		-
+			message: '#^Call to function is_array\(\) with Illuminate\\Support\\Collection\|null will always evaluate to false\.$#'
+			identifier: function.impossibleType
+			count: 3
+			path: Modules/System/app/Models/AuditLog.php
+
+		-
+			message: '#^Property Spatie\\Activitylog\\Models\\Activity\:\:\$causer_id \(int\|null\) does not accept string\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: Modules/System/app/Models/AuditLog.php
+
+		-
+			message: '#^Property Spatie\\Activitylog\\Models\\Activity\:\:\$properties \(Illuminate\\Support\\Collection\|null\) does not accept array\<mixed\>\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: Modules/System/app/Models/AuditLog.php
+
+		-
+			message: '#^Property Spatie\\Activitylog\\Models\\Activity\:\:\$subject_id \(int\|null\) does not accept string\|null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: Modules/System/app/Models/AuditLog.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/System/app/Models/Machine.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/System/app/Models/Setting.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/System/app/Models/Station.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/System/app/Models/Supplier.php
+
+		-
+			message: '#^Method Modules\\System\\Models\\Supplier\:\:accreditedInstrumentTypes\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany\<Modules\\Metrology\\Models\\InstrumentType, \$this\(Modules\\System\\Models\\Supplier\), Illuminate\\Database\\Eloquent\\Relations\\Pivot, ''pivot''\> but returns Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany\<Modules\\Metrology\\Models\\InstrumentType, \$this\(Modules\\System\\Models\\Supplier\), Modules\\Metrology\\Models\\SupplierAccreditation, ''pivot''\>\.$#'
+			identifier: return.type
+			count: 1
+			path: Modules/System/app/Models/Supplier.php
+
+		-
+			message: '#^PHPDoc type array\<int, string\> of property Modules\\System\\Models\\User\:\:\$fillable is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$fillable\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: Modules/System/app/Models/User.php
+
+		-
+			message: '#^PHPDoc type array\<int, string\> of property Modules\\System\\Models\\User\:\:\$hidden is not covariant with PHPDoc type list\<string\> of overridden property Illuminate\\Database\\Eloquent\\Model\:\:\$hidden\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: Modules/System/app/Models/User.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Activity\:\:\$previous_hash\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/System/app/Services/AuditChainService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Activity\:\:\$record_hash\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/System/app/Services/AuditChainService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Activity\:\:\$sequence_number\.$#'
+			identifier: property.notFound
+			count: 5
+			path: Modules/System/app/Services/AuditChainService.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\Activity\:\:\$tenant_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/System/app/Services/AuditChainService.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$tenant\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/tests/Feature/CertificateApiTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/tests/Feature/CertificateApiTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:deleteJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/System/tests/Feature/CertificateApiTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: Modules/System/tests/Feature/CertificateApiTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: Modules/System/tests/Feature/CertificateApiTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 9
+			path: Modules/System/tests/Feature/NotificationTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:assertDatabaseHas\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/System/tests/Feature/NotificationTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: Modules/System/tests/Feature/NotificationTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/System/tests/Feature/NotificationTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$tenant\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/tests/Feature/SystemSettingsTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/tests/Feature/SystemSettingsTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:getJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/System/tests/Feature/SystemSettingsTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:putJson\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/System/tests/Feature/SystemSettingsTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 6
+			path: Modules/System/tests/Feature/UserCompetenceTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$tenant\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/tests/Feature/UserCompetenceTest.php
+
+		-
+			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$user\.$#'
+			identifier: property.notFound
+			count: 4
+			path: Modules/System/tests/Feature/UserCompetenceTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:assertDatabaseHas\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/System/tests/Feature/UserCompetenceTest.php
+
+		-
+			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: Modules/System/tests/Feature/UserCompetenceTest.php
+
+		-
+			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
+			identifier: staticMethod.protected
+			count: 2
+			path: Modules/System/tests/Feature/UserCompetenceTest.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$checklist_template_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Actions/ImportMasterDataAction.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$tenant_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Actions/ImportMasterDataAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\ChecklistTemplate\:\:\$instrument_type_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Actions/ImportMasterDataAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\ChecklistTemplate\:\:\$tenant_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Actions/ImportMasterDataAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\InstrumentType\:\:\$tenant_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Actions/ImportMasterDataAction.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Material\:\:\$tenant_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Actions/ImportMasterDataAction.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Middleware/VerifySubscription.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$slug\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Middleware/VerifySubscription.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:hasAccess\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Middleware/VerifySubscription.php
+
+		-
+			message: '#^Access to an undefined property Stancl\\Tenancy\\Contracts\\Tenant\:\:\$slug\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Listeners/CreateTenantDomain.php
+
+		-
+			message: '#^Call to an undefined method Stancl\\Tenancy\\Contracts\\Tenant\:\:domains\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Listeners/CreateTenantDomain.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: app/Models/SupportTicket.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:valid\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Models/Tenant.php
+
+		-
+			message: '#^Method App\\NavigationGroup\:\:getIcon\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: app/NavigationGroup.php
+
+		-
+			message: '#^Method App\\NavigationGroup\:\:getLabel\(\) never returns null so it can be removed from the return type\.$#'
+			identifier: return.unusedType
+			count: 1
+			path: app/NavigationGroup.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Providers/AppServiceProvider.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\|Stancl\\Tenancy\\Contracts\\Tenant\:\:\$slug\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Providers/AppServiceProvider.php
