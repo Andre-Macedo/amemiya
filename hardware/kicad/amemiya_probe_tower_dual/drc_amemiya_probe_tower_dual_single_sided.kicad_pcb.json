@@ -1,0 +1,163 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-10-30T19:36:32-0300",
+    "kicad_version": "9.0.7",
+    "schematic_parity": [],
+    "source": "amemiya_probe_tower_dual_single_sided.kicad_pcb",
+    "unconnected_items": [],
+    "violations": [
+        {
+            "description": "Cruzamento das trilhas",
+            "items": [
+                {
+                    "description": "Trilha [/1W_DQ] no B.Cu, comprimento 18,8400 mm",
+                    "pos": {
+                        "x": 13.08,
+                        "y": 22.84
+                    },
+                    "uuid": "8f0a386c-9afc-468f-81c0-dfe50ef47b85"
+                },
+                {
+                    "description": "Trilha [GND] no B.Cu, comprimento 5,4600 mm",
+                    "pos": {
+                        "x": 10.54,
+                        "y": 6.5
+                    },
+                    "uuid": "ae2e4828-e300-4822-ab00-9c507e98945b"
+                }
+            ],
+            "severity": "error",
+            "type": "tracks_crossing"
+        },
+        {
+            "description": "Itens encurtando duas redes (redes /1W_DQ e GND)",
+            "items": [
+                {
+                    "description": "Trilha [/1W_DQ] no B.Cu, comprimento 2,7153 mm",
+                    "pos": {
+                        "x": 12.0,
+                        "y": 23.92
+                    },
+                    "uuid": "22ecd102-5159-41bc-918e-7e259a3f86f9"
+                },
+                {
+                    "description": "Trilha [GND] no B.Cu, comprimento 27,0000 mm",
+                    "pos": {
+                        "x": 9.5,
+                        "y": 43.0
+                    },
+                    "uuid": "3aafdf70-5f42-4d63-8a4d-e236cdfb284b"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "Itens encurtando duas redes (redes GND e /1W_DQ)",
+            "items": [
+                {
+                    "description": "Trilha [GND] no B.Cu, comprimento 27,0000 mm",
+                    "pos": {
+                        "x": 9.5,
+                        "y": 43.0
+                    },
+                    "uuid": "3aafdf70-5f42-4d63-8a4d-e236cdfb284b"
+                },
+                {
+                    "description": "Ilha PTH 2 [/1W_DQ] de R1",
+                    "pos": {
+                        "x": 10.08,
+                        "y": 22.0
+                    },
+                    "uuid": "da108b26-1bd9-449a-8693-a40968c4b7d8"
+                }
+            ],
+            "severity": "error",
+            "type": "shorting_items"
+        },
+        {
+            "description": "A abertura da máscara de solda de trás conecta itens com redes diferentes",
+            "items": [
+                {
+                    "description": "Trilha [GND] no B.Cu, comprimento 27,0000 mm",
+                    "pos": {
+                        "x": 9.5,
+                        "y": 43.0
+                    },
+                    "uuid": "3aafdf70-5f42-4d63-8a4d-e236cdfb284b"
+                },
+                {
+                    "description": "Ilha PTH 2 [/1W_DQ] de R1",
+                    "pos": {
+                        "x": 10.08,
+                        "y": 22.0
+                    },
+                    "uuid": "da108b26-1bd9-449a-8693-a40968c4b7d8"
+                }
+            ],
+            "severity": "error",
+            "type": "solder_mask_bridge"
+        },
+        {
+            "description": "A serigrafia foi cortado pela máscara de solda",
+            "items": [
+                {
+                    "description": "Segmento de C1 em F.Silkscreen",
+                    "pos": {
+                        "x": 4.23,
+                        "y": 13.301
+                    },
+                    "uuid": "174f7a2c-1915-46f9-b778-c528b90bcb83"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "A serigrafia foi cortado pela máscara de solda",
+            "items": [
+                {
+                    "description": "Segmento de C1 em F.Silkscreen",
+                    "pos": {
+                        "x": 4.23,
+                        "y": 15.42
+                    },
+                    "uuid": "e54d662d-bb3f-4314-99e8-3964e87f799c"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "A serigrafia foi cortado pela máscara de solda",
+            "items": [
+                {
+                    "description": "Segmento de C1 em F.Silkscreen",
+                    "pos": {
+                        "x": 8.27,
+                        "y": 12.58
+                    },
+                    "uuid": "ed9c8f96-f16a-4a1c-879b-541bd69d231e"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        },
+        {
+            "description": "A serigrafia foi cortado pela máscara de solda",
+            "items": [
+                {
+                    "description": "Segmento de C1 em F.Silkscreen",
+                    "pos": {
+                        "x": 8.27,
+                        "y": 14.699
+                    },
+                    "uuid": "d2a4b336-71f4-4133-bd3d-4933efb5fa12"
+                }
+            ],
+            "severity": "warning",
+            "type": "silk_over_copper"
+        }
+    ]
+}

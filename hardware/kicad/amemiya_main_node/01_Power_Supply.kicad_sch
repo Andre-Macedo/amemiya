@@ -1361,7 +1361,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "05cc9e4a-0535-42e9-b2e5-8a31c749f61c")
-		(property "Reference" "J_BAT?"
+		(property "Reference" "J_BAT"
 			(at 50.8 44.8 0)
 			(effects
 				(font
@@ -1419,7 +1419,7 @@
 			)
 			(project "01_Power_Supply"
 				(path "/901b8001-5a6a-42f1-a3c6-dacb1fbb8615"
-					(reference "J_BAT?")
+					(reference "J_BAT")
 					(unit 1)
 				)
 			)
@@ -1564,7 +1564,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "1e99de42-15ed-41db-9c78-9ea761531f16")
-		(property "Reference" "C_3V3_?"
+		(property "Reference" "C_3V31"
 			(at 124.92 49.3 0)
 			(effects
 				(font
@@ -1624,7 +1624,7 @@
 			)
 			(project "01_Power_Supply"
 				(path "/901b8001-5a6a-42f1-a3c6-dacb1fbb8615"
-					(reference "C_3V3_?")
+					(reference "C_3V31")
 					(unit 1)
 				)
 			)
@@ -1704,7 +1704,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "3b3a259f-715e-4e66-b446-cf54e4af49b3")
-		(property "Reference" "R_BAT?"
+		(property "Reference" "R_BAT1"
 			(at 76.66 122.96 0)
 			(effects
 				(font
@@ -1722,7 +1722,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal"
 			(at 73.66 124.46 0)
 			(effects
 				(font
@@ -1764,7 +1764,7 @@
 			)
 			(project "01_Power_Supply"
 				(path "/901b8001-5a6a-42f1-a3c6-dacb1fbb8615"
-					(reference "R_BAT?")
+					(reference "R_BAT1")
 					(unit 1)
 				)
 			)
@@ -1779,7 +1779,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "49c600a4-adea-4a4b-9f9e-07a7a534d38c")
-		(property "Reference" "R_BAT?"
+		(property "Reference" "R_BAT2"
 			(at 99.52 145.82 0)
 			(effects
 				(font
@@ -1797,7 +1797,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal"
 			(at 96.52 147.32 0)
 			(effects
 				(font
@@ -1839,7 +1839,7 @@
 			)
 			(project "01_Power_Supply"
 				(path "/901b8001-5a6a-42f1-a3c6-dacb1fbb8615"
-					(reference "R_BAT?")
+					(reference "R_BAT2")
 					(unit 1)
 				)
 			)
@@ -2321,7 +2321,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "7afec47d-244a-4445-8db7-414342604acd")
-		(property "Reference" "C_3V3_?"
+		(property "Reference" "C_3V32"
 			(at 145.24 49.3 0)
 			(effects
 				(font
@@ -2381,7 +2381,7 @@
 			)
 			(project "01_Power_Supply"
 				(path "/901b8001-5a6a-42f1-a3c6-dacb1fbb8615"
-					(reference "C_3V3_?")
+					(reference "C_3V32")
 					(unit 1)
 				)
 			)
@@ -2396,7 +2396,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "7d337a01-0fcb-45fa-9833-ac36178f785c")
-		(property "Reference" "J_BAT_SENSE?"
+		(property "Reference" "J_BAT_SENSE"
 			(at 44.45 105.76 0)
 			(effects
 				(font
@@ -2454,7 +2454,7 @@
 			)
 			(project "01_Power_Supply"
 				(path "/901b8001-5a6a-42f1-a3c6-dacb1fbb8615"
-					(reference "J_BAT_SENSE?")
+					(reference "J_BAT_SENSE")
 					(unit 1)
 				)
 			)
@@ -2469,7 +2469,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "889fdc25-07e9-47eb-b77c-8bee97ef8fb4")
-		(property "Reference" "C_IN?"
+		(property "Reference" "C_IN1"
 			(at 99.52 49.3 0)
 			(effects
 				(font
@@ -2529,7 +2529,7 @@
 			)
 			(project "01_Power_Supply"
 				(path "/901b8001-5a6a-42f1-a3c6-dacb1fbb8615"
-					(reference "C_IN?")
+					(reference "C_IN1")
 					(unit 1)
 				)
 			)
@@ -2680,7 +2680,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "b41a4a88-8b0c-40ba-a278-ae96563d7637")
-		(property "Reference" "C_IN?"
+		(property "Reference" "C_IN2"
 			(at 79.2 49.3 0)
 			(effects
 				(font
@@ -2740,7 +2740,7 @@
 			)
 			(project "01_Power_Supply"
 				(path "/901b8001-5a6a-42f1-a3c6-dacb1fbb8615"
-					(reference "C_IN?")
+					(reference "C_IN2")
 					(unit 1)
 				)
 			)
@@ -3015,7 +3015,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "e01e0668-ba9e-4d52-b03a-474f07fbc15c")
-		(property "Reference" "C_BAT?"
+		(property "Reference" "C_BAT1"
 			(at 122.38 145.82 0)
 			(effects
 				(font
@@ -3075,7 +3075,7 @@
 			)
 			(project "01_Power_Supply"
 				(path "/901b8001-5a6a-42f1-a3c6-dacb1fbb8615"
-					(reference "C_BAT?")
+					(reference "C_BAT1")
 					(unit 1)
 				)
 			)

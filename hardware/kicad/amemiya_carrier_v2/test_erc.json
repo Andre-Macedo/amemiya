@@ -1,0 +1,34 @@
+{
+    "$schema": "https://schemas.kicad.org/erc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-10-20T15:42:54-0300",
+    "kicad_version": "9.0.7",
+    "sheets": [
+        {
+            "path": "/",
+            "uuid_path": "/620adc61-f0a7-4b23-bb32-12a58dd5caa9",
+            "violations": []
+        },
+        {
+            "path": "/Power_Supply/",
+            "uuid_path": "/620adc61-f0a7-4b23-bb32-12a58dd5caa9/e668d7da-402b-45e8-a61e-ea7f383d611c",
+            "violations": []
+        },
+        {
+            "path": "/Sensors_AFE/",
+            "uuid_path": "/620adc61-f0a7-4b23-bb32-12a58dd5caa9/b73bc9d4-1e86-4693-8263-aaeaf6ac7f20",
+            "violations": []
+        },
+        {
+            "path": "/MCU_ESP32S3/",
+            "uuid_path": "/620adc61-f0a7-4b23-bb32-12a58dd5caa9/ac9a9f32-0022-488e-9728-9af913d95ae7",
+            "violations": []
+        },
+        {
+            "path": "/Peripherals_LoRa/",
+            "uuid_path": "/620adc61-f0a7-4b23-bb32-12a58dd5caa9/318d76c3-4903-456e-b81c-7ac914c894e8",
+            "violations": []
+        }
+    ],
+    "source": "amemiya_carrier_v2.kicad_sch"
+}

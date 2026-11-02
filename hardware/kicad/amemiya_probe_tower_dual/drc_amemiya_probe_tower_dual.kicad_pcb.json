@@ -1,0 +1,126 @@
+{
+    "$schema": "https://schemas.kicad.org/drc.v1.json",
+    "coordinate_units": "mm",
+    "date": "2026-10-30T19:36:31-0300",
+    "kicad_version": "9.0.7",
+    "schematic_parity": [],
+    "source": "amemiya_probe_tower_dual.kicad_pcb",
+    "unconnected_items": [],
+    "violations": [
+        {
+            "description": "Violação do isolamento (zona isolamento 0,3000 mm; atual 0,0000 mm)",
+            "items": [
+                {
+                    "description": "Trilha [/1W_DQ] no B.Cu, comprimento 6,4200 mm",
+                    "pos": {
+                        "x": 21.08,
+                        "y": 9.58
+                    },
+                    "uuid": "9bf8cb2e-7d67-43b1-bbb2-b1229465156d"
+                },
+                {
+                    "description": "Zone [GND] no B.Cu, priority 0",
+                    "pos": {
+                        "x": 0.3,
+                        "y": 0.3
+                    },
+                    "uuid": "86eb91b7-25e0-4b93-9d70-5f92bf5032f4"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Violação do isolamento (zona isolamento 0,3000 mm; atual 0,0000 mm)",
+            "items": [
+                {
+                    "description": "Trilha [/I2C_SCL] no B.Cu, comprimento 1,6995 mm",
+                    "pos": {
+                        "x": 14.5,
+                        "y": 41.5
+                    },
+                    "uuid": "55803ac0-7aab-41b9-86a0-b583551170f5"
+                },
+                {
+                    "description": "Zone [GND] no B.Cu, priority 0",
+                    "pos": {
+                        "x": 0.3,
+                        "y": 0.3
+                    },
+                    "uuid": "86eb91b7-25e0-4b93-9d70-5f92bf5032f4"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Violação do isolamento (zona isolamento 0,3000 mm; atual 0,0405 mm)",
+            "items": [
+                {
+                    "description": "Trilha [/1W_DQ] no B.Cu, comprimento 0,9600 mm",
+                    "pos": {
+                        "x": 14.54,
+                        "y": 4.0
+                    },
+                    "uuid": "9f266593-ff86-45da-a91d-85f3992551d8"
+                },
+                {
+                    "description": "Zone [GND] no B.Cu, priority 0",
+                    "pos": {
+                        "x": 0.3,
+                        "y": 0.3
+                    },
+                    "uuid": "86eb91b7-25e0-4b93-9d70-5f92bf5032f4"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Violação do isolamento (zona isolamento 0,3000 mm; atual 0,0000 mm)",
+            "items": [
+                {
+                    "description": "Trilha [/I2C_SCL] no B.Cu, comprimento 2,3000 mm",
+                    "pos": {
+                        "x": 14.5,
+                        "y": 43.8
+                    },
+                    "uuid": "b2476547-6b9c-4f42-80c2-ad57624ee470"
+                },
+                {
+                    "description": "Zone [GND] no B.Cu, priority 0",
+                    "pos": {
+                        "x": 0.3,
+                        "y": 0.3
+                    },
+                    "uuid": "86eb91b7-25e0-4b93-9d70-5f92bf5032f4"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        },
+        {
+            "description": "Violação do isolamento (zona isolamento 0,3000 mm; atual 0,0000 mm)",
+            "items": [
+                {
+                    "description": "Trilha [/1W_DQ] no B.Cu, comprimento 7,8913 mm",
+                    "pos": {
+                        "x": 15.5,
+                        "y": 4.0
+                    },
+                    "uuid": "eeb4167b-5ba6-48db-b4a8-cc79972407e0"
+                },
+                {
+                    "description": "Zone [GND] no B.Cu, priority 0",
+                    "pos": {
+                        "x": 0.3,
+                        "y": 0.3
+                    },
+                    "uuid": "86eb91b7-25e0-4b93-9d70-5f92bf5032f4"
+                }
+            ],
+            "severity": "error",
+            "type": "clearance"
+        }
+    ]
+}

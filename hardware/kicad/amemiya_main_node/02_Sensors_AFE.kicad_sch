@@ -1279,6 +1279,304 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Transistor_FET:AO3401A"
+			(pin_names
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "Q"
+				(at 5.08 1.905 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Value" "AO3401A"
+				(at 5.08 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" "Package_TO_SOT_SMD:SOT-23"
+				(at 5.08 -1.905 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+					(justify left)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "http://www.aosmd.com/pdfs/datasheet/AO3401A.pdf"
+				(at 5.08 -3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+					(hide yes)
+				)
+			)
+			(property "Description" "-4.0A Id, -30V Vds, P-Channel MOSFET, SOT-23"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "P-Channel MOSFET"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_fp_filters" "SOT?23*"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "AO3401A_0_1"
+				(polyline
+					(pts
+						(xy 0.254 1.905) (xy 0.254 -1.905)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.254 0) (xy -2.54 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 2.286) (xy 0.762 1.27)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 1.778) (xy 3.302 1.778) (xy 3.302 -1.778) (xy 0.762 -1.778)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 0.508) (xy 0.762 -0.508)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 0.762 -1.27) (xy 0.762 -2.286)
+					)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 1.651 0)
+					(radius 2.794)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.286 0) (xy 1.27 0.381) (xy 1.27 -0.381) (xy 2.286 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 2.54) (xy 2.54 1.778)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(circle
+					(center 2.54 1.778)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(circle
+					(center 2.54 -1.778)
+					(radius 0.254)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type outline)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 -2.54) (xy 2.54 0) (xy 0.762 0)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.794 -0.508) (xy 2.921 -0.381) (xy 3.683 -0.381) (xy 3.81 -0.254)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 3.302 -0.381) (xy 2.921 0.254) (xy 3.683 0.254) (xy 3.302 -0.381)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "AO3401A_1_1"
+				(pin input line
+					(at -5.08 0 0)
+					(length 2.54)
+					(name "G"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 2.54 5.08 270)
+					(length 2.54)
+					(name "D"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 2.54 -5.08 90)
+					(length 2.54)
+					(name "S"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 	)
 	(text "Sinais: +3V3, GND, 1-Wire DS18B20, I2S Digital Mic / Vibrometro, Barramento I2C Sensores"
 		(exclude_from_sim no)
@@ -2097,7 +2395,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "1ab0048a-b9c0-43f9-89c4-d66137ed92bb")
-		(property "Reference" "D_AMP_HI?"
+		(property "Reference" "D_AMP_HI"
 			(at 137.62 36.6 90)
 			(effects
 				(font
@@ -2151,7 +2449,7 @@
 		(instances
 			(project "02_Sensors_AFE"
 				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "D_AMP_HI?")
+					(reference "D_AMP_HI")
 					(unit 1)
 				)
 			)
@@ -2172,7 +2470,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "1e47be77-6c95-41c4-a72b-f483e142a2a9")
-		(property "Reference" "R_S_TACHO?"
+		(property "Reference" "R_S_TACHO"
 			(at 83.82 120.65 90)
 			(effects
 				(font
@@ -2188,7 +2486,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal"
 			(at 83.82 124.46 0)
 			(effects
 				(font
@@ -2224,7 +2522,7 @@
 		(instances
 			(project "02_Sensors_AFE"
 				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "R_S_TACHO?")
+					(reference "R_S_TACHO")
 					(unit 1)
 				)
 			)
@@ -2245,7 +2543,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "2eb4b8da-197d-4d7f-90d8-c4b4d4598c13")
-		(property "Reference" "R_PU_TACHO?"
+		(property "Reference" "R_PU_TACHO"
 			(at 56.34 112.8 0)
 			(effects
 				(font
@@ -2263,7 +2561,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal"
 			(at 53.34 114.3 0)
 			(effects
 				(font
@@ -2299,7 +2597,7 @@
 		(instances
 			(project "02_Sensors_AFE"
 				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "R_PU_TACHO?")
+					(reference "R_PU_TACHO")
 					(unit 1)
 				)
 			)
@@ -2376,70 +2674,15 @@
 			)
 		)
 	)
-	(symbol
-		(lib_id "power:+3V3")
-		(at 119.38 180.34 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
+	(label "+3V3_SWITCHED"
+		(at 119.38 180.34 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
 		(uuid "4467c423-9fb5-4cb8-8360-4fcebc26bea7")
-		(property "Reference" "#PWR?"
-			(at 119.38 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3V3"
-			(at 119.38 177.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 119.38 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 119.38 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 119.38 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "a3d4e486-5aad-4243-aff6-a1a282929911")
-		)
-		(instances
-			(project "02_Sensors_AFE"
-				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
-		)
 	)
 	(symbol
 		(lib_id "power:GND")
@@ -2645,7 +2888,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "503a8058-e7fd-4795-9730-f57c49c93bb0")
-		(property "Reference" "R_PU_SDA?"
+		(property "Reference" "R_PU_SDA"
 			(at 122.38 194.08 0)
 			(effects
 				(font
@@ -2663,7 +2906,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal"
 			(at 119.38 195.58 0)
 			(effects
 				(font
@@ -2699,7 +2942,7 @@
 		(instances
 			(project "02_Sensors_AFE"
 				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "R_PU_SDA?")
+					(reference "R_PU_SDA")
 					(unit 1)
 				)
 			)
@@ -2720,7 +2963,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "541b9004-602a-47fd-9d14-cc8bf84b8916")
-		(property "Reference" "J_TACHO?"
+		(property "Reference" "J_TACHO"
 			(at 33.02 113.92 0)
 			(effects
 				(font
@@ -2775,7 +3018,7 @@
 		(instances
 			(project "02_Sensors_AFE"
 				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "J_TACHO?")
+					(reference "J_TACHO")
 					(unit 1)
 				)
 			)
@@ -2796,7 +3039,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "54701579-e2f5-409a-939e-e32a34e39e7d")
-		(property "Reference" "R_PU_SCL?"
+		(property "Reference" "R_PU_SCL"
 			(at 99.52 191.54 0)
 			(effects
 				(font
@@ -2814,7 +3057,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal"
 			(at 96.52 193.04 0)
 			(effects
 				(font
@@ -2850,7 +3093,7 @@
 		(instances
 			(project "02_Sensors_AFE"
 				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "R_PU_SCL?")
+					(reference "R_PU_SCL")
 					(unit 1)
 				)
 			)
@@ -2871,7 +3114,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "5543e94c-8c11-448c-a4be-52ea339abfee")
-		(property "Reference" "J_PROBE?"
+		(property "Reference" "J_PROBE"
 			(at 33.02 176.5 0)
 			(effects
 				(font
@@ -2941,7 +3184,7 @@
 		(instances
 			(project "02_Sensors_AFE"
 				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "J_PROBE?")
+					(reference "J_PROBE")
 					(unit 1)
 				)
 			)
@@ -2953,70 +3196,15 @@
 			)
 		)
 	)
-	(symbol
-		(lib_id "power:+3V3")
-		(at 73.66 180.34 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
+	(label "+3V3_SWITCHED"
+		(at 73.66 180.34 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
 		(uuid "63ad2205-556d-48df-8bde-47147bfc28ef")
-		(property "Reference" "#PWR?"
-			(at 73.66 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3V3"
-			(at 73.66 177.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 73.66 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 73.66 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 73.66 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "2fc5cb89-08ae-4e7f-855b-55c614491f0c")
-		)
-		(instances
-			(project "02_Sensors_AFE"
-				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
-		)
 	)
 	(symbol
 		(lib_id "Device:R")
@@ -3027,7 +3215,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "79cd3504-26cf-4c0b-bd43-633abea4e30f")
-		(property "Reference" "R_F?"
+		(property "Reference" "R_F1"
 			(at 91.44 44.45 90)
 			(effects
 				(font
@@ -3043,7 +3231,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal"
 			(at 91.44 48.26 0)
 			(effects
 				(font
@@ -3079,7 +3267,7 @@
 		(instances
 			(project "02_Sensors_AFE"
 				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "R_F?")
+					(reference "R_F1")
 					(unit 1)
 				)
 			)
@@ -3100,7 +3288,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "7a4fc19d-a8fe-432f-b87d-8c2f50ed1eaa")
-		(property "Reference" "R_PU_1W?"
+		(property "Reference" "R_PU_1W"
 			(at 76.66 186.46 0)
 			(effects
 				(font
@@ -3118,7 +3306,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal"
 			(at 73.66 187.96 0)
 			(effects
 				(font
@@ -3154,7 +3342,7 @@
 		(instances
 			(project "02_Sensors_AFE"
 				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "R_PU_1W?")
+					(reference "R_PU_1W")
 					(unit 1)
 				)
 			)
@@ -3166,70 +3354,15 @@
 			)
 		)
 	)
-	(symbol
-		(lib_id "power:+3V3")
-		(at 53.34 180.34 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
+	(label "+3V3_SWITCHED"
+		(at 53.34 180.34 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
 		(uuid "7d2e2a30-457e-4a80-bb4e-757edb0b52ec")
-		(property "Reference" "#PWR?"
-			(at 53.34 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3V3"
-			(at 53.34 177.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 53.34 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 53.34 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 53.34 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "c4f958e5-d315-49a2-ae84-a98841e2c37e")
-		)
-		(instances
-			(project "02_Sensors_AFE"
-				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
-		)
 	)
 	(symbol
 		(lib_id "power:GND")
@@ -3305,7 +3438,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "809bad0a-3ab0-4ef4-ad5b-792d9c85938b")
-		(property "Reference" "J_AMP?"
+		(property "Reference" "J_AMP"
 			(at 58.42 46.07 0)
 			(effects
 				(font
@@ -3357,7 +3490,7 @@
 		(instances
 			(project "02_Sensors_AFE"
 				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "J_AMP?")
+					(reference "J_AMP")
 					(unit 1)
 				)
 			)
@@ -3378,7 +3511,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "836d8003-420d-4a5b-af2d-b961ce53b175")
-		(property "Reference" "C_BIAS?"
+		(property "Reference" "C_BIAS"
 			(at 43.64 65.81 0)
 			(effects
 				(font
@@ -3432,7 +3565,7 @@
 		(instances
 			(project "02_Sensors_AFE"
 				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "C_BIAS?")
+					(reference "C_BIAS")
 					(unit 1)
 				)
 			)
@@ -3518,7 +3651,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "a7d5028c-4b57-4150-8429-6f6161dbb35f")
-		(property "Reference" "R_B?"
+		(property "Reference" "R_B"
 			(at 76.66 50.57 0)
 			(effects
 				(font
@@ -3572,7 +3705,7 @@
 		(instances
 			(project "02_Sensors_AFE"
 				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "R_B?")
+					(reference "R_B")
 					(unit 1)
 				)
 			)
@@ -3649,70 +3782,15 @@
 			)
 		)
 	)
-	(symbol
-		(lib_id "power:+3V3")
-		(at 22.86 111.76 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
+	(label "+3V3_SWITCHED"
+		(at 22.86 111.76 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
 		(uuid "b5813780-79cf-4780-a13c-b57763266944")
-		(property "Reference" "#PWR?"
-			(at 22.86 111.76 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3V3"
-			(at 22.86 109.22 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 22.86 111.76 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 22.86 111.76 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 22.86 111.76 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "208464f6-6da3-4dd5-9fbb-6da9499ae8ce")
-		)
-		(instances
-			(project "02_Sensors_AFE"
-				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
-		)
 	)
 	(symbol
 		(lib_id "Device:C")
@@ -3723,7 +3801,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "b9f9de50-0d4e-44c3-a4b3-99e2872747ad")
-		(property "Reference" "C_PROBE?"
+		(property "Reference" "C_PROBE"
 			(at 56.34 185.19 0)
 			(effects
 				(font
@@ -3777,7 +3855,7 @@
 		(instances
 			(project "02_Sensors_AFE"
 				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "C_PROBE?")
+					(reference "C_PROBE")
 					(unit 1)
 				)
 			)
@@ -3789,200 +3867,35 @@
 			)
 		)
 	)
-	(symbol
-		(lib_id "power:+3V3")
-		(at 53.34 106.68 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
+	(label "+3V3_SWITCHED"
+		(at 53.34 106.68 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
 		(uuid "c4fd965e-6555-434a-90d2-762d71da9911")
-		(property "Reference" "#PWR?"
-			(at 53.34 106.68 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3V3"
-			(at 53.34 104.14 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 53.34 106.68 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 53.34 106.68 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 53.34 106.68 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "8e144c5b-625c-4d82-84a9-982080fe3b58")
-		)
-		(instances
-			(project "02_Sensors_AFE"
-				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
-		)
 	)
-	(symbol
-		(lib_id "power:+3V3")
-		(at 22.86 180.34 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
+	(label "+3V3_SWITCHED"
+		(at 22.86 180.34 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
 		(uuid "c8fdd58a-6af9-4008-a6ae-55e3269ef34e")
-		(property "Reference" "#PWR?"
-			(at 22.86 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3V3"
-			(at 22.86 177.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 22.86 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 22.86 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 22.86 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "eeb6c33e-8abb-460b-94e6-c033bb909a9c")
-		)
-		(instances
-			(project "02_Sensors_AFE"
-				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
-		)
 	)
-	(symbol
-		(lib_id "power:+3V3")
-		(at 96.52 180.34 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
+	(label "+3V3_SWITCHED"
+		(at 96.52 180.34 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
 		(uuid "cd84b14b-98d9-484c-a0a0-7e7db76bfb83")
-		(property "Reference" "#PWR?"
-			(at 96.52 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3V3"
-			(at 96.52 177.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 96.52 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 96.52 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 96.52 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "9114848c-73df-43ef-828a-42379bc71cf6")
-		)
-		(instances
-			(project "02_Sensors_AFE"
-				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
-		)
 	)
 	(symbol
 		(lib_id "Device:R")
@@ -3993,7 +3906,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "d4094adf-9027-453b-96a2-1b3d7db2d1ea")
-		(property "Reference" "R_BIAS?"
+		(property "Reference" "R_BIAS1"
 			(at 30.94 45.49 0)
 			(effects
 				(font
@@ -4011,7 +3924,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal"
 			(at 27.94 46.99 0)
 			(effects
 				(font
@@ -4047,7 +3960,7 @@
 		(instances
 			(project "02_Sensors_AFE"
 				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "R_BIAS?")
+					(reference "R_BIAS1")
 					(unit 1)
 				)
 			)
@@ -4068,7 +3981,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "d5437359-d635-4a04-9a93-03f810fb3e28")
-		(property "Reference" "R_BIAS?"
+		(property "Reference" "R_BIAS2"
 			(at 30.94 65.81 0)
 			(effects
 				(font
@@ -4086,7 +3999,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal"
 			(at 27.94 67.31 0)
 			(effects
 				(font
@@ -4122,7 +4035,7 @@
 		(instances
 			(project "02_Sensors_AFE"
 				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "R_BIAS?")
+					(reference "R_BIAS2")
 					(unit 1)
 				)
 			)
@@ -4143,7 +4056,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "d906051c-5da6-4833-bdee-24f315c77de3")
-		(property "Reference" "C_F_TACHO?"
+		(property "Reference" "C_F_TACHO"
 			(at 114.76 133.12 0)
 			(effects
 				(font
@@ -4197,7 +4110,7 @@
 		(instances
 			(project "02_Sensors_AFE"
 				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "C_F_TACHO?")
+					(reference "C_F_TACHO")
 					(unit 1)
 				)
 			)
@@ -4348,7 +4261,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "eb3c69c8-d136-41ba-aed0-5ddd575c18d8")
-		(property "Reference" "D_AMP_LO?"
+		(property "Reference" "D_AMP_LO"
 			(at 137.62 56.92 90)
 			(effects
 				(font
@@ -4402,7 +4315,7 @@
 		(instances
 			(project "02_Sensors_AFE"
 				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "D_AMP_LO?")
+					(reference "D_AMP_LO")
 					(unit 1)
 				)
 			)
@@ -4414,70 +4327,15 @@
 			)
 		)
 	)
-	(symbol
-		(lib_id "power:+3V3")
-		(at 27.94 38.1 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
+	(label "+3V3_SWITCHED"
+		(at 27.94 38.1 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
 		(uuid "f155ad4b-a5ef-4f77-8145-fb7af408055b")
-		(property "Reference" "#PWR?"
-			(at 27.94 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3V3"
-			(at 27.94 35.56 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 27.94 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 27.94 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" ""
-			(at 27.94 38.1 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "1f04a5e2-4d6f-4cfa-b961-e8397dd77f08")
-		)
-		(instances
-			(project "02_Sensors_AFE"
-				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "#PWR?")
-					(unit 1)
-				)
-			)
-		)
 	)
 	(symbol
 		(lib_id "Device:C")
@@ -4488,7 +4346,7 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "f7b4173d-e8fb-456e-bae0-dde7736e1bc2")
-		(property "Reference" "C_F?"
+		(property "Reference" "C_F"
 			(at 114.76 56.92 0)
 			(effects
 				(font
@@ -4542,7 +4400,7 @@
 		(instances
 			(project "02_Sensors_AFE"
 				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
-					(reference "C_F?")
+					(reference "C_F")
 					(unit 1)
 				)
 			)
@@ -4553,6 +4411,325 @@
 				)
 			)
 		)
+	)
+	(symbol
+		(lib_id "Transistor_FET:AO3401A")
+		(at 180.34 139.7 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "fc29cbf0-3b62-44bb-ba46-3a27d4d732e2")
+		(property "Reference" "Q_PWR_GATE"
+			(at 185.42 141.605 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "AO3401A"
+			(at 185.42 139.7 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23_Handsoldering"
+			(at 185.42 137.795 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+				(justify left)
+			)
+		)
+		(property "Datasheet" "http://www.aosmd.com/pdfs/datasheet/AO3401A.pdf"
+			(at 185.42 135.89 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Description" "-4.0A Id, -30V Vds, P-Channel MOSFET, SOT-23"
+			(at 180.34 139.7 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "c06a5a2b-8a99-4d8c-8f6c-7a07bcc43ab9")
+		)
+		(pin "2"
+			(uuid "9e5f1826-3d4a-4e97-b28e-41500470134d")
+		)
+		(pin "3"
+			(uuid "c19ba44a-5e24-4b89-96f4-c6787a7ead7f")
+		)
+		(instances
+			(project "amemiya_main_node"
+				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
+					(reference "Q_PWR_GATE")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 167.64 143.51 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "c32661f8-0d7d-4d1d-a436-bbbda0d6ad38")
+		(property "Reference" "R_PU_GATE"
+			(at 169.672 143.51 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "100k"
+			(at 167.64 143.51 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal"
+			(at 165.862 143.51 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 167.64 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 167.64 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "90ee4f1d-697a-4707-aaf6-80ad538dc370")
+		)
+		(pin "2"
+			(uuid "e0f3edbd-36a5-4e14-a827-167417bcec3f")
+		)
+		(instances
+			(project "amemiya_main_node"
+				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
+					(reference "R_PU_GATE")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 160.02 139.7) (xy 167.64 139.7)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1a65860b-a5aa-491a-9d6e-2db6d527c0e6")
+	)
+	(wire
+		(pts
+			(xy 167.64 139.7) (xy 175.26 139.7)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "1a65860b-a5aa-491a-9d6e-2db6d527c0e7")
+	)
+	(junction
+		(at 167.64 139.7)
+		(diameter 1.0)
+		(color 0 0 0 0)
+		(uuid "1a65860b-a5aa-491a-9d6e-2db6d527c0e8")
+	)
+	(hierarchical_label "PWR_GATE_EN"
+		(shape input)
+		(at 160.02 139.7 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "b79f7f35-01a9-47cb-aa05-ea60685a1f97")
+	)
+	(wire
+		(pts
+			(xy 167.64 147.32) (xy 182.88 147.32)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7763432a-e85b-412c-871f-c85ab490c10a")
+	)
+	(wire
+		(pts
+			(xy 182.88 147.32) (xy 182.88 144.78)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b2c58eb9-ec6b-4bc3-a0e6-494224d917ad")
+	)
+	(symbol
+		(lib_id "power:+3V3")
+		(at 182.88 147.32 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(uuid "fbf97b24-a6aa-4557-bc94-55d643993026")
+		(property "Reference" "#PWR?"
+			(at 182.88 143.51 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3V3"
+			(at 182.88 150.876 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 182.88 147.32 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 182.88 147.32 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3V3\""
+			(at 182.88 147.32 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "b4887bc4-6969-4d84-88bd-ce3a959a88b5")
+		)
+		(instances
+			(project "amemiya_main_node"
+				(path "/46b10fa7-7a2e-4b68-b7b8-e2182098679e"
+					(reference "#PWR?")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(wire
+		(pts
+			(xy 182.88 134.61999999999998) (xy 182.88 127)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4ca9a192-ada5-4db7-af9d-222cd91d2242")
+	)
+	(junction
+		(at 182.88 147.32)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "ec02ae43-9061-4c40-83a6-dc9ca74d51e3")
+	)
+	(label "+3V3_SWITCHED"
+		(at 182.88 127 90)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left bottom)
+		)
+		(uuid "1b192282-fc94-4ede-854b-96f7d722820b")
 	)
 	(sheet_instances
 		(path "/"

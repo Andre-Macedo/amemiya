@@ -1,0 +1,4 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "amemiya_carrier")(type "KiCad")(uri "${KIPRJMOD}/amemiya_carrier.kicad_sym")(options "")(descr "Amemiya Carrier Board Custom Symbols"))
+)

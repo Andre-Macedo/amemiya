@@ -1,0 +1,1330 @@
+{
+  "pads": [
+    {
+      "ref": "C_BIAS1",
+      "pad": "1",
+      "net": "Net-(J_AMP1-Pin_2)",
+      "x": 33.0,
+      "y": 42.0
+    },
+    {
+      "ref": "C_BIAS1",
+      "pad": "2",
+      "net": "GND",
+      "x": 35.5,
+      "y": 42.0
+    },
+    {
+      "ref": "H1",
+      "pad": "",
+      "net": "",
+      "x": 5.0,
+      "y": 5.0
+    },
+    {
+      "ref": "J_BAT_SENSE1",
+      "pad": "1",
+      "net": "/Power_Supply/VBAT_RAW",
+      "x": 12.0,
+      "y": 22.0
+    },
+    {
+      "ref": "J_BAT_SENSE1",
+      "pad": "2",
+      "net": "GND",
+      "x": 12.0,
+      "y": 24.5
+    },
+    {
+      "ref": "C_OLED1",
+      "pad": "1",
+      "net": "+3V3",
+      "x": 74.0,
+      "y": 10.0
+    },
+    {
+      "ref": "C_OLED1",
+      "pad": "2",
+      "net": "GND",
+      "x": 76.5,
+      "y": 10.0
+    },
+    {
+      "ref": "R_BIAS2",
+      "pad": "1",
+      "net": "Net-(J_AMP1-Pin_2)",
+      "x": 21.0,
+      "y": 44.5
+    },
+    {
+      "ref": "R_BIAS2",
+      "pad": "2",
+      "net": "GND",
+      "x": 28.62,
+      "y": 44.5
+    },
+    {
+      "ref": "D_AMP_HI1",
+      "pad": "1",
+      "net": "/MCU_ESP32S3/AMP_ADC",
+      "x": 21.0,
+      "y": 49.0
+    },
+    {
+      "ref": "D_AMP_HI1",
+      "pad": "2",
+      "net": "+3V3",
+      "x": 28.62,
+      "y": 49.0
+    },
+    {
+      "ref": "C_F1",
+      "pad": "1",
+      "net": "/MCU_ESP32S3/AMP_ADC",
+      "x": 33.0,
+      "y": 35.5
+    },
+    {
+      "ref": "C_F1",
+      "pad": "2",
+      "net": "GND",
+      "x": 35.5,
+      "y": 35.5
+    },
+    {
+      "ref": "R_LED1",
+      "pad": "1",
+      "net": "Net-(J_LEDS1-Pin_1)",
+      "x": 82.0,
+      "y": 51.5
+    },
+    {
+      "ref": "R_LED1",
+      "pad": "2",
+      "net": "/MCU_ESP32S3/GPIO_LED_GRN",
+      "x": 89.62,
+      "y": 51.5
+    },
+    {
+      "ref": "R_PU_SCL1",
+      "pad": "1",
+      "net": "/Sensors_AFE/+3V3_SWITCHED",
+      "x": 21.0,
+      "y": 69.5
+    },
+    {
+      "ref": "R_PU_SCL1",
+      "pad": "2",
+      "net": "/MCU_ESP32S3/I2C_SCL",
+      "x": 28.62,
+      "y": 69.5
+    },
+    {
+      "ref": "J_PROBE1",
+      "pad": "1",
+      "net": "/Sensors_AFE/+3V3_SWITCHED",
+      "x": 14.0,
+      "y": 75.5
+    },
+    {
+      "ref": "J_PROBE1",
+      "pad": "2",
+      "net": "GND",
+      "x": 16.5,
+      "y": 75.5
+    },
+    {
+      "ref": "J_PROBE1",
+      "pad": "3",
+      "net": "/MCU_ESP32S3/1W_DQ",
+      "x": 19.0,
+      "y": 75.5
+    },
+    {
+      "ref": "J_PROBE1",
+      "pad": "4",
+      "net": "/MCU_ESP32S3/I2S_SD",
+      "x": 21.5,
+      "y": 75.5
+    },
+    {
+      "ref": "J_PROBE1",
+      "pad": "5",
+      "net": "/MCU_ESP32S3/I2S_SCK",
+      "x": 24.0,
+      "y": 75.5
+    },
+    {
+      "ref": "J_PROBE1",
+      "pad": "6",
+      "net": "/MCU_ESP32S3/I2S_WS",
+      "x": 26.5,
+      "y": 75.5
+    },
+    {
+      "ref": "J_PROBE1",
+      "pad": "7",
+      "net": "/MCU_ESP32S3/I2C_SCL",
+      "x": 29.0,
+      "y": 75.5
+    },
+    {
+      "ref": "J_PROBE1",
+      "pad": "8",
+      "net": "/MCU_ESP32S3/I2C_SDA",
+      "x": 31.5,
+      "y": 75.5
+    },
+    {
+      "ref": "H2",
+      "pad": "",
+      "net": "",
+      "x": 105.0,
+      "y": 5.0
+    },
+    {
+      "ref": "J_TACHO1",
+      "pad": "1",
+      "net": "/Sensors_AFE/+3V3_SWITCHED",
+      "x": 12.0,
+      "y": 46.0
+    },
+    {
+      "ref": "J_TACHO1",
+      "pad": "2",
+      "net": "GND",
+      "x": 12.0,
+      "y": 48.5
+    },
+    {
+      "ref": "J_TACHO1",
+      "pad": "3",
+      "net": "/Sensors_AFE/TACHO_RAW",
+      "x": 12.0,
+      "y": 51.0
+    },
+    {
+      "ref": "C_LORA_BULK1",
+      "pad": "1",
+      "net": "+3V3",
+      "x": 81.0,
+      "y": 29.0
+    },
+    {
+      "ref": "C_LORA_BULK1",
+      "pad": "2",
+      "net": "GND",
+      "x": 84.5,
+      "y": 29.0
+    },
+    {
+      "ref": "J_BAT1",
+      "pad": "1",
+      "net": "+5V",
+      "x": 12.0,
+      "y": 13.0
+    },
+    {
+      "ref": "J_BAT1",
+      "pad": "2",
+      "net": "GND",
+      "x": 12.0,
+      "y": 15.5
+    },
+    {
+      "ref": "C_IN1",
+      "pad": "1",
+      "net": "+5V",
+      "x": 22.0,
+      "y": 9.0
+    },
+    {
+      "ref": "C_IN1",
+      "pad": "2",
+      "net": "GND",
+      "x": 24.5,
+      "y": 9.0
+    },
+    {
+      "ref": "H3",
+      "pad": "",
+      "net": "",
+      "x": 5.0,
+      "y": 75.0
+    },
+    {
+      "ref": "R_PU_M0",
+      "pad": "1",
+      "net": "+3V3",
+      "x": 74.0,
+      "y": 43.0
+    },
+    {
+      "ref": "R_PU_M0",
+      "pad": "2",
+      "net": "/MCU_ESP32S3/LORA_M0",
+      "x": 81.62,
+      "y": 43.0
+    },
+    {
+      "ref": "C_PROBE1",
+      "pad": "1",
+      "net": "/Sensors_AFE/+3V3_SWITCHED",
+      "x": 35.0,
+      "y": 62.5
+    },
+    {
+      "ref": "C_PROBE1",
+      "pad": "2",
+      "net": "GND",
+      "x": 37.5,
+      "y": 62.5
+    },
+    {
+      "ref": "J_OLED1",
+      "pad": "1",
+      "net": "GND",
+      "x": 86.0,
+      "y": 10.0
+    },
+    {
+      "ref": "J_OLED1",
+      "pad": "2",
+      "net": "+3V3",
+      "x": 86.0,
+      "y": 12.54
+    },
+    {
+      "ref": "J_OLED1",
+      "pad": "3",
+      "net": "/MCU_ESP32S3/I2C_SCL",
+      "x": 86.0,
+      "y": 15.08
+    },
+    {
+      "ref": "J_OLED1",
+      "pad": "4",
+      "net": "/MCU_ESP32S3/I2C_SDA",
+      "x": 86.0,
+      "y": 17.62
+    },
+    {
+      "ref": "R_BUZ1",
+      "pad": "1",
+      "net": "Net-(J_BUZ1-Pin_2)",
+      "x": 82.0,
+      "y": 68.0
+    },
+    {
+      "ref": "R_BUZ1",
+      "pad": "2",
+      "net": "/MCU_ESP32S3/GPIO_BUZZER",
+      "x": 89.62,
+      "y": 68.0
+    },
+    {
+      "ref": "R_PU_M1",
+      "pad": "1",
+      "net": "+3V3",
+      "x": 74.0,
+      "y": 47.5
+    },
+    {
+      "ref": "R_PU_M1",
+      "pad": "2",
+      "net": "/MCU_ESP32S3/LORA_M1",
+      "x": 81.62,
+      "y": 47.5
+    },
+    {
+      "ref": "R_F1",
+      "pad": "1",
+      "net": "Net-(J_AMP1-Pin_1)",
+      "x": 21.0,
+      "y": 35.5
+    },
+    {
+      "ref": "R_F1",
+      "pad": "2",
+      "net": "/MCU_ESP32S3/AMP_ADC",
+      "x": 28.62,
+      "y": 35.5
+    },
+    {
+      "ref": "U_LORA1",
+      "pad": "1",
+      "net": "/MCU_ESP32S3/LORA_M0",
+      "x": 94.0,
+      "y": 27.0
+    },
+    {
+      "ref": "U_LORA1",
+      "pad": "2",
+      "net": "/MCU_ESP32S3/LORA_M1",
+      "x": 94.0,
+      "y": 29.54
+    },
+    {
+      "ref": "U_LORA1",
+      "pad": "3",
+      "net": "/MCU_ESP32S3/LORA_TX",
+      "x": 94.0,
+      "y": 32.08
+    },
+    {
+      "ref": "U_LORA1",
+      "pad": "4",
+      "net": "/MCU_ESP32S3/LORA_RX",
+      "x": 94.0,
+      "y": 34.62
+    },
+    {
+      "ref": "U_LORA1",
+      "pad": "5",
+      "net": "/MCU_ESP32S3/LORA_AUX",
+      "x": 94.0,
+      "y": 37.16
+    },
+    {
+      "ref": "U_LORA1",
+      "pad": "6",
+      "net": "+3V3",
+      "x": 94.0,
+      "y": 39.7
+    },
+    {
+      "ref": "U_LORA1",
+      "pad": "7",
+      "net": "GND",
+      "x": 94.0,
+      "y": 42.24
+    },
+    {
+      "ref": "C_IN2",
+      "pad": "1",
+      "net": "+5V",
+      "x": 32.0,
+      "y": 9.0
+    },
+    {
+      "ref": "C_IN2",
+      "pad": "2",
+      "net": "GND",
+      "x": 34.5,
+      "y": 9.0
+    },
+    {
+      "ref": "C_LORA_DEC1",
+      "pad": "1",
+      "net": "+3V3",
+      "x": 81.0,
+      "y": 36.5
+    },
+    {
+      "ref": "C_LORA_DEC1",
+      "pad": "2",
+      "net": "GND",
+      "x": 83.5,
+      "y": 36.5
+    },
+    {
+      "ref": "R_BAT1",
+      "pad": "1",
+      "net": "/Power_Supply/VBAT_RAW",
+      "x": 21.0,
+      "y": 21.0
+    },
+    {
+      "ref": "R_BAT1",
+      "pad": "2",
+      "net": "/MCU_ESP32S3/VBAT_ADC",
+      "x": 28.62,
+      "y": 21.0
+    },
+    {
+      "ref": "J_BUZ1",
+      "pad": "1",
+      "net": "GND",
+      "x": 99.0,
+      "y": 68.0
+    },
+    {
+      "ref": "J_BUZ1",
+      "pad": "2",
+      "net": "Net-(J_BUZ1-Pin_2)",
+      "x": 99.0,
+      "y": 65.5
+    },
+    {
+      "ref": "U1",
+      "pad": "1",
+      "net": "+3V3",
+      "x": 42.3,
+      "y": 13.33
+    },
+    {
+      "ref": "U1",
+      "pad": "2",
+      "net": "+3V3",
+      "x": 42.3,
+      "y": 15.87
+    },
+    {
+      "ref": "U1",
+      "pad": "3",
+      "net": "unconnected-(U1-EN{slash}RST-Pad3)",
+      "x": 42.3,
+      "y": 18.41
+    },
+    {
+      "ref": "U1",
+      "pad": "4",
+      "net": "/MCU_ESP32S3/TACHO",
+      "x": 42.3,
+      "y": 20.95
+    },
+    {
+      "ref": "U1",
+      "pad": "5",
+      "net": "/MCU_ESP32S3/1W_DQ",
+      "x": 42.3,
+      "y": 23.49
+    },
+    {
+      "ref": "U1",
+      "pad": "6",
+      "net": "/MCU_ESP32S3/I2S_SD",
+      "x": 42.3,
+      "y": 26.03
+    },
+    {
+      "ref": "U1",
+      "pad": "7",
+      "net": "/MCU_ESP32S3/I2S_SCK",
+      "x": 42.3,
+      "y": 28.57
+    },
+    {
+      "ref": "U1",
+      "pad": "8",
+      "net": "/MCU_ESP32S3/GPIO_LED_GRN",
+      "x": 42.3,
+      "y": 31.11
+    },
+    {
+      "ref": "U1",
+      "pad": "9",
+      "net": "/MCU_ESP32S3/GPIO_LED_ORG",
+      "x": 42.3,
+      "y": 33.65
+    },
+    {
+      "ref": "U1",
+      "pad": "10",
+      "net": "/MCU_ESP32S3/GPIO_LED_BLU",
+      "x": 42.3,
+      "y": 36.19
+    },
+    {
+      "ref": "U1",
+      "pad": "11",
+      "net": "/MCU_ESP32S3/GPIO_BUZZER",
+      "x": 42.3,
+      "y": 38.73
+    },
+    {
+      "ref": "U1",
+      "pad": "12",
+      "net": "/MCU_ESP32S3/I2S_WS",
+      "x": 42.3,
+      "y": 41.27
+    },
+    {
+      "ref": "U1",
+      "pad": "13",
+      "net": "unconnected-(U1-GPIO19_(USB_D-)-Pad13)",
+      "x": 42.3,
+      "y": 43.81
+    },
+    {
+      "ref": "U1",
+      "pad": "14",
+      "net": "unconnected-(U1-GPIO20_(USB_D+)-Pad14)",
+      "x": 42.3,
+      "y": 46.35
+    },
+    {
+      "ref": "U1",
+      "pad": "15",
+      "net": "unconnected-(U1-GPIO3-Pad15)",
+      "x": 42.3,
+      "y": 48.89
+    },
+    {
+      "ref": "U1",
+      "pad": "16",
+      "net": "unconnected-(U1-GPIO46-Pad16)",
+      "x": 42.3,
+      "y": 51.43
+    },
+    {
+      "ref": "U1",
+      "pad": "17",
+      "net": "unconnected-(U1-GPIO9-Pad17)",
+      "x": 42.3,
+      "y": 53.97
+    },
+    {
+      "ref": "U1",
+      "pad": "18",
+      "net": "unconnected-(U1-GPIO10-Pad18)",
+      "x": 42.3,
+      "y": 56.51
+    },
+    {
+      "ref": "U1",
+      "pad": "19",
+      "net": "unconnected-(U1-GPIO11-Pad19)",
+      "x": 42.3,
+      "y": 59.05
+    },
+    {
+      "ref": "U1",
+      "pad": "20",
+      "net": "unconnected-(U1-GPIO12-Pad20)",
+      "x": 42.3,
+      "y": 61.59
+    },
+    {
+      "ref": "U1",
+      "pad": "21",
+      "net": "unconnected-(U1-GPIO13-Pad21)",
+      "x": 42.3,
+      "y": 64.13
+    },
+    {
+      "ref": "U1",
+      "pad": "22",
+      "net": "unconnected-(U1-GPIO14-Pad22)",
+      "x": 42.3,
+      "y": 66.67
+    },
+    {
+      "ref": "U1",
+      "pad": "23",
+      "net": "GND",
+      "x": 67.7,
+      "y": 13.33
+    },
+    {
+      "ref": "U1",
+      "pad": "24",
+      "net": "/MCU_ESP32S3/LORA_M0",
+      "x": 67.7,
+      "y": 15.87
+    },
+    {
+      "ref": "U1",
+      "pad": "25",
+      "net": "/MCU_ESP32S3/LORA_AUX",
+      "x": 67.7,
+      "y": 18.41
+    },
+    {
+      "ref": "U1",
+      "pad": "26",
+      "net": "unconnected-(U1-GPIO48-Pad26)",
+      "x": 67.7,
+      "y": 20.95
+    },
+    {
+      "ref": "U1",
+      "pad": "27",
+      "net": "unconnected-(U1-GPIO45-Pad27)",
+      "x": 67.7,
+      "y": 23.49
+    },
+    {
+      "ref": "U1",
+      "pad": "28",
+      "net": "unconnected-(U1-GPIO0_(BOOT)-Pad28)",
+      "x": 67.7,
+      "y": 26.03
+    },
+    {
+      "ref": "U1",
+      "pad": "29",
+      "net": "unconnected-(U1-GPIO35-Pad29)",
+      "x": 67.7,
+      "y": 28.57
+    },
+    {
+      "ref": "U1",
+      "pad": "30",
+      "net": "unconnected-(U1-GPIO36-Pad30)",
+      "x": 67.7,
+      "y": 31.11
+    },
+    {
+      "ref": "U1",
+      "pad": "31",
+      "net": "unconnected-(U1-GPIO37-Pad31)",
+      "x": 67.7,
+      "y": 33.65
+    },
+    {
+      "ref": "U1",
+      "pad": "32",
+      "net": "/MCU_ESP32S3/LORA_M1",
+      "x": 67.7,
+      "y": 36.19
+    },
+    {
+      "ref": "U1",
+      "pad": "33",
+      "net": "unconnected-(U1-GPIO40-Pad33)",
+      "x": 67.7,
+      "y": 38.73
+    },
+    {
+      "ref": "U1",
+      "pad": "34",
+      "net": "/MCU_ESP32S3/I2C_SDA",
+      "x": 67.7,
+      "y": 41.27
+    },
+    {
+      "ref": "U1",
+      "pad": "35",
+      "net": "/MCU_ESP32S3/I2C_SCL",
+      "x": 67.7,
+      "y": 43.81
+    },
+    {
+      "ref": "U1",
+      "pad": "36",
+      "net": "/MCU_ESP32S3/LORA_RX",
+      "x": 67.7,
+      "y": 46.35
+    },
+    {
+      "ref": "U1",
+      "pad": "37",
+      "net": "/MCU_ESP32S3/LORA_TX",
+      "x": 67.7,
+      "y": 48.89
+    },
+    {
+      "ref": "U1",
+      "pad": "38",
+      "net": "/MCU_ESP32S3/PWR_GATE_EN",
+      "x": 67.7,
+      "y": 51.43
+    },
+    {
+      "ref": "U1",
+      "pad": "39",
+      "net": "/MCU_ESP32S3/AMP_ADC",
+      "x": 67.7,
+      "y": 53.97
+    },
+    {
+      "ref": "U1",
+      "pad": "40",
+      "net": "/MCU_ESP32S3/VBAT_ADC",
+      "x": 67.7,
+      "y": 56.51
+    },
+    {
+      "ref": "U1",
+      "pad": "41",
+      "net": "GND",
+      "x": 67.7,
+      "y": 59.05
+    },
+    {
+      "ref": "U1",
+      "pad": "42",
+      "net": "+5V",
+      "x": 67.7,
+      "y": 61.59
+    },
+    {
+      "ref": "U1",
+      "pad": "43",
+      "net": "GND",
+      "x": 67.7,
+      "y": 64.13
+    },
+    {
+      "ref": "U1",
+      "pad": "44",
+      "net": "GND",
+      "x": 67.7,
+      "y": 66.67
+    },
+    {
+      "ref": "C_ESP1",
+      "pad": "1",
+      "net": "+3V3",
+      "x": 74.0,
+      "y": 16.0
+    },
+    {
+      "ref": "C_ESP1",
+      "pad": "2",
+      "net": "GND",
+      "x": 76.5,
+      "y": 16.0
+    },
+    {
+      "ref": "R_BAT2",
+      "pad": "1",
+      "net": "/MCU_ESP32S3/VBAT_ADC",
+      "x": 21.0,
+      "y": 25.5
+    },
+    {
+      "ref": "R_BAT2",
+      "pad": "2",
+      "net": "GND",
+      "x": 28.62,
+      "y": 25.5
+    },
+    {
+      "ref": "C_3V3_1",
+      "pad": "1",
+      "net": "+3V3",
+      "x": 22.0,
+      "y": 15.0
+    },
+    {
+      "ref": "C_3V3_1",
+      "pad": "2",
+      "net": "GND",
+      "x": 24.5,
+      "y": 15.0
+    },
+    {
+      "ref": "D_AMP_LO1",
+      "pad": "1",
+      "net": "GND",
+      "x": 21.0,
+      "y": 53.5
+    },
+    {
+      "ref": "D_AMP_LO1",
+      "pad": "2",
+      "net": "/MCU_ESP32S3/AMP_ADC",
+      "x": 28.62,
+      "y": 53.5
+    },
+    {
+      "ref": "R_S_TACHO1",
+      "pad": "1",
+      "net": "/Sensors_AFE/TACHO_RAW",
+      "x": 32.0,
+      "y": 53.5
+    },
+    {
+      "ref": "R_S_TACHO1",
+      "pad": "2",
+      "net": "/MCU_ESP32S3/TACHO",
+      "x": 39.62,
+      "y": 53.5
+    },
+    {
+      "ref": "R_LED3",
+      "pad": "1",
+      "net": "Net-(J_LEDS1-Pin_3)",
+      "x": 82.0,
+      "y": 59.5
+    },
+    {
+      "ref": "R_LED3",
+      "pad": "2",
+      "net": "/MCU_ESP32S3/GPIO_LED_BLU",
+      "x": 89.62,
+      "y": 59.5
+    },
+    {
+      "ref": "C_ESP2",
+      "pad": "1",
+      "net": "+3V3",
+      "x": 74.0,
+      "y": 22.0
+    },
+    {
+      "ref": "C_ESP2",
+      "pad": "2",
+      "net": "GND",
+      "x": 76.5,
+      "y": 22.0
+    },
+    {
+      "ref": "R_BIAS1",
+      "pad": "1",
+      "net": "/Sensors_AFE/+3V3_SWITCHED",
+      "x": 21.0,
+      "y": 40.0
+    },
+    {
+      "ref": "R_BIAS1",
+      "pad": "2",
+      "net": "Net-(J_AMP1-Pin_2)",
+      "x": 28.62,
+      "y": 40.0
+    },
+    {
+      "ref": "H4",
+      "pad": "",
+      "net": "",
+      "x": 105.0,
+      "y": 75.0
+    },
+    {
+      "ref": "R_PU_TACHO1",
+      "pad": "1",
+      "net": "/Sensors_AFE/+3V3_SWITCHED",
+      "x": 32.0,
+      "y": 49.0
+    },
+    {
+      "ref": "R_PU_TACHO1",
+      "pad": "2",
+      "net": "/Sensors_AFE/TACHO_RAW",
+      "x": 39.62,
+      "y": 49.0
+    },
+    {
+      "ref": "C_3V3_2",
+      "pad": "1",
+      "net": "+3V3",
+      "x": 32.0,
+      "y": 15.0
+    },
+    {
+      "ref": "C_3V3_2",
+      "pad": "2",
+      "net": "GND",
+      "x": 34.5,
+      "y": 15.0
+    },
+    {
+      "ref": "R_B1",
+      "pad": "1",
+      "net": "Net-(J_AMP1-Pin_1)",
+      "x": 21.0,
+      "y": 31.0
+    },
+    {
+      "ref": "R_B1",
+      "pad": "2",
+      "net": "Net-(J_AMP1-Pin_2)",
+      "x": 28.62,
+      "y": 31.0
+    },
+    {
+      "ref": "C_F_TACHO1",
+      "pad": "1",
+      "net": "/MCU_ESP32S3/TACHO",
+      "x": 34.0,
+      "y": 57.5
+    },
+    {
+      "ref": "C_F_TACHO1",
+      "pad": "2",
+      "net": "GND",
+      "x": 36.5,
+      "y": 57.5
+    },
+    {
+      "ref": "J_LEDS1",
+      "pad": "1",
+      "net": "Net-(J_LEDS1-Pin_1)",
+      "x": 99.0,
+      "y": 54.0
+    },
+    {
+      "ref": "J_LEDS1",
+      "pad": "2",
+      "net": "Net-(J_LEDS1-Pin_2)",
+      "x": 99.0,
+      "y": 51.5
+    },
+    {
+      "ref": "J_LEDS1",
+      "pad": "3",
+      "net": "Net-(J_LEDS1-Pin_3)",
+      "x": 99.0,
+      "y": 49.0
+    },
+    {
+      "ref": "J_LEDS1",
+      "pad": "4",
+      "net": "GND",
+      "x": 99.0,
+      "y": 46.5
+    },
+    {
+      "ref": "C_BAT1",
+      "pad": "1",
+      "net": "/MCU_ESP32S3/VBAT_ADC",
+      "x": 33.0,
+      "y": 23.0
+    },
+    {
+      "ref": "C_BAT1",
+      "pad": "2",
+      "net": "GND",
+      "x": 35.5,
+      "y": 23.0
+    },
+    {
+      "ref": "R_PU_SDA1",
+      "pad": "1",
+      "net": "/Sensors_AFE/+3V3_SWITCHED",
+      "x": 31.0,
+      "y": 68.0
+    },
+    {
+      "ref": "R_PU_SDA1",
+      "pad": "2",
+      "net": "/MCU_ESP32S3/I2C_SDA",
+      "x": 38.62,
+      "y": 68.0
+    },
+    {
+      "ref": "R_PU_1W1",
+      "pad": "1",
+      "net": "/Sensors_AFE/+3V3_SWITCHED",
+      "x": 21.0,
+      "y": 65.5
+    },
+    {
+      "ref": "R_PU_1W1",
+      "pad": "2",
+      "net": "/MCU_ESP32S3/1W_DQ",
+      "x": 28.62,
+      "y": 65.5
+    },
+    {
+      "ref": "Q_PWR_GATE1",
+      "pad": "1",
+      "net": "/MCU_ESP32S3/PWR_GATE_EN",
+      "x": 17.5,
+      "y": 60.5
+    },
+    {
+      "ref": "Q_PWR_GATE1",
+      "pad": "2",
+      "net": "+3V3",
+      "x": 18.77,
+      "y": 60.5
+    },
+    {
+      "ref": "Q_PWR_GATE1",
+      "pad": "3",
+      "net": "/Sensors_AFE/+3V3_SWITCHED",
+      "x": 20.04,
+      "y": 60.5
+    },
+    {
+      "ref": "J_AMP1",
+      "pad": "1",
+      "net": "Net-(J_AMP1-Pin_1)",
+      "x": 12.0,
+      "y": 34.0
+    },
+    {
+      "ref": "J_AMP1",
+      "pad": "2",
+      "net": "Net-(J_AMP1-Pin_2)",
+      "x": 12.0,
+      "y": 36.5
+    },
+    {
+      "ref": "R_LED2",
+      "pad": "1",
+      "net": "Net-(J_LEDS1-Pin_2)",
+      "x": 82.0,
+      "y": 55.5
+    },
+    {
+      "ref": "R_LED2",
+      "pad": "2",
+      "net": "/MCU_ESP32S3/GPIO_LED_ORG",
+      "x": 89.62,
+      "y": 55.5
+    },
+    {
+      "ref": "R_PU_GATE1",
+      "pad": "1",
+      "net": "/MCU_ESP32S3/PWR_GATE_EN",
+      "x": 24.0,
+      "y": 60.5
+    },
+    {
+      "ref": "R_PU_GATE1",
+      "pad": "2",
+      "net": "+3V3",
+      "x": 31.62,
+      "y": 60.5
+    }
+  ],
+  "nets": {
+    "Net-(J_AMP1-Pin_2)": [
+      "C_BIAS1 Pin 1 at (33.0, 42.0)",
+      "R_BIAS2 Pin 1 at (21.0, 44.5)",
+      "R_BIAS1 Pin 2 at (28.62, 40.0)",
+      "R_B1 Pin 2 at (28.62, 31.0)",
+      "J_AMP1 Pin 2 at (12.0, 36.5)"
+    ],
+    "GND": [
+      "C_BIAS1 Pin 2 at (35.5, 42.0)",
+      "J_BAT_SENSE1 Pin 2 at (12.0, 24.5)",
+      "C_OLED1 Pin 2 at (76.5, 10.0)",
+      "R_BIAS2 Pin 2 at (28.62, 44.5)",
+      "C_F1 Pin 2 at (35.5, 35.5)",
+      "J_PROBE1 Pin 2 at (16.5, 75.5)",
+      "J_TACHO1 Pin 2 at (12.0, 48.5)",
+      "C_LORA_BULK1 Pin 2 at (84.5, 29.0)",
+      "J_BAT1 Pin 2 at (12.0, 15.5)",
+      "C_IN1 Pin 2 at (24.5, 9.0)",
+      "C_PROBE1 Pin 2 at (37.5, 62.5)",
+      "J_OLED1 Pin 1 at (86.0, 10.0)",
+      "U_LORA1 Pin 7 at (94.0, 42.24)",
+      "C_IN2 Pin 2 at (34.5, 9.0)",
+      "C_LORA_DEC1 Pin 2 at (83.5, 36.5)",
+      "J_BUZ1 Pin 1 at (99.0, 68.0)",
+      "U1 Pin 23 at (67.7, 13.33)",
+      "U1 Pin 41 at (67.7, 59.05)",
+      "U1 Pin 43 at (67.7, 64.13)",
+      "U1 Pin 44 at (67.7, 66.67)",
+      "C_ESP1 Pin 2 at (76.5, 16.0)",
+      "R_BAT2 Pin 2 at (28.62, 25.5)",
+      "C_3V3_1 Pin 2 at (24.5, 15.0)",
+      "D_AMP_LO1 Pin 1 at (21.0, 53.5)",
+      "C_ESP2 Pin 2 at (76.5, 22.0)",
+      "C_3V3_2 Pin 2 at (34.5, 15.0)",
+      "C_F_TACHO1 Pin 2 at (36.5, 57.5)",
+      "J_LEDS1 Pin 4 at (99.0, 46.5)",
+      "C_BAT1 Pin 2 at (35.5, 23.0)"
+    ],
+    "": [
+      "H1 Pin  at (5.0, 5.0)",
+      "H2 Pin  at (105.0, 5.0)",
+      "H3 Pin  at (5.0, 75.0)",
+      "H4 Pin  at (105.0, 75.0)"
+    ],
+    "/Power_Supply/VBAT_RAW": [
+      "J_BAT_SENSE1 Pin 1 at (12.0, 22.0)",
+      "R_BAT1 Pin 1 at (21.0, 21.0)"
+    ],
+    "+3V3": [
+      "C_OLED1 Pin 1 at (74.0, 10.0)",
+      "D_AMP_HI1 Pin 2 at (28.62, 49.0)",
+      "C_LORA_BULK1 Pin 1 at (81.0, 29.0)",
+      "R_PU_M0 Pin 1 at (74.0, 43.0)",
+      "J_OLED1 Pin 2 at (86.0, 12.54)",
+      "R_PU_M1 Pin 1 at (74.0, 47.5)",
+      "U_LORA1 Pin 6 at (94.0, 39.7)",
+      "C_LORA_DEC1 Pin 1 at (81.0, 36.5)",
+      "U1 Pin 1 at (42.3, 13.33)",
+      "U1 Pin 2 at (42.3, 15.87)",
+      "C_ESP1 Pin 1 at (74.0, 16.0)",
+      "C_3V3_1 Pin 1 at (22.0, 15.0)",
+      "C_ESP2 Pin 1 at (74.0, 22.0)",
+      "C_3V3_2 Pin 1 at (32.0, 15.0)",
+      "Q_PWR_GATE1 Pin 2 at (18.77, 60.5)",
+      "R_PU_GATE1 Pin 2 at (31.62, 60.5)"
+    ],
+    "/MCU_ESP32S3/AMP_ADC": [
+      "D_AMP_HI1 Pin 1 at (21.0, 49.0)",
+      "C_F1 Pin 1 at (33.0, 35.5)",
+      "R_F1 Pin 2 at (28.62, 35.5)",
+      "U1 Pin 39 at (67.7, 53.97)",
+      "D_AMP_LO1 Pin 2 at (28.62, 53.5)"
+    ],
+    "Net-(J_LEDS1-Pin_1)": [
+      "R_LED1 Pin 1 at (82.0, 51.5)",
+      "J_LEDS1 Pin 1 at (99.0, 54.0)"
+    ],
+    "/MCU_ESP32S3/GPIO_LED_GRN": [
+      "R_LED1 Pin 2 at (89.62, 51.5)",
+      "U1 Pin 8 at (42.3, 31.11)"
+    ],
+    "/Sensors_AFE/+3V3_SWITCHED": [
+      "R_PU_SCL1 Pin 1 at (21.0, 69.5)",
+      "J_PROBE1 Pin 1 at (14.0, 75.5)",
+      "J_TACHO1 Pin 1 at (12.0, 46.0)",
+      "C_PROBE1 Pin 1 at (35.0, 62.5)",
+      "R_BIAS1 Pin 1 at (21.0, 40.0)",
+      "R_PU_TACHO1 Pin 1 at (32.0, 49.0)",
+      "R_PU_SDA1 Pin 1 at (31.0, 68.0)",
+      "R_PU_1W1 Pin 1 at (21.0, 65.5)",
+      "Q_PWR_GATE1 Pin 3 at (20.04, 60.5)"
+    ],
+    "/MCU_ESP32S3/I2C_SCL": [
+      "R_PU_SCL1 Pin 2 at (28.62, 69.5)",
+      "J_PROBE1 Pin 7 at (29.0, 75.5)",
+      "J_OLED1 Pin 3 at (86.0, 15.08)",
+      "U1 Pin 35 at (67.7, 43.81)"
+    ],
+    "/MCU_ESP32S3/1W_DQ": [
+      "J_PROBE1 Pin 3 at (19.0, 75.5)",
+      "U1 Pin 5 at (42.3, 23.49)",
+      "R_PU_1W1 Pin 2 at (28.62, 65.5)"
+    ],
+    "/MCU_ESP32S3/I2S_SD": [
+      "J_PROBE1 Pin 4 at (21.5, 75.5)",
+      "U1 Pin 6 at (42.3, 26.03)"
+    ],
+    "/MCU_ESP32S3/I2S_SCK": [
+      "J_PROBE1 Pin 5 at (24.0, 75.5)",
+      "U1 Pin 7 at (42.3, 28.57)"
+    ],
+    "/MCU_ESP32S3/I2S_WS": [
+      "J_PROBE1 Pin 6 at (26.5, 75.5)",
+      "U1 Pin 12 at (42.3, 41.27)"
+    ],
+    "/MCU_ESP32S3/I2C_SDA": [
+      "J_PROBE1 Pin 8 at (31.5, 75.5)",
+      "J_OLED1 Pin 4 at (86.0, 17.62)",
+      "U1 Pin 34 at (67.7, 41.27)",
+      "R_PU_SDA1 Pin 2 at (38.62, 68.0)"
+    ],
+    "/Sensors_AFE/TACHO_RAW": [
+      "J_TACHO1 Pin 3 at (12.0, 51.0)",
+      "R_S_TACHO1 Pin 1 at (32.0, 53.5)",
+      "R_PU_TACHO1 Pin 2 at (39.62, 49.0)"
+    ],
+    "+5V": [
+      "J_BAT1 Pin 1 at (12.0, 13.0)",
+      "C_IN1 Pin 1 at (22.0, 9.0)",
+      "C_IN2 Pin 1 at (32.0, 9.0)",
+      "U1 Pin 42 at (67.7, 61.59)"
+    ],
+    "/MCU_ESP32S3/LORA_M0": [
+      "R_PU_M0 Pin 2 at (81.62, 43.0)",
+      "U_LORA1 Pin 1 at (94.0, 27.0)",
+      "U1 Pin 24 at (67.7, 15.87)"
+    ],
+    "Net-(J_BUZ1-Pin_2)": [
+      "R_BUZ1 Pin 1 at (82.0, 68.0)",
+      "J_BUZ1 Pin 2 at (99.0, 65.5)"
+    ],
+    "/MCU_ESP32S3/GPIO_BUZZER": [
+      "R_BUZ1 Pin 2 at (89.62, 68.0)",
+      "U1 Pin 11 at (42.3, 38.73)"
+    ],
+    "/MCU_ESP32S3/LORA_M1": [
+      "R_PU_M1 Pin 2 at (81.62, 47.5)",
+      "U_LORA1 Pin 2 at (94.0, 29.54)",
+      "U1 Pin 32 at (67.7, 36.19)"
+    ],
+    "Net-(J_AMP1-Pin_1)": [
+      "R_F1 Pin 1 at (21.0, 35.5)",
+      "R_B1 Pin 1 at (21.0, 31.0)",
+      "J_AMP1 Pin 1 at (12.0, 34.0)"
+    ],
+    "/MCU_ESP32S3/LORA_TX": [
+      "U_LORA1 Pin 3 at (94.0, 32.08)",
+      "U1 Pin 37 at (67.7, 48.89)"
+    ],
+    "/MCU_ESP32S3/LORA_RX": [
+      "U_LORA1 Pin 4 at (94.0, 34.62)",
+      "U1 Pin 36 at (67.7, 46.35)"
+    ],
+    "/MCU_ESP32S3/LORA_AUX": [
+      "U_LORA1 Pin 5 at (94.0, 37.16)",
+      "U1 Pin 25 at (67.7, 18.41)"
+    ],
+    "/MCU_ESP32S3/VBAT_ADC": [
+      "R_BAT1 Pin 2 at (28.62, 21.0)",
+      "U1 Pin 40 at (67.7, 56.51)",
+      "R_BAT2 Pin 1 at (21.0, 25.5)",
+      "C_BAT1 Pin 1 at (33.0, 23.0)"
+    ],
+    "unconnected-(U1-EN{slash}RST-Pad3)": [
+      "U1 Pin 3 at (42.3, 18.41)"
+    ],
+    "/MCU_ESP32S3/TACHO": [
+      "U1 Pin 4 at (42.3, 20.95)",
+      "R_S_TACHO1 Pin 2 at (39.62, 53.5)",
+      "C_F_TACHO1 Pin 1 at (34.0, 57.5)"
+    ],
+    "/MCU_ESP32S3/GPIO_LED_ORG": [
+      "U1 Pin 9 at (42.3, 33.65)",
+      "R_LED2 Pin 2 at (89.62, 55.5)"
+    ],
+    "/MCU_ESP32S3/GPIO_LED_BLU": [
+      "U1 Pin 10 at (42.3, 36.19)",
+      "R_LED3 Pin 2 at (89.62, 59.5)"
+    ],
+    "unconnected-(U1-GPIO19_(USB_D-)-Pad13)": [
+      "U1 Pin 13 at (42.3, 43.81)"
+    ],
+    "unconnected-(U1-GPIO20_(USB_D+)-Pad14)": [
+      "U1 Pin 14 at (42.3, 46.35)"
+    ],
+    "unconnected-(U1-GPIO3-Pad15)": [
+      "U1 Pin 15 at (42.3, 48.89)"
+    ],
+    "unconnected-(U1-GPIO46-Pad16)": [
+      "U1 Pin 16 at (42.3, 51.43)"
+    ],
+    "unconnected-(U1-GPIO9-Pad17)": [
+      "U1 Pin 17 at (42.3, 53.97)"
+    ],
+    "unconnected-(U1-GPIO10-Pad18)": [
+      "U1 Pin 18 at (42.3, 56.51)"
+    ],
+    "unconnected-(U1-GPIO11-Pad19)": [
+      "U1 Pin 19 at (42.3, 59.05)"
+    ],
+    "unconnected-(U1-GPIO12-Pad20)": [
+      "U1 Pin 20 at (42.3, 61.59)"
+    ],
+    "unconnected-(U1-GPIO13-Pad21)": [
+      "U1 Pin 21 at (42.3, 64.13)"
+    ],
+    "unconnected-(U1-GPIO14-Pad22)": [
+      "U1 Pin 22 at (42.3, 66.67)"
+    ],
+    "unconnected-(U1-GPIO48-Pad26)": [
+      "U1 Pin 26 at (67.7, 20.95)"
+    ],
+    "unconnected-(U1-GPIO45-Pad27)": [
+      "U1 Pin 27 at (67.7, 23.49)"
+    ],
+    "unconnected-(U1-GPIO0_(BOOT)-Pad28)": [
+      "U1 Pin 28 at (67.7, 26.03)"
+    ],
+    "unconnected-(U1-GPIO35-Pad29)": [
+      "U1 Pin 29 at (67.7, 28.57)"
+    ],
+    "unconnected-(U1-GPIO36-Pad30)": [
+      "U1 Pin 30 at (67.7, 31.11)"
+    ],
+    "unconnected-(U1-GPIO37-Pad31)": [
+      "U1 Pin 31 at (67.7, 33.65)"
+    ],
+    "unconnected-(U1-GPIO40-Pad33)": [
+      "U1 Pin 33 at (67.7, 38.73)"
+    ],
+    "/MCU_ESP32S3/PWR_GATE_EN": [
+      "U1 Pin 38 at (67.7, 51.43)",
+      "Q_PWR_GATE1 Pin 1 at (17.5, 60.5)",
+      "R_PU_GATE1 Pin 1 at (24.0, 60.5)"
+    ],
+    "Net-(J_LEDS1-Pin_3)": [
+      "R_LED3 Pin 1 at (82.0, 59.5)",
+      "J_LEDS1 Pin 3 at (99.0, 49.0)"
+    ],
+    "Net-(J_LEDS1-Pin_2)": [
+      "J_LEDS1 Pin 2 at (99.0, 51.5)",
+      "R_LED2 Pin 1 at (82.0, 55.5)"
+    ]
+  }
+}
