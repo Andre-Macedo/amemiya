@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Modules\Metrology\Actions\CloseNonConformityAction;
 use Modules\Metrology\Exports\NonConformitiesExport;
+use Modules\Metrology\Http\Requests\StoreNonConformityRequest;
 use Modules\Metrology\Http\Requests\UpdateNonConformityRequest;
 use Modules\Metrology\Http\Resources\NonConformityApiResource;
 use Modules\Metrology\Models\NonConformity;
@@ -39,6 +40,22 @@ class NonConformityApiController extends Controller
         $perPage = (int) $request->input('per_page', 20);
 
         return NonConformityApiResource::collection($query->latest()->paginate($perPage));
+    }
+
+    /**
+     * Stores a new non-conformity report (ISO/IEC 17025 7.10).
+     */
+    public function store(StoreNonConformityRequest $request): JsonResponse
+    {
+        $validated = $request->validated();
+        $validated['user_id'] = $request->user()?->id ?? auth()->id();
+        $validated['status'] = 'open';
+
+        $nc = NonConformity::create($validated);
+
+        return (new NonConformityApiResource($nc->load(['item', 'calibration', 'opener'])))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**

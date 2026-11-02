@@ -1,43 +1,44 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\Metrology\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
+use Modules\Metrology\Http\Requests\StoreIntermediateCheckRequest;
 use Modules\Metrology\Http\Resources\IntermediateCheckApiResource;
+use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\IntermediateCheck;
+use Modules\Metrology\Services\ShewhartControlChartService;
 
 class IntermediateCheckApiController extends Controller
 {
-    public function index(Request $request, $instrumentId)
+    /**
+     * Lista histórico de checagens intermediárias de um instrumento.
+     */
+    public function index(Request $request, string $instrumentId): AnonymousResourceCollection
     {
         $checks = IntermediateCheck::where('instrument_id', $instrumentId)
             ->with(['performer', 'referenceStandard'])
             ->orderBy('check_date', 'desc')
-            ->paginate($request->input('per_page', 20));
+            ->paginate((int) $request->input('per_page', 20));
 
         return IntermediateCheckApiResource::collection($checks);
     }
 
-    public function store(Request $request)
+    /**
+     * Registra uma checagem intermediária metrológica (ISO/IEC 17025 6.4.10).
+     */
+    public function store(StoreIntermediateCheckRequest $request): JsonResponse|IntermediateCheckApiResource
     {
-        $validated = $request->validate([
-            'instrument_id' => 'required|exists:instruments,id',
-            'check_date' => 'required|date',
-            'result' => 'required|in:passed,failed',
-            'nominal_value' => 'nullable|numeric',
-            'measured_value' => 'nullable|numeric',
-            'deviation' => 'nullable|numeric',
-            'reference_standard_id' => 'nullable|exists:reference_standards,id',
-            'performed_by' => 'nullable|exists:users,id',
-            'temperature' => 'nullable|numeric',
-            'humidity' => 'nullable|numeric',
-            'notes' => 'nullable|string',
-        ]);
+        $validated = $request->validated();
 
         if (! isset($validated['performed_by'])) {
-            $validated['performed_by'] = auth()->id(); // Default to current user
+            $validated['performed_by'] = auth()->id();
         }
 
         DB::beginTransaction();
@@ -47,7 +48,7 @@ class IntermediateCheckApiController extends Controller
             DB::commit();
 
             return new IntermediateCheckApiResource($check->load(['performer', 'referenceStandard']));
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             DB::rollBack();
 
             return response()->json(['error' => $e->getMessage()], 500);
@@ -57,11 +58,9 @@ class IntermediateCheckApiController extends Controller
     /**
      * Retorna os dados estatísticos da Carta de Controle de Shewhart (ILAC-G24 Método 2).
      */
-    public function shewhart(
-        string $instrumentId,
-        \Modules\Metrology\Services\ShewhartControlChartService $service
-    ): \Illuminate\Http\JsonResponse {
-        $instrument = \Modules\Metrology\Models\Instrument::findOrFail($instrumentId);
+    public function shewhart(string $instrumentId, ShewhartControlChartService $service): JsonResponse
+    {
+        $instrument = Instrument::findOrFail($instrumentId);
         $analysis = $service->analyze($instrument);
 
         return response()->json($analysis);

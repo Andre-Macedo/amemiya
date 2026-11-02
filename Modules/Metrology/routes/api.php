@@ -105,12 +105,14 @@ Route::middleware('auth:sanctum')->group(function () {
     // Non-Conformities (NC)
     Route::get('/non-conformities/export', [NonConformityApiController::class, 'export']);
     Route::get('/non-conformities', [NonConformityApiController::class, 'index']);
+    Route::post('/non-conformities', [NonConformityApiController::class, 'store']);
     Route::get('/non-conformities/{id}', [NonConformityApiController::class, 'show']);
     Route::put('/non-conformities/{id}', [NonConformityApiController::class, 'update']);
     Route::post('/non-conformities/{id}/close', [NonConformityApiController::class, 'close']);
 
     Route::get('/metrology/non-conformities/export', [NonConformityApiController::class, 'export']);
     Route::get('/metrology/non-conformities', [NonConformityApiController::class, 'index']);
+    Route::post('/metrology/non-conformities', [NonConformityApiController::class, 'store']);
     Route::get('/metrology/non-conformities/{id}', [NonConformityApiController::class, 'show']);
     Route::put('/metrology/non-conformities/{id}', [NonConformityApiController::class, 'update']);
     Route::post('/metrology/non-conformities/{id}/close', [NonConformityApiController::class, 'close']);

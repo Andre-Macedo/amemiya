@@ -6,8 +6,9 @@ namespace Modules\Metrology\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Modules\Metrology\Http\Requests\StoreReferenceStandardTypeRequest;
+use Modules\Metrology\Http\Requests\UpdateReferenceStandardTypeRequest;
 use Modules\Metrology\Http\Resources\ReferenceStandardTypeApiResource;
 use Modules\Metrology\Models\ReferenceStandardType;
 
@@ -36,14 +37,9 @@ class ReferenceStandardTypeApiController extends Controller
      * Returns:
      *     The created record.
      */
-    public function store(Request $request): ReferenceStandardTypeApiResource
+    public function store(StoreReferenceStandardTypeRequest $request): ReferenceStandardTypeApiResource
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-        ]);
-
-        $type = ReferenceStandardType::create($validated);
+        $type = ReferenceStandardType::create($request->validated());
 
         return new ReferenceStandardTypeApiResource($type);
     }
@@ -72,14 +68,9 @@ class ReferenceStandardTypeApiController extends Controller
      * Returns:
      *     The updated record.
      */
-    public function update(Request $request, ReferenceStandardType $referenceStandardType): ReferenceStandardTypeApiResource
+    public function update(UpdateReferenceStandardTypeRequest $request, ReferenceStandardType $referenceStandardType): ReferenceStandardTypeApiResource
     {
-        $validated = $request->validate([
-            'name' => ['sometimes', 'required', 'string', 'max:255'],
-            'description' => ['nullable', 'string'],
-        ]);
-
-        $referenceStandardType->update($validated);
+        $referenceStandardType->update($request->validated());
 
         return new ReferenceStandardTypeApiResource($referenceStandardType);
     }

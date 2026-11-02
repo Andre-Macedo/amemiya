@@ -28,7 +28,8 @@ class NonConformityApiResource extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'status' => $this->status,
-            'severity' => $this->severity,
+            'priority' => $this->priority,
+            'severity' => $this->priority,
 
             // Analysis and Actions
             'root_cause_analysis' => $this->root_cause_analysis,

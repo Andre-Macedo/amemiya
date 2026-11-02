@@ -43,4 +43,20 @@ class Machine extends Model
     {
         return $this->hasMany(IoTNode::class, 'machine_id');
     }
+
+    /**
+     * Grupo normativo ISO 20816 (ex: group_1 ou group_2).
+     */
+    public function getIsoGroup(): string
+    {
+        return (string) ($this->metadata['iso_group'] ?? 'group_2');
+    }
+
+    /**
+     * Tipo de fundação mecânica (rigid ou flexible).
+     */
+    public function getFoundationType(): string
+    {
+        return (string) ($this->metadata['foundation_type'] ?? 'rigid');
+    }
 }

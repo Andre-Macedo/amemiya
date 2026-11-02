@@ -18,6 +18,31 @@ it('can list non-conformities', function () {
         ->assertJsonCount(3, 'data');
 });
 
+it('can create a non-conformity report', function () {
+    $instrument = \Modules\Metrology\Models\Instrument::factory()->create();
+
+    $payload = [
+        'item_type' => \Modules\Metrology\Models\Instrument::class,
+        'item_id' => $instrument->id,
+        'title' => 'Desvio metrológico detectado no micrômetro',
+        'description' => 'Erro sistemático excedeu o limite do critério de aceitação de 0.005mm.',
+        'priority' => 'high',
+        'immediate_action' => 'Instrumento interditado e identificado com etiqueta vermelha.',
+    ];
+
+    $response = $this->postJson('/api/v1/metrology/non-conformities', $payload);
+
+    $response->assertStatus(201)
+        ->assertJsonPath('data.title', 'Desvio metrológico detectado no micrômetro')
+        ->assertJsonPath('data.priority', 'high');
+
+    $this->assertDatabaseHas('non_conformities', [
+        'item_id' => $instrument->id,
+        'title' => 'Desvio metrológico detectado no micrômetro',
+        'status' => 'open',
+    ]);
+});
+
 it('can update a non-conformity investigation', function () {
     $nc = NonConformity::factory()->create(['status' => 'open']);
 

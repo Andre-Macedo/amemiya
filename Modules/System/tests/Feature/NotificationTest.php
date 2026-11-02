@@ -15,7 +15,7 @@ it('can list notifications for the user', function () {
     DB::table('notifications')->insert([
         'id' => Str::uuid(),
         'type' => 'TestNotification',
-        'notifiable_type' => User::class,
+        'notifiable_type' => $this->user->getMorphClass(),
         'notifiable_id' => $this->user->id,
         'data' => json_encode(['message' => 'Hello test']),
         'created_at' => now(),
@@ -32,7 +32,7 @@ it('can mark a notification as read', function () {
     DB::table('notifications')->insert([
         'id' => $id,
         'type' => 'TestNotification',
-        'notifiable_type' => User::class,
+        'notifiable_type' => $this->user->getMorphClass(),
         'notifiable_id' => $this->user->id,
         'data' => json_encode(['message' => 'Hello test']),
         'created_at' => now(),
@@ -49,8 +49,8 @@ it('can mark a notification as read', function () {
 
 it('returns correct unread count', function () {
     DB::table('notifications')->insert([
-        ['id' => Str::uuid(), 'type' => 'T1', 'notifiable_type' => User::class, 'notifiable_id' => $this->user->id, 'data' => '{}', 'created_at' => now()],
-        ['id' => Str::uuid(), 'type' => 'T2', 'notifiable_type' => User::class, 'notifiable_id' => $this->user->id, 'data' => '{}', 'created_at' => now()],
+        ['id' => Str::uuid(), 'type' => 'T1', 'notifiable_type' => $this->user->getMorphClass(), 'notifiable_id' => $this->user->id, 'data' => '{}', 'created_at' => now()],
+        ['id' => Str::uuid(), 'type' => 'T2', 'notifiable_type' => $this->user->getMorphClass(), 'notifiable_id' => $this->user->id, 'data' => '{}', 'created_at' => now()],
     ]);
 
     $response = $this->getJson('/api/v1/system/notifications/unread-count');

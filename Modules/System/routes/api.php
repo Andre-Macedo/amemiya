@@ -35,7 +35,7 @@ Route::middleware([
 
         // Rotas raiz para compatibilidade com clientes mobile e web
         Route::apiResource('stations', StationApiController::class);
-        Route::apiResource('machines', MachineApiController::class)->only(['index', 'show']);
+        Route::apiResource('machines', MachineApiController::class);
         Route::apiResource('suppliers', SupplierApiController::class);
 
         Route::prefix('system')->group(function () {
@@ -59,7 +59,7 @@ Route::middleware([
             Route::apiResource('stations', StationApiController::class)->names('system.stations');
 
             // Machines
-            Route::apiResource('machines', MachineApiController::class)->only(['index', 'show'])->names('system.machines');
+            Route::apiResource('machines', MachineApiController::class)->names('system.machines');
 
             // Suppliers
             Route::apiResource('suppliers', SupplierApiController::class)->names('system.suppliers');
@@ -87,6 +87,7 @@ Route::middleware([
             Route::get('notifications', [NotificationApiController::class, 'index']);
             Route::get('notifications/unread-count', [NotificationApiController::class, 'unreadCount']);
             Route::post('notifications/{notification}/read', [NotificationApiController::class, 'markAsRead']);
+            Route::post('notifications/{notification}/mark-as-read', [NotificationApiController::class, 'markAsRead']);
             Route::post('notifications/read-all', [NotificationApiController::class, 'markAllAsRead']);
 
             // Logs

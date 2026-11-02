@@ -6,8 +6,9 @@ namespace Modules\Metrology\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Modules\Metrology\Http\Requests\StoreInstrumentTypeRequest;
+use Modules\Metrology\Http\Requests\UpdateInstrumentTypeRequest;
 use Modules\Metrology\Http\Resources\InstrumentTypeApiResource;
 use Modules\Metrology\Models\InstrumentType;
 
@@ -36,15 +37,9 @@ class InstrumentTypeApiController extends Controller
      * Returns:
      *     The created instrument type record.
      */
-    public function store(Request $request): InstrumentTypeApiResource
+    public function store(StoreInstrumentTypeRequest $request): InstrumentTypeApiResource
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'calibration_frequency_months' => ['nullable', 'integer', 'min:1'],
-            'decision_rule' => ['nullable', 'string'],
-        ]);
-
-        $type = InstrumentType::create($validated);
+        $type = InstrumentType::create($request->validated());
 
         return new InstrumentTypeApiResource($type);
     }
@@ -73,15 +68,9 @@ class InstrumentTypeApiController extends Controller
      * Returns:
      *     The updated instrument type record.
      */
-    public function update(Request $request, InstrumentType $instrumentType): InstrumentTypeApiResource
+    public function update(UpdateInstrumentTypeRequest $request, InstrumentType $instrumentType): InstrumentTypeApiResource
     {
-        $validated = $request->validate([
-            'name' => ['sometimes', 'required', 'string', 'max:255'],
-            'calibration_frequency_months' => ['nullable', 'integer', 'min:1'],
-            'decision_rule' => ['nullable', 'string'],
-        ]);
-
-        $instrumentType->update($validated);
+        $instrumentType->update($request->validated());
 
         return new InstrumentTypeApiResource($instrumentType);
     }
