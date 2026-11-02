@@ -215,7 +215,7 @@ class ReferenceStandard extends Model implements CalibratableItem
         return $this->referenceStandardType->calibration_frequency_months ?? 24;
     }
 
-    public function getMaximumPermissibleError(): ?float
+    public function getMaximumPermissibleError(?float $nominalValue = null): ?float
     {
         // Padrões de Referência geralmente não possuem MPE da mesma forma que instrumentos
         // para regras de decisão, a menos que especificado. Retornar null pula a avaliação.

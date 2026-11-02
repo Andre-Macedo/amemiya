@@ -46,11 +46,11 @@
 - [x] **CMC Engine:** Block certificate issuance if uncertainty is below authorized scope.
 - [x] **Reason for Change:** Mandatory justification popup for editing historical data.
 - [ ] **Technical Evolution (Audit ISO 17025 - Rodada 1):**
-  - [ ] **MPE Composto / Escala Mista (Benchmark Fluke/Beamex):** Suportar fórmula $\pm (a\% \text{ leitura} + b\% \text{ escala} + c \text{ dígitos})$ no cadastro de instrumentos, evitando tolerância nula quando nominal é zero.
-  - [ ] **Truncamento Conservador de $\nu_{eff}$ (EA-4/02 & GUM §G.4.2):** Aplicar $\lfloor \nu_{eff} \rfloor$ ou interpolação linear na tabela Student-$t$ garantindo probabilidade de cobertura estrita $\ge 95,45\%$.
+  - [x] **MPE Composto / Escala Mista (Benchmark Fluke/Beamex):** Suportar fórmula $\pm (a\% \text{ leitura} + b\% \text{ escala} + c \text{ dígitos})$ no cadastro de instrumentos, evitando tolerância nula quando nominal é zero.
+  - [x] **Truncamento Conservador de $\nu_{eff}$ (EA-4/02 & GUM §G.4.2):** Aplicar $\lfloor \nu_{eff} \rfloor$ ou interpolação linear na tabela Student-$t$ garantindo probabilidade de cobertura estrita $\ge 95,45\%$.
   - [ ] **Múltiplos Padrões no Balanço GUM:** Suporte a combinação quadrática de múltiplos padrões de referência ativos para o mesmo ponto de calibração.
-- [ ] **Conformidade de Laudos e Certificados (Audit ISO 17025 - Rodada 2):**
-  - [ ] **Dados do Solicitante / Cliente no PDF (§7.8.2.1e):** Renderizar seção dedicada com Razão Social, CNPJ/CPF, endereço e contato do cliente no certificado PDF quando associado a `lab_client_id`.
+- [x] **Conformidade de Laudos e Certificados (Audit ISO 17025 - Rodada 2) - COMPLETED ✅:**
+  - [x] **Dados do Solicitante / Cliente no PDF (§7.8.2.1e):** Renderizar seção dedicada com Razão Social, CNPJ/CPF, endereço e contato do cliente no certificado PDF quando associado a `lab_client_id`.
   - [x] **Estado de Recebimento do Instrumento (§7.8.2.1g):** Adicionado campo `as_received_condition` (ex: íntegro, limpo, desgastado) na tabela `calibrations` e renderizado no laudo PDF.
   - [x] **Data de Recebimento do Item (§7.8.2.1h):** Incluído campo `received_date` no fluxo e exibido formalmente no certificado PDF.
   - [x] **Distinção de Datas de Execução e Emissão (§7.8.2.1j):** Evidenciado no cabeçalho do laudo a separação clara entre a data de realização (`calibration_date`) e a data formal de emissão/publicação do documento (`approved_at`).

@@ -43,6 +43,36 @@ class MergeCertificateAttachmentsAction
                 'accent_color' => Setting::getValue('lab_accent_color', '#3b82f6'),
             ];
 
+            $clientModel = $calibration->labClient ?? ($instrument instanceof \Modules\Metrology\Models\Instrument ? $instrument->labClient : null);
+            $client = null;
+            if ($clientModel instanceof \Modules\Metrology\Models\LabClient) {
+                $metadata = is_array($clientModel->metadata) ? $clientModel->metadata : [];
+                $address = $metadata['address'] ?? $metadata['endereco'] ?? null;
+                $city = $metadata['city'] ?? $metadata['cidade'] ?? null;
+                $state = $metadata['state'] ?? $metadata['uf'] ?? null;
+                $fullAddress = trim(implode(' - ', array_filter([$address, $city, $state])));
+
+                $client = [
+                    'is_internal' => false,
+                    'name' => $clientModel->name,
+                    'document' => $clientModel->cnpj ?? 'Não informado',
+                    'address' => $fullAddress !== '' ? $fullAddress : null,
+                    'contact' => $clientModel->email ?? $metadata['phone'] ?? $metadata['telefone'] ?? null,
+                    'phone' => $metadata['phone'] ?? $metadata['telefone'] ?? null,
+                    'email' => $clientModel->email ?? null,
+                ];
+            } else {
+                $client = [
+                    'is_internal' => true,
+                    'name' => Setting::getValue('lab_name', config('app.name')),
+                    'document' => 'Uso Próprio / Calibração Interna',
+                    'address' => Setting::getValue('lab_address', 'Laboratório Interno / Instalações Fabris'),
+                    'contact' => Setting::getValue('lab_contact', 'Setor de Gestão Metrológica'),
+                    'phone' => null,
+                    'email' => null,
+                ];
+            }
+
             $pdfContent = Pdf::loadView('metrology::pdf.certificate', [
                 'calibration' => $calibration,
                 'record' => $calibration, // View espera $record
@@ -50,6 +80,7 @@ class MergeCertificateAttachmentsAction
                 'results' => $data['results'],
                 'standards' => $data['standards'],
                 'identity' => $identity,
+                'client' => $client,
             ])->output();
 
             // Adiciona o certificado principal (string mode)

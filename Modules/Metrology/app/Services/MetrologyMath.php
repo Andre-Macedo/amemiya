@@ -168,15 +168,19 @@ class MetrologyMath
     /**
      * Retorna o fator de cobertura k para graus de liberdade efetivos (Veff).
      * Baseado na distribuição t de Student bilateral (95.45% de confiança - GUM Tabela G.2).
+     * Aplica truncamento conservador para o inteiro inferior floor(Veff), conforme GUM §G.4.2 e EA-4/02.
      *
      * @param  float  $veff  Graus de liberdade efetivos
      * @return float Fator k
      */
     public static function getKFromVeff(float $veff): float
     {
-        if (is_infinite($veff) || $veff >= 100) {
+        if (is_infinite($veff) || $veff >= 100.0) {
             return 2.00;
         }
+
+        // Truncamento conservador para o inteiro inferior (GUM §G.4.2 / EA-4/02)
+        $truncatedVeff = (int) max(1, floor($veff));
 
         $table = [
             1 => 13.97,
@@ -207,14 +211,34 @@ class MetrologyMath
             60 => 2.000,
         ];
 
+        if (isset($table[$truncatedVeff])) {
+            return $table[$truncatedVeff];
+        }
+
+        // Se truncatedVeff estiver entre os pontos discretos acima de 20 (ex: 22, 33)
         $keys = array_keys($table);
-        $closest = $keys[0];
-        foreach ($keys as $key) {
-            if (abs($key - $veff) < abs($closest - $veff)) {
-                $closest = $key;
+        $lowerKey = 1;
+        $upperKey = 60;
+
+        foreach ($keys as $k) {
+            if ($k <= $truncatedVeff) {
+                $lowerKey = $k;
+            }
+            if ($k >= $truncatedVeff) {
+                $upperKey = $k;
+                break;
             }
         }
 
-        return $table[$closest];
+        if ($lowerKey === $upperKey) {
+            return $table[$lowerKey];
+        }
+
+        // Interpolação linear entre nós discretos
+        $k1 = $table[$lowerKey];
+        $k2 = $table[$upperKey];
+        $interpolatedK = $k1 + ($k2 - $k1) * (($truncatedVeff - $lowerKey) / ($upperKey - $lowerKey));
+
+        return round($interpolatedK, 3);
     }
 }

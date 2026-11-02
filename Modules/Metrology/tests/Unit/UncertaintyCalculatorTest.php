@@ -85,3 +85,17 @@ test('it approaches k 2.00 for large n or dominant type b', function () {
 
     expect($result->kFactor)->toBeLessThanOrEqual(2.10);
 });
+
+test('it applies conservative floor truncation to veff per GUM G.4.2 and EA-4/02', function () {
+    // veff = 4.8 deve truncar para 4 (k = 2.776) em vez de arredondar para 5 (k = 2.571)
+    $k = \Modules\Metrology\Services\MetrologyMath::getKFromVeff(4.8);
+    expect($k)->toBe(2.776);
+
+    // veff = 2.9 deve truncar para 2 (k = 4.303)
+    $k2 = \Modules\Metrology\Services\MetrologyMath::getKFromVeff(2.9);
+    expect($k2)->toBe(4.303);
+
+    // veff = 22.0 deve interpolar entre 20 (2.086) e 25 (2.060): 2.086 - 0.0104 = 2.076
+    $k3 = \Modules\Metrology\Services\MetrologyMath::getKFromVeff(22.0);
+    expect($k3)->toBe(2.076);
+});

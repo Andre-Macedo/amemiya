@@ -41,6 +41,8 @@ class StoreInstrumentRequest extends FormRequest
             'acquisition_date' => ['nullable', 'date'],
             'material_id' => ['nullable', 'exists:materials,id'],
             'mpe' => ['nullable', 'string'],
+            'mpe_type' => ['nullable', 'string', 'in:absolute,percentage,ppm,compound,composite,mixed'],
+            'mpe_value' => ['nullable', 'numeric'],
             'measuring_range' => ['nullable', 'string'],
             'resolution' => ['nullable', 'string'],
             'criticality' => ['nullable', Rule::enum(InstrumentCriticality::class)],

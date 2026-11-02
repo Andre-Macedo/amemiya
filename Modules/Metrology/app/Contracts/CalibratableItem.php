@@ -19,7 +19,7 @@ interface CalibratableItem
      */
     public function getCalibrationFrequencyMonths(): ?int;
 
-    public function getMaximumPermissibleError(): ?float;
+    public function getMaximumPermissibleError(?float $nominalValue = null): ?float;
 
     public function getDecisionRule(): string;
 

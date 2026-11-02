@@ -64,7 +64,28 @@
     </div>
 
     <div class="section">
-        <div class="section-title">1. Identificação do Instrumento / Objeto Calibrado</div>
+        <div class="section-title">1. Dados do Solicitante / Cliente (ISO/IEC 17025 §7.8.2.1e)</div>
+        @php
+            $client = $client ?? null;
+        @endphp
+        @if(!empty($client) && empty($client['is_internal']))
+            <div class="info-item"><span class="label">Razão Social / Solicitante:</span> <strong>{{ $client['name'] }}</strong></div>
+            <div class="info-item"><span class="label">CNPJ / CPF:</span> {{ $client['document'] }}</div>
+            @if(!empty($client['address']))
+                <div class="info-item"><span class="label">Endereço:</span> {{ $client['address'] }}</div>
+            @endif
+            @if(!empty($client['email']) || !empty($client['contact']) || !empty($client['phone']))
+                <div class="info-item"><span class="label">Contato:</span> {{ $client['email'] ?? $client['contact'] }}{{ !empty($client['phone']) ? ' | Tel: ' . $client['phone'] : '' }}</div>
+            @endif
+        @else
+            <div class="info-item"><span class="label">Solicitante:</span> <strong>{{ $client['name'] ?? $identity['lab_name'] }}</strong> (Calibração Interna / Uso Próprio)</div>
+            <div class="info-item"><span class="label">Finalidade:</span> Controle Metrológico Interno de Processo e Qualidade Industrial</div>
+            <div class="info-item"><span class="label">Local / Instalação:</span> {{ $client['address'] ?? $identity['lab_address'] ?? 'Laboratório Interno / Instalações Fabris' }}</div>
+        @endif
+    </div>
+
+    <div class="section">
+        <div class="section-title">2. Identificação do Instrumento / Objeto Calibrado</div>
         <div class="info-item"><span class="label">Instrumento:</span> {{ $instrument->name ?? 'N/A' }}</div>
         <div class="info-item"><span class="label">Código Patrimonial (Tag):</span> {{ $instrument->stock_number ?? 'N/A' }}</div>
         <div class="info-item"><span class="label">Fabricante / Modelo:</span> {{ $instrument->manufacturer ?? 'N/A' }} / {{ $instrument->model ?? 'N/A' }}</div>
@@ -88,7 +109,7 @@
     </div>
 
     <div class="section">
-        <div class="section-title">2. Dados da Calibração e Condições Ambientais</div>
+        <div class="section-title">3. Dados da Calibração e Condições Ambientais</div>
         @if(!empty($record->received_date))
             <div class="info-item"><span class="label">Data de Recebimento do Ativo:</span> {{ $record->received_date->format('d/m/Y') }} (ISO/IEC 17025 §7.8.2.1h)</div>
         @endif
@@ -108,7 +129,7 @@
     </div>
 
     <div class="section">
-        <div class="section-title">3. Padrões de Referência Utilizados (Rastreabilidade Metrológica ISO/IEC 17025 §6.5)</div>
+        <div class="section-title">4. Padrões de Referência Utilizados (Rastreabilidade Metrológica ISO/IEC 17025 §6.5)</div>
         <table>
             <thead>
                 <tr>
@@ -129,7 +150,7 @@
                             ? $std->certificate_number 
                             : (!empty($std->parent?->certificate_number) 
                                 ? $std->parent->certificate_number 
-                                : 'CAL-CBR-' . substr(md5((string)$std->id), 0, 6) . '/' . date('Y'));
+                                : 'CAL-CBR-' . substr(md5((string)($std->id ?? $std->serial_number ?? spl_object_hash((object)$std))), 0, 6) . '/' . date('Y'));
                         $lab = !empty($std->accredited_lab) 
                             ? $std->accredited_lab 
                             : (!empty($std->parent?->accredited_lab) 
@@ -152,7 +173,7 @@
     </div>
 
     <div class="section">
-        <div class="section-title">4. Resultados das Medições & Incerteza (ISO/IEC 17025 §7.8.2.1j)</div>
+        <div class="section-title">5. Resultados das Medições & Incerteza (ISO/IEC 17025 §7.8.2.1j)</div>
         <table>
             <thead>
                 <tr>
@@ -205,7 +226,7 @@
     </div>
 
     <div class="section">
-        <div class="section-title">5. Declaração de Conformidade (ISO/IEC 17025 §7.8.6)</div>
+        <div class="section-title">6. Declaração de Conformidade (ISO/IEC 17025 §7.8.6)</div>
         <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 10px; border-radius: 4px;">
             <div style="margin-bottom: 5px;">
                 <span class="label">Decisão Metrológica:</span>

@@ -8,6 +8,8 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Crypt;
 use Modules\Metrology\Enums\CalibrationResult;
 use Modules\Metrology\Models\Calibration;
+use Modules\Metrology\Models\Instrument;
+use Modules\Metrology\Models\LabClient;
 use Modules\Metrology\Services\PdfSignerService;
 use Modules\System\Models\Setting;
 use Modules\System\Models\User;
@@ -25,7 +27,8 @@ class GenerateCertificatePdfAction
     public function execute(Calibration $calibration): string
     {
         $calibration->loadMissing([
-            'calibratedItem',
+            'calibratedItem.labClient',
+            'labClient',
             'checklist.checklistTemplate',
             'checklist.items.referenceStandard',
             'performedBy',
@@ -54,6 +57,37 @@ class GenerateCertificatePdfAction
             ];
         }
 
+        // Resolução do Solicitante / Cliente (ISO/IEC 17025 §7.8.2.1e)
+        $clientModel = $calibration->labClient ?? ($calibration->calibratedItem instanceof Instrument ? $calibration->calibratedItem->labClient : null);
+
+        if ($clientModel instanceof LabClient) {
+            $metadata = is_array($clientModel->metadata) ? $clientModel->metadata : [];
+            $address = $metadata['address'] ?? $metadata['endereco'] ?? null;
+            $city = $metadata['city'] ?? $metadata['cidade'] ?? null;
+            $state = $metadata['state'] ?? $metadata['uf'] ?? null;
+            $fullAddress = trim(implode(' - ', array_filter([$address, $city, $state])));
+
+            $client = [
+                'is_internal' => false,
+                'name' => $clientModel->name,
+                'document' => $clientModel->cnpj ?? 'Não informado',
+                'address' => $fullAddress !== '' ? $fullAddress : null,
+                'contact' => $clientModel->email ?? $metadata['phone'] ?? $metadata['telefone'] ?? null,
+                'phone' => $metadata['phone'] ?? $metadata['telefone'] ?? null,
+                'email' => $clientModel->email ?? null,
+            ];
+        } else {
+            $client = [
+                'is_internal' => true,
+                'name' => Setting::getValue('lab_name', config('app.name')),
+                'document' => 'Uso Próprio / Calibração Interna',
+                'address' => Setting::getValue('lab_address', 'Laboratório Interno / Instalações Fabris'),
+                'contact' => Setting::getValue('lab_contact', 'Setor de Gestão Metrológica'),
+                'phone' => null,
+                'email' => null,
+            ];
+        }
+
         $identity = [
             'lab_name' => Setting::getValue('lab_name', config('app.name')),
             'lab_address' => Setting::getValue('lab_address', ''),
@@ -69,6 +103,7 @@ class GenerateCertificatePdfAction
             'standards' => $standards,
             'results' => $results,
             'identity' => $identity,
+            'client' => $client,
         ]);
 
         $pdfContent = $pdf->output();
