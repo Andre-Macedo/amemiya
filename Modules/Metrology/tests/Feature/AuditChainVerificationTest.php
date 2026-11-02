@@ -6,6 +6,7 @@ use App\Models\Activity;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
 use Modules\Metrology\Models\Instrument;
 use Modules\System\Services\AuditChainService;
@@ -14,6 +15,7 @@ use Tests\Concerns\HasSuperAdmin;
 uses(RefreshDatabase::class, HasSuperAdmin::class);
 
 beforeEach(function (): void {
+    Artisan::call('module:migrate', ['module' => 'System']);
     Artisan::call('module:migrate', ['module' => 'Metrology']);
     $user = $this->createSuperAdmin();
     Sanctum::actingAs($user);
@@ -137,4 +139,69 @@ test('it verifies audit chain via artisan command', function (): void {
         ->expectsOutputToContain('VERIFICAÇÃO FORENSE DE INTEGRIDADE DA CADEIA DE AUDITORIA')
         ->expectsOutputToContain('CADEIA 100% ÍNTEGRA')
         ->assertSuccessful();
+});
+
+test('it anchors audit chain to immutable WORM manifest and database', function (): void {
+    Storage::fake('local');
+    $service = app(AuditChainService::class);
+
+    Activity::create(['description' => 'Pre-anchor event 1']);
+    $log2 = Activity::create(['description' => 'Pre-anchor event 2']);
+
+    $anchor = $service->anchorChain();
+
+    expect($anchor)->not->toBeNull()
+        ->and($anchor->sequence_number)->toBe(2)
+        ->and($anchor->chain_head_hash)->toBe($log2->record_hash)
+        ->and($anchor->total_records)->toBe(2)
+        ->and($anchor->manifest_hash)->toBeString()
+        ->and(strlen($anchor->manifest_hash))->toBe(64);
+
+    expect(Storage::disk('local')->exists($anchor->storage_path))->toBeTrue();
+
+    // Valida a integridade do manifesto gravado
+    $verification = $service->verifyAnchor($anchor);
+    expect($verification['is_valid'])->toBeTrue()
+        ->and($verification['status'])->toBe('HEALTHY');
+});
+
+test('it blocks anchoring when audit chain is compromised', function (): void {
+    $service = app(AuditChainService::class);
+
+    $log1 = Activity::create(['description' => 'Legitimate event']);
+    Activity::create(['description' => 'Legitimate event 2']);
+
+    // Adulteração criminosa
+    DB::table('activity_log')->where('id', $log1->id)->update(['description' => 'Corrupted event']);
+
+    expect(fn () => $service->anchorChain())->toThrow(RuntimeException::class);
+});
+
+test('it anchors audit chain via artisan command', function (): void {
+    Storage::fake('local');
+    Activity::create(['description' => 'Anchor command event']);
+
+    $this->artisan('audit:anchor-chain')
+        ->expectsOutputToContain('ANCORAGEM CONCLUÍDA COM SUCESSO')
+        ->assertSuccessful();
+});
+
+test('it anchors and lists anchors via api endpoints', function (): void {
+    Storage::fake('local');
+    Activity::create(['description' => 'API Anchor log 1']);
+
+    $anchorResponse = $this->postJson('/api/v1/audit-logs/anchor', [
+        'anchor_type' => 'WORM_IMMUTABLE',
+    ]);
+
+    $anchorResponse->assertStatus(201)
+        ->assertJsonPath('anchor.sequence_number', 1)
+        ->assertJsonStructure([
+            'message',
+            'anchor' => ['id', 'sequence_number', 'chain_head_hash', 'manifest_hash', 'storage_path'],
+        ]);
+
+    $listResponse = $this->getJson('/api/v1/audit-logs/anchors');
+    $listResponse->assertStatus(200)
+        ->assertJsonCount(1, 'data');
 });

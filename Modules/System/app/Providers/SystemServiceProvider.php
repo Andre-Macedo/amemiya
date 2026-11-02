@@ -6,6 +6,7 @@ namespace Modules\System\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\System\Console\Commands\AnchorAuditChainCommand;
 use Nwidart\Modules\Traits\PathNamespace;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -27,6 +28,12 @@ class SystemServiceProvider extends ServiceProvider
         $this->registerConfig();
         $this->registerViews();
         $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                AnchorAuditChainCommand::class,
+            ]);
+        }
     }
 
     /**

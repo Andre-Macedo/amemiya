@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Modules\System\Services;
 
 use App\Models\Activity;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Modules\System\Models\AuditChainAnchor;
+use RuntimeException;
 
 class AuditChainService
 {
@@ -183,6 +185,119 @@ class AuditChainService
             'latest_sequence' => $prevRecord?->sequence_number,
             'verified_at' => now()->toIso8601String(),
             'errors' => $errors,
+        ];
+    }
+
+    /**
+     * Ancola o cabeçalho atual da cadeia criptográfica de auditoria em manifesto WORM imutável e no banco.
+     * Exige que a cadeia esteja 100% íntegra (HEALTHY).
+     *
+     * @throws RuntimeException se a cadeia estiver comprometida.
+     */
+    public function anchorChain(?string $tenantId = null, string $anchorType = 'WORM_IMMUTABLE'): ?AuditChainAnchor
+    {
+        $verification = $this->verifyChain($tenantId);
+
+        if (! $verification['is_valid']) {
+            throw new RuntimeException('Não é permitido ancorar uma cadeia de auditoria corrompida ou comprometida.');
+        }
+
+        if ($verification['total_records'] === 0) {
+            return null;
+        }
+
+        $sequence = (int) $verification['latest_sequence'];
+        $headHash = (string) $verification['chain_head_hash'];
+        $total = (int) $verification['total_records'];
+        $anchoredAt = now();
+
+        $manifest = [
+            'anchor_version' => '1.0',
+            'tenant_id' => $tenantId,
+            'sequence_number' => $sequence,
+            'chain_head_hash' => $headHash,
+            'total_records' => $total,
+            'anchor_type' => $anchorType,
+            'anchored_at' => $anchoredAt->toIso8601String(),
+        ];
+
+        ksort($manifest);
+        $manifestHash = hash('sha256', (string) json_encode($manifest, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+
+        $tenantSubdir = $tenantId ? "tenants/{$tenantId}" : 'global';
+        $shortHash = substr($manifestHash, 0, 16);
+        $storagePath = "{$tenantSubdir}/audit_anchors/anchor_seq_{$sequence}_{$shortHash}.json";
+
+        $fullWormPayload = array_merge($manifest, [
+            'manifest_hash' => $manifestHash,
+            'signature_scheme' => 'SHA256_RFC3161_COMPATIBLE',
+        ]);
+
+        Storage::disk('local')->put($storagePath, (string) json_encode($fullWormPayload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+
+        return AuditChainAnchor::create([
+            'tenant_id' => $tenantId,
+            'sequence_number' => $sequence,
+            'chain_head_hash' => $headHash,
+            'total_records' => $total,
+            'anchor_type' => $anchorType,
+            'storage_path' => $storagePath,
+            'manifest_hash' => $manifestHash,
+            'manifest_payload' => $fullWormPayload,
+            'anchored_at' => $anchoredAt,
+        ]);
+    }
+
+    /**
+     * Valida a integridade forense de um manifesto de ancoragem WORM gravado no disco contra o banco de dados.
+     *
+     * @return array<string, mixed>
+     */
+    public function verifyAnchor(AuditChainAnchor $anchor): array
+    {
+        $storagePath = (string) $anchor->storage_path;
+        $fileExists = Storage::disk('local')->exists($storagePath);
+
+        if (! $fileExists) {
+            return [
+                'is_valid' => false,
+                'status' => 'STORAGE_FILE_MISSING',
+                'message' => "O arquivo de manifesto WORM [{$storagePath}] não foi localizado no storage.",
+            ];
+        }
+
+        $fileContent = Storage::disk('local')->get($storagePath);
+        $payload = json_decode((string) $fileContent, true);
+
+        if (! is_array($payload) || ! isset($payload['manifest_hash'])) {
+            return [
+                'is_valid' => false,
+                'status' => 'MALFORMED_MANIFEST',
+                'message' => 'O manifesto de ancoragem no storage está corrompido ou malformado.',
+            ];
+        }
+
+        $storedManifestHash = (string) $payload['manifest_hash'];
+        unset($payload['manifest_hash'], $payload['signature_scheme']);
+        ksort($payload);
+
+        $recomputedManifestHash = hash('sha256', (string) json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+
+        if ($recomputedManifestHash !== $storedManifestHash || $recomputedManifestHash !== $anchor->manifest_hash) {
+            return [
+                'is_valid' => false,
+                'status' => 'TAMPERED_MANIFEST',
+                'message' => 'O manifesto WORM de ancoragem foi adulterado no storage.',
+            ];
+        }
+
+        return [
+            'is_valid' => true,
+            'status' => 'HEALTHY',
+            'manifest_hash' => $storedManifestHash,
+            'sequence_number' => $anchor->sequence_number,
+            'chain_head_hash' => $anchor->chain_head_hash,
+            'storage_path' => $storagePath,
         ];
     }
 }

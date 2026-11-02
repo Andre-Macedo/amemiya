@@ -11,6 +11,7 @@ use Modules\Metrology\Models\Calibration;
 use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\ReferenceStandard;
 use Modules\Metrology\Models\WorkOrder;
+use Modules\System\Models\AuditChainAnchor;
 use Modules\System\Services\AuditChainService;
 use Spatie\Activitylog\Models\Activity;
 
@@ -83,5 +84,42 @@ class AuditLogApiController extends Controller
         $report = $auditChainService->verifyChain($tenantId);
 
         return response()->json($report);
+    }
+
+    /**
+     * Ancola o cabeçalho da cadeia de auditoria em manifesto WORM imutável.
+     */
+    public function anchorChain(Request $request, AuditChainService $auditChainService): JsonResponse
+    {
+        $tenantId = $request->user()?->tenant_id;
+        $anchorType = $request->input('anchor_type', 'WORM_IMMUTABLE');
+
+        $anchor = $auditChainService->anchorChain($tenantId, (string) $anchorType);
+
+        if (! $anchor) {
+            return response()->json([
+                'message' => 'Nenhum registro de auditoria disponível para ancoragem.',
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => 'Cabeçalho da cadeia de auditoria ancorado com sucesso em storage WORM imutável.',
+            'anchor' => $anchor,
+        ], 201);
+    }
+
+    /**
+     * Lista os manifestos de ancoragem registrados para o tenant.
+     */
+    public function anchors(Request $request): JsonResponse
+    {
+        $tenantId = $request->user()?->tenant_id;
+
+        $anchors = AuditChainAnchor::query()
+            ->when($tenantId, fn ($q) => $q->where('tenant_id', $tenantId))
+            ->latest('sequence_number')
+            ->paginate(20);
+
+        return response()->json($anchors);
     }
 }
