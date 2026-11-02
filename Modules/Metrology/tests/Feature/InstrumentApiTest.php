@@ -2,6 +2,7 @@
 
 namespace Modules\Metrology\Tests\Feature;
 
+use App\Models\Tenant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Modules\Metrology\Models\Instrument;
@@ -17,7 +18,15 @@ class InstrumentApiTest extends TestCase
     {
         parent::setUp();
 
-        $user = User::factory()->create();
+        $tenant = Tenant::create([
+            'name' => 'Metrology Test Lab',
+            'slug' => 'metro-lab-instruments',
+        ]);
+        tenancy()->initialize($tenant);
+
+        $user = User::factory()->create([
+            'tenant_id' => $tenant->id,
+        ]);
         Sanctum::actingAs($user);
     }
 

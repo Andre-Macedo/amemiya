@@ -1,11 +1,20 @@
 <?php
 
+use App\Models\Tenant;
 use Laravel\Sanctum\Sanctum;
 use Modules\Metrology\Models\Material;
 use Modules\System\Models\User;
 
 beforeEach(function () {
-    $this->user = User::factory()->create();
+    $tenant = Tenant::create([
+        'name' => 'Metrology Test Lab',
+        'slug' => 'metro-lab-materials',
+    ]);
+    tenancy()->initialize($tenant);
+
+    $this->user = User::factory()->create([
+        'tenant_id' => $tenant->id,
+    ]);
     Sanctum::actingAs($this->user);
 });
 

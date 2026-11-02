@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Metrology\Tests\Feature;
 
+use App\Models\Tenant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Modules\Metrology\Models\Instrument;
@@ -23,7 +24,15 @@ class CalibrationCalculateApiTest extends TestCase
     {
         parent::setUp();
 
-        $this->user = User::factory()->create();
+        $tenant = Tenant::create([
+            'name' => 'Metrology Test Lab',
+            'slug' => 'metro-lab-calc',
+        ]);
+        tenancy()->initialize($tenant);
+
+        $this->user = User::factory()->create([
+            'tenant_id' => $tenant->id,
+        ]);
         Sanctum::actingAs($this->user);
     }
 
