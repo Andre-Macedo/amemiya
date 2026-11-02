@@ -23,6 +23,11 @@ class IoTNode extends Model
         'name',
         'node_id',
         'status',
+        'battery_voltage',
+    ];
+
+    protected $casts = [
+        'battery_voltage' => 'float',
     ];
 
     /**

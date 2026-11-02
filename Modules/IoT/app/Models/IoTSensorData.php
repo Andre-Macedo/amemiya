@@ -26,6 +26,7 @@ class IoTSensorData extends Model
         'kurt_y',
         'kurt_z',
         'mic_rms',
+        'temp_celsius',
         'features',
         'fft_data',
         'ml_status',
@@ -47,6 +48,7 @@ class IoTSensorData extends Model
         'kurt_y' => 'float',
         'kurt_z' => 'float',
         'mic_rms' => 'float',
+        'temp_celsius' => 'float',
         'ml_confidence' => 'float',
         'cloud_ml_confidence' => 'float',
     ];

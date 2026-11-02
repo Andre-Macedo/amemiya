@@ -1,60 +1,65 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\IoT\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
+use Modules\IoT\Http\Requests\StoreIoTNodeRequest;
+use Modules\IoT\Http\Requests\UpdateIoTNodeRequest;
+use Modules\IoT\Http\Resources\IoTNodeApiResource;
 use Modules\IoT\Models\IoTNode;
 
 class IoTNodeApiController extends Controller
 {
-    public function index()
+    /**
+     * Lista todos os nós sensores vinculados ao tenant.
+     */
+    public function index(): AnonymousResourceCollection
     {
         $nodes = IoTNode::with(['gateway', 'machine'])->latest()->get();
 
-        return JsonResource::collection($nodes);
+        return IoTNodeApiResource::collection($nodes);
     }
 
-    public function store(Request $request)
+    /**
+     * Cadastra um novo nó sensor industrial.
+     */
+    public function store(StoreIoTNodeRequest $request): IoTNodeApiResource
     {
-        $validated = $request->validate([
-            'gateway_id' => 'required|exists:iot_gateways,id',
-            'machine_id' => 'required|exists:machines,id',
-            'name' => 'required|string|max:255',
-            'node_id' => 'required|string',
-            'status' => 'required|string',
-        ]);
+        $node = IoTNode::create($request->validated());
 
-        $node = IoTNode::create($validated);
-
-        return new JsonResource($node);
+        return new IoTNodeApiResource($node);
     }
 
-    public function show(IoTNode $iotNode)
+    /**
+     * Exibe os detalhes de um nó sensor específico.
+     */
+    public function show(IoTNode $iotNode): IoTNodeApiResource
     {
-        return new JsonResource($iotNode->load(['gateway', 'machine']));
+        return new IoTNodeApiResource($iotNode->load(['gateway', 'machine']));
     }
 
-    public function update(Request $request, IoTNode $iotNode)
+    /**
+     * Atualiza o cadastro e parâmetros de um nó sensor.
+     */
+    public function update(UpdateIoTNodeRequest $request, IoTNode $iotNode): IoTNodeApiResource
     {
-        $validated = $request->validate([
-            'gateway_id' => 'required|exists:iot_gateways,id',
-            'machine_id' => 'required|exists:machines,id',
-            'name' => 'required|string|max:255',
-            'node_id' => 'required|string',
-            'status' => 'required|string',
-        ]);
+        $iotNode->update($request->validated());
 
-        $iotNode->update($validated);
-
-        return new JsonResource($iotNode);
+        return new IoTNodeApiResource($iotNode);
     }
 
-    public function destroy(IoTNode $iotNode)
+    /**
+     * Remove um nó sensor do sistema.
+     */
+    public function destroy(IoTNode $iotNode): Response
     {
         $iotNode->delete();
 
         return response()->noContent();
     }
 }
+

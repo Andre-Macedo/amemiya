@@ -50,6 +50,7 @@ class PersistSensorData
                 'kurt_y' => $dto->timeDomain['kurt_y'] ?? null,
                 'kurt_z' => $dto->timeDomain['kurt_z'] ?? null,
                 'mic_rms' => $dto->micRms,
+                'temp_celsius' => $dto->tempCelsius,
                 'features' => $dto->features,
                 'ml_status' => $dto->mlStatus,
                 'ml_confidence' => $dto->mlConfidence,
@@ -57,6 +58,10 @@ class PersistSensorData
                 'cloud_ml_confidence' => $dto->cloudMlConfidence,
                 'measured_at' => Carbon::parse($dto->timestamp)->format('Y-m-d H:i:s'),
             ]);
+
+            if ($dto->batteryVoltage !== null) {
+                $node->update(['battery_voltage' => $dto->batteryVoltage]);
+            }
 
             Log::channel('iot_telemetry')->info('Telemetria persistida com sucesso para o Node: '.$dto->nodeId);
 

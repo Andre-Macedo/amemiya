@@ -131,7 +131,27 @@ class ProcessTelemetryJob implements ShouldQueue
                 : (isset($this->payload['velocity_rms']) ? (float) $this->payload['velocity_rms'] : null);
 
             $velocityRms = $isoService->calculateVelocityRms($rmsInG, $rpm, $explicitVelo);
-            $isoEval = $isoService->evaluate($velocityRms);
+            $machineGroup = (string) ($node?->machine?->metadata['iso_group'] ?? 'group_2');
+            $foundation = (string) ($node?->machine?->metadata['foundation_type'] ?? 'rigid');
+            $isoEval = $isoService->evaluate($velocityRms, $machineGroup, $foundation);
+
+            $tempCelsius = isset($this->payload['temp_celsius'])
+                ? (float) $this->payload['temp_celsius']
+                : (isset($this->payload['temperature'])
+                    ? (float) $this->payload['temperature']
+                    : (isset($this->payload['features']['temperature'])
+                        ? (float) $this->payload['features']['temperature']
+                        : (isset($this->payload['features']['temp_celsius']) ? (float) $this->payload['features']['temp_celsius'] : null)));
+
+            $batteryVoltage = isset($this->payload['battery_voltage'])
+                ? (float) $this->payload['battery_voltage']
+                : (isset($this->payload['v_bat'])
+                    ? (float) $this->payload['v_bat']
+                    : (isset($this->payload['features']['battery_voltage']) ? (float) $this->payload['features']['battery_voltage'] : null));
+
+            if ($batteryVoltage !== null) {
+                $node->update(['battery_voltage' => $batteryVoltage]);
+            }
 
             $dto = new TelemetryDataDTO(
                 tenantId: $gateway->tenant_id,
@@ -158,7 +178,9 @@ class ProcessTelemetryJob implements ShouldQueue
                 cloudMlStatus: $cloudMlStatus,
                 cloudMlConfidence: $cloudMlConfidence,
                 velocityRms: $velocityRms,
-                isoZone: $isoEval['zone'] ?? null
+                isoZone: $isoEval['zone'] ?? null,
+                tempCelsius: $tempCelsius,
+                batteryVoltage: $batteryVoltage
             );
 
             event(new SensorDataReceived($dto));

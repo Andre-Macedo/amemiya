@@ -7,6 +7,9 @@ namespace Modules\IoT\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Modules\IoT\Http\Requests\StoreIoTMLModelRequest;
+use Modules\IoT\Http\Resources\IoTMLModelApiResource;
 use Modules\IoT\Models\IoTMLModel;
 
 class IoTMLModelApiController extends Controller
@@ -14,34 +17,22 @@ class IoTMLModelApiController extends Controller
     /**
      * Lista todos os modelos cadastrados no Model Registry.
      */
-    public function index(Request $request): JsonResponse
+    public function index(): AnonymousResourceCollection
     {
         $models = IoTMLModel::query()
             ->with(['dataset:id,name,type'])
             ->latest('created_at')
             ->get();
 
-        return response()->json([
-            'data' => $models,
-        ]);
+        return IoTMLModelApiResource::collection($models);
     }
 
     /**
      * Registra uma nova versão de modelo treinada (no Jupyter ou AutoML).
      */
-    public function store(Request $request): JsonResponse
+    public function store(StoreIoTMLModelRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'model_type' => 'required|string|in:xgboost_cloud,iforest_edge',
-            'version' => 'required|string|max:50',
-            'target_device' => 'required|string|in:cloud,edge_esp32',
-            'dataset_id' => 'nullable|string|exists:iot_ml_datasets,id',
-            'status' => 'nullable|string|in:candidate,shadow,in_production,deprecated',
-            'artifact_path' => 'nullable|string|max:500',
-            'metrics' => 'nullable|array',
-            'notes' => 'nullable|string|max:1000',
-        ]);
+        $validated = $request->validated();
 
         $model = IoTMLModel::create([
             'name' => $validated['name'],
@@ -55,10 +46,9 @@ class IoTMLModelApiController extends Controller
             'notes' => $validated['notes'] ?? null,
         ]);
 
-        return response()->json([
-            'message' => 'Modelo registrado com sucesso no Model Registry.',
-            'data' => $model,
-        ], 201);
+        return (new IoTMLModelApiResource($model))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
@@ -88,7 +78,7 @@ class IoTMLModelApiController extends Controller
 
         return response()->json([
             'message' => "Modelo {$model->name} ({$model->version}) atualizado para status: {$model->status}.",
-            'data' => $model,
+            'data' => new IoTMLModelApiResource($model),
         ]);
     }
 }

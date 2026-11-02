@@ -1,58 +1,65 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\IoT\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
+use Modules\IoT\Http\Requests\StoreIoTGatewayRequest;
+use Modules\IoT\Http\Requests\UpdateIoTGatewayRequest;
+use Modules\IoT\Http\Resources\IoTGatewayApiResource;
 use Modules\IoT\Models\IoTGateway;
 
 class IoTGatewayApiController extends Controller
 {
-    public function index()
+    /**
+     * Lista todos os gateways de telemetria cadastrados.
+     */
+    public function index(): AnonymousResourceCollection
     {
         $gateways = IoTGateway::query()->latest()->get();
 
-        return JsonResource::collection($gateways);
+        return IoTGatewayApiResource::collection($gateways);
     }
 
-    public function store(Request $request)
+    /**
+     * Registra um novo gateway concentrador.
+     */
+    public function store(StoreIoTGatewayRequest $request): IoTGatewayApiResource
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'device_id' => 'required|string|unique:iot_gateways,device_id',
-            'station_id' => 'nullable|exists:stations,id',
-            'status' => 'required|string',
-        ]);
+        $gateway = IoTGateway::create($request->validated());
 
-        $gateway = IoTGateway::create($validated);
-
-        return new JsonResource($gateway);
+        return new IoTGatewayApiResource($gateway);
     }
 
-    public function show(IoTGateway $iotGateway)
+    /**
+     * Exibe os detalhes de um gateway específico.
+     */
+    public function show(IoTGateway $iotGateway): IoTGatewayApiResource
     {
-        return new JsonResource($iotGateway);
+        return new IoTGatewayApiResource($iotGateway);
     }
 
-    public function update(Request $request, IoTGateway $iotGateway)
+    /**
+     * Atualiza dados e status operacional de um gateway.
+     */
+    public function update(UpdateIoTGatewayRequest $request, IoTGateway $iotGateway): IoTGatewayApiResource
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'device_id' => 'required|string|unique:iot_gateways,device_id,'.$iotGateway->id,
-            'station_id' => 'nullable|exists:stations,id',
-            'status' => 'required|string',
-        ]);
+        $iotGateway->update($request->validated());
 
-        $iotGateway->update($validated);
-
-        return new JsonResource($iotGateway);
+        return new IoTGatewayApiResource($iotGateway);
     }
 
-    public function destroy(IoTGateway $iotGateway)
+    /**
+     * Remove um gateway do cluster.
+     */
+    public function destroy(IoTGateway $iotGateway): Response
     {
         $iotGateway->delete();
 
         return response()->noContent();
     }
 }
+

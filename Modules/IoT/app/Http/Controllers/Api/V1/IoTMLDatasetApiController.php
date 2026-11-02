@@ -7,7 +7,10 @@ namespace Modules\IoT\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Str;
+use Modules\IoT\Http\Requests\StoreIoTMLDatasetRequest;
+use Modules\IoT\Http\Resources\IoTMLDatasetApiResource;
 use Modules\IoT\Models\IoTDeviceLog;
 use Modules\IoT\Models\IoTMLBurst;
 use Modules\IoT\Models\IoTMLDataset;
@@ -29,7 +32,7 @@ class IoTMLDatasetApiController extends Controller
     /**
      * Lista os datasets cadastrados no tenant.
      */
-    public function index(Request $request): JsonResponse
+    public function index(): AnonymousResourceCollection
     {
         $datasets = IoTMLDataset::query()
             ->with(['targetMachine:id,name,code'])
@@ -37,22 +40,15 @@ class IoTMLDatasetApiController extends Controller
             ->latest()
             ->get();
 
-        return response()->json([
-            'data' => $datasets,
-        ]);
+        return IoTMLDatasetApiResource::collection($datasets);
     }
 
     /**
      * Cria um novo Dataset (Supervisionado ou Baseline de Borda).
      */
-    public function store(Request $request): JsonResponse
+    public function store(StoreIoTMLDatasetRequest $request): JsonResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|in:diagnostic_multiclass,baseline_normal,benchmark_golden_set,run_to_failure,supervised_xgboost,unsupervised_iforest',
-            'target_machine_id' => 'nullable|string|exists:machines,id',
-            'description' => 'nullable|string|max:1000',
-        ]);
+        $validated = $request->validated();
 
         $dataset = IoTMLDataset::create([
             'name' => $validated['name'],
@@ -63,31 +59,21 @@ class IoTMLDatasetApiController extends Controller
             'status' => 'collecting',
         ]);
 
-        return response()->json([
-            'message' => 'Dataset criado com sucesso.',
-            'data' => $dataset,
-        ], 201);
+        return (new IoTMLDatasetApiResource($dataset))
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
      * Detalhes de um dataset específico com resumo das amostras.
      */
-    public function show(string $id): JsonResponse
+    public function show(string $id): IoTMLDatasetApiResource
     {
         $dataset = IoTMLDataset::with(['targetMachine:id,name,code', 'models'])
             ->withCount('bursts')
             ->findOrFail($id);
 
-        $recentBursts = $dataset->bursts()
-            ->with(['node:id,name,node_id', 'validator:id,name'])
-            ->latest()
-            ->limit(20)
-            ->get();
-
-        return response()->json([
-            'data' => $dataset,
-            'recent_bursts' => $recentBursts,
-        ]);
+        return new IoTMLDatasetApiResource($dataset);
     }
 
     /**

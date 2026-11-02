@@ -36,7 +36,9 @@ class TelemetryDataDTO
         public ?string $cloudMlStatus = null,
         public ?float $cloudMlConfidence = null,
         public ?float $velocityRms = null,
-        public ?string $isoZone = null
+        public ?string $isoZone = null,
+        public ?float $tempCelsius = null,
+        public ?float $batteryVoltage = null
     ) {}
 
     public function toArray(): array
@@ -51,6 +53,8 @@ class TelemetryDataDTO
             'iso_zone' => $this->isoZone,
             'time_domain' => $this->timeDomain,
             'mic_rms' => $this->micRms,
+            'temp_celsius' => $this->tempCelsius,
+            'battery_voltage' => $this->batteryVoltage,
             'features' => $this->features,
             'ml_status' => $this->mlStatus,
             'ml_confidence' => $this->mlConfidence,
