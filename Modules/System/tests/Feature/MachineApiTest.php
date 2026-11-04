@@ -9,7 +9,6 @@ use App\Models\Subscription;
 use App\Models\Tenant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
-use Modules\IoT\Models\IoTDeviceLog;
 use Modules\IoT\Models\IoTGateway;
 use Modules\IoT\Models\IoTNode;
 use Modules\System\Models\Machine;
@@ -261,5 +260,20 @@ class MachineApiTest extends TestCase
             'event_type' => 'command_dispatched',
             'level' => 'critical',
         ]);
+
+        // 4. Dispatch SILENCE_BUZZER command (Reconhecimento / Silenciador do Buzzer)
+        $silenceResponse = $this->withHeader('X-Tenant-ID', $this->tenant->id)
+            ->postJson("/api/v1/machines/{$machine->id}/command", [
+                'command' => 'silence_buzzer',
+                'reason' => 'Buzzer de alarme silenciado pelo operador via aplicativo móvel',
+            ]);
+
+        $silenceResponse->assertStatus(200)
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('command', 'silence_buzzer');
+
+        $silencedMachine = $machine->fresh();
+        $this->assertTrue($silencedMachine->metadata['buzzer_silenced'] ?? false);
+        $this->assertFalse($silencedMachine->metadata['buzzer_active'] ?? true);
     }
 }

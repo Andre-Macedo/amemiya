@@ -19,7 +19,11 @@ class SendMachineCommandRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'command' => ['required', 'string', 'in:start,stop,emergency_stop,set_rpm,toggle_relay,reset_alarm,set_alarm_state'],
+            'command' => [
+                'required',
+                'string',
+                'in:silence_buzzer,reset_alarm,test_buzzer,emergency_stop,start,stop,set_rpm,toggle_relay,set_alarm_state',
+            ],
             'rpm' => ['nullable', 'integer', 'min:0', 'max:10000'],
             'relay_index' => ['nullable', 'integer', 'min:1', 'max:8'],
             'relay_state' => ['nullable', 'boolean'],

@@ -97,15 +97,25 @@ class MachineApiController extends Controller
             'timestamp' => now()->toIso8601String(),
         ];
 
-        // Atualização de estado da máquina refletindo a operação
-        if ($command === 'emergency_stop') {
+        // Atualização de estado da máquina e alarme sonoro
+        $metadata = $machine->metadata ?? [];
+        if ($command === 'silence_buzzer') {
+            $metadata['buzzer_active'] = false;
+            $metadata['buzzer_silenced'] = true;
+            $metadata['buzzer_silenced_at'] = now()->toIso8601String();
+            $machine->update(['metadata' => $metadata]);
+        } elseif ($command === 'reset_alarm') {
+            $metadata['buzzer_active'] = false;
+            $metadata['buzzer_silenced'] = false;
+            $metadata['alarm_active'] = false;
+            $machine->update(['metadata' => $metadata]);
+        } elseif ($command === 'emergency_stop') {
             $machine->update(['status' => 'maintenance']);
         } elseif ($command === 'start') {
             $machine->update(['status' => 'operational']);
         }
 
         if (isset($validated['rpm']) && $validated['rpm'] > 0) {
-            $metadata = $machine->metadata ?? [];
             $metadata['nominal_rpm'] = (int) $validated['rpm'];
             $metadata['spindle_rpm'] = (int) $validated['rpm'];
             $machine->update(['metadata' => $metadata]);
@@ -121,14 +131,14 @@ class MachineApiController extends Controller
             'level' => ($command === 'emergency_stop') ? 'critical' : 'info',
             'event_type' => 'command_dispatched',
             'sent_command' => $payload,
-            'message' => "Comando {$command} disparado pelo app por " . ($user?->name ?? 'Operador'),
+            'message' => "Comando {$command} disparado pelo app por ".($user?->name ?? 'Operador'),
             'measured_at' => now(),
         ]);
 
         // Disparo via MQTT Broker
         $topicsPublished = [];
         try {
-            $pubClientId = 'amemiya_cmd_' . substr(md5(uniqid()), 0, 6);
+            $pubClientId = 'amemiya_cmd_'.substr(md5(uniqid()), 0, 6);
             $mqtt = MQTT::connection('default', $pubClientId);
 
             foreach ($machine->nodes as $node) {
@@ -147,7 +157,7 @@ class MachineApiController extends Controller
 
             $mqtt->disconnect();
         } catch (\Throwable $e) {
-            Log::channel('iot_commands')->warning('Broker MQTT inacessível para envio imediato: ' . $e->getMessage(), [
+            Log::channel('iot_commands')->warning('Broker MQTT inacessível para envio imediato: '.$e->getMessage(), [
                 'command_id' => $commandId,
                 'machine' => $machine->code,
             ]);

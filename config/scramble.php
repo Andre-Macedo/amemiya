@@ -32,7 +32,7 @@ return [
     /*
      * OpenAPI version of the resulting document.
      */
-    'openapi_version' => OpenApiVersion::V3_1,
+    'openapi_version' => class_exists(OpenApiVersion::class) ? OpenApiVersion::V3_1 : '3.1.0',
 
     'info' => [
         'version' => env('API_VERSION', '1.0.0'),
