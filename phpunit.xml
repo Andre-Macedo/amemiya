@@ -6,6 +6,7 @@
 >
     <testsuites>
         <testsuite name="Feature">
+            <directory>tests/Feature</directory>
             <directory>Modules/*/tests/Feature</directory>
         </testsuite>
     </testsuites>

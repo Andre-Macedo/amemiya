@@ -11,6 +11,7 @@ use Modules\IoT\Http\Controllers\Api\V1\IoTNodeApiController;
 Route::middleware([
     'auth:sanctum',
     'tenant.enforce',
+    'throttle:api',
 ])->prefix('v1')->group(function () {
     Route::get('iot-history', [IoTHistoryApiController::class, 'index']);
     Route::apiResource('iot-gateways', IoTGatewayApiController::class);

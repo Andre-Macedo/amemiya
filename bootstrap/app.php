@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Middleware\EnforceSessionTimeout;
 use App\Http\Middleware\EnsureTenantIsInitialized;
+use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -16,8 +18,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->append(SecurityHeaders::class);
+        $middleware->web(append: [
+            EnforceSessionTimeout::class,
+        ]);
         $middleware->alias([
             'tenant.enforce' => EnsureTenantIsInitialized::class,
+            'session.timeout' => EnforceSessionTimeout::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

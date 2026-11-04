@@ -21,12 +21,12 @@
 - [x] **Legal Compliance:** Terms of Use & Privacy acceptance.
 
 ## 🛡️ Priority 7: Security Hardening & OWASP Compliance (Critical)
-- [ ] **MFA / 2FA Support:** Enable Two-Factor Authentication (TOTP) for Admin and Quality Manager roles.
-- [ ] **API Rate Limiting:** Progressive throttling on login and sensitive endpoints.
-- [ ] **Encrypted Attributes:** Encrypt technical measurements at rest in the database.
-- [ ] **Security Headers:** HSTS, CSP, and X-Frame-Options configuration.
+- [x] **MFA / 2FA Support:** Enable Two-Factor Authentication (TOTP) for Admin and Quality Manager roles.
+- [x] **API Rate Limiting:** Progressive throttling on login and sensitive endpoints.
+- [x] **Encrypted Attributes:** Encrypt technical measurements at rest in the database.
+- [x] **Security Headers:** HSTS, CSP, and X-Frame-Options configuration.
 - [ ] **Anomaly Detection:** Configure GlitchTip alerts for suspicious behavior (e.g., massive document downloads).
-- [ ] **Session Hardening:** Automatic timeout for inactive sessions (Compliance requirement).
+- [x] **Session Hardening:** Automatic timeout for inactive sessions (Compliance requirement).
 
 ## 🟢 Priority 8: Sovereign Infrastructure & Scaling
 - [ ] **Ambiente Remoto de Staging (`dev.leantech.andremacedo.dev.br`):**

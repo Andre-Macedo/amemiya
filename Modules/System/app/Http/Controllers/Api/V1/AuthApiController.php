@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Modules\System\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\PersonalAccessToken;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Modules\System\Models\User;
+use Modules\System\Services\TwoFactorAuthenticationService;
 
 /**
  * Handles user authentication via Sanctum tokens with Progressive Rate Limiting.
@@ -63,6 +65,70 @@ class AuthApiController extends Controller
 
         /** @var User $user */
         $user = User::where('email', $request['email'])->firstOrFail();
+
+        if ($user->hasTwoFactorEnabled()) {
+            $challengeToken = $user->createToken('2fa_challenge', ['2fa:pending'], now()->addMinutes(5))->plainTextToken;
+
+            return response()->json([
+                'requires_2fa' => true,
+                'two_factor_token' => $challengeToken,
+                'message' => 'Autenticação em dois fatores necessária. Forneça o código do seu aplicativo autenticador.',
+            ], 200);
+        }
+
+        return $this->issueTokenResponse($user);
+    }
+
+    /**
+     * Verifies the 2FA challenge code and issues the final bearer token.
+     */
+    public function verifyTwoFactor(Request $request, TwoFactorAuthenticationService $twoFactorService): JsonResponse
+    {
+        $request->validate([
+            'two_factor_token' => ['required', 'string'],
+            'code' => ['required', 'string'],
+        ]);
+
+        $throttleKey = '2fa.verify.'.$request->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+
+            return response()->json([
+                'message' => 'Muitas tentativas incorretas. Tente novamente mais tarde.',
+                'retry_after_seconds' => $seconds,
+            ], 429);
+        }
+
+        $token = PersonalAccessToken::findToken($request->two_factor_token);
+
+        if (! $token || ! $token->can('2fa:pending')) {
+            return response()->json([
+                'message' => 'Token de autenticação temporário inválido ou expirado.',
+            ], 401);
+        }
+
+        /** @var User $user */
+        $user = $token->tokenable;
+
+        if (! $user instanceof User) {
+            return response()->json([
+                'message' => 'Usuário não identificado.',
+            ], 401);
+        }
+
+        $isValid = $twoFactorService->verifyCodeOrRecovery($user, (string) $request->code);
+
+        if (! $isValid) {
+            RateLimiter::hit($throttleKey, 60);
+
+            return response()->json([
+                'message' => 'Código de autenticação ou de recuperação inválido.',
+            ], 422);
+        }
+
+        RateLimiter::clear($throttleKey);
+        $token->delete();
 
         return $this->issueTokenResponse($user);
     }

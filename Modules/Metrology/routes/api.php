@@ -50,7 +50,7 @@ Route::middleware('auth:sanctum')->prefix('public/portal')->group(function () {
     Route::get('/clients/{client}/certificates', [PublicClientPortalController::class, 'certificates']);
 });
 
-Route::middleware(['auth:sanctum', 'tenant.enforce'])->group(function () {
+Route::middleware(['auth:sanctum', 'tenant.enforce', 'throttle:api'])->group(function () {
 
     // Global Search & Audit
     Route::get('/search', [GlobalSearchController::class, 'index']);

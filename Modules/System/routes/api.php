@@ -15,6 +15,7 @@ use Modules\System\Http\Controllers\Api\V1\SettingsApiController;
 use Modules\System\Http\Controllers\Api\V1\StationApiController;
 use Modules\System\Http\Controllers\Api\V1\SupplierApiController;
 use Modules\System\Http\Controllers\Api\V1\TicketApiController;
+use Modules\System\Http\Controllers\Api\V1\TwoFactorApiController;
 use Modules\System\Http\Controllers\Api\V1\UserApiController;
 use Modules\System\Http\Controllers\Api\V1\UserCompetenceApiController;
 
@@ -47,6 +48,13 @@ Route::middleware([
             Route::get('profile', [ProfileApiController::class, 'show']);
             Route::put('profile', [ProfileApiController::class, 'update']);
             Route::post('profile/accept-legal', [ProfileApiController::class, 'acceptLegal']);
+
+            // Two-Factor Authentication (2FA)
+            Route::post('2fa/setup', [TwoFactorApiController::class, 'setup']);
+            Route::post('2fa/confirm', [TwoFactorApiController::class, 'confirm']);
+            Route::post('2fa/disable', [TwoFactorApiController::class, 'disable']);
+            Route::get('2fa/recovery-codes', [TwoFactorApiController::class, 'recoveryCodes']);
+            Route::post('2fa/recovery-codes/regenerate', [TwoFactorApiController::class, 'regenerateRecoveryCodes']);
 
             // Support Tickets
             Route::apiResource('tickets', TicketApiController::class);
