@@ -100,3 +100,40 @@ test('it applies conservative floor truncation to veff per GUM G.4.2 and EA-4/02
     $k3 = MetrologyMath::getKFromVeff(22.0);
     expect($k3)->toBe(2.076);
 });
+
+test('it combines multiple reference standards in quadrature per GUM JCGM 100:2008', function () {
+    $calculator = new UncertaintyCalculator;
+
+    // Dois blocos padrão combinados: 10 mm (U = 0.002, k = 2) e 25 mm (U = 0.003, k = 2)
+    // u(S1) = 0.001 mm, u(S2) = 0.0015 mm
+    // u_std_total = sqrt(0.001^2 + 0.0015^2) ≈ 0.0018027 mm
+    $data = new MeasurementCalculationData(
+        readings: [35.001, 35.002, 35.001, 35.001],
+        resolution: 0.001,
+        standards: [
+            [
+                'name' => 'Bloco Padrão 10mm (BP-10)',
+                'actual_value' => 10.0002,
+                'uncertainty' => 0.002,
+                'k' => 2.0,
+            ],
+            [
+                'name' => 'Bloco Padrão 25mm (BP-25)',
+                'actual_value' => 24.9997,
+                'uncertainty' => 0.003,
+                'k' => 2.0,
+            ],
+        ]
+    );
+
+    $result = $calculator->calculate($data);
+
+    // VME combinado: 10.0002 + 24.9997 = 34.9999
+    // Média: 35.00125 -> Tendência = 35.00125 - 34.9999 = 0.00135
+    expect($result->bias)->toEqualWithDelta(0.00135, 0.00005)
+        ->and($result->budget)->toHaveCount(4); // Repeatability, Resolution, BP-10, BP-25
+
+    $budgetSources = array_column($result->budget, 'source');
+    expect($budgetSources)->toContain('Bloco Padrão 10mm (BP-10)')
+        ->and($budgetSources)->toContain('Bloco Padrão 25mm (BP-25)');
+});

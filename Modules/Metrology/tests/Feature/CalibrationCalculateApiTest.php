@@ -103,4 +103,48 @@ class CalibrationCalculateApiTest extends TestCase
             'points' => [],
         ]);
     }
+
+    public function test_can_calculate_uncertainty_with_multiple_reference_standards(): void
+    {
+        $instType = InstrumentType::factory()->create();
+        $instrument = Instrument::factory()->create([
+            'instrument_type_id' => $instType->id,
+            'resolution' => '0.001',
+        ]);
+
+        $stdType = ReferenceStandardType::factory()->create();
+        $std1 = ReferenceStandard::factory()->create([
+            'reference_standard_type_id' => $stdType->id,
+            'name' => 'Bloco 10mm',
+            'actual_value' => '10.0001',
+            'uncertainty' => '0.0015',
+        ]);
+        $std2 = ReferenceStandard::factory()->create([
+            'reference_standard_type_id' => $stdType->id,
+            'name' => 'Bloco 25mm',
+            'actual_value' => '24.9998',
+            'uncertainty' => '0.0020',
+        ]);
+
+        $payload = [
+            'instrument_id' => $instrument->id,
+            'items' => [
+                [
+                    'step' => 1,
+                    'nominal_value' => 35.0,
+                    'as_found_readings' => [35.001, 35.002, 35.001],
+                    'standard_ids' => [$std1->id, $std2->id],
+                ],
+            ],
+        ];
+
+        $response = $this->postJson('/api/v1/calibrations/calculate', $payload);
+
+        $response->assertStatus(200);
+        $point = $response->json('points.0');
+        $this->assertNotNull($point);
+        $sources = array_column($point['budget'], 'source');
+        $this->assertContains('Bloco 10mm', $sources);
+        $this->assertContains('Bloco 25mm', $sources);
+    }
 }

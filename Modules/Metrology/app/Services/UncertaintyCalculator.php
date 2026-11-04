@@ -80,8 +80,21 @@ class UncertaintyCalculator
         }
 
         // --- 2. Média e Tendência (Erro Sistemático) ---
+        $effectiveStandardValue = $data->standardActualValue;
+        $hasMultipleStandards = ! empty($data->standards);
+
+        if ($hasMultipleStandards && $effectiveStandardValue <= 0.0) {
+            $sumActual = 0.0;
+            foreach ($data->standards as $std) {
+                $sumActual += (float) ($std['actual_value'] ?? 0.0);
+            }
+            if ($sumActual > 0.0) {
+                $effectiveStandardValue = $sumActual;
+            }
+        }
+
         $avg = MetrologyMath::calculateAverage($readings);
-        $bias = MetrologyMath::calculateBias($avg, $data->standardActualValue);
+        $bias = MetrologyMath::calculateBias($avg, $effectiveStandardValue);
 
         // --- 3. Fontes de Incerteza Básicas ---
 
@@ -91,16 +104,42 @@ class UncertaintyCalculator
         // B1: Resolução (Tipo B)
         $uRes = MetrologyMath::calculateTypeB_Resolution($data->resolution);
 
-        // B2: Incerteza do Padrão (Tipo B)
-        $uStd = MetrologyMath::calculateTypeB_Standard($data->standardUncertainty, $data->standardK);
+        // B2: Incerteza do Padrão (Tipo B) - Único ou Múltiplos Padrões combinados em quadratura
+        $budgetStandards = [];
+        $sumStdSquares = 0.0;
 
-        // --- 4. Combinação Final ---
+        if ($hasMultipleStandards) {
+            foreach ($data->standards as $index => $std) {
+                $stdU = (float) ($std['uncertainty'] ?? 0.0);
+                $stdK = (float) ($std['k'] ?? 2.00);
+                $stdName = (string) ($std['name'] ?? ('Reference Standard '.($index + 1)));
 
-        // Precisamos somar o uThermal na combinação quadrática.
-        // Como MetrologyMath::calculateFinalUncertainty aceita apenas 3 argumentos fixos,
-        // vamos fazer a combinação manual aqui para incluir o termo extra.
+                $uStdSingle = MetrologyMath::calculateTypeB_Standard($stdU, $stdK);
+                $sumStdSquares += pow($uStdSingle, 2);
 
-        $sumSquares = pow($uA, 2) + pow($uRes, 2) + pow($uStd, 2);
+                $budgetStandards[] = [
+                    'source' => $stdName,
+                    'value' => $stdU,
+                    'divisor' => $stdK,
+                    'distribution' => 'Normal',
+                    'standard_uncertainty' => $uStdSingle,
+                ];
+            }
+        } else {
+            $uStd = MetrologyMath::calculateTypeB_Standard($data->standardUncertainty, $data->standardK);
+            $sumStdSquares += pow($uStd, 2);
+
+            $budgetStandards[] = [
+                'source' => 'Reference Standard',
+                'value' => $data->standardUncertainty,
+                'divisor' => $data->standardK,
+                'distribution' => 'Normal',
+                'standard_uncertainty' => $uStd,
+            ];
+        }
+
+        // --- 4. Combinação Final (GUM JCGM 100:2008) ---
+        $sumSquares = pow($uA, 2) + pow($uRes, 2) + $sumStdSquares;
 
         foreach ($budgetExtras as $extra) {
             $sumSquares += pow($extra['standard_uncertainty'], 2);
@@ -127,14 +166,10 @@ class UncertaintyCalculator
                 'distribution' => 'Rectangular',
                 'standard_uncertainty' => $uRes,
             ],
-            [
-                'source' => 'Reference Standard',
-                'value' => $data->standardUncertainty, // Valor expandido
-                'divisor' => $data->standardK,
-                'distribution' => 'Normal',
-                'standard_uncertainty' => $uStd,
-            ],
         ];
+
+        // Adiciona Padrão(ões) de Referência
+        $budget = array_merge($budget, $budgetStandards);
 
         // Adiciona os extras (Térmica)
         $budget = array_merge($budget, $budgetExtras);

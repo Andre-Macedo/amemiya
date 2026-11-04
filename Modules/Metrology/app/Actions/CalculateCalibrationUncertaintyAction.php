@@ -70,11 +70,28 @@ class CalculateCalibrationUncertaintyAction
                 : $defaultResolution;
 
             $standardId = $item['standard_id'] ?? $item['reference_standard_id'] ?? $data['standard_id'] ?? null;
+            $standardIds = $item['standard_ids'] ?? $item['reference_standard_ids'] ?? ($standardId ? [$standardId] : []);
+
+            $standardsList = [];
+            if (! empty($item['standards']) && is_array($item['standards'])) {
+                $standardsList = $item['standards'];
+            } elseif (! empty($standardIds) && is_array($standardIds)) {
+                $standardsModels = ReferenceStandard::whereIn('id', $standardIds)->get();
+                foreach ($standardsModels as $std) {
+                    $standardsList[] = [
+                        'name' => $std->name ?? 'Reference Standard',
+                        'actual_value' => (float) ($std->actual_value ?? 0.0),
+                        'uncertainty' => (float) ($std->uncertainty ?? 0.001),
+                        'k' => 2.0,
+                    ];
+                }
+            }
+
             $standardActualValue = $nominalValue;
             $standardUncertainty = 0.001;
             $standardK = 2.0;
 
-            if ($standardId) {
+            if (empty($standardsList) && $standardId) {
                 $standard = ReferenceStandard::find($standardId);
                 if ($standard) {
                     if ($standard->actual_value !== null && is_numeric($standard->actual_value)) {
@@ -92,7 +109,8 @@ class CalculateCalibrationUncertaintyAction
                 standardActualValue: $standardActualValue,
                 standardUncertainty: $standardUncertainty,
                 standardK: $standardK,
-                temperature: $temperature
+                temperature: $temperature,
+                standards: ! empty($standardsList) ? $standardsList : null
             );
 
             $result = $this->calculator->calculate($calcData);

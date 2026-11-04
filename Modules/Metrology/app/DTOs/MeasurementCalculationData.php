@@ -18,11 +18,13 @@ class MeasurementCalculationData
     public function __construct(
         public readonly array $readings,
         public readonly float $resolution,
-        public readonly float $standardActualValue,
+        public readonly float $standardActualValue = 0.0,
         public readonly float $standardUncertainty = 0.0,
         public readonly float $standardK = 2.00,
         public readonly ?float $temperature = null,
         public readonly float $cte = 11.5, // Aço padrão
+        /** @var array<int, array{name?: string, actual_value?: float, uncertainty: float, k?: float}>|null */
+        public readonly ?array $standards = null,
     ) {}
 
     public static function fromArray(array $data): self
@@ -35,6 +37,7 @@ class MeasurementCalculationData
             standardK: (float) ($data['standard_k'] ?? 2.00),
             temperature: isset($data['temperature']) ? (float) $data['temperature'] : null,
             cte: (float) ($data['cte'] ?? 11.5),
+            standards: $data['standards'] ?? null,
         );
     }
 }
