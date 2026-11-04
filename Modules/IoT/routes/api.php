@@ -7,6 +7,7 @@ use Modules\IoT\Http\Controllers\Api\V1\IoTHistoryApiController;
 use Modules\IoT\Http\Controllers\Api\V1\IoTMLDatasetApiController;
 use Modules\IoT\Http\Controllers\Api\V1\IoTMLModelApiController;
 use Modules\IoT\Http\Controllers\Api\V1\IoTNodeApiController;
+use Modules\IoT\Services\BearingKinematicsService;
 
 Route::middleware([
     'auth:sanctum',
@@ -15,6 +16,8 @@ Route::middleware([
 ])->prefix('v1')->group(function () {
     Route::get('iot-history', [IoTHistoryApiController::class, 'index']);
     Route::apiResource('iot-gateways', IoTGatewayApiController::class);
+    Route::get('iot-nodes/{iotNode}/spectrum', [IoTNodeApiController::class, 'spectrum']);
+    Route::get('bearing-presets', fn (BearingKinematicsService $s) => response()->json($s->getPresets()));
     Route::apiResource('iot-nodes', IoTNodeApiController::class);
     Route::apiResource('iot-logs', IoTDeviceLogApiController::class)->only(['index', 'show']);
 

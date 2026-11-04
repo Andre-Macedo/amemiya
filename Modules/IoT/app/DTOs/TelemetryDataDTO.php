@@ -38,7 +38,8 @@ class TelemetryDataDTO
         public ?float $velocityRms = null,
         public ?string $isoZone = null,
         public ?float $tempCelsius = null,
-        public ?float $batteryVoltage = null
+        public ?float $batteryVoltage = null,
+        public ?array $prescriptiveDiagnosis = null
     ) {}
 
     public function toArray(): array
@@ -60,6 +61,7 @@ class TelemetryDataDTO
             'ml_confidence' => $this->mlConfidence,
             'cloud_ml_status' => $this->cloudMlStatus,
             'cloud_ml_confidence' => $this->cloudMlConfidence,
+            'prescriptive_diagnosis' => $this->prescriptiveDiagnosis,
             'timestamp' => $this->timestamp,
         ];
     }

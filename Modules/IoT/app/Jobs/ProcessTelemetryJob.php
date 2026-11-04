@@ -10,14 +10,17 @@ use Illuminate\Queue\Middleware\WithoutOverlapping;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 use Laravel\Pulse\Facades\Pulse;
 use Modules\IoT\DTOs\TelemetryDataDTO;
 use Modules\IoT\Events\AnomalyDetected;
 use Modules\IoT\Events\SensorDataReceived;
 use Modules\IoT\Models\IoTDeviceLog;
 use Modules\IoT\Models\IoTGateway;
+use Modules\IoT\Services\BearingKinematicsService;
 use Modules\IoT\Services\ISO20816SeverityService;
 use Modules\IoT\Services\MachineLearningService;
+use Modules\IoT\Services\PrescriptiveDiagnosticsService;
 use PhpMqtt\Client\Facades\MQTT;
 
 class ProcessTelemetryJob implements ShouldQueue
@@ -153,6 +156,52 @@ class ProcessTelemetryJob implements ShouldQueue
                 $node->update(['battery_voltage' => $batteryVoltage]);
             }
 
+            // 4.1 Cache de Burst Espectral no Redis (TTL: 24h)
+            $spectrumPayload = $this->payload['spectrum'] ?? null;
+            if ($spectrumPayload === null && (isset($this->payload['fft_x']) || isset($this->payload['features']['fft_x']))) {
+                $spectrumPayload = [
+                    'fft_x' => $this->payload['fft_x'] ?? $this->payload['features']['fft_x'] ?? [],
+                    'fft_y' => $this->payload['fft_y'] ?? $this->payload['features']['fft_y'] ?? [],
+                    'fft_z' => $this->payload['fft_z'] ?? $this->payload['features']['fft_z'] ?? [],
+                    'rpm' => $rpm,
+                    'sample_rate' => $this->payload['sample_rate'] ?? 3200,
+                    'timestamp' => now()->toIso8601String(),
+                ];
+            }
+
+            if ($spectrumPayload !== null) {
+                try {
+                    Redis::setex("iot:node:{$node->node_id}:spectrum:latest", 86400, json_encode($spectrumPayload));
+                } catch (\Throwable $e) {
+                    Log::warning("Não foi possível salvar burst espectral no Redis: {$e->getMessage()}");
+                }
+            }
+
+            // 4.2 Cinemática de Rolamento & Diagnóstico Prescritivo
+            $bearingPreset = (string) ($node?->machine?->metadata['bearing_model'] ?? 'skf_6204');
+            $kinematicsService = app(BearingKinematicsService::class);
+            $matchedPeaks = [];
+            if (! empty($this->payload['peaks'])) {
+                try {
+                    $matchedPeaks = $kinematicsService->matchSpectralPeaks(
+                        $this->payload['peaks'],
+                        (float) ($rpm ?? 1750),
+                        $bearingPreset
+                    );
+                } catch (\Throwable) {
+                    // Ignora modelo ausente
+                }
+            }
+
+            $diagnosticsService = app(PrescriptiveDiagnosticsService::class);
+            $prescriptive = $diagnosticsService->generateDiagnosis(
+                $isoEval,
+                $cloudMlStatus ?? $mlStatus,
+                $cloudMlConfidence ?? $mlConfidence,
+                $tempCelsius,
+                $matchedPeaks
+            );
+
             $dto = new TelemetryDataDTO(
                 tenantId: $gateway->tenant_id,
                 machineId: $node->machine_id,
@@ -180,7 +229,8 @@ class ProcessTelemetryJob implements ShouldQueue
                 velocityRms: $velocityRms,
                 isoZone: $isoEval['zone'] ?? null,
                 tempCelsius: $tempCelsius,
-                batteryVoltage: $batteryVoltage
+                batteryVoltage: $batteryVoltage,
+                prescriptiveDiagnosis: $prescriptive
             );
 
             event(new SensorDataReceived($dto));
@@ -198,6 +248,8 @@ class ProcessTelemetryJob implements ShouldQueue
                     'reanalyzed' => $reanalyzed,
                     'iso_zone' => $isoEval['zone'] ?? null,
                     'velocity_rms' => $velocityRms,
+                    'root_cause' => $prescriptive['root_cause'],
+                    'prescriptive_action' => $prescriptive['recommended_actions'][0] ?? null,
                 ]));
             }
 
@@ -229,11 +281,13 @@ class ProcessTelemetryJob implements ShouldQueue
                     'rms_global' => (float) ($this->payload['rms_global'] ?? 0),
                     'velocity_rms' => $velocityRms,
                     'iso_zone' => $isoEval['zone'] ?? null,
-                    'iso_evaluation' => $isoEval,
+                    'iso_evaluation' => array_merge($isoEval, [
+                        'prescriptive_diagnosis' => $prescriptive,
+                    ]),
                     'raw_payload' => $this->payload,
                     'features' => $this->payload['features'] ?? [],
                     'sent_command' => $lastSentCommand,
-                    'message' => "Disparo de IA: Status Edge [{$mlStatus}] (".round($mlConfidence * 100, 1).'%)'.($reanalyzed ? " -> Nuvem [{$cloudMlStatus}] (".round((float) $cloudMlConfidence * 100, 1).'%)' : '').$isoText,
+                    'message' => "Disparo de IA: Status Edge [{$mlStatus}] (".round($mlConfidence * 100, 1).'%)'.($reanalyzed ? " -> Nuvem [{$cloudMlStatus}] (".round((float) $cloudMlConfidence * 100, 1).'%)' : '').$isoText." | Causa-Raiz: {$prescriptive['root_cause']}",
                     'measured_at' => isset($this->payload['timestamp']) && $this->payload['timestamp'] > 0
                         ? Carbon::createFromTimestamp($this->payload['timestamp'])
                         : now(),

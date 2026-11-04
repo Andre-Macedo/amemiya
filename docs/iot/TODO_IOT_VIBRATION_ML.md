@@ -137,13 +137,13 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
 - [ ] **Módulo de Cinemática de Rolamentos (`BearingKinematicsService`):**
   - [ ] Cadastro de rolamentos industriais (SKF 6204, UCP204, 2206) com $N$ esferas, diâmetro $d$, primitivo $D$ e ângulo $\alpha$.
   - [ ] Cálculo automático em tempo de execução das frequências de falha: BPFO, BPFI, BSF e FTF alimentadas pelo RPM estimado.
-- [ ] **Motor de Diagnóstico Prescritivo de Causa-Raiz (IA Especialista + Limites Físicos):**
+- [x] **Motor de Diagnóstico Prescritivo de Causa-Raiz (IA Especialista + Limites Físicos):**
   - [ ] O modelo XGBoost e as regras espectrais determinam a **Causa-Raiz da Falha** (Desbalanceamento, Desalinhamento, Folga Mecânica, Falha de Rolamento, Falta de Lubrificação).
   - [ ] A **Severidade do Ativo** é sempre atribuída pela norma técnica **ISO 20816-3 (Zonas A, B, C, D)** e pelo limite térmico do fabricante do rolamento (SKF: normal 45-70°C, alerta > 75°C, perigo > 90°C).
   - [ ] Geração de recomendação prescritiva em linguagem natural (ex: *"Severidade: Zona C (ISO 20816-3) | Causa-Raiz: Desbalanceamento de Rotor (1X) | Ação: Programar balanceamento dinâmico em 1 plano"*).
-- [ ] **Buffer de Burst Espectral em Redis:**
+- [x] **Buffer de Burst Espectral em Redis:**
   - [ ] Armazenar o último espectro bruto completo (FFT X, Y, Z de 1024 bins) em cache Redis (`iot:node:{id}:spectrum:latest`) com TTL de 24h para alimentar o Spectrum Studio do frontend sem onerar o banco relacional.
-- [ ] **Handshake Bidirecional com a Borda:**
+- [x] **Handshake Bidirecional com a Borda:**
   - [ ] Envio automático de comando MQTT de retorno (`sendMqttCommand`) para o Gateway atualizar a sinalização física na máquina.
 - [ ] **Microserviço de Machine Learning Cloud (FastAPI):**
   - [ ] Auditoria sob demanda: acionar o serviço Python FastAPI apenas quando a confiança da borda for $< 80\%$ ou houver indicação de falha.
