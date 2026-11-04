@@ -1,8 +1,11 @@
 <?php
 
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\Sanctum;
 use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\WorkOrder;
+use Modules\System\Models\Machine;
 use Modules\System\Models\User;
 
 beforeEach(function () {
@@ -63,4 +66,29 @@ it('can delete a work order', function () {
 
     $response->assertStatus(200);
     $this->assertSoftDeleted($workOrder);
+});
+
+it('can create a work order for a machine with photo attachment', function () {
+    Storage::fake('public');
+
+    $machine = Machine::create([
+        'name' => 'Bancada Didática M1',
+        'code' => 'M1-LAB',
+        'status' => 'operational',
+    ]);
+    $file = UploadedFile::fake()->image('mancal_danificado.jpg');
+
+    $response = $this->postJson('/api/v1/work-orders', [
+        'item_id' => $machine->id,
+        'item_type' => 'machine',
+        'visual_inspection_notes' => 'Vibração excessiva e ruído na pista do rolamento',
+        'photo' => $file,
+    ]);
+
+    $response->assertStatus(201);
+
+    $workOrder = WorkOrder::where('item_id', $machine->id)->first();
+    expect($workOrder)->not->toBeNull()
+        ->and($workOrder->attachments)->toHaveCount(1)
+        ->and($workOrder->attachments->first()->original_name)->toBe('mancal_danificado.jpg');
 });

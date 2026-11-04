@@ -41,13 +41,29 @@ class WorkOrderApiController extends Controller
 
     public function store(StoreWorkOrderRequest $request): WorkOrderApiResource
     {
-        $data = $request->validated();
+        $data = $request->safe()->except(['photo', 'file']);
         $data['received_by_id'] = $request->user()->id;
         $data['status'] = $data['status'] ?? 'received';
 
         $workOrder = WorkOrder::create($data);
 
-        return new WorkOrderApiResource($workOrder->load(['item', 'receivedBy']));
+        $file = $request->file('photo') ?? $request->file('file');
+        if ($file) {
+            $disk = 'public';
+            $path = $file->store('attachments', $disk);
+
+            $workOrder->attachments()->create([
+                'file_name' => basename($path),
+                'original_name' => $file->getClientOriginalName(),
+                'mime_type' => $file->getMimeType(),
+                'size' => $file->getSize(),
+                'file_path' => $path,
+                'disk' => $disk,
+                'uploaded_by' => $request->user()->id,
+            ]);
+        }
+
+        return new WorkOrderApiResource($workOrder->load(['item', 'receivedBy', 'attachments']));
     }
 
     public function show(WorkOrder $workOrder): WorkOrderApiResource
