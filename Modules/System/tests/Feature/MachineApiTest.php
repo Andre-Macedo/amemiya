@@ -9,6 +9,9 @@ use App\Models\Subscription;
 use App\Models\Tenant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
+use Modules\IoT\Models\IoTDeviceLog;
+use Modules\IoT\Models\IoTGateway;
+use Modules\IoT\Models\IoTNode;
 use Modules\System\Models\Machine;
 use Modules\System\Models\Station;
 use Modules\System\Models\User;
@@ -169,5 +172,94 @@ class MachineApiTest extends TestCase
             ->getJson("/api/v1/machines/{$foreignMachine->id}");
 
         $showResponse->assertStatus(404);
+    }
+
+    public function test_it_can_dispatch_remote_commands_to_machine(): void
+    {
+        $machine = Machine::create([
+            'tenant_id' => $this->tenant->id,
+            'station_id' => $this->station->id,
+            'name' => 'Bancada Metrológica M1',
+            'code' => 'BANCADA-M1',
+            'status' => 'idle',
+        ]);
+
+        $gateway = IoTGateway::create([
+            'tenant_id' => $this->tenant->id,
+            'name' => 'Gateway Central',
+            'device_id' => 'gw-01',
+            'status' => 'online',
+        ]);
+
+        $node = IoTNode::create([
+            'tenant_id' => $this->tenant->id,
+            'gateway_id' => $gateway->id,
+            'machine_id' => $machine->id,
+            'name' => 'ESP32 Bancada M1',
+            'node_id' => 'node-m1',
+            'status' => 'online',
+        ]);
+
+        // 1. Dispatch START command
+        $startResponse = $this->withHeader('X-Tenant-ID', $this->tenant->id)
+            ->postJson("/api/v1/machines/{$machine->id}/command", [
+                'command' => 'start',
+                'reason' => 'Início de ensaio metrológico',
+            ]);
+
+        $startResponse->assertStatus(200)
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('command', 'start')
+            ->assertJsonPath('machine_status', 'operational');
+
+        $this->assertDatabaseHas('machines', [
+            'id' => $machine->id,
+            'status' => 'operational',
+        ]);
+
+        $this->assertDatabaseHas('iot_device_logs', [
+            'tenant_id' => $this->tenant->id,
+            'machine_id' => $machine->id,
+            'event_type' => 'command_dispatched',
+            'level' => 'info',
+        ]);
+
+        // 2. Dispatch SET_RPM command
+        $rpmResponse = $this->withHeader('X-Tenant-ID', $this->tenant->id)
+            ->postJson("/api/v1/machines/{$machine->id}/command", [
+                'command' => 'set_rpm',
+                'rpm' => 1750,
+            ]);
+
+        $rpmResponse->assertStatus(200)
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('command', 'set_rpm');
+
+        $freshMachine = $machine->fresh();
+        $this->assertEquals(1750, $freshMachine->metadata['nominal_rpm'] ?? null);
+
+        // 3. Dispatch EMERGENCY_STOP command (NR-12)
+        $estopResponse = $this->withHeader('X-Tenant-ID', $this->tenant->id)
+            ->postJson("/api/v1/machines/{$machine->id}/command", [
+                'command' => 'emergency_stop',
+                'reason' => 'Parada de emergência disparada via app mobile',
+            ]);
+
+        $estopResponse->assertStatus(200)
+            ->assertJsonPath('success', true)
+            ->assertJsonPath('command', 'emergency_stop')
+            ->assertJsonPath('machine_status', 'maintenance');
+
+        $this->assertDatabaseHas('machines', [
+            'id' => $machine->id,
+            'status' => 'maintenance',
+        ]);
+
+        $this->assertDatabaseHas('iot_device_logs', [
+            'tenant_id' => $this->tenant->id,
+            'machine_id' => $machine->id,
+            'event_type' => 'command_dispatched',
+            'level' => 'critical',
+        ]);
     }
 }

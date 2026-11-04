@@ -34,6 +34,7 @@ Route::middleware([
 
         // Rotas raiz para compatibilidade com clientes mobile e web
         Route::apiResource('stations', StationApiController::class);
+        Route::post('machines/{machine}/command', [MachineApiController::class, 'sendCommand']);
         Route::apiResource('machines', MachineApiController::class);
         Route::apiResource('suppliers', SupplierApiController::class);
 
