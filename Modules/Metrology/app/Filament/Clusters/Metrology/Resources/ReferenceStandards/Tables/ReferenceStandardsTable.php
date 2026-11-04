@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Modules\Metrology\Filament\Clusters\Metrology\Resources\ReferenceStandards\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -16,6 +17,7 @@ use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Modules\Metrology\Filament\Clusters\Metrology\Pages\RecallSimulatorPage;
 use Modules\Metrology\Models\ReferenceStandard;
 
 class ReferenceStandardsTable
@@ -97,6 +99,11 @@ class ReferenceStandardsTable
             ])
             ->recordActions([
                 ViewAction::make(),
+                Action::make('simulate_recall')
+                    ->label('Simular Recall')
+                    ->icon('heroicon-m-backward')
+                    ->color('warning')
+                    ->url(fn (ReferenceStandard $record) => RecallSimulatorPage::getUrl(['standard_id' => $record->id])),
                 EditAction::make(),
             ])
             ->toolbarActions([

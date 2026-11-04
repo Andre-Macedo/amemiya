@@ -21,6 +21,7 @@ use Modules\Metrology\Http\Resources\CalibrationApiResource;
 use Modules\Metrology\Models\Calibration;
 use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\ReferenceStandard;
+use Modules\Metrology\Services\MatrixReadingParserService;
 
 /**
  * Manages instrument and standard calibration records.
@@ -191,5 +192,34 @@ class CalibrationApiController extends Controller
         $result = $action->execute($validated);
 
         return response()->json($result);
+    }
+
+    /**
+     * Realiza o parsing de matriz de medições (Clipboard / CSV / Excel).
+     */
+    public function parseMatrixReadings(Request $request, MatrixReadingParserService $parser): JsonResponse
+    {
+        $validated = $request->validate([
+            'raw_data' => ['required', 'string'],
+            'mapping_mode' => ['nullable', 'string', 'in:sequential,match_nominal'],
+        ]);
+
+        $mode = (string) ($validated['mapping_mode'] ?? 'sequential');
+        $parsed = $parser->parse($validated['raw_data'], $mode);
+
+        if (! $parsed['success']) {
+            return response()->json([
+                'success' => false,
+                'message' => $parsed['warnings'][0] ?? 'Nenhum valor numérico válido foi identificado.',
+                'warnings' => $parsed['warnings'],
+            ], 422);
+        }
+
+        return response()->json([
+            'success' => true,
+            'delimiter' => $parsed['delimiter'],
+            'rows' => $parsed['rows'],
+            'warnings' => $parsed['warnings'],
+        ]);
     }
 }

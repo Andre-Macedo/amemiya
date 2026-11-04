@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Modules\Metrology\Actions\GenerateStandardImpactReportAction;
 use Modules\Metrology\Models\ReferenceStandard;
+use Modules\Metrology\Services\StandardRecallSimulatorService;
 
 class StandardImpactApiController extends Controller
 {
@@ -70,5 +71,33 @@ class StandardImpactApiController extends Controller
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => "attachment; filename=\"{$fileName}\"",
         ]);
+    }
+
+    /**
+     * Simula cenários "what-if" de deriva do padrão de referência na janela de exposição.
+     */
+    public function simulate(
+        Request $request,
+        ReferenceStandard $standard,
+        StandardRecallSimulatorService $simulator
+    ): JsonResponse {
+        $validated = $request->validate([
+            'drift_magnitude' => ['required', 'numeric', 'min:0'],
+            'drift_direction' => ['nullable', 'string', 'in:positive,negative,worst_case'],
+            'start_date' => ['nullable', 'date'],
+            'end_date' => ['nullable', 'date'],
+            'additional_uncertainty' => ['nullable', 'numeric', 'min:0'],
+        ]);
+
+        $result = $simulator->simulate(
+            standard: $standard,
+            driftMagnitude: (float) $validated['drift_magnitude'],
+            driftDirection: (string) ($validated['drift_direction'] ?? 'worst_case'),
+            startDate: $validated['start_date'] ?? null,
+            endDate: $validated['end_date'] ?? null,
+            additionalUncertainty: (float) ($validated['additional_uncertainty'] ?? 0.0)
+        );
+
+        return response()->json($result);
     }
 }

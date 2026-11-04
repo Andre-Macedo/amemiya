@@ -11,8 +11,10 @@ use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
@@ -27,6 +29,7 @@ use Modules\Metrology\Enums\ItemStatus;
 use Modules\Metrology\Models\ChecklistTemplate;
 use Modules\Metrology\Models\Instrument;
 use Modules\Metrology\Models\ReferenceStandard;
+use Modules\Metrology\Services\MatrixReadingParserService;
 use Modules\Metrology\Services\UncertaintyCalculator;
 use Modules\System\Models\Supplier;
 
@@ -200,67 +203,121 @@ class CalibrationForm
                                         }),
                                 ])->visible(fn (Get $get) => ! empty($get('checklist_items'))),
 
-                            Repeater::make('checklist_items')
-                                ->label('Pontos de Medição')
-                                ->addable(false)
-                                ->deletable(false)
-                                ->schema([
-                                    Grid::make(12)->schema([
-                                        TextInput::make('step')
-                                            ->label('Ponto/Requisito')
-                                            ->disabled()
-                                            ->dehydrated()
-                                            ->columnSpan(4),
-
-                                        Grid::make(1)->schema([
-                                            ToggleButtons::make('result')
-                                                ->label('Conformidade')
+                            Section::make('Pontos de Medição')
+                                ->description('Insira as repetições manualmente ou importe a matriz diretamente do Excel/Sheets.')
+                                ->headerActions([
+                                    Action::make('import_readings_matrix')
+                                        ->label('Importar Leituras (Clipboard / Excel)')
+                                        ->icon('heroicon-m-clipboard-document-check')
+                                        ->color('primary')
+                                        ->modalHeading('Importação em Lote de Matriz de Leituras')
+                                        ->modalDescription('Cole os valores copiados do Excel ou Google Sheets (separados por tabulação, ponto-e-vírgula ou vírgula).')
+                                        ->form([
+                                            Select::make('mapping_mode')
+                                                ->label('Modo de Mapeamento')
                                                 ->options([
-                                                    'pass' => 'Atende',
-                                                    'fail' => 'Não Atende',
+                                                    'sequential' => 'Preenchimento Sequencial (Linha 1 -> Ponto 1, Linha 2 -> Ponto 2...)',
+                                                    'match_nominal' => 'Casamento por Valor Nominal (1ª Coluna = Nominal, demais = Leituras)',
                                                 ])
-                                                ->colors(['pass' => 'success', 'fail' => 'danger'])
-                                                ->inline()
-                                                ->visible(fn (Get $get) => $get('question_type') === 'boolean'),
+                                                ->default('sequential')
+                                                ->required(),
+                                            Textarea::make('raw_data')
+                                                ->label('Matriz de Leituras (Ctrl+V)')
+                                                ->placeholder("10.01\t10.02\t10.01\n20.00\t20.01\t20.02\n50.03\t50.02\t50.04")
+                                                ->rows(8)
+                                                ->helperText('Selecione as células no Excel/Sheets, copie e cole aqui diretamente.')
+                                                ->required(),
+                                        ])
+                                        ->action(function (array $data, Set $set, Get $get) {
+                                            $service = app(MatrixReadingParserService::class);
+                                            $mode = (string) ($data['mapping_mode'] ?? 'sequential');
+                                            $parsed = $service->parse((string) $data['raw_data'], $mode);
 
-                                            Select::make('reference_standard_id')
-                                                ->label('Padrão')
-                                                ->options(function (Get $get, ?string $state) {
-                                                    $typeId = $get('reference_standard_type_id');
-                                                    if (! $typeId) {
-                                                        return [];
-                                                    }
+                                            if (! $parsed['success']) {
+                                                Notification::make()
+                                                    ->title('Falha na Importação')
+                                                    ->body($parsed['warnings'][0] ?? 'Nenhum valor numérico válido foi identificado no texto colado.')
+                                                    ->danger()
+                                                    ->send();
 
-                                                    return ReferenceStandard::query()
-                                                        ->where('reference_standard_type_id', $typeId)
-                                                        ->where(function ($q) use ($state) {
-                                                            $q->where(function ($sub) {
-                                                                $sub->where('status', ItemStatus::Active)
-                                                                    ->where('calibration_due', '>=', now()->startOfDay());
-                                                            });
-                                                            if ($state) {
-                                                                $q->orWhere('id', $state);
+                                                return;
+                                            }
+
+                                            $currentItems = $get('checklist_items') ?? [];
+                                            $updatedItems = $service->applyToItems($currentItems, $parsed['rows'], $mode);
+                                            $set('checklist_items', $updatedItems);
+
+                                            $count = count($parsed['rows']);
+                                            Notification::make()
+                                                ->title('Leituras Importadas com Sucesso')
+                                                ->body("Foram processados e preenchidos {$count} pontos de medição.")
+                                                ->success()
+                                                ->send();
+                                        }),
+                                ])
+                                ->schema([
+                                    Repeater::make('checklist_items')
+                                        ->label('Pontos')
+                                        ->addable(false)
+                                        ->deletable(false)
+                                        ->schema([
+                                            Grid::make(12)->schema([
+                                                TextInput::make('step')
+                                                    ->label('Ponto/Requisito')
+                                                    ->disabled()
+                                                    ->dehydrated()
+                                                    ->columnSpan(4),
+
+                                                Grid::make(1)->schema([
+                                                    ToggleButtons::make('result')
+                                                        ->label('Conformidade')
+                                                        ->options([
+                                                            'pass' => 'Atende',
+                                                            'fail' => 'Não Atende',
+                                                        ])
+                                                        ->colors(['pass' => 'success', 'fail' => 'danger'])
+                                                        ->inline()
+                                                        ->visible(fn (Get $get) => $get('question_type') === 'boolean'),
+
+                                                    Select::make('reference_standard_id')
+                                                        ->label('Padrão')
+                                                        ->options(function (Get $get, ?string $state) {
+                                                            $typeId = $get('reference_standard_type_id');
+                                                            if (! $typeId) {
+                                                                return [];
                                                             }
-                                                        })
-                                                        ->pluck('name', 'id');
-                                                })
-                                                ->required()
-                                                ->columnSpanFull()
-                                                ->visible(fn (Get $get) => $get('question_type') === 'numeric'),
 
-                                            Repeater::make('readings')
-                                                ->label('Leituras Brutas')
-                                                ->schema([
-                                                    TextInput::make('value')
-                                                        ->numeric()
+                                                            return ReferenceStandard::query()
+                                                                ->where('reference_standard_type_id', $typeId)
+                                                                ->where(function ($q) use ($state) {
+                                                                    $q->where(function ($sub) {
+                                                                        $sub->where('status', ItemStatus::Active)
+                                                                            ->where('calibration_due', '>=', now()->startOfDay());
+                                                                    });
+                                                                    if ($state) {
+                                                                        $q->orWhere('id', $state);
+                                                                    }
+                                                                })
+                                                                ->pluck('name', 'id');
+                                                        })
                                                         ->required()
-                                                        ->extraInputAttributes(['class' => 'text-right']),
-                                                ])
-                                                ->grid(3)
-                                                ->addable(false)->deletable(false)
-                                                ->visible(fn (Get $get) => $get('question_type') === 'numeric'),
-                                        ])->columnSpan(8),
-                                    ]),
+                                                        ->columnSpanFull()
+                                                        ->visible(fn (Get $get) => $get('question_type') === 'numeric'),
+
+                                                    Repeater::make('readings')
+                                                        ->label('Leituras Brutas')
+                                                        ->schema([
+                                                            TextInput::make('value')
+                                                                ->numeric()
+                                                                ->required()
+                                                                ->extraInputAttributes(['class' => 'text-right']),
+                                                        ])
+                                                        ->grid(3)
+                                                        ->addable(false)->deletable(false)
+                                                        ->visible(fn (Get $get) => $get('question_type') === 'numeric'),
+                                                ])->columnSpan(8),
+                                            ]),
+                                        ]),
                                 ])->visible(fn (Get $get) => $get('checklist_template_id') !== null),
                         ])
                         ->visible(fn (Get $get) => $get('type') === 'internal' && $get('calibrated_item_type') === Instrument::class),

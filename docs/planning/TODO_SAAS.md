@@ -57,20 +57,20 @@
   - [x] **Toggle de Validade / Próxima Calibração (§7.8.4.3):** Adicionado controle `show_calibration_due` na calibração e no laudo PDF para omitir a recomendação de periodicidade quando não acordada previamente com o cliente.
 - [ ] **Governança, Custódia e Auditoria Forense (Audit ISO 17025 - Rodada 3):**
   - [x] **Ancoragem Externa do Chain Head (FDA 21 CFR Part 11 / WORM):** Permitir exportação programada ou assinatura externa do `chain_head_hash` para armazenamento imutável à prova de adulteração por DBA root (Object Lock / RFC 3161).
-  - [ ] **Interface Visual de Custódia / Leitor de Câmera (F-08):** Criar tela de movimentação e checkout de instrumentos no Filament compatível com scanner de código de barras e câmera móvel além do RFID/NFC existente.
+  - [x] **Interface Visual de Custódia / Leitor de Câmera (F-08):** Criada tela de movimentação e checkout de instrumentos no Filament compatível com scanner de código de barras, câmera móvel/webcam com feedback sonoro e RFID/NFC existente.
 - [x] **Segurança de Dados e Multi-Tenancy (Audit ISO 17025 - Rodada 4) - COMPLETED ✅:**
   - [ ] **Middleware de Guarda `EnsureTenantIsInitialized`:** Abortar com erro HTTP 400 em rotas de API protegidas caso o header `X-Tenant-ID` não seja fornecido, prevenindo bypass acidental do Global Scope `BelongsToTenant`.
   - [x] **Criptografia em Repouso de Chaves Privadas PEM:** Criptografar simetricamente o arquivo `certificate.pem` no disco local com a `APP_KEY`, fornecendo defesa em profundidade contra extração não autorizada no filesystem.
 - [ ] **Rastreabilidade Reversa e Recall Metrológico (Audit ISO 17025 - Rodada 5):**
   - [ ] **Integração de Recall com ERPs (SAP / TOTVS):** Disparo de webhooks industriais com a lista de ativos em risco CRITICAL para busca retroativa e bloqueio automático de lotes de produção (OPs) manufaturados na janela de exposição.
-  - [ ] **Simulador Interativo de Janela de Exposição na UI:** Permitir aos gestores da qualidade simular no frontend cenários "what-if" de deriva do padrão antes de formalizar o laudo de recall.
+  - [x] **Simulador Interativo de Janela de Exposição na UI:** Página dedicada no Filament e endpoint API permitindo aos gestores da qualidade simular cenários "what-if" de deriva do padrão antes de formalizar o laudo de recall, com reavaliação de MPE e emissão de laudo oficial em PDF.
 - [ ] **Frontend Next.js & Metrologia Operacional (Audit ISO 17025 - Rodada 6):**
   - [x] **Endpoint `POST /calibrations/calculate` (Correção de Bug 404):** Exposto endpoint na API conectado a `CalculateCalibrationUncertaintyAction` retornando incerteza GUM e orçamento em tempo real.
   - [x] **Geração de Etiquetas no Fluxo de Calibração Aprovada:** Botão direto de impressão de etiqueta adicionado na tela de calibração aprovada (`calibrations/[id]/page.tsx`).
   - [x] **Override de MPE no Instrumento Individual:** Suporte completo aos campos `mpe_value`, `mpe_type`, `resolution` e `measuring_range` no formulário e no modelo.
   - [x] **Validador Estrito de CNPJ/CPF (Módulo 11):** Implementada regra `App\Rules\CpfCnpj` no backend e `lib/validators/cpf-cnpj.ts` no frontend.
   - [ ] **Modo de Coleta Offline (PWA / IndexedDB):** Suporte à coleta de dados de calibração em áreas industriais sem conexão de rede (benchmark Beamex bMobile / IndySoft).
-  - [ ] **Importação em Lote de Leituras (Clipboard / CSV):** Recurso de copiar/colar matrizes de repetições diretamente de planilhas para agilizar calibrações multiponto.
+  - [x] **Importação em Lote de Leituras (Clipboard / CSV):** Recurso de copiar/colar matrizes de repetições diretamente de planilhas para agilizar calibrações multiponto integrado ao Filament Repeater e API REST.
 
 
 

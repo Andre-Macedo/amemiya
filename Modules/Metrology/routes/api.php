@@ -86,6 +86,7 @@ Route::middleware(['auth:sanctum', 'tenant.enforce', 'throttle:api'])->group(fun
     Route::apiResource('standards', ReferenceStandardApiController::class);
     Route::get('/standards/{standard}/impact-analysis', [StandardImpactApiController::class, 'index']);
     Route::get('/standards/{standard}/impact-analysis/pdf', [StandardImpactApiController::class, 'pdf']);
+    Route::post('/standards/{standard}/simulate-recall', [StandardImpactApiController::class, 'simulate']);
     Route::apiResource('reference-standard-types', ReferenceStandardTypeApiController::class);
 
     // Procedures (Templates) CRUD
@@ -99,9 +100,11 @@ Route::middleware(['auth:sanctum', 'tenant.enforce', 'throttle:api'])->group(fun
     Route::post('/calibrations/{id}/approve', [CalibrationApiController::class, 'approve']);
     Route::post('/calibrations/{id}/reject', [CalibrationApiController::class, 'reject']);
     Route::post('/calibrations/calculate', [CalibrationApiController::class, 'calculate']);
+    Route::post('/calibrations/parse-matrix', [CalibrationApiController::class, 'parseMatrixReadings']);
     Route::post('/metrology/calibrations/{id}/approve', [CalibrationApiController::class, 'approve']);
     Route::post('/metrology/calibrations/{id}/reject', [CalibrationApiController::class, 'reject']);
     Route::post('/metrology/calibrations/calculate', [CalibrationApiController::class, 'calculate']);
+    Route::post('/metrology/calibrations/parse-matrix', [CalibrationApiController::class, 'parseMatrixReadings']);
     Route::get('/calibrations/{id}/traceability-chain', [TraceabilityController::class, 'show']);
 
     // Non-Conformities (NC)
