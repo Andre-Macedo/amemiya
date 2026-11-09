@@ -1,7 +1,7 @@
 # Projeto Elétrico Industrial: Diagramas Unifilar e Multifilar
 ## Bancada Metrológica de Testes M1 — Sistema Lean Tech
 
-![Esquema Elétrico Geral v2.4 (KiCad 9)](../../hardware/kicad/amemiya_bancada_painel/amemiya_bancada_painel.png)
+![Esquema Elétrico Geral v2.4 (KiCad 9)](/images/hardware/amemiya_bancada_painel.png)
 
 ---
 

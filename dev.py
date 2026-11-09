@@ -20,7 +20,18 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parent
-HARDWARE_DIR = ROOT_DIR / "hardware" / "kicad"
+
+def get_hardware_dir():
+    """Retorna o diretório do KiCad, verificando pasta local ou repositório irmão amemiya-hardware."""
+    local_hw = ROOT_DIR / "hardware" / "kicad"
+    if local_hw.exists():
+        return local_hw
+    external_hw = ROOT_DIR.parent / "amemiya-hardware" / "kicad"
+    if external_hw.exists():
+        return external_hw
+    return local_hw
+
+HARDWARE_DIR = get_hardware_dir()
 SCRIPTS_DIR = HARDWARE_DIR / "scripts"
 
 KICAD_CLI_DEFAULT = r"C:\Program Files\KiCad\9.0\bin\kicad-cli.exe"
@@ -103,9 +114,10 @@ def cmd_pcb_list(args):
                 pcbs = [f.name for f in item.glob("*.kicad_pcb")]
                 schs = [f.name for f in item.glob("*.kicad_sch")]
                 if pcbs or schs:
+                    path_str = str(item.relative_to(ROOT_DIR)) if item.is_relative_to(ROOT_DIR) else str(item)
                     boards.append({
                         "name": item.name,
-                        "path": str(item.relative_to(ROOT_DIR)),
+                        "path": path_str,
                         "pcbs": pcbs,
                         "schematics": schs
                     })
@@ -553,7 +565,8 @@ def cmd_audit(args):
     if not args.json:
         print("[1/3] Verificando Hardware DRC (amemiya_probe_tower_dual)...")
     kicad_cli = get_kicad_cli()
-    pcb_file = HARDWARE_DIR / "amemiya_probe_tower_dual" / "amemiya_probe_tower_dual.kicad_pcb"
+    hw_dir = get_hardware_dir()
+    pcb_file = hw_dir / "amemiya_probe_tower_dual" / "amemiya_probe_tower_dual.kicad_pcb"
     if kicad_cli and pcb_file.exists():
         rpt = ROOT_DIR / "temp_audit_drc.rpt"
         res_drc = subprocess.run([kicad_cli, "pcb", "drc", "-o", str(rpt), str(pcb_file)], capture_output=True, text=True)
@@ -579,7 +592,10 @@ def cmd_audit(args):
         if not args.json:
             print(f"      -> Status: {'[OK]' if drc_ok else '[FALHA]'} (Unconnected: {unconnected}, Violations: {violations})")
     else:
-        audit_results["checks"]["hardware_drc"] = {"status": "SKIPPED", "reason": "KiCad CLI not available"}
+        reason = "KiCad CLI not available" if not kicad_cli else "Hardware directory not found (segregated to amemiya-hardware)"
+        audit_results["checks"]["hardware_drc"] = {"status": "SKIPPED", "reason": reason}
+        if not args.json:
+            print(f"      -> Status: [SKIPPED] ({reason})")
 
     # 2. Frontend Vite Build
     if not args.json:
