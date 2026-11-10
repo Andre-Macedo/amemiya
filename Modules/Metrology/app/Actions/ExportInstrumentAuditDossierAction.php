@@ -66,6 +66,34 @@ class ExportInstrumentAuditDossierAction
                 $zip->addFromString('HISTORICO_NAO_CONFORMIDADES.json', json_encode($ncSummary, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
             }
 
+            // 5. Adicionar Cadeia de Custódia e Movimentações Físicas
+            $movements = $instrument->movements()->latest()->get();
+            if ($movements->count() > 0) {
+                $movementsData = $movements->map(fn ($m) => [
+                    'id' => $m->id,
+                    'type' => $m->type ?? 'movement',
+                    'origin_location' => $m->origin_location ?? $m->from_location ?? null,
+                    'destination_location' => $m->destination_location ?? $m->to_location ?? null,
+                    'responsible' => $m->user?->name ?? 'Sistema',
+                    'timestamp' => $m->created_at?->toDateTimeString(),
+                    'notes' => $m->notes ?? null,
+                ])->toArray();
+                $zip->addFromString('CADEIA_DE_CUSTODIA_MOVIMENTACOES.json', json_encode($movementsData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            }
+
+            // 6. Adicionar Checagens Intermediárias (ISO/IEC 17025)
+            $intermediate = $instrument->intermediateChecks()->latest()->get();
+            if ($intermediate->count() > 0) {
+                $interData = $intermediate->map(fn ($chk) => [
+                    'id' => $chk->id,
+                    'check_date' => $chk->check_date?->toDateString(),
+                    'result' => $chk->result,
+                    'performed_by' => $chk->performed_by,
+                    'notes' => $chk->notes,
+                ])->toArray();
+                $zip->addFromString('CHECAGENS_INTERMEDIARIAS.json', json_encode($interData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            }
+
             $zip->close();
         }
 

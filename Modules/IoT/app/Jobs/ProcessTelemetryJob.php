@@ -356,17 +356,17 @@ class ProcessTelemetryJob implements ShouldQueue
             $mqttStatus = match ($status) {
                 'falha_confirmada' => 'fault_confirmed',
                 'saudavel', 'normal' => 'healthy',
-                'analise_pendente' => 'pending_analysis',
+                'analise_pendente', 'indeterminado' => 'pending_analysis',
                 'machine_off' => 'off',
-                default => 'healthy',
+                default => 'pending_analysis',
             };
 
             $logDisplayStatus = match ($mqttStatus) {
                 'fault_confirmed' => 'FALHA CONFIRMADA (Vermelho)',
                 'healthy' => 'SAUDÁVEL (Verde)',
-                'pending_analysis' => 'EM ANÁLISE (Amarelo)',
+                'pending_analysis' => 'EM ANÁLISE / DEGRADADO (Amarelo)',
                 'off' => 'MÁQUINA DESLIGADA (Verde Piscante)',
-                default => 'SAUDÁVEL',
+                default => 'EM ANÁLISE (Amarelo)',
             };
 
             $payload = [

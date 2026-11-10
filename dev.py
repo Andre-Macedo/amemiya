@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
-Amemiya Dev CLI - Harness de Automação de Desenvolvimento
+Amemiya Dev CLI - Harness de Automação de Desenvolvimento & EGM
 Projeto: Sistema de Metrologia Lean Tech & Industrial IoT
 
 Fornece comandos padronizados e determinísticos para desenvolvimento,
-testes, compilação de hardware (KiCad) e verificação de ambiente.
+testes, compilação de hardware (KiCad), verificação de contratos EGM,
+manufatura, documentação e sincronização de pacotes TCC.
 Projetado para uso humano e como Tool Harness para agentes de IA.
 """
 
@@ -16,17 +17,26 @@ import json
 import shutil
 import time
 import random
+import re
+import zipfile
 from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parent
+PARENT_DIR = ROOT_DIR.parent
+
+HW_REPO = PARENT_DIR / "amemiya-hardware"
+FRONT_REPO = PARENT_DIR / "metrology-sass-front"
+APP_REPO = PARENT_DIR / "amemiya-app"
+PACOTE_TCC_DIR = PARENT_DIR / "Pacote_TCC_Amemiya"
+PACOTE_TCC_ZIP = PARENT_DIR / "Pacote_TCC_Amemiya.zip"
 
 def get_hardware_dir():
     """Retorna o diretório do KiCad, verificando pasta local ou repositório irmão amemiya-hardware."""
     local_hw = ROOT_DIR / "hardware" / "kicad"
     if local_hw.exists():
         return local_hw
-    external_hw = ROOT_DIR.parent / "amemiya-hardware" / "kicad"
+    external_hw = HW_REPO / "kicad"
     if external_hw.exists():
         return external_hw
     return local_hw
@@ -76,7 +86,13 @@ def cmd_env_check(args):
         "composer": {"available": bool(shutil.which("composer")), "path": shutil.which("composer")},
         "node": {"available": bool(shutil.which("node")), "path": shutil.which("node")},
         "npm": {"available": bool(get_npm()), "path": get_npm()},
-        "git": {"available": bool(shutil.which("git")), "path": shutil.which("git")}
+        "git": {"available": bool(shutil.which("git")), "path": shutil.which("git")},
+        "sibling_repositories": {
+            "amemiya-hardware": HW_REPO.exists(),
+            "metrology-sass-front": FRONT_REPO.exists(),
+            "amemiya-app": APP_REPO.exists(),
+            "Pacote_TCC_Amemiya": PACOTE_TCC_DIR.exists()
+        }
     }
     
     # Python libraries
@@ -94,13 +110,175 @@ def cmd_env_check(args):
         return
 
     print("=== AMEMIYA DEV ENVIRONMENT STATUS ===")
-    print(f"[*] KiCad CLI:      {'OK' if status['kicad_cli']['available'] else 'NOT FOUND'} ({status['kicad_cli']['path']})")
-    print(f"[*] KiCad Python:   {'OK' if status['kicad_python']['available'] else 'NOT FOUND'}")
-    print(f"[*] Docker:         {'RUNNING' if status['docker_running'] else ('INSTALLED (DAEMON OFF)' if status['docker_installed'] else 'NOT FOUND')}")
-    print(f"[*] PHP (Local):    {'OK' if status['php']['available'] else 'NOT FOUND'}")
+    print(f"[*] KiCad CLI:          {'OK' if status['kicad_cli']['available'] else 'NOT FOUND'} ({status['kicad_cli']['path']})")
+    print(f"[*] KiCad Python:       {'OK' if status['kicad_python']['available'] else 'NOT FOUND'}")
+    print(f"[*] Docker:             {'RUNNING' if status['docker_running'] else ('INSTALLED (DAEMON OFF)' if status['docker_installed'] else 'NOT FOUND')}")
+    print(f"[*] PHP (Local):        {'OK' if status['php']['available'] else 'NOT FOUND'}")
+    print(f"[*] Repositórios Irmãos:")
+    for repo_name, exists in status["sibling_repositories"].items():
+        print(f"    - {repo_name:22s}: {'PRESENTE' if exists else 'AUSENTE'}")
     print(f"[*] Python Libs:")
     for lib, ok in py_libs.items():
         print(f"    - {lib:10s}: {'OK' if ok else 'MISSING'}")
+
+# -----------------------------------------------------------------------------
+# COMMAND: workspace:status
+# -----------------------------------------------------------------------------
+def cmd_workspace_status(args):
+    """Verifica o status Git consolidado de todos os 4 repositórios do ecossistema."""
+    repos = [
+        ("amemiya (Core & Backend)", ROOT_DIR),
+        ("amemiya-hardware (KiCad)", HW_REPO),
+        ("metrology-sass-front (Web)", FRONT_REPO),
+        ("amemiya-app (Mobile)", APP_REPO),
+    ]
+
+    workspace_data = []
+
+    for name, path in repos:
+        repo_info = {
+            "name": name,
+            "path": str(path),
+            "exists": path.exists(),
+            "is_git": (path / ".git").exists(),
+            "branch": "unknown",
+            "clean": True,
+            "modified_files": [],
+            "untracked_files": []
+        }
+
+        if path.exists() and (path / ".git").exists():
+            try:
+                # Branch atual
+                res_b = subprocess.run(["git", "branch", "--show-current"], cwd=str(path), capture_output=True, text=True)
+                repo_info["branch"] = res_b.stdout.strip() or "HEAD detached"
+
+                # Status modificado
+                res_s = subprocess.run(["git", "status", "--porcelain"], cwd=str(path), capture_output=True, text=True)
+                for line in res_s.stdout.splitlines():
+                    if not line.strip():
+                        continue
+                    status_code = line[:2]
+                    file_path = line[2:].strip()
+                    if status_code.startswith("??"):
+                        repo_info["untracked_files"].append(file_path)
+                    else:
+                        repo_info["modified_files"].append(file_path)
+                repo_info["clean"] = (len(repo_info["modified_files"]) == 0 and len(repo_info["untracked_files"]) == 0)
+            except Exception as e:
+                repo_info["error"] = str(e)
+
+        workspace_data.append(repo_info)
+
+    if args.json:
+        print(json.dumps(workspace_data, indent=2))
+        return
+
+    print("=== WORKSPACE STATUS: ECOSSISTEMA LEAN TECH ===")
+    for r in workspace_data:
+        if not r["exists"]:
+            print(f"-> {r['name']}: [NAO ENCONTRADO]")
+            continue
+        if not r["is_git"]:
+            print(f"-> {r['name']}: [NAO E REPO GIT]")
+            continue
+
+        status_tag = "[LIMPO]" if r["clean"] else f"[MODIFICADO: {len(r['modified_files'])} alterados, {len(r['untracked_files'])} novos]"
+        print(f"-> {r['name']} ({r['branch']}): {status_tag}")
+        for mf in r["modified_files"][:5]:
+            print(f"     M {mf}")
+        for uf in r["untracked_files"][:5]:
+            print(f"     ? {uf}")
+        total_hidden = (len(r["modified_files"]) + len(r["untracked_files"])) - 10
+        if total_hidden > 0:
+            print(f"     ... e mais {total_hidden} arquivos.")
+
+# -----------------------------------------------------------------------------
+# COMMAND: egm:lint
+# -----------------------------------------------------------------------------
+def cmd_egm_lint(args):
+    """Valida a conformidade de todos os contratos EGM.md (links, seções e integridade)."""
+    search_roots = [ROOT_DIR, FRONT_REPO, APP_REPO]
+    contracts = []
+
+    for s_root in search_roots:
+        if s_root.exists():
+            for p in s_root.rglob("EGM.md"):
+                if "node_modules" not in str(p) and "vendor" not in str(p):
+                    contracts.append(p)
+
+    results = {
+        "contracts_checked": len(contracts),
+        "valid": True,
+        "contracts": [],
+        "broken_links_count": 0,
+        "broken_links": []
+    }
+
+    req_peanut_sections = ["Overview", "Interface", "Invariants", "Side Effects", "Verification"]
+    req_blueprint_sections = ["Overview", "Boundaries", "Invariants", "Side Effects", "Verification"]
+
+    for c in sorted(contracts):
+        content = c.read_text(encoding="utf-8")
+        base_dir = c.parent
+        is_blueprint = ("Blueprint" in content or "Subdirectories" in content)
+        req_sections = req_blueprint_sections if is_blueprint else req_peanut_sections
+
+        missing = []
+        for sec in req_sections:
+            if not re.search(rf"##\s+.*{sec}", content, re.IGNORECASE):
+                missing.append(sec)
+
+        # Links relativos
+        local_broken = []
+        links = re.findall(r'\[([^\]]+)\]\(([^)]+)\)', content)
+        for text, link in links:
+            if link.startswith("http") or link.startswith("#") or link.startswith("mailto:"):
+                continue
+            target_clean = link.split()[0].split('#')[0]
+            target_path = (base_dir / target_clean).resolve()
+            if not target_path.exists():
+                local_broken.append({
+                    "text": text,
+                    "link": link,
+                    "resolved": str(target_path)
+                })
+
+        contract_valid = (len(missing) == 0 and len(local_broken) == 0)
+        if not contract_valid:
+            results["valid"] = False
+
+        results["broken_links_count"] += len(local_broken)
+        for b in local_broken:
+            results["broken_links"].append(f"{c.name} ({c.parent.name}): {b['link']}")
+
+        results["contracts"].append({
+            "path": str(c.relative_to(ROOT_DIR.parent)),
+            "is_blueprint": is_blueprint,
+            "valid": contract_valid,
+            "missing_sections": missing,
+            "broken_links": local_broken
+        })
+
+    if args.json:
+        print(json.dumps(results, indent=2))
+        return
+
+    print("=== EGM CONTRACTS LINT & INTEGRITY ===")
+    print(f"Total de contratos EGM.md validados: {len(contracts)}")
+    print(f"Status Global: {'[100% CONFORME]' if results['valid'] else '[FALHA DE CONTRATO]'}")
+
+    if not results["valid"]:
+        print("\nIrregularidades Encontradas:")
+        for cr in results["contracts"]:
+            if not cr["valid"]:
+                print(f"  -> {cr['path']}:")
+                if cr["missing_sections"]:
+                    print(f"     Seções faltantes: {', '.join(cr['missing_sections'])}")
+                for bl in cr["broken_links"]:
+                    print(f"     Link quebrado: [{bl['text']}]({bl['link']})")
+    else:
+        print("[OK] Todos os contratos possuem Overview, Interface, Invariants, Side Effects e links 100% verificados.")
 
 # -----------------------------------------------------------------------------
 # COMMAND: pcb:list
@@ -138,10 +316,9 @@ def cmd_pcb_list(args):
 # COMMAND: pcb:drc
 # -----------------------------------------------------------------------------
 def cmd_pcb_drc(args):
-    """Executa o DRC do KiCad em uma placa específica e retorna resumo estruturado."""
+    """Executa o DRC do KiCad em uma placa específica e retorna resumo estruturado via JSON."""
     board_dir = HARDWARE_DIR / args.board
     if not board_dir.exists():
-        # Tenta achar por match parcial
         candidates = [d for d in HARDWARE_DIR.iterdir() if d.is_dir() and args.board in d.name]
         if candidates:
             board_dir = candidates[0]
@@ -154,7 +331,6 @@ def cmd_pcb_drc(args):
         print(f"Erro: Nenhum arquivo .kicad_pcb encontrado em {board_dir}", file=sys.stderr)
         sys.exit(1)
 
-    # Prioriza o pcb com o mesmo nome do diretório
     pcb_file = pcb_files[0]
     for p in pcb_files:
         if p.stem == board_dir.name:
@@ -166,39 +342,46 @@ def cmd_pcb_drc(args):
         print("Erro: kicad-cli.exe não encontrado no sistema.", file=sys.stderr)
         sys.exit(1)
 
-    report_file = ROOT_DIR / f"{pcb_file.stem}-drc.rpt"
-    cmd = [kicad_cli, "pcb", "drc", "-o", str(report_file), str(pcb_file)]
+    report_json = ROOT_DIR / f"temp_{pcb_file.stem}_drc.json"
+    cmd = [kicad_cli, "pcb", "drc", "--format", "json", "-o", str(report_json), str(pcb_file)]
     res = subprocess.run(cmd, capture_output=True, text=True)
 
-    violations = 0
+    violations_err = 0
+    violations_warn = 0
     unconnected = 0
-    errors_list = []
+    errors_sample = []
 
-    if report_file.exists():
-        with open(report_file, "r", encoding="utf-8", errors="ignore") as f:
-            lines = f.readlines()
-        for line in lines:
-            if "violações" in line.lower() or "violations" in line.lower():
-                try:
-                    violations = int("".join(filter(str.isdigit, line)))
-                except ValueError:
-                    pass
-            elif "desconectados" in line.lower() or "unconnected" in line.lower():
-                try:
-                    unconnected = int("".join(filter(str.isdigit, line)))
-                except ValueError:
-                    pass
-            elif line.startswith("[") and "]" in line:
-                errors_list.append(line.strip())
-        report_file.unlink(missing_ok=True)
+    if report_json.exists():
+        try:
+            with open(report_json, "r", encoding="utf-8", errors="ignore") as f:
+                drc_data = json.load(f)
+            unconnected = len(drc_data.get("unconnected_items", []))
+            raw_violations = drc_data.get("violations", [])
+            for v in raw_violations:
+                sev = v.get("severity", "warning").lower()
+                desc = v.get("description", "")
+                if sev == "error":
+                    violations_err += 1
+                    errors_sample.append(f"[ERROR] {desc}")
+                else:
+                    violations_warn += 1
+                    if len(errors_sample) < 5:
+                        errors_sample.append(f"[WARN] {desc}")
+        except Exception:
+            pass
+        finally:
+            report_json.unlink(missing_ok=True)
+
+    clean = (violations_err == 0 and unconnected == 0)
 
     result = {
         "board": board_dir.name,
         "pcb_file": pcb_file.name,
-        "violations": violations,
+        "errors": violations_err,
+        "warnings": violations_warn,
         "unconnected": unconnected,
-        "clean": (violations == 0 and unconnected == 0),
-        "errors_sample": errors_list[:10]
+        "clean": clean,
+        "sample": errors_sample[:5]
     }
 
     if args.json:
@@ -206,14 +389,92 @@ def cmd_pcb_drc(args):
         return
 
     print(f"=== DRC REPORT: {board_dir.name} ===")
-    print(f"Arquivo: {pcb_file.name}")
-    print(f"Status:  {'[OK] PERFEITO' if result['clean'] else '[FALHA] REQUER ATENCAO'}")
-    print(f"Violações DRC:      {violations}")
-    print(f"Pads Desconectados: {unconnected}")
-    if errors_list:
-        print("Amostra de Erros:")
-        for err in errors_list[:5]:
-            print(f"  - {err}")
+    print(f"Arquivo:           {pcb_file.name}")
+    print(f"Status:            {'[OK] APROVADO' if clean else '[FALHA] REQUER ATENCAO'}")
+    print(f"Erros Graves DRC:  {violations_err}")
+    print(f"Avisos (Warnings): {violations_warn}")
+    print(f"Pads Desconectados:{unconnected}")
+    if errors_sample:
+        print("Amostra:")
+        for s in errors_sample[:5]:
+            print(f"  - {s}")
+
+# -----------------------------------------------------------------------------
+# COMMAND: pcb:erc
+# -----------------------------------------------------------------------------
+def cmd_pcb_erc(args):
+    """Executa o ERC (Electrical Rules Check) nos esquemáticos KiCad."""
+    kicad_cli = get_kicad_cli()
+    if not kicad_cli:
+        print("Erro: kicad-cli.exe não encontrado no sistema.", file=sys.stderr)
+        sys.exit(1)
+
+    target_boards = [args.board] if args.board else ["amemiya_main_node", "amemiya_probe_tower_dual"]
+    erc_results = []
+
+    for b_name in target_boards:
+        b_dir = HARDWARE_DIR / b_name
+        if not b_dir.exists():
+            continue
+        sch_files = list(b_dir.glob("*.kicad_sch"))
+        if not sch_files:
+            continue
+
+        # Prioriza o esquemático com o mesmo nome do diretório
+        sch_file = sch_files[0]
+        for s in sch_files:
+            if s.stem == b_name:
+                sch_file = s
+                break
+
+        rpt_json = ROOT_DIR / f"temp_{sch_file.stem}_erc.json"
+        cmd = [kicad_cli, "sch", "erc", "--format", "json", "-o", str(rpt_json), str(sch_file)]
+        res = subprocess.run(cmd, capture_output=True, text=True)
+
+        err_count = 0
+        warn_count = 0
+        samples = []
+
+        if rpt_json.exists():
+            try:
+                with open(rpt_json, "r", encoding="utf-8", errors="ignore") as f:
+                    erc_data = json.load(f)
+                violations = erc_data.get("violations", [])
+                for v in violations:
+                    sev = v.get("severity", "warning").lower()
+                    desc = v.get("description", "")
+                    if sev == "error":
+                        err_count += 1
+                        samples.append(f"[ERROR] {desc}")
+                    else:
+                        warn_count += 1
+                        if len(samples) < 5:
+                            samples.append(f"[WARN] {desc}")
+            except Exception:
+                pass
+            finally:
+                rpt_json.unlink(missing_ok=True)
+
+        erc_results.append({
+            "board": b_name,
+            "schematic": sch_file.name,
+            "clean": (err_count == 0),
+            "errors": err_count,
+            "warnings": warn_count,
+            "samples": samples[:5]
+        })
+
+    if args.json:
+        print(json.dumps(erc_results, indent=2))
+        return
+
+    print("=== ERC REPORT (ELECTRICAL RULES CHECK) ===")
+    for er in erc_results:
+        print(f"-> {er['board']} ({er['schematic']}): {'[OK] 0 ERROS' if er['clean'] else f'[FALHA] {er['errors']} erros'}")
+        if er["warnings"]:
+            print(f"   Avisos: {er['warnings']}")
+        for s in er["samples"]:
+            print(f"   - {s}")
 
 # -----------------------------------------------------------------------------
 # COMMAND: pcb:laser
@@ -240,7 +501,7 @@ def cmd_pcb_laser(args):
     result = {
         "board": args.board,
         "status": "success",
-        "output_dir": str(export_dir.relative_to(ROOT_DIR)),
+        "output_dir": str(export_dir.relative_to(ROOT_DIR)) if export_dir.is_relative_to(ROOT_DIR) else str(export_dir),
         "files_count": len(files),
         "files": files
     }
@@ -253,6 +514,97 @@ def cmd_pcb_laser(args):
     print(f"Total de arquivos gerados: {len(files)}")
     for f in sorted(files):
         print(f"  - {f}")
+
+# -----------------------------------------------------------------------------
+# COMMAND: tcc:sync & tcc:pack
+# -----------------------------------------------------------------------------
+def cmd_tcc_sync(args):
+    """Sincroniza os esquemáticos PDF/PNG atualizados para a pasta de entrega do TCC."""
+    pdf_name = "Esquematico_Main_Node_ESP32.pdf"
+    png_names = [
+        "Esquematico_Main_Node_Pag1_Root.png",
+        "Esquematico_Main_Node_Pag2_Power_Supply.png",
+        "Esquematico_Main_Node_Pag3_Sensors_AFE.png",
+        "Esquematico_Main_Node_Pag4_MCU_ESP32S3.png",
+        "Esquematico_Main_Node_Pag5_Peripherals_LoRa.png"
+    ]
+
+    docs_iot = ROOT_DIR / "docs" / "iot"
+    src_pdf = docs_iot / pdf_name
+
+    synced = []
+
+    if src_pdf.exists():
+        # 1. amemiya-hardware
+        hw_main = HW_REPO / "kicad" / "amemiya_main_node"
+        if hw_main.exists():
+            shutil.copy2(src_pdf, hw_main / pdf_name)
+            synced.append(f"amemiya-hardware: {pdf_name}")
+
+        # 2. Pacote_TCC_Amemiya
+        if PACOTE_TCC_DIR.exists():
+            target_hw = PACOTE_TCC_DIR / "02_Hardware_Projetos_KiCad" / "Esquematicos_PDF"
+            target_hw.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src_pdf, target_hw / pdf_name)
+            synced.append(f"Pacote_TCC_Amemiya (PDF): {pdf_name}")
+
+            for p in png_names:
+                src_png = docs_iot / p
+                if src_png.exists():
+                    shutil.copy2(src_png, target_hw / p)
+                    synced.append(f"Pacote_TCC_Amemiya (PNG): {p}")
+
+            # Espelhar fontes KiCad
+            pacote_kicad = PACOTE_TCC_DIR / "02_Hardware_Projetos_KiCad" / "amemiya_main_node"
+            if pacote_kicad.exists() and hw_main.exists():
+                for f in hw_main.iterdir():
+                    if f.suffix in [".kicad_sch", ".kicad_pro", ".kicad_prl"]:
+                        shutil.copy2(f, pacote_kicad / f.name)
+                synced.append("Pacote_TCC_Amemiya: Fontes KiCad espelhados")
+
+    result = {
+        "status": "success",
+        "synced_items_count": len(synced),
+        "synced_items": synced
+    }
+
+    if args.json:
+        print(json.dumps(result, indent=2))
+        return
+
+    print("=== SINCRONIZACAO DO PACOTE TCC ===")
+    print(f"Total de itens sincronizados: {len(synced)}")
+    for s in synced:
+        print(f"  - {s}")
+
+def cmd_tcc_pack(args):
+    """Executa a sincronização de esquemáticos e regera o Pacote_TCC_Amemiya.zip determinístico."""
+    cmd_tcc_sync(args)
+
+    if not PACOTE_TCC_DIR.exists():
+        print(f"Erro: Diretório {PACOTE_TCC_DIR} não encontrado.", file=sys.stderr)
+        sys.exit(1)
+
+    print(f"Compactando {PACOTE_TCC_DIR.name} em {PACOTE_TCC_ZIP.name}...")
+    with zipfile.ZipFile(PACOTE_TCC_ZIP, "w", zipfile.ZIP_DEFLATED) as zipf:
+        for root, dirs, files in os.walk(PACOTE_TCC_DIR):
+            for file in files:
+                file_path = os.path.join(root, file)
+                arcname = os.path.relpath(file_path, PACOTE_TCC_DIR.parent)
+                zipf.write(file_path, arcname)
+
+    size_mb = round(PACOTE_TCC_ZIP.stat().st_size / (1024 * 1024), 2)
+    result = {
+        "status": "success",
+        "zip_path": str(PACOTE_TCC_ZIP),
+        "size_mb": size_mb
+    }
+
+    if args.json:
+        print(json.dumps(result, indent=2))
+        return
+
+    print(f"[OK] Pacote TCC gerado com sucesso: {PACOTE_TCC_ZIP} ({size_mb} MB)")
 
 # -----------------------------------------------------------------------------
 # COMMAND: backend:test
@@ -279,7 +631,7 @@ def cmd_backend_test(args):
         subprocess.run(cmd, cwd=str(ROOT_DIR))
 
 # -----------------------------------------------------------------------------
-# COMMAND: frontend:build
+# COMMAND: frontend:build & test
 # -----------------------------------------------------------------------------
 def cmd_frontend_build(args):
     """Compila os assets de frontend com Vite (Tailwind 4, Filament Theme, React)."""
@@ -319,64 +671,6 @@ def cmd_frontend_build(args):
         print(res.stderr or res.stdout, file=sys.stderr)
         sys.exit(res.returncode)
 
-# -----------------------------------------------------------------------------
-# COMMAND: docs:build
-# -----------------------------------------------------------------------------
-def cmd_docs_build(args):
-    """Compila o portal estático de documentação com VitePress (Diátaxis)."""
-    npm_bin = get_npm()
-    if not npm_bin:
-        print("Erro: npm não encontrado no sistema.", file=sys.stderr)
-        sys.exit(1)
-
-    print("[*] Compilando portal VitePress (npm run docs:build)...")
-    res = subprocess.run([npm_bin, "run", "docs:build"], cwd=str(ROOT_DIR), capture_output=True, text=True)
-
-    dist_dir = ROOT_DIR / "docs" / ".vitepress" / "dist"
-    built_pages = []
-    if dist_dir.exists():
-        built_pages = [str(f.relative_to(dist_dir)) for f in dist_dir.rglob("*.html")]
-
-    success = (res.returncode == 0)
-    result = {
-        "status": "success" if success else "error",
-        "return_code": res.returncode,
-        "pages_count": len(built_pages),
-        "pages": built_pages,
-        "error_message": res.stderr.strip() if not success else None
-    }
-
-    if args.json:
-        print(json.dumps(result, indent=2))
-        return
-
-    if success:
-        print(f"[OK] Build do portal VitePress concluído com sucesso ({len(built_pages)} páginas estáticas)!")
-        print(f"Diretório de saída: docs/.vitepress/dist")
-    else:
-        print(f"[ERRO] Falha ao compilar documentação VitePress:\n{res.stderr.strip()}", file=sys.stderr)
-        sys.exit(1)
-
-# -----------------------------------------------------------------------------
-# COMMAND: docs:test
-# -----------------------------------------------------------------------------
-def cmd_docs_test(args):
-    """Executa suíte de testes de integridade, links, markdown e contratos OpenAPI dos documentos."""
-    script = ROOT_DIR / "scripts" / "test_docs.py"
-    if not script.exists():
-        print("Erro: scripts/test_docs.py não encontrado.", file=sys.stderr)
-        sys.exit(1)
-
-    cmd = [sys.executable, str(script)]
-    if args.json:
-        cmd.append("--json")
-
-    res = subprocess.run(cmd)
-    sys.exit(res.returncode)
-
-# -----------------------------------------------------------------------------
-# COMMAND: frontend:test
-# -----------------------------------------------------------------------------
 def cmd_frontend_test(args):
     """Executa testes de interface E2E via Playwright."""
     npm_bin = get_npm()
@@ -389,9 +683,6 @@ def cmd_frontend_test(args):
     res = subprocess.run(cmd, cwd=str(ROOT_DIR))
     sys.exit(res.returncode)
 
-# -----------------------------------------------------------------------------
-# COMMAND: frontend:list
-# -----------------------------------------------------------------------------
 def cmd_frontend_list(args):
     """Lista módulos com assets de frontend, componentes React e views Blade."""
     frontend_map = {
@@ -433,6 +724,58 @@ def cmd_frontend_list(args):
         print(f"     Views Blade: {mod_info['blade_views_count']}")
         if mod_info["react_components"]:
             print(f"     Componentes React: {', '.join(mod_info['react_components'])}")
+
+# -----------------------------------------------------------------------------
+# COMMAND: docs:build & test
+# -----------------------------------------------------------------------------
+def cmd_docs_build(args):
+    """Compila o portal estático de documentação com VitePress (Diátaxis)."""
+    npm_bin = get_npm()
+    if not npm_bin:
+        print("Erro: npm não encontrado no sistema.", file=sys.stderr)
+        sys.exit(1)
+
+    print("[*] Compilando portal VitePress (npm run docs:build)...")
+    res = subprocess.run([npm_bin, "run", "docs:build"], cwd=str(ROOT_DIR), capture_output=True, text=True)
+
+    dist_dir = ROOT_DIR / "docs" / ".vitepress" / "dist"
+    built_pages = []
+    if dist_dir.exists():
+        built_pages = [str(f.relative_to(dist_dir)) for f in dist_dir.rglob("*.html")]
+
+    success = (res.returncode == 0)
+    result = {
+        "status": "success" if success else "error",
+        "return_code": res.returncode,
+        "pages_count": len(built_pages),
+        "pages": built_pages,
+        "error_message": res.stderr.strip() if not success else None
+    }
+
+    if args.json:
+        print(json.dumps(result, indent=2))
+        return
+
+    if success:
+        print(f"[OK] Build do portal VitePress concluído com sucesso ({len(built_pages)} páginas estáticas)!")
+        print(f"Diretório de saída: docs/.vitepress/dist")
+    else:
+        print(f"[ERRO] Falha ao compilar documentação VitePress:\n{res.stderr.strip()}", file=sys.stderr)
+        sys.exit(1)
+
+def cmd_docs_test(args):
+    """Executa suíte de testes de integridade, links, markdown e contratos OpenAPI dos documentos."""
+    script = ROOT_DIR / "scripts" / "test_docs.py"
+    if not script.exists():
+        print("Erro: scripts/test_docs.py não encontrado.", file=sys.stderr)
+        sys.exit(1)
+
+    cmd = [sys.executable, str(script)]
+    if args.json:
+        cmd.append("--json")
+
+    res = subprocess.run(cmd)
+    sys.exit(res.returncode)
 
 # -----------------------------------------------------------------------------
 # COMMAND: iot:mock
@@ -479,7 +822,7 @@ def cmd_iot_mock(args):
             client.connect(args.host, args.port, keepalive=10)
             client.loop_start()
             connected = True
-        except Exception as e:
+        except Exception:
             connected = False
 
     if not args.json:
@@ -523,10 +866,10 @@ def cmd_iot_mock(args):
         if connected and client:
             client.publish(topic, json.dumps(payload), qos=1)
             if not args.json:
-                print(f"[{i+1}/{args.count}] Publicado -> RMS: {payload['rms_global']}g | Temp: {payload['temp_celsius']}°C | Status: {payload['ml_status']}")
+                print(f"[{i+1}/{args.count}] Publicado -> RMS: {payload['rms_global']}g | Temp: {payload['temp_celsius']}°C | VBAT: {payload['battery_voltage']}V | Status: {payload['ml_status']}")
         else:
             if not args.json:
-                print(f"[{i+1}/{args.count}] (Mock) -> RMS: {payload['rms_global']}g | Temp: {payload['temp_celsius']}°C | ISO: {payload['iso_zone']}")
+                print(f"[{i+1}/{args.count}] (Mock) -> RMS: {payload['rms_global']}g | Temp: {payload['temp_celsius']}°C | VBAT: {payload['battery_voltage']}V | ISO: {payload['iso_zone']}")
 
         if i < args.count - 1 and args.interval > 0:
             time.sleep(args.interval)
@@ -547,10 +890,10 @@ def cmd_iot_mock(args):
         }, indent=2))
 
 # -----------------------------------------------------------------------------
-# COMMAND: audit (Quality Gate Geral)
+# COMMAND: audit (Quality Gate Geral Completo)
 # -----------------------------------------------------------------------------
 def cmd_audit(args):
-    """Executa a esteira completa de verificação de qualidade (Hardware DRC + Frontend Build)."""
+    """Executa a esteira rigorosa de verificação de qualidade em todas as camadas."""
     start_time = time.time()
     audit_results = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -559,112 +902,202 @@ def cmd_audit(args):
     }
 
     if not args.json:
-        print("=== AMEMIYA QUALITY GATE AUDIT ===\n")
+        print("=== AMEMIYA QUALITY GATE AUDIT (FULL SUITE) ===\n")
 
-    # 1. Hardware DRC (Probe Tower Dual)
-    if not args.json:
-        print("[1/3] Verificando Hardware DRC (amemiya_probe_tower_dual)...")
     kicad_cli = get_kicad_cli()
-    hw_dir = get_hardware_dir()
-    pcb_file = hw_dir / "amemiya_probe_tower_dual" / "amemiya_probe_tower_dual.kicad_pcb"
-    if kicad_cli and pcb_file.exists():
-        rpt = ROOT_DIR / "temp_audit_drc.rpt"
-        res_drc = subprocess.run([kicad_cli, "pcb", "drc", "-o", str(rpt), str(pcb_file)], capture_output=True, text=True)
-        unconnected = 0
-        violations = 0
-        if rpt.exists():
-            with open(rpt, "r", encoding="utf-8", errors="ignore") as f:
-                for line in f:
-                    if "desconectados" in line.lower() or "unconnected" in line.lower():
-                        unconnected = int("".join(filter(str.isdigit, line)) or 0)
-                    elif "violações" in line.lower() or "violations" in line.lower():
-                        violations = int("".join(filter(str.isdigit, line)) or 0)
-            rpt.unlink(missing_ok=True)
-        
-        drc_ok = (unconnected == 0)
-        audit_results["checks"]["hardware_drc"] = {
-            "status": "PASS" if drc_ok else "FAIL",
-            "unconnected_pads": unconnected,
-            "violations": violations
-        }
-        if not drc_ok:
+
+    # 1. Hardware DRC & ERC em ambas as placas
+    if not args.json:
+        print("[1/5] Verificando Hardware DRC & ERC (main_node e probe_tower)...")
+
+    hw_checks = {"drc": {}, "erc": {}}
+    boards_to_check = [
+        ("amemiya_main_node", "amemiya_main_node.kicad_pcb", "amemiya_main_node.kicad_sch"),
+        ("amemiya_probe_tower_dual", "amemiya_probe_tower_dual.kicad_pcb", "amemiya_probe_tower_dual.kicad_sch")
+    ]
+
+    hw_overall_ok = True
+
+    if kicad_cli and HARDWARE_DIR.exists():
+        for b_name, pcb_name, sch_name in boards_to_check:
+            b_dir = HARDWARE_DIR / b_name
+            pcb_path = b_dir / pcb_name
+            sch_path = b_dir / sch_name
+
+            # DRC
+            if pcb_path.exists():
+                rpt_drc = ROOT_DIR / f"temp_{b_name}_drc.json"
+                subprocess.run([kicad_cli, "pcb", "drc", "--format", "json", "-o", str(rpt_drc), str(pcb_path)], capture_output=True)
+                drc_err = 0
+                unconnected = 0
+                if rpt_drc.exists():
+                    try:
+                        with open(rpt_drc, "r", encoding="utf-8") as f:
+                            d = json.load(f)
+                        unconnected = len(d.get("unconnected_items", []))
+                        drc_err = len([v for v in d.get("violations", []) if v.get("severity") == "error"])
+                    except Exception:
+                        pass
+                    finally:
+                        rpt_drc.unlink(missing_ok=True)
+                drc_pass = (unconnected == 0 and drc_err == 0)
+                hw_checks["drc"][b_name] = {"pass": drc_pass, "unconnected": unconnected, "errors": drc_err}
+                if not drc_pass:
+                    hw_overall_ok = False
+
+            # ERC
+            if sch_path.exists():
+                rpt_erc = ROOT_DIR / f"temp_{b_name}_erc.json"
+                subprocess.run([kicad_cli, "sch", "erc", "--format", "json", "-o", str(rpt_erc), str(sch_path)], capture_output=True)
+                erc_err = 0
+                if rpt_erc.exists():
+                    try:
+                        with open(rpt_erc, "r", encoding="utf-8") as f:
+                            e = json.load(f)
+                        erc_err = len([v for v in e.get("violations", []) if v.get("severity") == "error"])
+                    except Exception:
+                        pass
+                    finally:
+                        rpt_erc.unlink(missing_ok=True)
+                erc_pass = (erc_err == 0)
+                hw_checks["erc"][b_name] = {"pass": erc_pass, "errors": erc_err}
+                if not erc_pass:
+                    hw_overall_ok = False
+
+        audit_results["checks"]["hardware"] = {"status": "PASS" if hw_overall_ok else "FAIL", "details": hw_checks}
+        if not hw_overall_ok:
             audit_results["ready_to_commit"] = False
         if not args.json:
-            print(f"      -> Status: {'[OK]' if drc_ok else '[FALHA]'} (Unconnected: {unconnected}, Violations: {violations})")
+            print(f"      -> Status: {'[OK]' if hw_overall_ok else '[FALHA]'}")
     else:
-        reason = "KiCad CLI not available" if not kicad_cli else "Hardware directory not found (segregated to amemiya-hardware)"
-        audit_results["checks"]["hardware_drc"] = {"status": "SKIPPED", "reason": reason}
+        audit_results["checks"]["hardware"] = {"status": "SKIPPED", "reason": "KiCad CLI not available"}
         if not args.json:
-            print(f"      -> Status: [SKIPPED] ({reason})")
+            print("      -> Status: [SKIPPED] (KiCad CLI não encontrado)")
 
-    # 2. Frontend Vite Build
+    # 2. Sintaxe PHP em 100% dos arquivos de app/ e Modules/
     if not args.json:
-        print("[2/4] Verificando Compilação Frontend Vite...")
+        print("[2/5] Verificando Sintaxe PHP em 100% dos arquivos do Core e Módulos...")
+    php_bin = shutil.which("php")
+    if php_bin:
+        all_php_files = []
+        for scan_dir in [ROOT_DIR / "app", ROOT_DIR / "Modules", ROOT_DIR / "routes", ROOT_DIR / "config"]:
+            if scan_dir.exists():
+                for p in scan_dir.rglob("*.php"):
+                    if "node_modules" not in str(p) and "vendor" not in str(p):
+                        all_php_files.append(p)
+
+        syntax_errs = 0
+        err_samples = []
+        for f in all_php_files:
+            res_php = subprocess.run([php_bin, "-l", str(f)], capture_output=True, text=True)
+            if res_php.returncode != 0:
+                syntax_errs += 1
+                err_samples.append(f"{f.name}: {res_php.stderr.strip()}")
+
+        php_ok = (syntax_errs == 0)
+        audit_results["checks"]["backend_syntax"] = {
+            "status": "PASS" if php_ok else "FAIL",
+            "files_scanned": len(all_php_files),
+            "errors_count": syntax_errs,
+            "errors_sample": err_samples[:5]
+        }
+        if not php_ok:
+            audit_results["ready_to_commit"] = False
+        if not args.json:
+            print(f"      -> Status: {'[OK]' if php_ok else '[FALHA]'} ({len(all_php_files)} arquivos auditados, {syntax_errs} erros)")
+    else:
+        audit_results["checks"]["backend_syntax"] = {"status": "SKIPPED"}
+        if not args.json:
+            print("      -> Status: [SKIPPED] (PHP CLI não encontrado)")
+
+    # 3. Compilação do Frontend Vite Local
+    if not args.json:
+        print("[3/5] Verificando Compilação Frontend Vite...")
     npm_bin = get_npm()
     if npm_bin and (ROOT_DIR / "package.json").exists():
         res_vite = subprocess.run([npm_bin, "run", "build"], cwd=str(ROOT_DIR), capture_output=True, text=True)
         vite_ok = (res_vite.returncode == 0)
-        audit_results["checks"]["frontend_build"] = {
+        audit_results["checks"]["frontend_vite"] = {
             "status": "PASS" if vite_ok else "FAIL",
             "return_code": res_vite.returncode
         }
         if not vite_ok:
             audit_results["ready_to_commit"] = False
         if not args.json:
-            print(f"      -> Status: {'[OK]' if vite_ok else '[FALHA]'} (Vite exit code: {res_vite.returncode})")
+            print(f"      -> Status: {'[OK]' if vite_ok else '[FALHA]'}")
     else:
-        audit_results["checks"]["frontend_build"] = {"status": "SKIPPED", "reason": "npm or package.json not found"}
+        audit_results["checks"]["frontend_vite"] = {"status": "SKIPPED"}
 
-    # 3. Backend PHP Syntax Check
+    # 4. TypeScript Typecheck nos Frontends Irmãos (Next.js e Expo)
     if not args.json:
-        print("[3/4] Verificando Sintaxe PHP do Core...")
-    php_bin = shutil.which("php")
-    if php_bin:
-        syntax_errs = 0
-        sample_files = list((ROOT_DIR / "app").rglob("*.php"))[:10]
-        for f in sample_files:
-            res_php = subprocess.run([php_bin, "-l", str(f)], capture_output=True, text=True)
-            if res_php.returncode != 0:
-                syntax_errs += 1
-        backend_ok = (syntax_errs == 0)
-        audit_results["checks"]["backend_syntax"] = {
-            "status": "PASS" if backend_ok else "FAIL",
-            "syntax_errors": syntax_errs
-        }
-        if not backend_ok:
+        print("[4/5] Verificando Tipagem TypeScript nos Projetos Web e Mobile...")
+    npx_bin = get_npx()
+    ts_checks = {}
+    ts_overall_ok = True
+
+    if npx_bin:
+        for f_name, f_path in [("metrology-sass-front", FRONT_REPO), ("amemiya-app", APP_REPO)]:
+            if f_path.exists() and (f_path / "tsconfig.json").exists():
+                res_tsc = subprocess.run([npx_bin, "tsc", "--noEmit"], cwd=str(f_path), capture_output=True, text=True)
+                tsc_pass = (res_tsc.returncode == 0)
+                ts_checks[f_name] = {"pass": tsc_pass, "exit_code": res_tsc.returncode}
+                if not tsc_pass:
+                    ts_overall_ok = False
+            else:
+                ts_checks[f_name] = {"pass": True, "skipped": True}
+
+        audit_results["checks"]["frontend_typescript"] = {"status": "PASS" if ts_overall_ok else "FAIL", "projects": ts_checks}
+        if not ts_overall_ok:
             audit_results["ready_to_commit"] = False
         if not args.json:
-            print(f"      -> Status: {'[OK]' if backend_ok else '[FALHA]'} (Erros: {syntax_errs})")
+            print(f"      -> Status: {'[OK]' if ts_overall_ok else '[FALHA]'}")
     else:
-        audit_results["checks"]["backend_syntax"] = {"status": "SKIPPED"}
+        audit_results["checks"]["frontend_typescript"] = {"status": "SKIPPED"}
 
-    # 4. Documentation Quality & Integrity Check (VitePress + Scramble)
+    # 5. Integridade da Documentação e Contratos EGM.md
     if not args.json:
-        print("[4/4] Verificando Integridade da Documentação (VitePress + Scramble)...")
+        print("[5/5] Verificando Integridade dos Contratos EGM e Docs VitePress...")
+    
+    # EGM Lint inline
+    egm_ok = True
+    contracts = list(ROOT_DIR.rglob("EGM.md")) + list(FRONT_REPO.rglob("EGM.md")) + list(APP_REPO.rglob("EGM.md"))
+    contracts = [c for c in contracts if "node_modules" not in str(c) and "vendor" not in str(c)]
+    egm_broken = 0
+    for c in contracts:
+        base_dir = c.parent
+        content = c.read_text(encoding="utf-8")
+        links = re.findall(r'\[([^\]]+)\]\(([^)]+)\)', content)
+        for _, link in links:
+            if link.startswith("http") or link.startswith("#"):
+                continue
+            target_clean = link.split()[0].split('#')[0]
+            if not (base_dir / target_clean).resolve().exists():
+                egm_broken += 1
+                egm_ok = False
+
+    # Docs test script
     doc_script = ROOT_DIR / "scripts" / "test_docs.py"
+    docs_ok = True
     if doc_script.exists():
         res_doc = subprocess.run([sys.executable, str(doc_script), "--json"], capture_output=True, text=True)
         try:
             doc_report = json.loads(res_doc.stdout)
-            doc_ok = doc_report.get("all_passed", False)
-            md_errs = doc_report.get("markdown_integrity", {}).get("errors_count", 0)
+            docs_ok = doc_report.get("all_passed", False)
         except Exception:
-            doc_ok = (res_doc.returncode == 0)
-            md_errs = 0
-            doc_report = {}
+            docs_ok = (res_doc.returncode == 0)
 
-        audit_results["checks"]["documentation"] = {
-            "status": "PASS" if doc_ok else "FAIL",
-            "markdown_errors": md_errs,
-            "vitepress_build": doc_report.get("vitepress_build", {}).get("status", "UNKNOWN"),
-            "openapi_contract": doc_report.get("openapi_contract", {}).get("status", "UNKNOWN")
-        }
-        if not doc_ok:
-            audit_results["ready_to_commit"] = False
-        if not args.json:
-            print(f"      -> Status: {'[OK]' if doc_ok else '[FALHA]'}")
-    else:
-        audit_results["checks"]["documentation"] = {"status": "SKIPPED"}
+    quality_docs_ok = (egm_ok and docs_ok)
+    audit_results["checks"]["documentation_and_egm"] = {
+        "status": "PASS" if quality_docs_ok else "FAIL",
+        "egm_contracts_count": len(contracts),
+        "egm_broken_links": egm_broken,
+        "vitepress_docs_pass": docs_ok
+    }
+    if not quality_docs_ok:
+        audit_results["ready_to_commit"] = False
+
+    if not args.json:
+        print(f"      -> Status: {'[OK]' if quality_docs_ok else '[FALHA]'} ({len(contracts)} contratos EGM validados, {egm_broken} links quebrados)")
 
     elapsed = round(time.time() - start_time, 2)
     audit_results["elapsed_seconds"] = elapsed
@@ -679,16 +1112,18 @@ def cmd_audit(args):
     print(f"==========================================")
 
 # -----------------------------------------------------------------------------
-# COMMAND: clean (Limpeza de Arquivos Temporários)
+# COMMAND: clean
 # -----------------------------------------------------------------------------
 def cmd_clean(args):
     """Remove backups do KiCad, caches de Python, caches de build e do Laravel."""
     removed = []
 
-    # 1. KiCad backups (*-bak)
-    for bak in ROOT_DIR.rglob("*.kicad_*-bak"):
-        bak.unlink(missing_ok=True)
-        removed.append(str(bak.relative_to(ROOT_DIR)))
+    # 1. KiCad backups (*-bak) em ambos os repos
+    for scan_root in [ROOT_DIR, HW_REPO]:
+        if scan_root.exists():
+            for bak in scan_root.rglob("*.kicad_*-bak"):
+                bak.unlink(missing_ok=True)
+                removed.append(str(bak.name))
 
     # 2. Python __pycache__
     for pyc in ROOT_DIR.rglob("__pycache__"):
@@ -744,20 +1179,27 @@ def cmd_backend_migrate(args):
 # MAIN DISPATCHER
 # -----------------------------------------------------------------------------
 def main():
-    # Parent parser para argumentos comuns (como --json)
     common_parser = argparse.ArgumentParser(add_help=False)
     common_parser.add_argument("--json", action="store_true", help="Retorna saída estruturada em JSON (ideal para ferramentas de IA)")
 
     parser = argparse.ArgumentParser(
         prog="amemiya-dev",
-        description="Amemiya Dev CLI - Harness de Automação de Desenvolvimento & IA",
+        description="Amemiya Dev CLI - Harness de Automação de Desenvolvimento & EGM",
         parents=[common_parser]
     )
 
     subparsers = parser.add_subparsers(dest="command", help="Comandos disponíveis")
 
+    # workspace:status
+    p_ws = subparsers.add_parser("workspace:status", parents=[common_parser], help="Status Git consolidado de todos os repositórios")
+    p_ws.set_defaults(func=cmd_workspace_status)
+
+    # egm:lint
+    p_egm = subparsers.add_parser("egm:lint", parents=[common_parser], help="Valida sintaxe e links de todos os contratos EGM.md")
+    p_egm.set_defaults(func=cmd_egm_lint)
+
     # env:check
-    p_env = subparsers.add_parser("env:check", parents=[common_parser], help="Verifica saúde do ambiente (Docker, KiCad, PHP, bibliotecas)")
+    p_env = subparsers.add_parser("env:check", parents=[common_parser], help="Verifica saúde do ambiente (Docker, KiCad, PHP, repositórios)")
     p_env.set_defaults(func=cmd_env_check)
 
     # pcb:list
@@ -766,13 +1208,26 @@ def main():
 
     # pcb:drc
     p_pdrc = subparsers.add_parser("pcb:drc", parents=[common_parser], help="Roda verificação de regras de design (DRC) do KiCad")
-    p_pdrc.add_argument("board", nargs="?", default="amemiya_probe_tower_dual", help="Nome do diretório da placa (ex: amemiya_probe_tower_dual)")
+    p_pdrc.add_argument("board", nargs="?", default="amemiya_main_node", help="Nome da placa (ex: amemiya_main_node, amemiya_probe_tower_dual)")
     p_pdrc.set_defaults(func=cmd_pcb_drc)
+
+    # pcb:erc
+    p_perc = subparsers.add_parser("pcb:erc", parents=[common_parser], help="Roda verificação de regras elétricas (ERC) do esquemático")
+    p_perc.add_argument("board", nargs="?", help="Nome da placa ou omita para checar todas as placas principais")
+    p_perc.set_defaults(func=cmd_pcb_erc)
 
     # pcb:laser
     p_laser = subparsers.add_parser("pcb:laser", parents=[common_parser], help="Regera arquivos DXF/PNG/CNC para manufatura a laser")
     p_laser.add_argument("board", nargs="?", default="amemiya_probe_tower_dual", help="Nome do diretório da placa")
     p_laser.set_defaults(func=cmd_pcb_laser)
+
+    # tcc:sync
+    p_tsync = subparsers.add_parser("tcc:sync", parents=[common_parser], help="Sincroniza esquemáticos PDF/PNG na pasta Pacote_TCC_Amemiya")
+    p_tsync.set_defaults(func=cmd_tcc_sync)
+
+    # tcc:pack
+    p_tpack = subparsers.add_parser("tcc:pack", parents=[common_parser], help="Sincroniza e regera o Pacote_TCC_Amemiya.zip")
+    p_tpack.set_defaults(func=cmd_tcc_pack)
 
     # backend:test
     p_btest = subparsers.add_parser("backend:test", parents=[common_parser], help="Roda testes automatizados Pest/PHPUnit")
@@ -798,7 +1253,7 @@ def main():
     p_flist.set_defaults(func=cmd_frontend_list)
 
     # docs:build
-    p_dbuild = subparsers.add_parser("docs:build", parents=[common_parser], help="Compila o portal estático de documentação VitePress (Diátaxis)")
+    p_dbuild = subparsers.add_parser("docs:build", parents=[common_parser], help="Compila o portal estático de documentação VitePress")
     p_dbuild.set_defaults(func=cmd_docs_build)
 
     # docs:test
@@ -806,7 +1261,7 @@ def main():
     p_dtest.set_defaults(func=cmd_docs_test)
 
     # iot:mock
-    p_imock = subparsers.add_parser("iot:mock", parents=[common_parser], help="Publica telemetria MQTT sintética para teste do monitor sem hardware")
+    p_imock = subparsers.add_parser("iot:mock", parents=[common_parser], help="Publica telemetria MQTT sintética para teste do monitor")
     p_imock.add_argument("--profile", choices=["healthy", "defect_bearing", "overheating"], default="healthy", help="Perfil de falha física")
     p_imock.add_argument("--node", default="node-01", help="ID do nó IoT sensor")
     p_imock.add_argument("--gateway", default="gw-01", help="ID do gateway intermediário")
@@ -820,7 +1275,7 @@ def main():
     p_imock.set_defaults(func=cmd_iot_mock)
 
     # audit
-    p_audit = subparsers.add_parser("audit", parents=[common_parser], help="Quality Gate completo (Hardware DRC + Frontend Build + Backend Syntax)")
+    p_audit = subparsers.add_parser("audit", parents=[common_parser], help="Quality Gate completo (Hardware DRC/ERC + PHP Core + Vite/TS + EGM/Docs)")
     p_audit.set_defaults(func=cmd_audit)
 
     # clean

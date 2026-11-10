@@ -8,6 +8,7 @@ export default defineConfig({
   cleanUrls: true,
   ignoreDeadLinks: 'localhostLinks',
   srcExclude: [
+    '**/designs/**',
     '**/planning/**',
     '**/architecture/**',
     '**/iot/**',

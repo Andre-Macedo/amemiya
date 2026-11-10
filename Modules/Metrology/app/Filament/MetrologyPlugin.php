@@ -27,6 +27,6 @@ class MetrologyPlugin implements Plugin
 
     public function boot(Panel $panel): void
     {
-        // TODO: Implement boot() method.
+        // Inicialização em tempo de execução tratada por ModuleFilamentPlugin
     }
 }

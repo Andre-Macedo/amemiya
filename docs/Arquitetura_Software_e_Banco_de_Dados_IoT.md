@@ -8,7 +8,7 @@
 
 ## 1. Visão Geral do Sistema IoT
 
-O subsistema de IoT da plataforma **Amemiya** foi desenvolvido para monitorar a integridade mecânica de máquinas operatrizes (tornos mecânicos, fresadoras e centros de usinagem CNC). A solução coleta grandezas físicas críticas (**vibração triaxial, rotação real por efeito Hall, ruído acústico e temperatura de contato dos mancais**), processa descritores estatísticos e espectrais na borda (*Edge Computing*), transmite os pacotes via rádio de longo alcance (*LoRa*) e orquestra a classificação preditiva de falhas em tempo real (*XGBoost* e norma *ISO 20816*).
+O subsistema de IoT da plataforma **Amemiya** foi desenvolvido para monitorar a integridade mecânica de máquinas operatrizes (tornos mecânicos, fresadoras e centros de usinagem CNC). A solução coleta grandezas físicas críticas (**vibração triaxial via ADXL345, assinatura acústica por microfone MEMS INMP441 e temperatura de contato dos mancais via DS18B20**), exibe telemetria em tempo real no painel frontal através de **Display TFT LCD 3.2" SPI com Touch Screen (ILI9341 + XPT2046)**, processa descritores estatísticos e espectrais na borda (*Edge Computing*), transmite os pacotes via rádio de longo alcance (*LoRa 915 MHz*) e orquestra a classificação preditiva de falhas em tempo real (*XGBoost* e norma *ISO 20816*).
 
 ---
 
@@ -18,11 +18,11 @@ A arquitetura adota o padrão de microsserviços e mensageria assíncrona orient
 
 ```mermaid
 flowchart TD
-    subgraph EDGE["1. Camada de Borda (Edge Sensing & DSP)"]
-        S_VIB["Acelerômetro Digital\n(ADXL345 - I2C)"] --> ESP["ESP32-S3 (Edge Core)\n• DSP: FFT 1024 pts\n• RMS Triaxial + Kurtose\n• Sincronização por RPM\n• Bateria 18650 / Deep Sleep"]
-        S_TAC["Tacômetro Efeito Hall\n(KY-003 - Pulso RPM)"] --> ESP
-        S_MIC["Microfone Acústico\n(INMP441 - I2S Digital)"] --> ESP
-        S_TMP["Temperatura de Mancal\n(DS18B20 - 1-Wire)"] --> ESP
+    subgraph EDGE["1. Camada de Borda (Edge Sensing, DSP & IHM Local)"]
+        S_VIB["Acelerômetro Digital\n(ADXL345 - I2C Fast-Mode)"] --> ESP["ESP32-S3 (Edge Core)\n• DSP: FFT 1024 pts\n• RMS Triaxial + Kurtose\n• Power-Gating (AO3401A)\n• Bateria 18650 / Deep Sleep"]
+        S_MIC["Microfone Acústico MEMS\n(INMP441 - I2S Digital)"] --> ESP
+        S_TMP["Temperatura de Mancal\n(DS18B20 - 1-Wire DQ)"] --> ESP
+        ESP <--> TFT["IHM Local: Display TFT 3.2 Pol SPI\n(ILI9341 240x320 + Touch XPT2046)\nLEDs de Status (RGB) + Buzzer"]
         ESP --> LoRa_TX["Transmissor LoRa\n(E32-TTL-100 / 915 MHz)"]
     end
 
@@ -33,7 +33,7 @@ flowchart TD
     end
 
     subgraph INGESTION["3. Camada de Ingestão e Mensageria"]
-        MQTT_PUB -. "amemiya/telemetry/{node_id}" .-> BROKER["Broker MQTT Mosquitto"]
+        MQTT_PUB -. "v1/gateways/{gw}/nodes/{node}/telemetry" .-> BROKER["Broker MQTT Mosquitto"]
         BROKER --> BRIDGE["Laravel IoT Bridge Daemon\n(Console php-mqtt)"]
         BRIDGE --> REDIS_BUF["Fila e Cache Redis\n(Buffer Não Bloqueante)"]
     end
@@ -41,33 +41,36 @@ flowchart TD
     subgraph CORE["4. Camada de Backend & Inteligência (Laravel 12 + FastAPI)"]
         REDIS_BUF --> WORKER["Laravel Queue Workers\n(ProcessTelemetryJob)"]
         WORKER --> ISO["Motor Normativo\nISO 20816 (Zonas A-D)"]
-        WORKER --> ML_SRV["Microsserviço de ML (FastAPI)\n• Classificação XGBoost\n• Detecção de Anomalias (Isolation Forest)"]
+        WORKER --> ML_SRV["Microsserviço de ML (FastAPI)\n• Classificação XGBoost (36 features)\n• Detecção de Falhas em Rolamento"]
         WORKER --> DB[(Banco de Dados Relacional\nMySQL - Módulo IoT)]
-        WORKER --> REVERB["Laravel Reverb (WebSockets)\nBroadcasting de Telemetria"]
+        WORKER --> REVERB["Laravel Reverb (WebSockets)\nBroadcasting de Telemetria e Alertas"]
     end
 
-    subgraph PRESENTATION["5. Camada de Apresentação e Interoperabilidade"]
+    subgraph PRESENTATION["5. Camada de Apresentação e Interoperabilidade (Web & Mobile)"]
         DB & REVERB --> WEB["Painel Web Administrativo\n(Filament 4 - Gestão de Dispositivos e MLOps)"]
-        DB & REVERB --> APP["Aplicativo Mobile Android\n(React Native / Expo)\n• IHM Digital de Bolso\n• Push Notifications de Falha"]
-        DB --> API_PUB["API Pública RESTful v1\n• Abertura Automática de OS\n• Interoperabilidade ERP (TOTVS/SAP)"]
+        DB & REVERB --> SASS["Frontend Web SaaS (Next.js 14)\n(metrology-sass-front)\nGestão Metrológica, Calibrações e Laudos"]
+        DB & REVERB --> APP["Aplicativo Mobile Android (Expo / React Native)\n(amemiya-app)\n• IHM Digital de Bolso\n• Push Notifications & Alertas"]
+        DB --> API_PUB["API Pública RESTful v1 (Sanctum)\n• Abertura Automática de O.S.\n• Interoperabilidade ERP/CMMS"]
     end
 ```
 
 ### 2.1 Detalhamento das Camadas
 
-1. **Camada de Borda (Edge Sensing & DSP):**
-   * **Microcontrolador:** ESP32-S3 operando em extrabaixa tensão, energizado por células Li-Ion 18650 com rotinas de *Deep Sleep*.
-   * **Sensing:** 
-     * **ADXL345:** Aceleração triaxial em faixa de ±16g, amostragem a 3,2 kHz.
-     * **KY-003:** Sensor de efeito Hall para captura dos pulsos de passagem do ímã no eixo, fornecendo a velocidade angular instantânea (RPM).
-     * **INMP441:** Microfone MEMS com barramento digital I2S de 24 bits para assinatura acústica de atrito e cavitação.
-     * **DS18B20:** Sensor de temperatura 1-Wire com contato térmico direto na carcaça do mancal.
-   * **Processamento Local (DSP):** Cálculo da FFT síncrona (Análise de Ordem normalizada por RPM), extração de descritores no tempo (RMS, Kurtose, Fator de Crista) e empacotamento compacto.
+1. **Camada de Borda (Edge Sensing, DSP & IHM Local):**
+   * **Microcontrolador:** ESP32-S3 operando em extrabaixa tensão, energizado por células Li-Ion 18650 com rotinas de *Deep Sleep* e circuito de comutação *Power-Gate* (P-MOSFET AO3401A via `GPIO21`).
+   * **Sensing Multimodal (Torre Dual - Conector GX16-8):** 
+     * **ADXL345:** Aceleração triaxial em faixa de ±16g, amostragem a 3,2 kHz via I2C Fast-Mode (`GPIO41`/`GPIO42`).
+     * **INMP441:** Microfone MEMS com barramento digital I2S de 24 bits (`GPIO6`/`GPIO7`/`GPIO8`) para assinatura acústica de atrito e cavitação.
+     * **DS18B20:** Sensor de temperatura 1-Wire (`GPIO5`) com contato térmico direto na carcaça do mancal.
+   * **IHM Local no Painel da Máquina:**
+     * **Display TFT LCD 3.2" SPI (ILI9341 240x320) + Touch Screen Resistivo (XPT2046):** Exibe leituras instantâneas, curvas espectrais e status operacional na própria máquina.
+     * **Atuadores e Sinalização:** LEDs de Status RGB (Verde, Laranja, Azul) para sinalização visual das Zonas ISO 20816 e Buzzer sonoro ativo para alarmes críticos.
+   * **Processamento Local (DSP):** Cálculo da FFT, extração de descritores no tempo (RMS triaxial, Kurtose, Fator de Crista) e empacotamento compacto.
    * **Enlace:** Rádio LoRa (915 MHz) via módulo E32-TTL-100 com alcance de centenas de metros sem depender da rede Wi-Fi da fábrica.
 
 2. **Camada de Concentração (Gateway):**
    * Dispositivo concentrador fixado à parede da oficina mecânica, alimentado por fonte DC industrial.
-   * Recebe os pacotes LoRa dos nós e publica via MQTT com política de confirmação *QoS 1* no tópico estruturado `amemiya/telemetry/{node_id}`.
+   * Recebe os pacotes LoRa dos nós e publica via MQTT com política de confirmação *QoS 1* no tópico estruturado `v1/gateways/{gw_id}/nodes/{node_id}/telemetry`.
 
 3. **Camada de Ingestão e Mensageria:**
    * **Broker Mosquitto:** Gerencia as filas de publicação e subscrição.
@@ -77,13 +80,14 @@ flowchart TD
 4. **Camada de Backend & MLOps:**
    * **Workers Assíncronos:** Processam as mensagens da fila Redis via `ProcessTelemetryJob`.
    * **Avaliação Normativa (ISO 20816):** Classifica a severidade da vibração mecânica em Zonas de Operação (Zona A: Nova; Zona B: Operação irrestrita; Zona C: Alerta de manutenção; Zona D: Parada mandatória).
-   * **Microsserviço de ML:** Servidor Python FastAPI que executa inferência através do modelo supervisionado **XGBoost** (rotulando estados de: *Saudável*, *Desbalanceamento*, *Desalinhamento*, *Folga Mecânica* ou *Falha de Rolamento*).
+   * **Microsserviço de ML:** Servidor Python FastAPI que executa inferência através do modelo supervisionado **XGBoost com 36 features multimodais** (rotulando estados de: *Saudável*, *Desbalanceamento*, *Desalinhamento*, *Folga Mecânica* ou *Falha de Rolamento*).
    * **Laravel Reverb:** Servidor WebSockets nativo que despacha eventos `SensorDataReceived` e `AnomalyDetected` aos clientes conectados com latência inferior a 200 ms.
 
-5. **Camada de Apresentação e Interoperabilidade:**
-   * **Painel Web (Filament 4):** Painel de controle para engenharia e calibração de modelos MLOps.
-   * **App Mobile Android (React Native):** Terminal de bolso para os mecânicos e operadores de chão de fábrica, com recebimento de notificações *Push* de falha iminente.
-   * **API Pública RESTful v1:** Endpoints padronizados com autenticação via token Bearer (Sanctum) para acionamento de sistemas corporativos externos (ERP/CMMS).
+5. **Camada de Apresentação e Interoperabilidade (Web & Mobile):**
+   * **Painel Web Administrativo (Filament 4):** Painel de controle para engenharia, calibração de modelos MLOps e gestão de Gateways/Nodes.
+   * **Frontend Web SaaS (`metrology-sass-front` - Next.js 14):** Portal metrológico para calibrações, cálculo de incerteza GUM, emissão de laudos PDF e gestão de Ordens de Serviço (Kanban).
+   * **App Mobile Android (`amemiya-app` - React Native / Expo):** Terminal de bolso para os mecânicos e operadores de chão de fábrica, com IHM digital, histórico de medições e notificações *Push* de falha iminente.
+   * **API Pública RESTful v1 (Sanctum):** Endpoints padronizados com autenticação via token Bearer para acionamento de sistemas corporativos externos (ERP/CMMS).
 
 ---
 
