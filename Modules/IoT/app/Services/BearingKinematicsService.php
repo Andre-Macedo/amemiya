@@ -198,8 +198,61 @@ class BearingKinematicsService
                     round($f0 * 3.0, 2),
                     round($f0 * 4.0, 2),
                 ],
+                'bpfi_sidebands' => ($bpfi > $f0 && $f0 > 0.0)
+                    ? [
+                        round($bpfi - $f0, 2),
+                        round($bpfi + $f0, 2),
+                    ]
+                    : [],
             ],
         ];
+    }
+
+    /**
+     * Resolve frequências características usando preset ou geometria customizada cadastrada na máquina.
+     *
+     * @param  array<string, mixed>  $machineMeta
+     * @return array{
+     *     bearing_name: string,
+     *     rpm: float,
+     *     shaft_frequency_hz: float,
+     *     bpfo_hz: float,
+     *     bpfi_hz: float,
+     *     bsf_hz: float,
+     *     ftf_hz: float,
+     *     orders: array{bpfo: float, bpfi: float, bsf: float, ftf: float},
+     *     harmonics: array<string, array<int, float>>
+     * }
+     */
+    public function calculateForMachine(array $machineMeta, float $rpm): array
+    {
+        $geometry = is_array($machineMeta['bearing_geometry'] ?? null)
+            ? $machineMeta['bearing_geometry']
+            : null;
+        $bearingModel = (string) ($machineMeta['bearing_model'] ?? 'skf_6204');
+
+        if ($geometry !== null && ($bearingModel === 'custom' || ! isset(self::PRESETS[strtolower(str_replace(['-', ' '], '_', $bearingModel))]))) {
+            $ballCount = (int) ($geometry['n'] ?? 0);
+            $ballDiameter = (float) ($geometry['d'] ?? 0.0);
+            $pitchDiameter = (float) ($geometry['D'] ?? 0.0);
+            $contactAngle = (float) ($geometry['alpha'] ?? 0.0);
+
+            if ($ballCount > 0 && $ballDiameter > 0.0 && $pitchDiameter > 0.0) {
+                $calc = $this->calculateFrequencies(
+                    rpm: $rpm,
+                    ballCount: $ballCount,
+                    ballDiameter: $ballDiameter,
+                    pitchDiameter: $pitchDiameter,
+                    contactAngleDegrees: $contactAngle
+                );
+                $customName = trim((string) ($geometry['bearing_name'] ?? ''));
+                $calc['bearing_name'] = $customName !== '' ? $customName : 'Rolamento Customizado';
+
+                return $calc;
+            }
+        }
+
+        return $this->calculateForPreset($bearingModel, $rpm);
     }
 
     /**
@@ -222,17 +275,49 @@ class BearingKinematicsService
     ): array {
         $bearingData = $this->calculateForPreset($presetKey, $rpm);
 
+        return $this->matchSpectralPeaksForKinematics($detectedPeaks, $bearingData, $tolerancePercent);
+    }
+
+    /**
+     * Compara uma lista de picos espectrais contra um mapa cinemático pré-calculado (preset ou customizado).
+     *
+     * @param  array<int, array{frequency_hz: float, amplitude: float}>  $detectedPeaks
+     * @param  array<string, mixed>  $bearingData
+     * @return array<int, array{
+     *     frequency_hz: float,
+     *     amplitude: float,
+     *     fault_match: string,
+     *     expected_hz: float,
+     *     deviation_percent: float
+     * }>
+     */
+    public function matchSpectralPeaksForKinematics(
+        array $detectedPeaks,
+        array $bearingData,
+        float $tolerancePercent = 2.5
+    ): array {
+        $shaftHz = (float) ($bearingData['shaft_frequency_hz'] ?? 0.0);
+        $bpfoHz = (float) ($bearingData['bpfo_hz'] ?? 0.0);
+        $bpfiHz = (float) ($bearingData['bpfi_hz'] ?? 0.0);
+        $bsfHz = (float) ($bearingData['bsf_hz'] ?? 0.0);
+        $ftfHz = (float) ($bearingData['ftf_hz'] ?? 0.0);
+
         $expectedTargets = [
-            '1X_SHAFT' => $bearingData['shaft_frequency_hz'],
-            '2X_SHAFT' => $bearingData['shaft_frequency_hz'] * 2.0,
-            '3X_SHAFT' => $bearingData['shaft_frequency_hz'] * 3.0,
-            'BPFO' => $bearingData['bpfo_hz'],
-            '2X_BPFO' => $bearingData['bpfo_hz'] * 2.0,
-            'BPFI' => $bearingData['bpfi_hz'],
-            '2X_BPFI' => $bearingData['bpfi_hz'] * 2.0,
-            'BSF' => $bearingData['bsf_hz'],
-            'FTF' => $bearingData['ftf_hz'],
+            '1X_SHAFT' => $shaftHz,
+            '2X_SHAFT' => $shaftHz * 2.0,
+            '3X_SHAFT' => $shaftHz * 3.0,
+            'BPFO' => $bpfoHz,
+            '2X_BPFO' => $bpfoHz * 2.0,
+            'BPFI' => $bpfiHz,
+            '2X_BPFI' => $bpfiHz * 2.0,
+            'BSF' => $bsfHz,
+            'FTF' => $ftfHz,
         ];
+
+        if ($bpfiHz > $shaftHz && $shaftHz > 0.0) {
+            $expectedTargets['BPFI_MINUS_1X'] = $bpfiHz - $shaftHz;
+            $expectedTargets['BPFI_PLUS_1X'] = $bpfiHz + $shaftHz;
+        }
 
         $matches = [];
 

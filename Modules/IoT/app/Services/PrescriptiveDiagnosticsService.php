@@ -31,6 +31,8 @@ class PrescriptiveDiagnosticsService
      *     severity_label: string,
      *     thermal_status: string,
      *     root_cause: string,
+     *     confirmation_source: string,
+     *     kinematic_indications: array<int, string>,
      *     confidence: float,
      *     urgency_hours: int,
      *     recommended_actions: array<int, string>,
@@ -57,34 +59,73 @@ class PrescriptiveDiagnosticsService
             }
         }
 
-        // 2. Extração de picos de defeito de rolamento e harmônicos rotacionais relevantes
+        // 2. Extração de indicações cinemáticas (determinística = localização; confirmação exige ML ou ISO C/D)
         $isIsoDegraded = in_array($zone, ['C', 'D'], true);
         $isMlAnomaly = ! in_array($mlStatus, [null, 'saudavel', 'normal', 'desligada', 'indeterminado'], true);
-        $rotationalFaultEligible = $isIsoDegraded || $isMlAnomaly;
+        $isAnomalyConfirmed = $isIsoDegraded || $isMlAnomaly;
 
         $hasBpfo = false;
         $hasBpfi = false;
+        $hasBsf = false;
+        $hasFtf = false;
         $hasHigh1X = false;
         $hasHigh2X = false;
+        $kinematicIndications = [];
 
         foreach ($matchedPeaks as $peak) {
             $match = $peak['fault_match'];
             if (str_contains($match, 'BPFO')) {
-                $hasBpfo = true;
+                $kinematicIndications[] = $match;
+                if ($isAnomalyConfirmed) {
+                    $hasBpfo = true;
+                }
             } elseif (str_contains($match, 'BPFI')) {
-                $hasBpfi = true;
-            } elseif ($match === '1X_SHAFT' && $rotationalFaultEligible) {
+                $kinematicIndications[] = $match;
+                if ($isAnomalyConfirmed) {
+                    $hasBpfi = true;
+                }
+            } elseif (str_contains($match, 'BSF')) {
+                $kinematicIndications[] = $match;
+                if ($isAnomalyConfirmed) {
+                    $hasBsf = true;
+                }
+            } elseif (str_contains($match, 'FTF')) {
+                $kinematicIndications[] = $match;
+                if ($isAnomalyConfirmed) {
+                    $hasFtf = true;
+                }
+            } elseif ($match === '1X_SHAFT' && $isAnomalyConfirmed) {
                 $hasHigh1X = true;
-            } elseif ($match === '2X_SHAFT' && $rotationalFaultEligible) {
+            } elseif ($match === '2X_SHAFT' && $isAnomalyConfirmed) {
                 $hasHigh2X = true;
             }
         }
 
+        $kinematicIndications = array_values(array_unique($kinematicIndications));
+
         // 3. Determinação da Causa-Raiz
+        $confirmationSource = 'none';
+        if ($isMlAnomaly && $isIsoDegraded) {
+            $confirmationSource = 'ml_and_iso';
+        } elseif ($isMlAnomaly) {
+            $confirmationSource = 'ml';
+        } elseif ($isIsoDegraded) {
+            $confirmationSource = 'iso';
+        }
+
         if ($zone === null) {
             $rootCause = 'Dados de Vibração Insuficientes para Diagnóstico';
             $actions = ['Verificar acoplamento do sensor ADXL345 e transmissão de velocidade RMS (v_rms).'];
             $urgencyHours = 24;
+        } elseif ($kinematicIndications !== [] && ! $isAnomalyConfirmed) {
+            $indicationList = implode(', ', $kinematicIndications);
+            $rootCause = "Operação Estável com Indicação Espectral em Rolamento ({$indicationList})";
+            $actions = [
+                'Indicação cinemática observada no espectro sem confirmação por ML ou severidade ISO C/D; acompanhar tendência no Spectrum Studio.',
+                'Reavaliar harmônicos e bandas laterais na próxima janela de coleta.',
+            ];
+            $urgencyHours = 360;
+            $confirmationSource = 'kinematic_indication_only';
         } else {
             $rootCause = 'Operação Mecânica Estável';
             $actions = ['Manter plano de monitoramento periódico por vibração.'];
@@ -105,6 +146,14 @@ class PrescriptiveDiagnosticsService
                 'Inspecionar acoplamento do eixo ao anel interno e folga radial.',
                 'Verificar ajuste com interferência no eixo para descartar escorregamento.',
                 'Programar substituição do rolamento.',
+            ];
+            $urgencyHours = 48;
+        } elseif ($hasBsf || $hasFtf) {
+            $faultCode = $hasBsf ? 'BSF' : 'FTF';
+            $rootCause = "Defeito em Corpo Rolante / Gaiola do Rolamento ({$faultCode})";
+            $actions = [
+                'Verificar lubrificação e presença de desgaste nos corpos rolantes ou gaiola.',
+                'Programar inspeção e substituição preventiva do rolamento.',
             ];
             $urgencyHours = 48;
         } elseif ($hasHigh2X || $mlStatus === 'desalinhamento') {
@@ -160,6 +209,8 @@ class PrescriptiveDiagnosticsService
             'severity_label' => $isoEvaluation['label'] ?? ($zone !== null ? "Zona {$zone}" : 'Não Determinado'),
             'thermal_status' => $thermalStatus,
             'root_cause' => $rootCause,
+            'confirmation_source' => $confirmationSource,
+            'kinematic_indications' => $kinematicIndications,
             'confidence' => (float) max(0.60, $mlConfidence ?? 0.60),
             'urgency_hours' => $urgencyHours,
             'recommended_actions' => $actions,

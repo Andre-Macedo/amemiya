@@ -340,4 +340,80 @@ class BearingKinematicsAndDiagnosticsTest extends TestCase
         Event::assertNotDispatched(SensorDataReceived::class);
         Event::assertNotDispatched(AnomalyDetected::class);
     }
+
+    public function test_bearing_peak_in_healthy_zone_without_ml_anomaly_remains_indication_only(): void
+    {
+        $isoService = new ISO20816SeverityService;
+        $diagnostics = new PrescriptiveDiagnosticsService($isoService);
+
+        $isoEval = $isoService->evaluate(0.55, 'small_machine', 'rigid');
+
+        $indicationOnly = $diagnostics->generateDiagnosis(
+            isoEvaluation: $isoEval,
+            mlStatus: 'saudavel',
+            mlConfidence: 0.94,
+            tempCelsius: 38.0,
+            matchedPeaks: [
+                ['fault_match' => 'BPFO', 'amplitude' => 0.12, 'frequency_hz' => 91.6],
+            ]
+        );
+
+        $this->assertSame('kinematic_indication_only', $indicationOnly['confirmation_source']);
+        $this->assertSame(['BPFO'], $indicationOnly['kinematic_indications']);
+        $this->assertStringContainsString('Indicação Espectral', $indicationOnly['root_cause']);
+        $this->assertSame(360, $indicationOnly['urgency_hours']);
+
+        $confirmedByMl = $diagnostics->generateDiagnosis(
+            isoEvaluation: $isoEval,
+            mlStatus: 'falha_confirmada',
+            mlConfidence: 0.91,
+            tempCelsius: 38.0,
+            matchedPeaks: [
+                ['fault_match' => 'BPFO', 'amplitude' => 0.45, 'frequency_hz' => 91.6],
+            ]
+        );
+
+        $this->assertSame('ml', $confirmedByMl['confirmation_source']);
+        $this->assertSame('Defeito na Pista Externa do Rolamento (BPFO)', $confirmedByMl['root_cause']);
+        $this->assertSame(48, $confirmedByMl['urgency_hours']);
+    }
+
+    public function test_machine_custom_bearing_geometry_calculates_sidebands_and_matches_endpoint(): void
+    {
+        Sanctum::actingAs($this->user);
+
+        $this->machine->update([
+            'metadata' => [
+                'bearing_model' => 'custom',
+                'nominal_rpm' => 1800,
+                'bearing_geometry' => [
+                    'bearing_name' => 'NSK 6203 ZZ Custom',
+                    'n' => 8,
+                    'd' => 6.75,
+                    'D' => 28.5,
+                    'alpha' => 0.0,
+                ],
+            ],
+        ]);
+
+        $response = $this->withHeader('X-Tenant-ID', $this->tenant->id)
+            ->getJson("/api/v1/iot-nodes/{$this->node->id}/spectrum");
+
+        $response->assertStatus(200)
+            ->assertJsonPath('bearing_kinematics.bearing_name', 'NSK 6203 ZZ Custom')
+            ->assertJsonStructure([
+                'bearing_kinematics' => [
+                    'harmonics' => ['bpfo', 'bpfi', '1x_shaft', 'bpfi_sidebands'],
+                ],
+                'matched_peaks',
+            ]);
+
+        $sidebands = $response->json('bearing_kinematics.harmonics.bpfi_sidebands');
+        $bpfi = (float) $response->json('bearing_kinematics.bpfi_hz');
+        $shaft = (float) $response->json('bearing_kinematics.shaft_frequency_hz');
+
+        $this->assertCount(2, $sidebands);
+        $this->assertEqualsWithDelta($bpfi - $shaft, $sidebands[0], 0.05);
+        $this->assertEqualsWithDelta($bpfi + $shaft, $sidebands[1], 0.05);
+    }
 }

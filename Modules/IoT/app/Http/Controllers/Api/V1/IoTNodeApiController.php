@@ -80,7 +80,6 @@ class IoTNodeApiController extends Controller
         $spectrum = $cachedRaw ? json_decode((string) $cachedRaw, true) : null;
         $machine = $iotNode->machine;
         $machineMeta = $machine !== null ? ($machine->metadata ?? []) : [];
-        $bearingModel = (string) ($machineMeta['bearing_model'] ?? 'skf_6204');
 
         $rpmResolution = $kinematicsService->resolveSpectralRpm(
             explicitRpm: ($spectrum['rpm_source'] ?? null) === 'tachometer' && isset($spectrum['rpm'])
@@ -101,8 +100,15 @@ class IoTNodeApiController extends Controller
         $rpmSource = $spectrum['rpm_source'] ?? $rpmResolution['rpm_source'];
 
         $bearingKinematics = null;
+        $matchedPeaks = [];
         try {
-            $bearingKinematics = $kinematicsService->calculateForPreset($bearingModel, $rpm);
+            $bearingKinematics = $kinematicsService->calculateForMachine($machineMeta, $rpm);
+            $peaksForMatch = is_array($spectrum['peaks'] ?? null) && ! empty($spectrum['peaks'])
+                ? $spectrum['peaks']
+                : $rpmResolution['extracted_peaks'];
+            if (! empty($peaksForMatch) && $rpm > 0.0) {
+                $matchedPeaks = $kinematicsService->matchSpectralPeaksForKinematics($peaksForMatch, $bearingKinematics);
+            }
         } catch (\Throwable) {
             // Ignora se o preset não existir
         }
@@ -114,6 +120,7 @@ class IoTNodeApiController extends Controller
             'rpm_source' => $rpmSource,
             'spectrum' => $spectrum,
             'bearing_kinematics' => $bearingKinematics,
+            'matched_peaks' => $matchedPeaks,
             'available_presets' => array_keys($kinematicsService->getPresets()),
         ]);
     }

@@ -262,14 +262,13 @@ class ProcessTelemetryJob implements ShouldQueue
             }
 
             // 4.2 Cinemática de Rolamento & Diagnóstico Prescritivo
-            $bearingPreset = (string) ($machineMeta['bearing_model'] ?? 'skf_6204');
             $matchedPeaks = [];
             if (! empty($detectedPeaks) && $rpmResolution['rpm'] > 0.0) {
                 try {
-                    $matchedPeaks = $kinematicsService->matchSpectralPeaks(
+                    $bearingData = $kinematicsService->calculateForMachine($machineMeta, $rpmResolution['rpm']);
+                    $matchedPeaks = $kinematicsService->matchSpectralPeaksForKinematics(
                         $detectedPeaks,
-                        $rpmResolution['rpm'],
-                        $bearingPreset
+                        $bearingData
                     );
                 } catch (\Throwable) {
                     // Ignora modelo ausente
