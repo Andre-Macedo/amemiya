@@ -68,8 +68,18 @@ class ProcessTelemetryJob implements ShouldQueue
             }
 
             $nodeId = $this->payload['node_id'] ?? null;
-            $node = $gateway->nodes()->where('node_id', $nodeId)->first() ?? $gateway->nodes()->first();
+            if (! is_string($nodeId) || $nodeId === '') {
+                Log::channel('iot_telemetry')->warning("Ref: {$msgId} | Telemetria descartada: node_id ausente.", [
+                    'device_id' => $gateway->device_id,
+                ]);
+
+                return;
+            }
+
+            $node = $gateway->nodes()->where('node_id', $nodeId)->first();
             if (! $node) {
+                Log::channel('iot_telemetry')->warning("Ref: {$msgId} | Telemetria descartada: node_id '{$nodeId}' não pertence ao gateway '{$gateway->device_id}'.");
+
                 return;
             }
 

@@ -10,6 +10,8 @@ use App\Models\Tenant;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Laravel\Sanctum\Sanctum;
+use Modules\IoT\Events\AnomalyDetected;
+use Modules\IoT\Events\SensorDataReceived;
 use Modules\IoT\Jobs\ProcessTelemetryJob;
 use Modules\IoT\Models\IoTDeviceLog;
 use Modules\IoT\Models\IoTGateway;
@@ -271,5 +273,71 @@ class BearingKinematicsAndDiagnosticsTest extends TestCase
         $this->assertSame('accelerometer_fft', $log->iso_evaluation['rpm_source'] ?? null);
         $this->assertContains('BPFO', $matchedFaults);
         $this->assertStringContainsString('Pista Externa', $log->message);
+    }
+
+    public function test_prescriptive_diagnostics_does_not_default_unknown_zone_to_zone_a(): void
+    {
+        $isoService = new ISO20816SeverityService;
+        $diagnostics = new PrescriptiveDiagnosticsService($isoService);
+
+        $isoEval = $isoService->evaluate(null);
+
+        $diagnosis = $diagnostics->generateDiagnosis(
+            isoEvaluation: $isoEval,
+            mlStatus: 'saudavel',
+            mlConfidence: 0.95,
+            tempCelsius: 40.0,
+            matchedPeaks: []
+        );
+
+        $this->assertNull($diagnosis['severity_zone']);
+        $this->assertSame('Não Determinado', $diagnosis['severity_label']);
+        $this->assertStringContainsString('Insuficientes', $diagnosis['root_cause']);
+        $this->assertSame(24, $diagnosis['urgency_hours']);
+    }
+
+    public function test_prescriptive_diagnostics_does_not_flag_normal_1x_peak_as_unbalance_in_zone_a(): void
+    {
+        $isoService = new ISO20816SeverityService;
+        $diagnostics = new PrescriptiveDiagnosticsService($isoService);
+
+        $isoEval = $isoService->evaluate(0.8, 'group_2', 'rigid');
+
+        $diagnosis = $diagnostics->generateDiagnosis(
+            isoEvaluation: $isoEval,
+            mlStatus: 'saudavel',
+            mlConfidence: 0.98,
+            tempCelsius: 42.0,
+            matchedPeaks: [
+                ['fault_match' => '1X_SHAFT', 'amplitude' => 0.15, 'frequency_hz' => 29.2],
+                ['fault_match' => '2X_SHAFT', 'amplitude' => 0.05, 'frequency_hz' => 58.4],
+            ]
+        );
+
+        $this->assertSame('A', $diagnosis['severity_zone']);
+        $this->assertSame('Operação Mecânica Estável', $diagnosis['root_cause']);
+        $this->assertSame(720, $diagnosis['urgency_hours']);
+    }
+
+    public function test_process_telemetry_job_rejects_unknown_node_id_instead_of_assigning_to_first_node(): void
+    {
+        Event::fake([SensorDataReceived::class, AnomalyDetected::class]);
+        MQTT::shouldReceive('connection')->andThrow(new \RuntimeException('Mocked MQTT offline'));
+
+        $payload = [
+            'device_id' => $this->gateway->device_id,
+            'node_id' => 'NODE-INEXISTENTE',
+            'ml_status' => 'desbalanceamento',
+            'confianca' => 0.95,
+            'rms_global' => 0.90,
+            'velocity_rms' => 5.2,
+        ];
+
+        $job = new ProcessTelemetryJob($payload);
+        $job->handle(app(MachineLearningService::class));
+
+        $this->assertSame(0, IoTDeviceLog::count());
+        Event::assertNotDispatched(SensorDataReceived::class);
+        Event::assertNotDispatched(AnomalyDetected::class);
     }
 }

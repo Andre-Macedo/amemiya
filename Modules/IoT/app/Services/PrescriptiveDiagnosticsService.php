@@ -44,8 +44,8 @@ class PrescriptiveDiagnosticsService
         ?float $tempCelsius = null,
         array $matchedPeaks = []
     ): array {
-        $zone = $isoEvaluation['zone'] ?? 'A';
-        $vRms = $isoEvaluation['velocity_rms'] ?? 0.0;
+        $zone = $isoEvaluation['zone'] ?? null;
+        $vRms = $isoEvaluation['velocity_rms'] ?? null;
 
         // 1. Avaliação Térmica
         $thermalStatus = 'normal';
@@ -57,29 +57,39 @@ class PrescriptiveDiagnosticsService
             }
         }
 
-        // 2. Extração de picos de defeito de rolamento
+        // 2. Extração de picos de defeito de rolamento e harmônicos rotacionais relevantes
+        $isIsoDegraded = in_array($zone, ['C', 'D'], true);
+        $isMlAnomaly = ! in_array($mlStatus, [null, 'saudavel', 'normal', 'desligada', 'indeterminado'], true);
+        $rotationalFaultEligible = $isIsoDegraded || $isMlAnomaly;
+
         $hasBpfo = false;
         $hasBpfi = false;
         $hasHigh1X = false;
         $hasHigh2X = false;
 
         foreach ($matchedPeaks as $peak) {
-            $match = $peak['fault_match'] ?? '';
+            $match = $peak['fault_match'];
             if (str_contains($match, 'BPFO')) {
                 $hasBpfo = true;
             } elseif (str_contains($match, 'BPFI')) {
                 $hasBpfi = true;
-            } elseif ($match === '1X_SHAFT') {
+            } elseif ($match === '1X_SHAFT' && $rotationalFaultEligible) {
                 $hasHigh1X = true;
-            } elseif ($match === '2X_SHAFT') {
+            } elseif ($match === '2X_SHAFT' && $rotationalFaultEligible) {
                 $hasHigh2X = true;
             }
         }
 
         // 3. Determinação da Causa-Raiz
-        $rootCause = 'Operação Mecânica Estável';
-        $actions = ['Manter plano de monitoramento periódico por vibração.'];
-        $urgencyHours = 720; // 30 dias
+        if ($zone === null) {
+            $rootCause = 'Dados de Vibração Insuficientes para Diagnóstico';
+            $actions = ['Verificar acoplamento do sensor ADXL345 e transmissão de velocidade RMS (v_rms).'];
+            $urgencyHours = 24;
+        } else {
+            $rootCause = 'Operação Mecânica Estável';
+            $actions = ['Manter plano de monitoramento periódico por vibração.'];
+            $urgencyHours = 720; // 30 dias
+        }
 
         if ($hasBpfo || $mlStatus === 'falha_rolamento_bpfo') {
             $rootCause = 'Defeito na Pista Externa do Rolamento (BPFO)';
@@ -139,11 +149,15 @@ class PrescriptiveDiagnosticsService
             $urgencyHours = min($urgencyHours, 12);
         }
 
-        $summaryText = "Severidade: Zona {$zone} ({$vRms} mm/s) | Causa-Raiz: {$rootCause} | Ação: {$actions[0]}";
+        $severityText = $zone !== null
+            ? "Zona {$zone} ({$vRms} mm/s)"
+            : 'Não Determinada';
+
+        $summaryText = "Severidade: {$severityText} | Causa-Raiz: {$rootCause} | Ação: {$actions[0]}";
 
         return [
             'severity_zone' => $zone,
-            'severity_label' => $isoEvaluation['label'] ?? "Zona {$zone}",
+            'severity_label' => $isoEvaluation['label'] ?? ($zone !== null ? "Zona {$zone}" : 'Não Determinado'),
             'thermal_status' => $thermalStatus,
             'root_cause' => $rootCause,
             'confidence' => (float) max(0.60, $mlConfidence ?? 0.60),
