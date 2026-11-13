@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\IoT\Services;
 
+use Illuminate\Support\Carbon;
+
 class TelemetryPayloadValidator
 {
     /**
@@ -55,9 +57,21 @@ class TelemetryPayloadValidator
 
         if (isset($payload['timestamp'])) {
             $timestamp = $payload['timestamp'];
-            if (! $this->isFiniteNumber($timestamp) || (float) $timestamp < 0.0) {
+            $parsedEpoch = null;
+
+            if ($this->isFiniteNumber($timestamp)) {
+                $parsedEpoch = (float) $timestamp;
+            } elseif (is_string($timestamp) && trim($timestamp) !== '') {
+                try {
+                    $parsedEpoch = (float) Carbon::parse($timestamp)->timestamp;
+                } catch (\Throwable) {
+                    $parsedEpoch = null;
+                }
+            }
+
+            if ($parsedEpoch === null || $parsedEpoch < 0.0) {
                 $errors[] = 'timestamp inválido';
-            } elseif ((float) $timestamp > now()->addDay()->timestamp) {
+            } elseif ($parsedEpoch > now()->addDay()->timestamp) {
                 $errors[] = 'timestamp no futuro além da tolerância';
             }
         }

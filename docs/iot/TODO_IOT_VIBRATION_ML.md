@@ -234,3 +234,12 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
   - [ ] Consolidar conector da Sonda Externa (`J_PROBE`: 8 pinos GX16-8 com `INMP441` ou 5 pinos caso opcional acústico seja removido) com pull-ups de $4{,}7\text{ k}\Omega$.
   - [ ] Manter periféricos de bancada: Buzzer (`J_BUZ`), 3 LEDs de status (`J_LEDS`: Normal, Alerta, Falha) e conector OLED (`J_OLED`).
   - [ ] Executar checagem de regras de design (DRC) e exportar os arquivos Gerber/Drill para fabricação em placa compacta 100% DIP.
+
+---
+
+### ETAPA 9: Roadmap v3 (Automação em Malha Fechada com CLP / ESP32 PLC Shield)
+> *Evolução futura pós-TCC para controle ativo da bancada e integração industrial 24V DC.*
+- [ ] **Integração com CLP ou ESP32 com Shield de CLP (24V DC):**
+  - [ ] Leitura direta do tacômetro óptico industrial `BG1` via entrada rápida de contador (HSC 24V PNP/NPN) no CLP/Shield para *ground truth* contínuo em malha fechada.
+  - [ ] Controle automatizado de velocidade do motor (substituindo o ajuste manual do dimmer `TC1` por saída analógica 0–10V / PWM / inversor de frequência comandado pelo CLP).
+  - [ ] Automação de rampas de ensaio (varredura automática em 600, 900, 1200, 1500 e 1750 RPM) para geração de curvas de validação metrológica sem intervenção manual.

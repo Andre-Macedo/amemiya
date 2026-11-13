@@ -10,6 +10,7 @@ use App\Models\Tenant;
 use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
+use Laravel\Sanctum\Sanctum;
 use Mockery;
 use Modules\IoT\Jobs\ProcessTelemetryJob;
 use Modules\IoT\Models\IoTDeviceLog;
@@ -20,6 +21,7 @@ use Modules\IoT\Services\MachineLearningService;
 use Modules\IoT\Services\MqttCommandPublisher;
 use Modules\System\Models\Machine;
 use Modules\System\Models\Station;
+use Modules\System\Models\User;
 use PhpMqtt\Client\Contracts\MqttClient;
 use PhpMqtt\Client\Facades\MQTT;
 use Tests\TestCase;
@@ -222,5 +224,65 @@ class TelemetryPipelineHardeningTest extends TestCase
         $this->assertSame('offline', $this->gateway->fresh()->status);
         $this->assertSame('offline', $this->node->fresh()->status);
         $this->assertSame('active', $neverSeenNode->fresh()->status);
+    }
+
+    public function test_process_telemetry_persists_enriched_iot_sensor_data_and_exposes_history_api(): void
+    {
+        MQTT::shouldReceive('connection')->andThrow(new Exception('Mocked MQTT offline'));
+
+        $this->node->machine->update([
+            'metadata' => [
+                'iso_group' => 'small_machine',
+                'foundation_type' => 'rigid',
+                'nominal_rpm' => 1725,
+                'bearing_model' => '6203',
+            ],
+        ]);
+
+        $payload = [
+            'device_id' => $this->gateway->device_id,
+            'node_id' => $this->node->node_id,
+            'msg_id' => 1042,
+            'rpm_estimated' => 1725.0,
+            'rpm_source' => 'accelerometer_firmware',
+            'rms_global' => 5.85,
+            'velocity_rms' => 7.40,
+            'temp_celsius' => 58.2,
+            'battery_voltage' => 3.88,
+            'time_domain' => [
+                'rms_x' => 4.39,
+                'rms_y' => 4.80,
+                'rms_z' => 5.26,
+                'kurt_x' => 8.6,
+                'kurt_y' => 9.1,
+                'kurt_z' => 7.8,
+            ],
+            'peaks' => [
+                ['freq_hz' => 28.75, 'amp_g' => 0.42],
+                ['freq_hz' => 87.77, 'amp_g' => 1.85],
+            ],
+            'ml_status' => 'falha_confirmada',
+            'ml_confidence' => 0.94,
+            'timestamp' => now()->toIso8601String(),
+        ];
+
+        (new ProcessTelemetryJob($payload))->handle(app(MachineLearningService::class));
+
+        $user = User::factory()->create(['tenant_id' => $this->tenant->id]);
+        Sanctum::actingAs($user);
+
+        $response = $this->withHeader('X-Tenant-ID', $this->tenant->id)
+            ->getJson("/api/v1/iot-history?node_id={$this->node->node_id}&period=24h");
+
+        $response->assertStatus(200)
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.node_id', $this->node->id)
+            ->assertJsonPath('data.0.probe_temperature', 58.2)
+            ->assertJsonPath('data.0.rpm_measured', 1725)
+            ->assertJsonPath('data.0.velocity_rms', 7.4)
+            ->assertJsonPath('data.0.rms_x', 4.39)
+            ->assertJsonPath('data.0.iso_zone', 'D')
+            ->assertJsonPath('data.0.battery_voltage', 3.88)
+            ->assertJsonPath('data.0.root_cause', 'Desgaste / Falha em Rolamento (possível região: pista externa (BPFO))');
     }
 }

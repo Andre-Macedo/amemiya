@@ -43,6 +43,7 @@ class MachineForm
                         Select::make('metadata.bearing_model')
                             ->label('Rolamento do Mancal')
                             ->options([
+                                'skf_6203' => 'SKF 6203 (8 esferas - Motor 1/4 CV)',
                                 'skf_6204' => 'SKF 6204 (8 esferas)',
                                 'ucp_204' => 'UCP 204 - Mancal Pedestal',
                                 'skf_6205' => 'SKF 6205 (9 esferas)',

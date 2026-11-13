@@ -171,13 +171,14 @@ class ProcessTelemetryJob implements ShouldQueue
 
             $rawRpm = isset($this->payload['rpm']) ? (float) $this->payload['rpm'] : null;
             $explicitRpm = ($rawRpm !== null && $declaredRpmSource !== 'accelerometer_firmware') ? $rawRpm : null;
+            $payloadEstimatedRpm = isset($this->payload['rpm_estimated'])
+                ? (float) $this->payload['rpm_estimated']
+                : (isset($this->payload['features']['rpm_estimated'])
+                    ? (float) $this->payload['features']['rpm_estimated']
+                    : (isset($this->payload['features']['rpm']) ? (float) $this->payload['features']['rpm'] : null));
             $firmwareEstimatedRpm = $declaredRpmSource === 'accelerometer_firmware'
-                ? $rawRpm
-                : (isset($this->payload['rpm_estimated'])
-                    ? (float) $this->payload['rpm_estimated']
-                    : (isset($this->payload['features']['rpm_estimated'])
-                        ? (float) $this->payload['features']['rpm_estimated']
-                        : (isset($this->payload['features']['rpm']) ? (float) $this->payload['features']['rpm'] : null)));
+                ? ($rawRpm ?? $payloadEstimatedRpm)
+                : $payloadEstimatedRpm;
 
             $sampleRate = (float) ($this->payload['sample_rate'] ?? $this->payload['spectrum']['sample_rate'] ?? 3200);
             $rawPeaks = is_array($this->payload['peaks'] ?? null) ? $this->payload['peaks'] : [];
@@ -230,6 +231,7 @@ class ProcessTelemetryJob implements ShouldQueue
                     'fft_x' => $this->payload['fft_x'] ?? $this->payload['features']['fft_x'] ?? [],
                     'fft_y' => $this->payload['fft_y'] ?? $this->payload['features']['fft_y'] ?? [],
                     'fft_z' => $this->payload['fft_z'] ?? $this->payload['features']['fft_z'] ?? [],
+                    'envelope_x' => $this->payload['envelope_x'] ?? $this->payload['features']['envelope_x'] ?? [],
                     'peaks' => $detectedPeaks,
                     'rpm' => $rpm,
                     'rpm_source' => $rpmResolution['rpm_source'],
@@ -307,28 +309,40 @@ class ProcessTelemetryJob implements ShouldQueue
             }
             $node->update($nodeUpdateData);
 
+            $measuredAtCarbon = now();
+            if (isset($this->payload['timestamp'])) {
+                $rawTs = $this->payload['timestamp'];
+                if (is_numeric($rawTs) && (float) $rawTs > 0) {
+                    $measuredAtCarbon = Carbon::createFromTimestamp((int) $rawTs);
+                } elseif (is_string($rawTs) && trim($rawTs) !== '') {
+                    try {
+                        $measuredAtCarbon = Carbon::parse($rawTs);
+                    } catch (\Throwable) {
+                        $measuredAtCarbon = now();
+                    }
+                }
+            }
+
             $dto = new TelemetryDataDTO(
                 tenantId: $gateway->tenant_id,
                 machineId: $node->machine_id,
                 nodeId: $node->node_id,
-                msgId: null,
+                msgId: isset($this->payload['msg_id']) && is_numeric($this->payload['msg_id']) ? (int) $this->payload['msg_id'] : null,
                 rpm: $rpm,
                 rmsGlobal: (float) ($this->payload['rms_global'] ?? 0),
                 timeDomain: [
-                    'rms_x' => (float) ($this->payload['rms_x'] ?? $this->payload['features']['x_rms'] ?? 0),
-                    'rms_y' => (float) ($this->payload['rms_y'] ?? $this->payload['features']['y_rms'] ?? 0),
-                    'rms_z' => (float) ($this->payload['rms_z'] ?? $this->payload['features']['z_rms'] ?? 0),
-                    'kurt_x' => (float) ($this->payload['kurt_x'] ?? $this->payload['features']['x_kurtosis'] ?? 0),
-                    'kurt_y' => (float) ($this->payload['kurt_y'] ?? $this->payload['features']['y_kurtosis'] ?? 0),
-                    'kurt_z' => (float) ($this->payload['kurt_z'] ?? $this->payload['features']['z_kurtosis'] ?? 0),
+                    'rms_x' => (float) ($this->payload['rms_x'] ?? $this->payload['time_domain']['rms_x'] ?? $this->payload['features']['x_rms'] ?? 0),
+                    'rms_y' => (float) ($this->payload['rms_y'] ?? $this->payload['time_domain']['rms_y'] ?? $this->payload['features']['y_rms'] ?? 0),
+                    'rms_z' => (float) ($this->payload['rms_z'] ?? $this->payload['time_domain']['rms_z'] ?? $this->payload['features']['z_rms'] ?? 0),
+                    'kurt_x' => (float) ($this->payload['kurt_x'] ?? $this->payload['time_domain']['kurt_x'] ?? $this->payload['features']['x_kurtosis'] ?? 0),
+                    'kurt_y' => (float) ($this->payload['kurt_y'] ?? $this->payload['time_domain']['kurt_y'] ?? $this->payload['features']['y_kurtosis'] ?? 0),
+                    'kurt_z' => (float) ($this->payload['kurt_z'] ?? $this->payload['time_domain']['kurt_z'] ?? $this->payload['features']['z_kurtosis'] ?? 0),
                 ],
                 micRms: (float) ($this->payload['mic_rms'] ?? $this->payload['features']['mic_rms'] ?? 0),
-                features: $this->payload['features'] ?? [],
+                features: is_array($this->payload['features'] ?? null) ? $this->payload['features'] : [],
                 mlStatus: $mlStatus,
                 mlConfidence: $mlConfidence,
-                timestamp: isset($this->payload['timestamp']) && $this->payload['timestamp'] > 0
-                    ? Carbon::createFromTimestamp($this->payload['timestamp'])->toIso8601String()
-                    : now()->toIso8601String(),
+                timestamp: $measuredAtCarbon->toIso8601String(),
                 cloudMlStatus: $cloudMlStatus,
                 cloudMlConfidence: $cloudMlConfidence,
                 velocityRms: $velocityRms,
@@ -396,9 +410,7 @@ class ProcessTelemetryJob implements ShouldQueue
                     'features' => $this->payload['features'] ?? [],
                     'sent_command' => $lastSentCommand,
                     'message' => "Disparo de IA: Status Edge [{$mlStatus}] (".round($mlConfidence * 100, 1).'%)'.($reanalyzed ? " -> Nuvem [{$cloudMlStatus}] (".round((float) $cloudMlConfidence * 100, 1).'%)' : '').$isoText." | Causa-Raiz: {$prescriptive['root_cause']}",
-                    'measured_at' => isset($this->payload['timestamp']) && $this->payload['timestamp'] > 0
-                        ? Carbon::createFromTimestamp($this->payload['timestamp'])
-                        : now(),
+                    'measured_at' => $measuredAtCarbon,
                 ]);
             }
 

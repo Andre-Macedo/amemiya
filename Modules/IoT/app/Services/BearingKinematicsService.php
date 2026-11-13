@@ -18,6 +18,14 @@ class BearingKinematicsService
      * @var array<string, array{name: string, manufacturer: string, n: int, d: float, D: float, alpha: float}>
      */
     protected const PRESETS = [
+        'skf_6203' => [
+            'name' => 'SKF 6203',
+            'manufacturer' => 'SKF',
+            'n' => 8,
+            'd' => 6.75,
+            'D' => 28.5,
+            'alpha' => 0.0,
+        ],
         'skf_6204' => [
             'name' => 'SKF 6204',
             'manufacturer' => 'SKF',
@@ -86,6 +94,15 @@ class BearingKinematicsService
     public function calculateForPreset(string $presetKey, float $rpm): array
     {
         $normalizedKey = strtolower(str_replace(['-', ' '], '_', $presetKey));
+        $aliases = [
+            '6203' => 'skf_6203',
+            '6204' => 'skf_6204',
+            '6205' => 'skf_6205',
+            '6304' => 'skf_6304',
+            '2206' => 'skf_2206',
+            'ucp204' => 'ucp_204',
+        ];
+        $normalizedKey = $aliases[$normalizedKey] ?? $normalizedKey;
 
         if (! isset(self::PRESETS[$normalizedKey])) {
             throw new InvalidArgumentException("Modelo de rolamento '{$presetKey}' não encontrado no catálogo.");
@@ -281,7 +298,7 @@ class BearingKinematicsService
     /**
      * Compara uma lista de picos espectrais contra um mapa cinemático pré-calculado (preset ou customizado).
      *
-     * @param  array<int, array{frequency_hz: float, amplitude: float}>  $detectedPeaks
+     * @param  array<int, array{frequency_hz?: float|int, freq_hz?: float|int, amplitude?: float|int, amp_g?: float|int}>  $detectedPeaks
      * @param  array<string, mixed>  $bearingData
      * @return array<int, array{
      *     frequency_hz: float,
@@ -322,8 +339,8 @@ class BearingKinematicsService
         $matches = [];
 
         foreach ($detectedPeaks as $peak) {
-            $freq = (float) $peak['frequency_hz'];
-            $amp = (float) $peak['amplitude'];
+            $freq = (float) ($peak['frequency_hz'] ?? $peak['freq_hz'] ?? 0.0);
+            $amp = (float) ($peak['amplitude'] ?? $peak['amp_g'] ?? 0.0);
 
             if ($freq <= 0.0) {
                 continue;
@@ -427,7 +444,7 @@ class BearingKinematicsService
     /**
      * Estima a rotação do eixo (RPM) a partir de picos de aceleração via pontuação harmônica (1X + 2X + 3X).
      *
-     * @param  array<int, array{frequency_hz?: float|int, amplitude?: float|int}>  $peaks
+     * @param  array<int, array{frequency_hz?: float|int, freq_hz?: float|int, amplitude?: float|int, amp_g?: float|int}>  $peaks
      * @return ?array{
      *     rpm: float,
      *     shaft_frequency_hz: float,
@@ -452,8 +469,8 @@ class BearingKinematicsService
         $validPeaks = [];
 
         foreach ($peaks as $peak) {
-            $freq = (float) ($peak['frequency_hz'] ?? 0.0);
-            $amp = (float) ($peak['amplitude'] ?? 0.0);
+            $freq = (float) ($peak['frequency_hz'] ?? $peak['freq_hz'] ?? 0.0);
+            $amp = (float) ($peak['amplitude'] ?? $peak['amp_g'] ?? 0.0);
 
             if ($freq <= 0.0 || $amp < $minAmplitude) {
                 continue;
@@ -538,7 +555,7 @@ class BearingKinematicsService
     /**
      * Resolve o RPM efetivo priorizando medição direta, inferência pelo acelerômetro e fallback nominal.
      *
-     * @param  array<int, array{frequency_hz?: float|int, amplitude?: float|int}>  $peaks
+     * @param  array<int, array{frequency_hz?: float|int, freq_hz?: float|int, amplitude?: float|int, amp_g?: float|int}>  $peaks
      * @param  array<int, float|int>  $fftMagnitudes
      * @return array{
      *     rpm: float,

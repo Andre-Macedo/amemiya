@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Modules\IoT\Http\Requests\QueryIoTHistoryRequest;
 use Modules\IoT\Http\Resources\IoTHistoryApiResource;
+use Modules\IoT\Models\IoTNode;
 use Modules\IoT\Models\IoTSensorData;
 
 class IoTHistoryApiController extends Controller
@@ -20,7 +21,12 @@ class IoTHistoryApiController extends Controller
         $query = IoTSensorData::query();
 
         if ($request->filled('node_id')) {
-            $query->where('node_id', $request->validated('node_id'));
+            $nodeFilter = (string) $request->validated('node_id');
+            $resolvedId = IoTNode::where('id', $nodeFilter)
+                ->orWhere('node_id', $nodeFilter)
+                ->value('id');
+
+            $query->where('node_id', $resolvedId ?? $nodeFilter);
         }
 
         if ($request->filled('period')) {

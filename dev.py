@@ -794,19 +794,31 @@ def cmd_iot_mock(args):
 
     profiles = {
         "healthy": {
-            "rpm_base": 1750, "rms_global": 1.20, "velocity_rms": 1.8,
+            "rpm_base": 1725, "rms_global": 0.42, "velocity_rms": 1.15,
             "iso_zone": "A", "temp_base": 36.5, "mic_rms": 0.040,
             "ml_status": "saudavel", "ml_confidence": 0.98,
             "kurt_x": 2.9, "kurt_y": 3.0, "kurt_z": 2.8
         },
         "defect_bearing": {
-            "rpm_base": 1740, "rms_global": 5.85, "velocity_rms": 7.4,
+            "rpm_base": 1725, "rms_global": 5.85, "velocity_rms": 7.40,
             "iso_zone": "D", "temp_base": 58.2, "mic_rms": 0.320,
-            "ml_status": "falha", "ml_confidence": 0.94,
+            "ml_status": "falha_confirmada", "ml_confidence": 0.94,
             "kurt_x": 8.6, "kurt_y": 9.1, "kurt_z": 7.8
         },
+        "unbalance": {
+            "rpm_base": 1725, "rms_global": 3.40, "velocity_rms": 4.85,
+            "iso_zone": "C", "temp_base": 44.0, "mic_rms": 0.110,
+            "ml_status": "desbalanceamento", "ml_confidence": 0.92,
+            "kurt_x": 3.2, "kurt_y": 3.3, "kurt_z": 3.1
+        },
+        "misalignment": {
+            "rpm_base": 1725, "rms_global": 3.80, "velocity_rms": 5.20,
+            "iso_zone": "C", "temp_base": 49.5, "mic_rms": 0.140,
+            "ml_status": "falha_confirmada", "ml_confidence": 0.91,
+            "kurt_x": 3.8, "kurt_y": 4.0, "kurt_z": 4.2
+        },
         "overheating": {
-            "rpm_base": 1720, "rms_global": 2.40, "velocity_rms": 3.1,
+            "rpm_base": 1720, "rms_global": 2.40, "velocity_rms": 3.10,
             "iso_zone": "B", "temp_base": 82.5, "mic_rms": 0.085,
             "ml_status": "alerta", "ml_confidence": 0.89,
             "kurt_x": 3.4, "kurt_y": 3.6, "kurt_z": 3.2
@@ -834,34 +846,128 @@ def cmd_iot_mock(args):
         print(f"Status Broker: {'CONECTADO (' + args.host + ':' + str(args.port) + ')' if connected else 'OFFLINE / DRY-RUN'}")
         print(f"Publicando {args.count} pacotes com intervalo de {args.interval}s...\n")
 
+    sample_rate = 3200
+    n_bins = 512
+    df = (sample_rate / 2.0) / n_bins  # 3.125 Hz por bin
+
     for i in range(args.count):
-        noise = random.uniform(-0.05, 0.05)
-        now_iso = datetime.now(timezone.utc).isoformat()
+        noise = random.uniform(-0.04, 0.04)
+        base_rpm = args.rpm if getattr(args, "rpm", None) is not None else prof["rpm_base"]
+        rpm_val = round(float(base_rpm) + random.uniform(-6.0, 6.0), 1)
+        f_rot = rpm_val / 60.0
+
+        # Multiplicadores cinemáticos exatos do rolamento 6203 (Bancada M1)
+        f_bpfo = round(3.0528 * f_rot, 2)
+        f_bpfi = round(4.9472 * f_rot, 2)
+        f_bsf = round(1.9922 * f_rot, 2)
+
+        if args.profile == "defect_bearing":
+            raw_peaks = [
+                (round(f_rot, 2), round(0.42 * (1.0 + noise), 3)),
+                (f_bpfo, round(1.85 * (1.0 + noise), 3)),
+                (round(2.0 * f_bpfo, 2), round(0.92 * (1.0 + noise), 3)),
+                (f_bpfi, round(0.64 * (1.0 + noise), 3)),
+                (f_bsf, round(0.38 * (1.0 + noise), 3)),
+            ]
+        elif args.profile == "unbalance":
+            raw_peaks = [
+                (round(f_rot, 2), round(2.15 * (1.0 + noise), 3)),
+                (round(2.0 * f_rot, 2), round(0.32 * (1.0 + noise), 3)),
+            ]
+        elif args.profile == "misalignment":
+            raw_peaks = [
+                (round(f_rot, 2), round(0.85 * (1.0 + noise), 3)),
+                (round(2.0 * f_rot, 2), round(1.95 * (1.0 + noise), 3)),
+                (round(3.0 * f_rot, 2), round(0.74 * (1.0 + noise), 3)),
+            ]
+        else:
+            raw_peaks = [
+                (round(f_rot, 2), round(0.28 * (1.0 + noise), 3)),
+                (round(2.0 * f_rot, 2), round(0.09 * (1.0 + noise), 3)),
+            ]
+
+        peaks = [
+            {"frequency_hz": f_hz, "amplitude": amp_g, "freq_hz": f_hz, "amp_g": amp_g}
+            for f_hz, amp_g in raw_peaks
+        ]
+
+        fft_x = [round(random.uniform(0.005, 0.022), 4) for _ in range(n_bins)]
+        envelope_x = [round(random.uniform(0.003, 0.015), 4) for _ in range(n_bins)]
+        for pk in peaks:
+            bin_idx = int(round(pk["freq_hz"] / df))
+            if 1 <= bin_idx < n_bins - 1:
+                amp = pk["amp_g"]
+                fft_x[bin_idx] = round(max(fft_x[bin_idx], amp), 4)
+                fft_x[bin_idx - 1] = round(max(fft_x[bin_idx - 1], amp * 0.45), 4)
+                fft_x[bin_idx + 1] = round(max(fft_x[bin_idx + 1], amp * 0.45), 4)
+                env_amp = amp * (1.25 if pk["freq_hz"] > 2.5 * f_rot else 0.55)
+                envelope_x[bin_idx] = round(max(envelope_x[bin_idx], env_amp), 4)
+
+        rms_global = round(prof["rms_global"] * (1.0 + noise), 3)
+        velocity_rms = round(prof["velocity_rms"] * (1.0 + noise), 2)
+        rms_x = round(rms_global * 0.75, 3)
+        rms_y = round(rms_global * 0.82, 3)
+        rms_z = round(rms_global * 0.90, 3)
+        kurt_x = round(prof["kurt_x"] + random.uniform(-0.2, 0.2), 2)
+        kurt_y = round(prof["kurt_y"] + random.uniform(-0.2, 0.2), 2)
+        kurt_z = round(prof["kurt_z"] + random.uniform(-0.2, 0.2), 2)
+        mic_rms = round(prof["mic_rms"] * (1.0 + noise), 4)
+        temp_c = round(prof["temp_base"] + random.uniform(-0.4, 0.4), 2)
+        vbat = round(3.88 + random.uniform(-0.02, 0.02), 2)
+
         payload = {
             "tenant_id": args.tenant,
             "machine_id": args.machine,
             "device_id": args.gateway,
             "node_id": args.node,
             "msg_id": 1000 + i,
-            "rpm": int(prof["rpm_base"] + random.randint(-15, 15)),
-            "rms_global": round(prof["rms_global"] * (1.0 + noise), 3),
-            "velocity_rms": round(prof["velocity_rms"] * (1.0 + noise), 2),
+            "rpm_estimated": rpm_val,
+            "rpm_source": "accelerometer_firmware",
+            "sample_rate": sample_rate,
+            "rms_global": rms_global,
+            "velocity_rms": velocity_rms,
             "iso_zone": prof["iso_zone"],
-            "temp_celsius": round(prof["temp_base"] + random.uniform(-0.4, 0.4), 2),
-            "battery_voltage": round(3.68 + random.uniform(-0.02, 0.02), 2),
+            "temp_celsius": temp_c,
+            "battery_voltage": vbat,
+            "rms_x": rms_x,
+            "rms_y": rms_y,
+            "rms_z": rms_z,
+            "kurt_x": kurt_x,
+            "kurt_y": kurt_y,
+            "kurt_z": kurt_z,
             "time_domain": {
-                "rms_x": round(prof["rms_global"] * 0.7 * (1.0 + noise), 3),
-                "kurt_x": round(prof["kurt_x"] + random.uniform(-0.2, 0.2), 2),
-                "rms_y": round(prof["rms_global"] * 0.8 * (1.0 + noise), 3),
-                "kurt_y": round(prof["kurt_y"] + random.uniform(-0.2, 0.2), 2),
-                "rms_z": round(prof["rms_global"] * 0.9 * (1.0 + noise), 3),
-                "kurt_z": round(prof["kurt_z"] + random.uniform(-0.2, 0.2), 2)
+                "rms_x": rms_x,
+                "kurt_x": kurt_x,
+                "rms_y": rms_y,
+                "kurt_y": kurt_y,
+                "rms_z": rms_z,
+                "kurt_z": kurt_z,
             },
-            "mic_rms": round(prof["mic_rms"] * (1.0 + noise), 4),
-            "features": [round(prof["rms_global"], 2), round(prof["kurt_x"], 2), round(prof["mic_rms"], 3)],
+            "mic_rms": mic_rms,
+            "peaks": peaks,
+            "spectrum": {
+                "sample_rate": sample_rate,
+                "rpm": int(round(rpm_val)),
+                "rpm_source": "accelerometer_firmware",
+                "peaks": peaks,
+                "fft_x": fft_x,
+                "envelope_x": envelope_x,
+            },
+            "features": {
+                "v_rms": velocity_rms,
+                "x_rms": rms_x,
+                "y_rms": rms_y,
+                "z_rms": rms_z,
+                "x_kurtosis": kurt_x,
+                "y_kurtosis": kurt_y,
+                "z_kurtosis": kurt_z,
+                "mic_rms": mic_rms,
+                "rpm_estimated": rpm_val,
+                "rpm_source": "accelerometer_firmware",
+            },
             "ml_status": prof["ml_status"],
             "ml_confidence": prof["ml_confidence"],
-            "timestamp": now_iso
+            "timestamp": int(time.time()),
         }
         messages.append(payload)
 
@@ -1610,7 +1716,8 @@ def main():
 
     # iot:mock
     p_imock = subparsers.add_parser("iot:mock", parents=[common_parser], help="Publica telemetria MQTT sintética para teste do monitor")
-    p_imock.add_argument("--profile", choices=["healthy", "defect_bearing", "overheating"], default="healthy", help="Perfil de falha física")
+    p_imock.add_argument("--profile", choices=["healthy", "defect_bearing", "unbalance", "misalignment", "overheating"], default="healthy", help="Perfil de falha física")
+    p_imock.add_argument("--rpm", type=float, default=None, help="Rotação base simulada em RPM (ex: 1725)")
     p_imock.add_argument("--node", default="node-01", help="ID do nó IoT sensor")
     p_imock.add_argument("--gateway", default="gw-01", help="ID do gateway intermediário")
     p_imock.add_argument("--machine", default="bancada-m1", help="ID da máquina monitorada")

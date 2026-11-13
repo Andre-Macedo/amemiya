@@ -22,7 +22,7 @@ class QueryIoTHistoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'node_id' => ['nullable', 'string', 'exists:iot_nodes,id'],
+            'node_id' => ['nullable', 'string'],
             'period' => ['nullable', 'string', 'in:1h,6h,24h,7d'],
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date'],

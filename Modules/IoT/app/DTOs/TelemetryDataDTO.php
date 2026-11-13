@@ -22,7 +22,7 @@ class TelemetryDataDTO
      */
     public function __construct(
         public string $tenantId,
-        public string $machineId,
+        public ?string $machineId,
         public string $nodeId,
         public ?int $msgId,
         public ?int $rpm,

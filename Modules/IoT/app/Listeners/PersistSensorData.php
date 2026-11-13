@@ -37,6 +37,29 @@ class PersistSensorData
                 return;
             }
 
+            $enrichedFeatures = $dto->features;
+            if ($dto->velocityRms !== null) {
+                $enrichedFeatures['velocity_rms'] ??= $dto->velocityRms;
+            }
+            if ($dto->isoZone !== null) {
+                $enrichedFeatures['iso_zone'] ??= $dto->isoZone;
+            }
+            if ($dto->tempCelsius !== null) {
+                $enrichedFeatures['probe_temperature'] ??= $dto->tempCelsius;
+                $enrichedFeatures['temperature'] ??= $dto->tempCelsius;
+            }
+            if ($dto->rpm !== null) {
+                $enrichedFeatures['rpm'] ??= $dto->rpm;
+            }
+            if ($dto->batteryVoltage !== null) {
+                $enrichedFeatures['battery_voltage'] ??= $dto->batteryVoltage;
+                $enrichedFeatures['vbat_mv'] ??= round($dto->batteryVoltage * 1000.0, 1);
+            }
+            if (is_array($dto->prescriptiveDiagnosis)) {
+                $enrichedFeatures['root_cause'] ??= $dto->prescriptiveDiagnosis['root_cause'] ?? null;
+                $enrichedFeatures['confirmation_source'] ??= $dto->prescriptiveDiagnosis['confirmation_source'] ?? null;
+            }
+
             IoTSensorData::create([
                 'tenant_id' => $dto->tenantId,
                 'node_id' => $node->id, // Usar o ULID interno
@@ -51,7 +74,7 @@ class PersistSensorData
                 'kurt_z' => $dto->timeDomain['kurt_z'] ?? null,
                 'mic_rms' => $dto->micRms,
                 'temp_celsius' => $dto->tempCelsius,
-                'features' => $dto->features,
+                'features' => $enrichedFeatures,
                 'ml_status' => $dto->mlStatus,
                 'ml_confidence' => $dto->mlConfidence,
                 'cloud_ml_status' => $dto->cloudMlStatus,
