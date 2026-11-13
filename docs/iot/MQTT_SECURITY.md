@@ -4,56 +4,59 @@ Este documento descreve as configurações necessárias para garantir a integrid
 
 ## 1. Configuração do Broker (Mosquitto)
 
-Para garantir que os dispositivos (ESP32) se conectem de forma segura e resiliente, o arquivo `mosquitto.conf` deve conter:
+> **Estado atual em `.docker/mosquitto/config/mosquitto.conf`:** `allow_anonymous false` e `password_file` já estão ativos; o listener TLS (`8883`) e `acl_file` constam como pendências de endurecimento (IEC 62443) para substituir a porta `1883` em texto claro.
+
+Para garantir que os dispositivos (ESP32) se conectem de forma segura e isolada, o arquivo `mosquitto.conf` alvo deve conter:
 
 ```conf
 # Persistência para suportar QoS 1 e clean_session=false
 persistence true
 persistence_location /mosquitto/data/
 
-# Desabilitar acesso anônimo
+# Desabilitar acesso anônimo e isolar tópicos
 allow_anonymous false
 password_file /mosquitto/config/password_file
 acl_file /mosquitto/config/acl_file
 
 # Logs para auditoria
-log_dest file /mosquitto/log/mosquitto.log
-log_type error
-log_type warning
-log_type notice
-log_type information
+log_dest stdout
 ```
 
 ## 2. Isolamento de Tenants via ACL (Access Control List)
 
-Para impedir a injeção cruzada de dados, cada Gateway deve ter um usuário próprio e permissão de publicação restrita aos seus tópicos.
+Para impedir a injeção cruzada de dados entre gateways, cada Gateway deve ter um usuário próprio e permissão restrita ao seu prefixo de tópico (`v1/gateways/<device_id>/nodes/+`).
 
 Exemplo de `acl_file`:
 
 ```conf
-# Admin do Backend (Pode ler tudo para a Bridge)
+# Admin do Backend (Bridge Laravel lê telemetria e publica comandos)
 user amemiya-backend
-topic read sensors/#
+topic read v1/gateways/+/nodes/+/telemetry
+topic read sensors/+/telemetry
+topic write v1/gateways/+/nodes/+/commands
 
 # Gateway do Cliente A
 user gw_cliente_a
-topic write sensors/vibration/telemetry
-topic write sensors/acoustic/telemetry
+topic write v1/gateways/GW_CLIENTE_A/nodes/+/telemetry
+topic read v1/gateways/GW_CLIENTE_A/nodes/+/commands
 
 # Gateway do Cliente B
 user gw_cliente_b
-topic write sensors/vibration/telemetry
+topic write v1/gateways/GW_CLIENTE_B/nodes/+/telemetry
+topic read v1/gateways/GW_CLIENTE_B/nodes/+/commands
 ```
 
 *Nota: No nível do Laravel, o `ProcessTelemetryJob` valida o `device_id` contra o `tenant_id` no banco de dados, servindo como uma segunda camada de proteção.*
 
 ## 3. Configurações do Firmware (ESP32)
 
-Para garantir que nenhum dado seja perdido em caso de instabilidade de rede:
+> **Nota sobre estado atual do código:** o daemon `MqttBridge` atual assina com **QoS `0`**. A migração para QoS `1`, `clean_session = false` e `LWT` integra o roadmap de endurecimento IoT.
 
-1.  **QoS 1 (At Least Once):** Garante que o Broker receba a mensagem. O dispositivo deve aguardar o `PUBACK`.
-2.  **Clean Session = false:** Ao reconectar com o mesmo `client_id`, o Broker manterá as inscrições e mensagens pendentes para aquele dispositivo.
-3.  **LWT (Last Will and Testament):** Configurar uma mensagem de "offline" no tópico `sensors/[device_id]/status` para que o sistema saiba quando um gateway caiu.
+Para garantir confiabilidade em instabilidade de rede:
+
+1.  **QoS 1 (At Least Once):** Garante entrega ao Broker (`PUBACK`).
+2.  **Clean Session = false:** Mantém inscrições e mensagens pendentes de retorno após reconexão.
+3.  **LWT (Last Will and Testament):** Publicar status `"offline"` em `v1/gateways/[device_id]/status` em queda abrupta, complementando o *watchdog* de `last_seen_at` no backend.
 
 ## 4. Pipeline de Ingestão Resiliente
 

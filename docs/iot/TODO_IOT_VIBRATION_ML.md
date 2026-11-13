@@ -6,7 +6,7 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
 
 ## 📚 Base Teórica e Referências Acadêmicas
 * **HardwareX (2024)** — *Low cost MEMS accelerometer and microphone based condition monitoring sensor, with LoRa* (M. O. Jakobsen): Valida a arquitetura de baixo custo para mancais industriais. Alerta na pág. 2 que microfones acústicos no ar sofrem severa interferência de ruído de fundo e distância em ambiente fabril real.
-* **Auditoria de Decisão Amemiya (2024/2026)** — Avaliação das 500 árvores do modelo especialista real (`modelo_xgboost_especialista.json`): O acelerômetro ADXL345 concentrou **99,70%** da relevância diagnóstica, enquanto o microfone INMP441 respondeu por apenas **0,30%**, justificando sua remoção física em prol de vedação IP65/IP67 e robustez a ruído de chão de fábrica.
+* **Auditoria de Decisão Amemiya (2024/2026)** — Avaliação das 500 árvores do modelo especialista real (`modelo_xgboost_especialista.json`): O acelerômetro ADXL345 concentrou **99,70%** da relevância diagnóstica, enquanto o microfone INMP441 respondeu por apenas **0,30%** (mantido como **opcional / decisão pendente** em favor de vedação IP54+ e robustez a ruído fabril).
 * **Janssens et al. (IEEE Trans. Ind. Inf., 2019)** — *Thermal Imaging and Vibration-Based Multisensor Fault Detection for Rotating Machinery* (DOI: `10.1109/TII.2018.2873175`): Comprova que a fusão entre descritores de vibração do acelerômetro e curva térmica de contato no mancal atinge **100% de acurácia** na detecção de defeitos de rolamentos e falta de lubrificação (atrito metal-metal).
 * **Lu et al. (IEEE Trans. Instrum. Meas., 2019)** — *Tacholess Speed Estimation in Order Tracking: A Review With Application to Rotating Machine Fault Diagnosis* (DOI: `10.1109/TIM.2019.2902806`): Artigo canônico que estabelece a eliminação de tacômetros físicos em prol da extração matemática de rotação ($1\times\text{RPM}$) diretamente da aceleração mecânica com interpolação de picos.
 * **Peeters, Leclère, Antoni et al. (MSSP, 2019)** — *Review and comparison of tacholess instantaneous speed estimation methods on experimental vibration data* (DOI: `10.1016/j.ymssp.2019.02.031`): Benchmark global de extração de velocidade angular instantânea a partir de acelerômetros.
@@ -46,11 +46,11 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
 
 ### ETAPA 1: Hardware, Bancada Física e Validação Elétrica (Protoboard & Sonda)
 > *Pré-requisito para qualquer linha de código: montar e validar o circuito elétrico e a autonomia.*
-- [ ] **Montagem dos Componentes na Protoboard / Sonda de 5 Pinos:**
-  - [ ] Interligar ESP32-S3 DevKit ao barramento de sensores da sonda do mancal (`+3V3_SW`, `GND`, `SDA`, `SCL`, `1W_DQ` com resistores de pull-up de $4{,}7\text{ k}\Omega$).
-  - [ ] Conectar o ADXL345 (I2C: GPIOs 8/9) e a sonda térmica DS18B20 (OneWire: GPIO 10). *(Microfone INMP441 e tacômetro físico KY-003 eliminados com base na auditoria do XGBoost e adoção de RPM virtual).*
-  - [ ] Conectar o transceptor LoRa E32-915T20D com os capacitores de desacoplamento ($470\ \mu\text{F}$ eletrolítico + $100\text{ nF}$ cerâmico) no barramento de alimentação.
-  - [ ] Ligar os pinos de controle de modo do LoRa: `M0` no GPIO 48 e `M1` no GPIO 45 com resistores de pull-up de $10\text{ k}\Omega$ para $+3\text{V}3$.
+- [ ] **Montagem dos Componentes (Alinhada à Pinagem Oficial `amemiya_main_node`):**
+  - [ ] Interligar ESP32-S3 DevKitC-1 ao conector da sonda (`+3V3_SWITCHED`, `GND`, `I2C_SDA`, `I2C_SCL`, `1W_DQ` com pull-ups de $4{,}7\text{ k}\Omega$, além de linhas I2S opcionais para `INMP441`).
+  - [ ] Conectar o ADXL345 (`I2C`: `GPIO41` SDA / `GPIO42` SCL) e a sonda térmica DS18B20 (`1-Wire`: `GPIO5`). *(Microfone `INMP441` nos `GPIO6/7/8` permanece opcional; sensor Hall `BG1` fica ligado apenas ao display local da bancada, sem conexão ao ESP32).*
+  - [ ] Conectar o transceptor LoRa (`UART`: `GPIO43` TX / `GPIO44` RX) com capacitores de desacoplamento ($470\ \mu\text{F}$ eletrolítico + $100\text{ nF}$ cerâmico) no barramento de alimentação.
+  - [ ] Ligar os pinos de controle do LoRa conforme PCB (`M0` no `GPIO38`, `M1` no `GPIO39` com pull-up $10\text{ k}\Omega$ e `AUX` no `GPIO47` — mantendo `GPIO45` livre por ser *strapping pin* de `VDD_SPI`).
   - [ ] Ligar o pino de interrupção `INT1` do ADXL345 à GPIO de RTC do ESP32 (GPIO 3) para habilitar o despertar híbrido por choque mecânico (EXT0).
   - [ ] Implementar chave de corte de alimentação (*Power Gating* via P-MOSFET AO3401A ou transistor PNP em GPIO 21) para desligar a sonda de sensores durante o sono profundo.
 - [ ] **Alimentação por Bateria e Medição de Consumo:**
@@ -93,7 +93,7 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
   - [ ] **Buffer de Janelamento para FFT (1.024 Pontos):**
     - Acumular janelas contínuas de 1.024 pontos nos eixos X, Y e Z para cálculo da Real FFT (RFFT) e extração de RMS, Kurtose e Fator de Crista.
   - [ ] **Aquisição Térmica OneWire (Dual DS18B20):**
-    - Integrar leitura periódica dos sensores de temperatura de contato dos mancais dianteiro e traseiro via barramento 1-Wire (GPIO 10) com validação de CRC de 8 bits.
+    - Integrar leitura periódica dos sensores de temperatura de contato dos mancais dianteiro e traseiro via barramento 1-Wire (`GPIO5` / `1W_DQ`) com validação de CRC de 8 bits.
 - [ ] **Tacholess Speed Estimation (RPM Virtual via Acelerômetro — sem `BG1` ligado ao ESP32):**
   - *Contexto físico:* O sensor Hall `BG1` da bancada fica ligado **exclusivamente ao display local** (integração ao sistema prevista apenas via CLP em uma v3).
   - [ ] Calcular RFFT em paralelo com **decimação para baixa frequência** (ex.: filtrar passa-baixa + decimar `3200 Hz` por `8x` para `400 Hz` com `N = 1024`, atingindo $\Delta f \approx 0{,}39\text{ Hz} \approx 23{,}4\text{ RPM/bin}$, em vez de $\Delta f = 3{,}125\text{ Hz} \approx 187{,}5\text{ RPM/bin}$) — ou janela `N >= 4096` — para manter o erro de RPM abaixo da tolerância de `2,5%` da cinemática de rolamentos quando o dimmer `TC1` variar a rotação.
@@ -225,8 +225,8 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
   - [ ] Ligar o motor elétrico com rotação constante (ex: 1800 RPM) e verificar leitura estável (Zona A/B).
   - [ ] Parafusar arruela de massa excêntrica no disco e verificar se o $1X$ RPM sobe proporcionalmente na telemetria.
   - [ ] Comprovar que a IA na borda detecta o desbalanceamento, atualiza a Zona ISO para C/D, acende o LED vermelho na bancada e dispara o alarme no dashboard.
-- [ ] **Fechamento e Produção dos Gerbers (Carrier Board 100% THT):**
-  - [ ] Atualizar esquemáticos KiCad (`02_Sensors_AFE.kicad_sch`): remoção definitiva do Jack P2 (SCT-013), microfone INMP441 e tacômetro físico `J_TACHO`.
-  - [ ] Consolidar conector da Sonda Externa (`J_PROBE` de 5 pinos THT: `+3V3_SW`, `GND`, `SDA`, `SCL`, `1W_DQ`) com pull-ups de $4{,}7\text{ k}\Omega$.
+- [ ] **Fechamento e Produção dos Gerbers (`amemiya_main_node`):**
+  - [ ] Atualizar esquemáticos KiCad (`02_Sensors_AFE.kicad_sch`): remoção definitiva de entrada `J_TACHO` no ESP32 (`BG1` segue apenas no display local; CLP na v3) e definição final sobre manter ou remover o `INMP441`.
+  - [ ] Consolidar conector da Sonda Externa (`J_PROBE`: 8 pinos GX16-8 com `INMP441` ou 5 pinos caso opcional acústico seja removido) com pull-ups de $4{,}7\text{ k}\Omega$.
   - [ ] Manter periféricos de bancada: Buzzer (`J_BUZ`), 3 LEDs de status (`J_LEDS`: Normal, Alerta, Falha) e conector OLED (`J_OLED`).
   - [ ] Executar checagem de regras de design (DRC) e exportar os arquivos Gerber/Drill para fabricação em placa compacta 100% DIP.

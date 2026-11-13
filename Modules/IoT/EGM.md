@@ -29,7 +29,7 @@ Módulo de gestão de hardware IoT, telemetria industrial, análise de severidad
 ## Invariants
 - **Multi-Tenancy Scoping**: Todos os eventos WebSocket e consultas de banco de dados devem ser rigidamente vinculados ao slug da organização (`tenant.{tenantSlug}.iot`).
 - **Fallback de Anomalia Seguro**: Em caso de falha de comunicação ou timeout no `MachineLearningService`, o status da análise deve ser gravado obrigatoriamente como `pending_analysis` (alerta de atenção), sendo expressamente proibido o fallback para `healthy`.
-- **Depreciação de Tacômetro Óptico**: Telemetrias com ausência de leitura óptica de RPM não devem ser rejeitadas; a rotação é tratada como opcional ou derivada de metadados nominais da máquina.
+- **Depreciação de Tacômetro no ESP32 (`BG1` apenas local):** Leituras sem tacômetro físico não devem ser rejeitadas; o RPM é resolvido dinamicamente via `BearingKinematicsService::resolveSpectralRpm()` (priorizando `rpm_estimated` do firmware, estimação harmônica `1X/2X/3X` em `peaks`/`fft_x` e fallback para `nominal_rpm`).
 - **Tratamento de Tensão de Bateria**: Leituras de `battery_voltage` devem ser normalizadas e armazenadas na faixa operacional de Li-Ion (3.0V a 4.2V) com cálculo de porcentagem correspondente para o nó industrial.
 - **PSR-12 e Tipagem**: Todos os métodos em Controllers, Services e Jobs devem declarar explicitamente tipos de retorno (`void`, `bool`, etc.) e propriedades tipadas.
 
@@ -37,7 +37,7 @@ Módulo de gestão de hardware IoT, telemetria industrial, análise de severidad
 - Conexão TCP contínua e consumo de mensagens no Broker MQTT Mosquitto.
 - Inserção de batches de telemetria nas tabelas `iot_device_logs` e `iot_sensor_data`.
 - Despacho de jobs na fila Redis `telemetry-processing`.
-- Chamadas HTTP síncronas para `http://ml-service:5000/predict`.
+- Chamadas HTTP síncronas para `http://ml-service:8000/predict-anomalia`.
 - Emissão de pacotes WebSockets autenticados via Laravel Reverb para clientes conectados.
 
 ## Verification

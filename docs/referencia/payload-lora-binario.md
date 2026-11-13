@@ -12,7 +12,7 @@ A struct é compactada com alinhamento de 1 byte via diretiva `__attribute__((pa
 typedef struct __attribute__((packed)) {
     uint8_t  node_id;           // Byte 0: Identificador único do nó (1 a 255)
     uint32_t sequence_id;       // Bytes 1..4: Contador monotônico de pacotes (anti-replay)
-    uint16_t rpm;               // Bytes 5..6: Rotação medida pelo sensor Hall (0 a 65535 RPM)
+    uint16_t rpm;               // Bytes 5..6: Rotação estimada via acelerômetro (tacholess) ou 0 se desligado (0 a 65535 RPM)
     int16_t  temp_celsius_x100; // Bytes 7..8: Temperatura mancal DS18B20 em °C * 100 (-4000 a +12500)
     uint16_t vrms_x_x100;       // Bytes 9..10: Velocidade RMS Eixo X em mm/s * 100
     uint16_t vrms_y_x100;       // Bytes 11..12: Velocidade RMS Eixo Y em mm/s * 100
@@ -55,3 +55,14 @@ typedef struct __attribute__((packed)) {
 * **Formato JSON textual:** 230 bytes médios $\rightarrow$ *Time on Air*: ~180 ms no SF9.
 * **Formato Binário Amemiya:** 27 bytes fixos $\rightarrow$ *Time on Air*: **~38 ms** no SF9.
 * **Economia de energia por transmissão:** $\approx 78{,}8\%$, permitindo vida útil superior a **24 meses** em operação com bateria LiFePO4 de 2000 mAh transmitindo a cada 10 minutos.
+
+---
+
+## 4. Limite do Enlace LoRa vs. Burst Espectral (`Spectrum Studio` e Cloud ML)
+
+O frame binário de **27 bytes** atende à telemetria resumida de campo (velocidade RMS triaxial, RPM estimado, temperatura e bateria). Ele **não** transporta o vetor completo `fft_x/fft_y/fft_z` (1024 *bins*) nem as 36 features espectrais exigidas pelo microserviço `ml-service`:
+
+| Perfil de Tráfego | Canal | Conteúdo | Destino no Backend |
+| :--- | :--- | :--- | :--- |
+| **Telemetria Contínua / Baixa Energia** | LoRa `915 MHz` (27 bytes) $\rightarrow$ Gateway $\rightarrow$ MQTT | `v_rms`, `rpm` (`rpm_source: "accelerometer_firmware"`), `temp_celsius`, `battery_voltage`, `iso_zone`, `edge_alarm` | `ISO20816SeverityService` + `IoTSensorData` |
+| **Burst Espectral / Auditoria IA** | Wi-Fi MQTT direto (nó em bancada) ou pacote sob demanda | `peaks` / `fft_x/y/z` + vetor `features` (36 métricas) | Redis `spectrum:latest` + `BearingKinematicsService` + `ml-service` |

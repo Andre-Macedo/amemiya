@@ -15,10 +15,10 @@ O **Sistema de Metrologia Lean Tech** é uma plataforma ciberfísica distribuíd
 ```mermaid
 flowchart TD
     subgraph HW["1. Camada de Borda & Instrumentação (amemiya-hardware)"]
-        PROBE["Torre de Sensores Dual\n(Mancal de Teste)\n• ADXL345 (Vibração I2C Fast-Mode)\n• INMP441 (Acústica I2S 24 bits)\n• DS18B20 (Temperatura 1-Wire)"]
+        PROBE["Torre de Sensores Dual\n(Mancal de Teste)\n• ADXL345 (Vibração I2C Fast-Mode)\n• INMP441 (Acústica I2S 24 bits - opcional)\n• DS18B20 (Temperatura 1-Wire)"]
         CHICOTE["Chicote Industrial Blindado\n(Conector GX16-8)"]
         CARRIER["Nó Principal (ESP32-S3 DevKitC-1)\n• Power-Gating (AO3401A com Pull-up & RTC Hold)\n• Driver Backlight N-MOSFET (GPIO2 PWM)\n• Fuel Gauge (Divisor 100k/100k - GPIO1)\n• Transceptor LoRa (E32-TTL-100)\n• 2x 18650 Li-Ion + Boost MT3608"]
-        IHM["IHM Local de Bancada\n• Display TFT 3.2\" SPI ILI9341 (240x320)\n• Touch Screen Resistivo XPT2046\n• LEDs RGB (Zonas ISO 20816) + Buzzer"]
+        IHM["IHM Local de Bancada\n• Display TFT 3.2\" SPI ILI9341 (240x320)\n• Touch Screen Resistivo XPT2046\n• LEDs RGB (Zonas ISO 20816) + Buzzer\n• Sensor Hall BG1 (apenas display local; CLP na v3)"]
         
         PROBE --> CHICOTE --> CARRIER
         CARRIER <--> IHM
@@ -116,17 +116,23 @@ O backlight do display TFT ILI9341 consome entre 80 mA e 120 mA em regime contí
 ### 3.1 Tópicos MQTT Padronizados
 1. **Publicação de Telemetria do Gateway:**
    - Tópico: `v1/gateways/{gw_id}/nodes/{node_id}/telemetry` (e legado `sensors/+/telemetry`)
-   - Formato do Payload:
+   - Formato do Payload (consumido pelo `ProcessTelemetryJob`):
      ```json
      {
        "device_id": "GW_01",
        "node_id": "NODE_01",
-       "timestamp": "2026-11-10T14:30:00Z",
-       "vibration_rms": 2.15,
+       "timestamp": 1762785000,
+       "rms_global": 0.38,
+       "velocity_rms": 2.15,
+       "rpm_estimated": 1750,
+       "rpm_source": "accelerometer_firmware",
        "temp_celsius": 42.3,
        "battery_voltage": 3.92,
        "mic_rms": 0.045,
-       "features": { ... }
+       "peaks": [
+         { "frequency_hz": 29.2, "amplitude": 0.85 }
+       ],
+       "features": { "v_rms": 2.15 }
      }
      ```
 

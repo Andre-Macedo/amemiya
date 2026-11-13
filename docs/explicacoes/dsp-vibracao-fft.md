@@ -35,9 +35,9 @@ $$w(n) = 0{,}5 \cdot \left[1 - \cos\left(\frac{2\pi n}{N - 1}\right)\right], \qu
 
 ### Vantagens do Janelamento Hann em Rotação
 * **Atenuação de Lóbulos Laterais:** O primeiro lóbulo lateral atinge $-31{,}5\text{ dB}$, impedindo que a amplitude dominante de rotação encubra picos adjacentes de falha incipiente.
-* **Resolução em Frequência:** Com $N = 1024$ pontos a $f_s = 3200\text{ Hz}$, a resolução espectral em cada *bin* da FFT é:
-  $$\Delta f = \frac{f_s}{N} = \frac{3200\text{ Hz}}{1024} = 3{,}125\text{ Hz/bin}$$
-  Essa resolução é perfeitamente adequada para discriminar componentes de rotação em 30 Hz (1800 RPM) e seus múltiplos exatos.
+* **Resolução em Frequência:** Com $N = 1024$ pontos a $f_s = 3200\text{ Hz}$, o espaçamento bruto entre *bins* da FFT é:
+  $$\Delta f = \frac{f_s}{N} = \frac{3200\text{ Hz}}{1024} = 3{,}125\text{ Hz/bin}\ (\approx 187{,}5\text{ RPM/bin})$$
+  Essa resolução bruta é suficiente para bandas energéticas amplas ($10\text{–}1000\text{ Hz}$ da ISO 20816-3), **mas é insuficiente isoladamente** para rastrear rotação variável com o dimmer `TC1` ou alinhar frequências de rolamentos dentro da tolerância de $2{,}5\%$ (note que mesmo $30\text{ Hz} = 1800\text{ RPM}$ cai no *bin* fracionário $9{,}6$). Por isso, a estimação de RPM e picos espectrais combina **interpolação parabólica sub-bin** (implementada em `BearingKinematicsService::extractPeaksFromFft()`) e, no firmware, decimação de baixa frequência (`~400 Hz`, $\Delta f \approx 0{,}39\text{ Hz}$) ou janela longa ($N \ge 4096$).
 
 ---
 

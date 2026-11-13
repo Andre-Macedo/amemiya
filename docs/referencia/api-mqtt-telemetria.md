@@ -6,32 +6,33 @@ Esta página documenta a especificação das mensagens MQTT trocadas entre os ga
 
 ## 1. Tópico de Telemetria
 
-* **Padrão:** `amemiya/telemetry/nodes/{nodeId}`
-* **QoS:** `1` (At least once)
+* **Padrão oficial:** `v1/gateways/{device_id}/nodes/{node_id}/telemetry` *(com suporte legado a `sensors/+/telemetry` no `MqttBridge`)*
+* **QoS:** `0` atual no `MqttBridge` *(meta de endurecimento: `1` com `acl_file` e TLS `8883`)*
 * **Retain:** `false`
 
-### Exemplo de Payload JSON (Gateway → Broker)
+### Exemplo de Payload JSON (Gateway → Broker → `ProcessTelemetryJob`)
 
 ```json
 {
+  "device_id": "GW_AMEMIYA_LAB",
   "node_id": "NODE_01",
-  "gateway_id": "GW_AMEMIYA_LAB",
   "sequence_id": 10428,
-  "rpm": 1785,
-  "temperature_celsius": 24.8,
-  "vibration": {
-    "vrms_x": 1.25,
-    "vrms_y": 0.94,
-    "vrms_z": 1.82,
-    "peak_accel_g": 0.82,
-    "crest_factor": 3.14,
-    "iso_zone": "A"
-  },
-  "diagnostics": {
-    "edge_alarm": false,
-    "battery_mv": 3720,
-    "rssi_dbm": -68,
-    "snr_db": 9.5
+  "rpm_estimated": 1750,
+  "rpm_source": "accelerometer_firmware",
+  "temp_celsius": 24.8,
+  "rms_global": 0.38,
+  "velocity_rms": 1.82,
+  "battery_voltage": 3.72,
+  "ml_status": "saudavel",
+  "confianca": 0.94,
+  "peaks": [
+    { "frequency_hz": 29.17, "amplitude": 0.85 }
+  ],
+  "features": {
+    "v_rms": 1.82,
+    "x_rms": 1.25,
+    "y_rms": 0.94,
+    "z_rms": 1.82
   },
   "timestamp": 1761864000
 }
@@ -39,24 +40,21 @@ Esta página documenta a especificação das mensagens MQTT trocadas entre os ga
 
 ---
 
-## 2. Tópico de Eventos de Falha e Anomalia
+## 2. Tópico de Feedback / Comandos de Sinalização
 
-* **Padrão:** `amemiya/events/nodes/{nodeId}`
-* **QoS:** `1`
+* **Padrão:** `v1/gateways/{device_id}/nodes/{node_id}/commands`
+* **Uso estrito (`NR-12 12.4.12`):** apenas sinalização visual/sonora local (`LEDs` e `Buzzer` do nó/painel), **nunca** acionamento remoto de contator de força.
 
-Disparado imediatamente quando a inferência TinyML na borda detecta transição para **Zona C (Alerta)** ou **Zona D (Perigo)** segundo a norma ISO 20816-3:
+Emitido pelo `ProcessTelemetryJob::sendMqttCommand()` após avaliação da borda/nuvem e severidade ISO 20816-3:
 
 ```json
 {
-  "event_type": "ISO_ZONE_TRANSITION",
-  "node_id": "NODE_01",
-  "severity": "CRITICAL",
-  "previous_zone": "A",
-  "current_zone": "D",
-  "trigger_value": 4.85,
-  "threshold": 4.50,
-  "action_required": "INSPECAO_IMEDIATA_DESBALANCEAMENTO",
-  "timestamp": 1761864015
+  "command": "set_alarm_state",
+  "status": "fault_confirmed",
+  "fault_type": "desbalanceamento",
+  "confidence": 0.92,
+  "ttl_seconds": 60,
+  "ref_msg": "14:30:00.123"
 }
 ```
 

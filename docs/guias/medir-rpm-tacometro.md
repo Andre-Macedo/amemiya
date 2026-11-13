@@ -1,65 +1,38 @@
-# Medição de RPM e Alinhamento do Sensor Hall
+# Medição de RPM: Display Local (`BG1`) e Validação *Tacholess*
 
-Este guia explica como calibrar mecanicamente e configurar o sensor de efeito Hall (A3144 / SS49E) para medição precisa de rotação por minuto (RPM) em eixos rotativos industriais.
+Este guia explica o papel do sensor de efeito Hall **`BG1` (`24V`)** instalado na bancada para leitura no display local e como validar metrologicamente a **estimação de RPM via acelerômetro (*tacholess*)** utilizada na telemetria IoT.
 
----
-
-## 1. Princípio de Funcionamento
-
-O sistema utiliza um ímã de neodímio ($N35$ ou $N52$) fixado no disco rotativo do eixo e um sensor de efeito Hall posicionado estaticamente no suporte.
-
-A cada volta completa do eixo, o ímã passa em frente ao sensor Hall, gerando um pulso em nível lógico baixo na entrada de interrupção externa do ESP32-S3 (GPIO 10).
-
-$$\text{RPM} = \frac{60 \cdot 10^6}{\Delta t_{\mu\text{s}}}$$
-
-Onde $\Delta t_{\mu\text{s}}$ é o período de tempo medido em microssegundos pelo timer de alta precisão entre duas bordas de descida consecutivas.
+::: info Arquitetura da Bancada Atual
+Na revisão atual da bancada, o sensor Hall `BG1` alimenta **exclusivamente o display tacométrico local do painel (`24V DC`)** — ele **não** é conectado às GPIOs do `ESP32-S3` (onde o `GPIO10` é reservado ao `LCD_CS` do display TFT). A integração direta de tacômetro industrial fica prevista apenas via CLP em uma futura versão `v3`. Na telemetria IoT, a rotação é estimada pelo acelerômetro (`BearingKinematicsService::resolveSpectralRpm()`).
+:::
 
 ---
 
-## 2. Alinhamento Mecânico
+## 1. Alinhamento Mecânico do Sensor Hall Local (`BG1`)
 
-Para evitar falso disparo ou perda de pulsos sob rotações elevadas:
+Para evitar falso disparo ou perda de pulsos no display local da bancada:
 
 1. **Distância de *Air Gap* (Folga):**
-   - Mantenha a distância entre a face do ímã e o sensor Hall entre **$1{,}5\text{ mm}$ e $3{,}0\text{ mm}$**.
-   - Distâncias superiores a $4\text{ mm}$ causam atenuação do campo magnético e perda de leitura.
+   - Mantenha a distância entre a face do ímã no disco/polia e a face sensora de `BG1` entre **$1{,}5\text{ mm}$ e $3{,}0\text{ mm}$**.
+   - Distâncias superiores a $4\text{ mm}$ causam atenuação do campo magnético e falha de contagem.
    - Distâncias inferiores a $1\text{ mm}$ apresentam risco mecânico de colisão por vibração axial.
-2. **Polaridade do Ímã:**
-   - O sensor unipolar (A3144) é sensível apenas ao polo **Sul** do ímã.
-   - Se a saída do sensor não comutar para $0\text{V}$ na passagem, inverta a face do ímã fixada no disco.
+2. **Separação de Cabos (`NR-10 10.4.3.1`):**
+   - Conduza o chicote `24V` de `BG1` em rota separada dos cabos `127V AC` do motor e do Dimmer TRIAC `TC1` para evitar disparo espúrio por EMI.
 
 ---
 
-## 3. Tratamento de *Debounce* por Hardware e Software
+## 2. Estimação de RPM por Acelerômetro (*Tacholess*) na Telemetria IoT
 
-Vibrações mecânicas intensas no mancal podem provocar repique elétrico falso (*chatter*) no momento da passagem magnética. O sistema implementa uma camada dupla de proteção:
+No sistema IoT (`ESP32-S3` + `BearingKinematicsService`), o eixo `1X` é obtido sem ligação física com `BG1`:
 
-### Hardware (Carrier Board)
-* Filtro RC passa-baixas na linha de entrada: resistor série de $1\text{ k}\Omega$ e capacitor cerâmico de $10\text{ nF}$ para terra ($f_c \approx 16\text{ kHz}$).
-
-### Software (Firmware ESP32-S3)
-Janela de tempo de supressão (*dead-time lockout*) na rotina de interrupção:
-
-```c
-#define MIN_PERIOD_US 6000 // Limite físico para 10.000 RPM máximo
-
-void IRAM_ATTR onHallPulse() {
-    uint64_t now = esp_timer_get_time();
-    uint64_t diff = now - last_pulse_time;
-    
-    if (diff > MIN_PERIOD_US) {
-        pulse_period_us = diff;
-        last_pulse_time = now;
-        valid_pulses_count++;
-    }
-}
-```
+1. **Firmware (`ESP32-S3`):** calcula FFT de baixa frequência (com decimação para `~400 Hz` ou janela longa) + interpolação parabólica nos *bins* $[k-1, k, k+1]$ e publica `rpm_estimated` (com `"rpm_source": "accelerometer_firmware"`).
+2. **Fallback no Backend (`ProcessTelemetryJob`):** caso o firmware envie apenas `peaks` ou `fft_x/y/z`, o [`BearingKinematicsService::estimateRpmFromPeaks()`](/referencia/api-mqtt-telemetria) aplica pontuação harmônica (`1X + 2X + 3X`) na faixa operacional da máquina (`400–3800 RPM`) para evitar confundir o pico `2X` de desalinhamento com a rotação fundamental.
 
 ---
 
-## 4. Validação com Tacômetro Padrão Óptico
+## 3. Validação Metrológica Comparativa
 
-Durante o processo de qualificação metrológica:
-1. Aponte um tacômetro óptico calibrado padrão para uma fita reflexiva no mesmo eixo.
-2. Varie a rotação do motor em 5 patamares: 600 RPM, 1200 RPM, 1800 RPM, 2400 RPM e 3000 RPM.
-3. Compare o valor registrado no painel IoT com o padrão: o erro relativo $\delta$ deve ser rigorosamente inferior a $\pm 0{,}5\%$.
+Durante a qualificação da bancada:
+1. Varie a rotação pelo Dimmer `TC1` em 5 patamares dentro da faixa operacional (ex.: `600`, `900`, `1200`, `1500` e `1750 RPM`).
+2. Compare a leitura do **display local `BG1`** (ou tacômetro óptico padrão calibrado) com o valor `rpm` estimado na telemetria IoT.
+3. Confirme que o desvio relativo permanece abaixo da tolerância de **`2,5%`** exigida pelo casamento de frequências de rolamento (`BPFO`, `BPFI`, `BSF`, `FTF`).

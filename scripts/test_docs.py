@@ -23,7 +23,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 DOCS_DIR = ROOT_DIR / "docs"
 PUBLIC_DIR = DOCS_DIR / "public"
 
-ACTIVE_DIRS = ["tutoriais", "guias", "referencia", "explicacoes"]
+ACTIVE_DIRS = ["tutoriais", "guias", "referencia", "explicacoes", "designs", "architecture"]
 
 def check_markdown_files():
     results = {
