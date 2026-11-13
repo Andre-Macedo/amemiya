@@ -22,6 +22,11 @@ class IoTGateway extends Model
         'name',
         'device_id',
         'status',
+        'last_seen_at',
+    ];
+
+    protected $casts = [
+        'last_seen_at' => 'datetime',
     ];
 
     /**

@@ -11,5 +11,5 @@ Artisan::command('inspire', function () {
 // Agendamento de Verificação de Calibração
 Schedule::command('metrology:check-due')->dailyAt('08:00');
 
-// IoT: Efetua o flush da telemetria do Redis para o MySQL a cada 5 segundos
-Schedule::command('iot:flush-buffer')->everyFiveSeconds();
+// IoT: Watchdog de dispositivos silenciosos
+Schedule::command('iot:mark-offline-devices')->everyMinute();

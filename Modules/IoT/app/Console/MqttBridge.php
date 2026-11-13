@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\IoT\Console;
 
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Modules\IoT\Jobs\ProcessTelemetryJob;
@@ -16,6 +19,7 @@ class MqttBridge extends Command
     public function handle(): void
     {
         $this->info('Iniciando Ponte MQTT...');
+        $qos = (int) config('iot.mqtt_qos', 1);
 
         while (true) {
             try {
@@ -31,14 +35,13 @@ class MqttBridge extends Command
 
                 $mqtt->subscribe('v1/gateways/+/nodes/+/telemetry', function (string $topic, string $message) {
                     $this->processMessage($topic, $message);
-                }, 0);
+                }, $qos);
 
                 $mqtt->loop(true);
-
-            } catch (\Exception $e) {
-                $this->error('Conexão perdida: '.$e->getMessage());
+            } catch (Exception $exception) {
+                $this->error("Conexão perdida: {$exception->getMessage()}");
                 Log::channel('iot_telemetry')->error('MQTT Bridge: Falha na conexão. Tentando reconectar em 5s...', [
-                    'error' => $e->getMessage(),
+                    'error' => $exception->getMessage(),
                 ]);
                 sleep(5);
             }
@@ -49,16 +52,32 @@ class MqttBridge extends Command
     {
         $data = json_decode($message, true);
 
-        if ($data) {
-            // Extração de IDs do tópico se faltar no JSON
-            $parts = explode('/', $topic);
-            if (str_starts_with($topic, 'v1/gateways/')) {
-                $data['device_id'] = $data['device_id'] ?? $parts[2] ?? 'N/A';
-                $data['node_id'] = $data['node_id'] ?? $parts[4] ?? 'N/A';
-            }
+        if (json_last_error() !== JSON_ERROR_NONE || ! is_array($data)) {
+            Log::channel('iot_telemetry')->warning('MQTT Bridge: Payload JSON inválido descartado.', [
+                'topic' => $topic,
+            ]);
 
-            ProcessTelemetryJob::dispatch($data);
-            $this->info('-> [Msg enfileirada] Gateway: '.$data['device_id'].' | Node: '.$data['node_id']);
+            return;
         }
+
+        // Extração de IDs do tópico se faltar no JSON
+        $parts = explode('/', $topic);
+        if (str_starts_with($topic, 'v1/gateways/')) {
+            $data['device_id'] = $data['device_id'] ?? $parts[2] ?? '';
+            $data['node_id'] = $data['node_id'] ?? $parts[4] ?? '';
+        }
+
+        $deviceId = $data['device_id'] ?? null;
+        $nodeId = $data['node_id'] ?? null;
+        if (! is_string($deviceId) || $deviceId === '' || ! is_string($nodeId) || $nodeId === '') {
+            Log::channel('iot_telemetry')->warning('MQTT Bridge: Telemetria sem device_id/node_id válidos descartada.', [
+                'topic' => $topic,
+            ]);
+
+            return;
+        }
+
+        ProcessTelemetryJob::dispatch($data);
+        $this->info("-> [Msg enfileirada] Gateway: {$deviceId} | Node: {$nodeId}");
     }
 }

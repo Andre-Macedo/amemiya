@@ -6,7 +6,7 @@ Módulo de gestão de hardware IoT, telemetria industrial, análise de severidad
 ## Interface
 - **Comandos de Console**:
   - `MqttBridge.php` (`iot:mqtt-bridge`): Worker CLI contínuo que conecta ao broker Mosquitto e despacha `ProcessTelemetryJob` para o Redis.
-  - `FlushTelemetryBuffer.php` (`iot:flush-buffer`): Limpeza periódica de buffers efêmeros.
+  - `MarkOfflineDevices.php` (`iot:mark-offline-devices`): Watchdog agendado que marca gateways e nós sem telemetria recente (`last_seen_at`) como `offline`.
   - `PruneSensorData.php` (`iot:prune-sensor-data`): Retenção e expurgo de séries temporais antigas.
 - **Jobs Assíncronos & Listeners**:
   - `ProcessTelemetryJob.php`: Processa métricas físicas, normaliza tensão de bateria, calcula RMS, avalia severidade ISO 20816, invoca o ML Service e emite eventos broadcast.

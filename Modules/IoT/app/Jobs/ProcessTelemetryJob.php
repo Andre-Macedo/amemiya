@@ -20,8 +20,9 @@ use Modules\IoT\Models\IoTGateway;
 use Modules\IoT\Services\BearingKinematicsService;
 use Modules\IoT\Services\ISO20816SeverityService;
 use Modules\IoT\Services\MachineLearningService;
+use Modules\IoT\Services\MqttCommandPublisher;
 use Modules\IoT\Services\PrescriptiveDiagnosticsService;
-use PhpMqtt\Client\Facades\MQTT;
+use Modules\IoT\Services\TelemetryPayloadValidator;
 
 class ProcessTelemetryJob implements ShouldQueue
 {
@@ -83,6 +84,30 @@ class ProcessTelemetryJob implements ShouldQueue
                 return;
             }
 
+            // 1.5 Validação estrita de integridade física do payload
+            $validation = app(TelemetryPayloadValidator::class)->validate($this->payload);
+            if (! $validation['valid']) {
+                Log::channel('iot_telemetry')->warning("Ref: {$msgId} | Telemetria descartada por falha de validação.", [
+                    'device_id' => $gateway->device_id,
+                    'node_id' => $node->node_id,
+                    'errors' => $validation['errors'],
+                ]);
+
+                return;
+            }
+
+            foreach ($validation['warnings'] as $warning) {
+                Log::channel('iot_telemetry')->warning("Ref: {$msgId} | {$warning}", [
+                    'node_id' => $node->node_id,
+                ]);
+            }
+
+            // Atualiza heartbeat do gateway imediatamente ao receber payload válido
+            $gateway->update([
+                'last_seen_at' => now(),
+                'status' => $gateway->status === 'offline' ? 'online' : $gateway->status,
+            ]);
+
             // 2. Mapeamento de Status/Confiança
             $mlStatus = $this->payload['ml_status'] ?? null;
             if ($mlStatus === null && isset($this->payload['status_ia'])) {
@@ -117,7 +142,11 @@ class ProcessTelemetryJob implements ShouldQueue
                 $cloudMlConfidence = (float) ($mlResult['confidence'] ?? 0);
                 $reanalyzed = true;
 
-                $logStatus = ($cloudMlStatus === 'falha_confirmada') ? 'FALHA CONFIRMADA' : 'SAUDÁVEL';
+                $logStatus = match ($cloudMlStatus) {
+                    'falha_confirmada' => 'FALHA CONFIRMADA',
+                    'indeterminado', 'analise_pendente' => 'INDETERMINADO (ANÁLISE PENDENTE)',
+                    default => 'SAUDÁVEL',
+                };
                 Log::channel('iot_ml')->info("Ref: {$msgId} | Veredito Nuvem: {$logStatus} ({$cloudMlConfidence})");
 
                 // Handshake 2: Veredito Final
@@ -188,25 +217,20 @@ class ProcessTelemetryJob implements ShouldQueue
             $velocityRms = $isoService->calculateVelocityRms($rmsInG, $rpm, $explicitVelo);
             $machineGroup = (string) ($machineMeta['iso_group'] ?? 'group_2');
             $foundation = (string) ($machineMeta['foundation_type'] ?? 'rigid');
-            $isoEval = $isoService->evaluate($velocityRms, $machineGroup, $foundation);
+            $customThresholds = is_array($machineMeta['iso_thresholds'] ?? null) ? $machineMeta['iso_thresholds'] : null;
+            $isoEval = $isoService->evaluate($velocityRms, $machineGroup, $foundation, $customThresholds);
 
-            $tempCelsius = isset($this->payload['temp_celsius'])
-                ? (float) $this->payload['temp_celsius']
-                : (isset($this->payload['temperature'])
-                    ? (float) $this->payload['temperature']
-                    : (isset($this->payload['features']['temperature'])
-                        ? (float) $this->payload['features']['temperature']
-                        : (isset($this->payload['features']['temp_celsius']) ? (float) $this->payload['features']['temp_celsius'] : null)));
+            $tempCelsius = $validation['sanitized']['temp_celsius'];
+            $batteryVoltage = $validation['sanitized']['battery_voltage'];
 
-            $batteryVoltage = isset($this->payload['battery_voltage'])
-                ? (float) $this->payload['battery_voltage']
-                : (isset($this->payload['v_bat'])
-                    ? (float) $this->payload['v_bat']
-                    : (isset($this->payload['features']['battery_voltage']) ? (float) $this->payload['features']['battery_voltage'] : null));
-
+            $nodeUpdateData = [
+                'last_seen_at' => now(),
+                'status' => $node->status === 'offline' ? 'active' : $node->status,
+            ];
             if ($batteryVoltage !== null) {
-                $node->update(['battery_voltage' => $batteryVoltage]);
+                $nodeUpdateData['battery_voltage'] = $batteryVoltage;
             }
+            $node->update($nodeUpdateData);
 
             // 4.1 Cache de Burst Espectral no Redis (TTL: 24h)
             $spectrumPayload = $this->payload['spectrum'] ?? null;
@@ -316,7 +340,7 @@ class ProcessTelemetryJob implements ShouldQueue
             if ($isAnomaly || $reanalyzed || $isIsoCritical) {
                 $level = match ($alertStatus) {
                     'falha_confirmada', 'desbalanceamento' => 'critical',
-                    'analise_pendente' => 'warning',
+                    'analise_pendente', 'indeterminado' => 'warning',
                     default => ($isoEval['zone'] === 'D' ? 'critical' : ($isoEval['zone'] === 'C' ? 'warning' : 'info')),
                 };
 
@@ -406,54 +430,18 @@ class ProcessTelemetryJob implements ShouldQueue
     }
 
     /**
-     * Envia comando MQTT padronizado com log do payload completo.
+     * Envia comando MQTT padronizado reutilizando cliente persistente no worker.
      *
      * @return array<string, mixed> O payload do comando enviado
      */
-    protected function sendMqttCommand(string $gwId, string $nodeId, string $status, float $confidence, $msgId): array
+    protected function sendMqttCommand(string $gwId, string $nodeId, string $status, float $confidence, mixed $msgId): array
     {
-        $payload = [];
-
-        try {
-            $mqttStatus = match ($status) {
-                'falha_confirmada' => 'fault_confirmed',
-                'saudavel', 'normal' => 'healthy',
-                'analise_pendente', 'indeterminado' => 'pending_analysis',
-                'machine_off' => 'off',
-                default => 'pending_analysis',
-            };
-
-            $logDisplayStatus = match ($mqttStatus) {
-                'fault_confirmed' => 'FALHA CONFIRMADA (Vermelho)',
-                'healthy' => 'SAUDÁVEL (Verde)',
-                'pending_analysis' => 'EM ANÁLISE / DEGRADADO (Amarelo)',
-                'off' => 'MÁQUINA DESLIGADA (Verde Piscante)',
-                default => 'EM ANÁLISE (Amarelo)',
-            };
-
-            $payload = [
-                'command' => 'set_alarm_state',
-                'status' => $mqttStatus,
-                'fault_type' => ($status === 'falha_confirmada' || $status === 'desbalanceamento') ? 'desbalanceamento' : 'normal',
-                'confidence' => (float) $confidence,
-                'ttl_seconds' => 60,
-                'ref_msg' => $msgId,
-            ];
-
-            $pubClientId = 'amemiya_pub_'.substr(md5(uniqid()), 0, 6);
-            $mqtt = MQTT::connection('default', $pubClientId);
-            $mqtt->publish("v1/gateways/{$gwId}/nodes/{$nodeId}/commands", json_encode($payload));
-            $mqtt->disconnect();
-
-            // Log detalhado do comando enviado
-            Log::channel('iot_commands')->info("Ref: {$msgId} | Resposta: {$logDisplayStatus}", [
-                'payload_enviado' => $payload,
-            ]);
-
-        } catch (\Exception $e) {
-            Log::channel('iot_commands')->error("Ref: {$msgId} | Erro MQTT: ".$e->getMessage());
-        }
-
-        return $payload;
+        return app(MqttCommandPublisher::class)->publishCommand(
+            gatewayId: $gwId,
+            nodeId: $nodeId,
+            status: $status,
+            confidence: $confidence,
+            msgId: (string) $msgId
+        );
     }
 }

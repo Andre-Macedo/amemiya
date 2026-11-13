@@ -1,7 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Modules\IoT\Services;
 
+use Exception;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -9,13 +12,18 @@ class MachineLearningService
 {
     /**
      * Chama o microserviço FastAPI para analisar as features extraídas na borda.
-     * Retorna um array com o status preditivo e confiança.
+     *
+     * @param  array<string, mixed>  $features
+     * @return array{
+     *     status: string,
+     *     confidence: float,
+     *     prob_defect?: mixed
+     * }
      */
     public function predictAnomalia(array $features): array
     {
         try {
-            // No Docker, o hostname é o nome do serviço definido no docker-compose
-            $url = config('iot.ml_service_url', 'http://ml-service:8000/predict-anomalia');
+            $url = (string) config('iot.ml_service_url', 'http://ml-service:8000/predict-anomalia');
 
             Log::channel('iot_ml')->info('Enviando features para Cloud ML', ['features_count' => count($features)]);
 
@@ -25,25 +33,33 @@ class MachineLearningService
 
             if ($response->successful()) {
                 $result = $response->json();
-                Log::channel('iot_ml')->info('Resposta recebida da Nuvem', [
-                    'status' => $result['status'],
-                    'confidence' => $result['confidence'],
-                    'prob_defect' => $result['prob_defect'] ?? 'N/A',
-                ]);
 
-                return $result;
+                if (is_array($result) && isset($result['status'])) {
+                    $status = (string) $result['status'];
+                    $confidence = (float) ($result['confidence'] ?? 0.0);
+
+                    Log::channel('iot_ml')->info('Resposta recebida da Nuvem', [
+                        'status' => $status,
+                        'confidence' => $confidence,
+                        'prob_defect' => $result['prob_defect'] ?? 'N/A',
+                    ]);
+
+                    return [
+                        'status' => $status,
+                        'confidence' => $confidence,
+                        'prob_defect' => $result['prob_defect'] ?? null,
+                    ];
+                }
             }
 
             Log::channel('iot_ml')->error('Falha na resposta do Machine Learning Service (Features).', [
                 'status' => $response->status(),
                 'body' => $response->body(),
             ]);
-
-        } catch (\Exception $e) {
-            Log::error('IoT: Erro de conexão com Machine Learning Service: '.$e->getMessage());
+        } catch (Exception $exception) {
+            Log::error("IoT: Erro de conexão com Machine Learning Service: {$exception->getMessage()}");
         }
 
-        // Fallback de segurança se o ML falhar
         return [
             'status' => 'indeterminado',
             'confidence' => 0.0,
@@ -52,9 +68,18 @@ class MachineLearningService
 
     /**
      * @deprecated Usar predictAnomalia() com features.
+     *
+     * @param  array<string, mixed>  $payload
+     * @return array{
+     *     status: string,
+     *     confidence: float,
+     *     prob_defect?: mixed
+     * }
      */
     public function analyzeTelemetry(array $payload): array
     {
-        return $this->predictAnomalia($payload['features'] ?? []);
+        $features = is_array($payload['features'] ?? null) ? $payload['features'] : [];
+
+        return $this->predictAnomalia($features);
     }
 }

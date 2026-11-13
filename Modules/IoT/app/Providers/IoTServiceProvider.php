@@ -2,9 +2,10 @@
 
 namespace Modules\IoT\Providers;
 
-use Illuminate\Console\Scheduling\Schedule;
+use Modules\IoT\Console\Commands\MarkOfflineDevices;
 use Modules\IoT\Console\Commands\PruneSensorData;
 use Modules\IoT\Console\MqttBridge;
+use Modules\IoT\Services\MqttCommandPublisher;
 use Nwidart\Modules\Support\ModuleServiceProvider;
 
 class IoTServiceProvider extends ModuleServiceProvider
@@ -27,7 +28,15 @@ class IoTServiceProvider extends ModuleServiceProvider
     protected array $commands = [
         MqttBridge::class,
         PruneSensorData::class,
+        MarkOfflineDevices::class,
     ];
+
+    public function register(): void
+    {
+        parent::register();
+
+        $this->app->singleton(MqttCommandPublisher::class);
+    }
 
     /**
      * Provider classes to register.

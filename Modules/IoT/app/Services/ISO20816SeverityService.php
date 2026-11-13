@@ -10,6 +10,19 @@ class ISO20816SeverityService
      * Limiares de velocidade RMS (mm/s) conforme ISO 20816-3.
      */
     protected const THRESHOLDS = [
+        // Máquinas pequenas (< 15 kW, ex: motor 1/4 CV da bancada TCC - ref. ISO 10816-1 Classe I)
+        'small_machine' => [
+            'rigid' => [
+                'zone_a_max' => 0.71,
+                'zone_b_max' => 1.8,
+                'zone_c_max' => 4.5,
+            ],
+            'flexible' => [
+                'zone_a_max' => 1.12,
+                'zone_b_max' => 2.8,
+                'zone_c_max' => 7.1,
+            ],
+        ],
         // Grupo 2: Motores de 15 kW a 300 kW (Padrão mais comum)
         'group_2' => [
             'rigid' => [
@@ -68,14 +81,16 @@ class ISO20816SeverityService
     }
 
     /**
-     * Avalia e classifica o estado mecânico conforme a norma ISO 20816-3.
+     * Avalia e classifica o estado mecânico conforme a norma ISO 20816-3 / ISO 10816-1.
      *
+     * @param  array<string, float|int>|null  $customThresholds
      * @return array<string, mixed>
      */
     public function evaluate(
         ?float $velocityRms,
         string $machineGroup = 'group_2',
-        string $foundation = 'rigid'
+        string $foundation = 'rigid',
+        ?array $customThresholds = null
     ): array {
         if ($velocityRms === null || $velocityRms <= 0) {
             return [
@@ -89,7 +104,9 @@ class ISO20816SeverityService
             ];
         }
 
-        $limits = self::THRESHOLDS[$machineGroup][$foundation] ?? self::THRESHOLDS['group_2']['rigid'];
+        $baseLimits = self::THRESHOLDS[$machineGroup][$foundation] ?? self::THRESHOLDS['group_2']['rigid'];
+        $limits = $this->mergeCustomThresholds($baseLimits, $customThresholds);
+        $standardLabel = $this->formatStandardLabel($machineGroup, $foundation, $customThresholds);
 
         if ($velocityRms <= $limits['zone_a_max']) {
             return [
@@ -101,7 +118,7 @@ class ISO20816SeverityService
                 'badge' => 'success',
                 'description' => 'Vibração típica de máquina nova ou recém-comissionada. Condição perfeita.',
                 'action_required' => false,
-                'standard' => 'ISO 20816-3 (Grupo 2, Base Rígida)',
+                'standard' => $standardLabel,
             ];
         }
 
@@ -115,7 +132,7 @@ class ISO20816SeverityService
                 'badge' => 'info',
                 'description' => 'Operação normal e irrestrita a longo prazo. Sem necessidade de intervenção.',
                 'action_required' => false,
-                'standard' => 'ISO 20816-3 (Grupo 2, Base Rígida)',
+                'standard' => $standardLabel,
             ];
         }
 
@@ -129,7 +146,7 @@ class ISO20816SeverityService
                 'badge' => 'warning',
                 'description' => 'Operação restrita. A vibração é insatisfatória para operação contínua. Planejar intervenção mecânica.',
                 'action_required' => true,
-                'standard' => 'ISO 20816-3 (Grupo 2, Base Rígida)',
+                'standard' => $standardLabel,
             ];
         }
 
@@ -142,7 +159,51 @@ class ISO20816SeverityService
             'badge' => 'destructive',
             'description' => 'Vibração excessiva e inaceitável. Risco iminente de quebra de eixo, mancal ou rotor. Parada de emergência recomendada.',
             'action_required' => true,
-            'standard' => 'ISO 20816-3 (Grupo 2, Base Rígida)',
+            'standard' => $standardLabel,
         ];
+    }
+
+    /**
+     * @param  array{zone_a_max: float, zone_b_max: float, zone_c_max: float}  $baseLimits
+     * @param  array<string, float|int>|null  $customThresholds
+     * @return array{zone_a_max: float, zone_b_max: float, zone_c_max: float}
+     */
+    protected function mergeCustomThresholds(array $baseLimits, ?array $customThresholds): array
+    {
+        if ($customThresholds === null) {
+            return $baseLimits;
+        }
+
+        $zoneAMax = isset($customThresholds['zone_a_max']) ? (float) $customThresholds['zone_a_max'] : $baseLimits['zone_a_max'];
+        $zoneBMax = isset($customThresholds['zone_b_max']) ? (float) $customThresholds['zone_b_max'] : $baseLimits['zone_b_max'];
+        $zoneCMax = isset($customThresholds['zone_c_max']) ? (float) $customThresholds['zone_c_max'] : $baseLimits['zone_c_max'];
+
+        if ($zoneAMax <= 0 || $zoneBMax <= $zoneAMax || $zoneCMax <= $zoneBMax) {
+            return $baseLimits;
+        }
+
+        return [
+            'zone_a_max' => $zoneAMax,
+            'zone_b_max' => $zoneBMax,
+            'zone_c_max' => $zoneCMax,
+        ];
+    }
+
+    /**
+     * @param  array<string, float|int>|null  $customThresholds
+     */
+    protected function formatStandardLabel(string $machineGroup, string $foundation, ?array $customThresholds): string
+    {
+        $foundationLabel = $foundation === 'flexible' ? 'Base Flexível' : 'Base Rígida';
+
+        $groupLabel = match ($machineGroup) {
+            'small_machine' => 'ISO 10816-1 Classe I (< 15 kW',
+            'group_1' => 'ISO 20816-3 (Grupo 1',
+            default => 'ISO 20816-3 (Grupo 2',
+        };
+
+        $customSuffix = $customThresholds !== null ? ', Limiar Customizado' : '';
+
+        return "{$groupLabel}, {$foundationLabel}{$customSuffix})";
     }
 }

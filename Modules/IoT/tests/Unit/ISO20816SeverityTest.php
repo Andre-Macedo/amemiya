@@ -65,4 +65,38 @@ class ISO20816SeverityTest extends TestCase
         $evalZero = $this->service->evaluate(0.0);
         $this->assertNull($evalZero['zone']);
     }
+
+    public function test_it_classifies_small_machine_below_15kw_and_formats_standard_label(): void
+    {
+        $evalA = $this->service->evaluate(0.50, 'small_machine', 'rigid');
+        $this->assertSame('A', $evalA['zone']);
+        $this->assertStringContainsString('ISO 10816-1 Classe I', $evalA['standard']);
+        $this->assertStringContainsString('Base Rígida', $evalA['standard']);
+
+        $evalB = $this->service->evaluate(1.20, 'small_machine', 'rigid');
+        $this->assertSame('B', $evalB['zone']);
+
+        $evalGroup1 = $this->service->evaluate(6.50, 'group_1', 'flexible');
+        $this->assertSame('B', $evalGroup1['zone']);
+        $this->assertStringContainsString('Grupo 1', $evalGroup1['standard']);
+        $this->assertStringContainsString('Base Flexível', $evalGroup1['standard']);
+    }
+
+    public function test_it_supports_valid_custom_thresholds_and_ignores_invalid_ones(): void
+    {
+        $custom = $this->service->evaluate(0.9, 'small_machine', 'rigid', [
+            'zone_a_max' => 1.0,
+            'zone_b_max' => 2.5,
+            'zone_c_max' => 4.0,
+        ]);
+        $this->assertSame('A', $custom['zone']);
+        $this->assertStringContainsString('Limiar Customizado', $custom['standard']);
+
+        $invalid = $this->service->evaluate(0.9, 'small_machine', 'rigid', [
+            'zone_a_max' => 3.0,
+            'zone_b_max' => 2.0,
+            'zone_c_max' => 4.0,
+        ]);
+        $this->assertSame('B', $invalid['zone']);
+    }
 }
