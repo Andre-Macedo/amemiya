@@ -1093,6 +1093,19 @@ def _evaluate_nr_compliance():
     else:
         passed_checks.append("NBR 5410 Tabela 47: todos os condutores de força [W01..W05, W08..W13] em 2.5 mm² no esquemático, gerador e diagramas")
 
+    # 3b. As-built Comando 24V DC em 1.0 mm² ([W17]-[W39]) - NR-10 10.4.13
+    cmd24_ids = [f"W{i}" for i in range(17, 40)]
+    bad_cmd24_hits = []
+    for label, content in [("kicad_sch", sch_txt), ("diagramas_md", diag_txt), ("generator_py", gen_txt)]:
+        for wid in cmd24_ids:
+            pat_10 = re.compile(rf'\[{wid}\][^\n\r]*?1\.0\s*(?:\\text\{{\s*)?mm', re.IGNORECASE)
+            if not pat_10.search(content):
+                bad_cmd24_hits.append(f"{label}:[{wid}] sem 1.0mm²")
+    if bad_cmd24_hits:
+        failures.append(f"NR-10 10.4.13 (As-built 24V = 1.0 mm²): divergência em {', '.join(sorted(set(bad_cmd24_hits))[:10])}")
+    else:
+        passed_checks.append("NR-10 10.4.13 / NBR 5410: comando 24V DC [W17..W39] documentado em 1.0 mm² (>= 0.5/0.75 mm² exigido)")
+
     # 4. NR-10 10.4.13: Coerência documental para 127V AC (sem resquício nominal 220V no motor/rede/dimmer)
     stale_220_patterns = [
         r"REDE_220V",
@@ -1153,9 +1166,9 @@ def _evaluate_nr_compliance():
         "message": "Painel sem IDR interno por decisão de projeto: utilizar exclusivamente em tomada/circuito predial protegido por DR 30 mA."
     })
     field_warnings.append({
-        "rule": "NR-12 12.5.4 / 12.5.9 / 12.5.11",
-        "severity": "PENDENTE_FISICO",
-        "message": "Proteção mecânica sobre a polia/eixo giratório ainda não instalada: fabricar proteção fixa parafusada (12.5.4) ou tampa móvel intertravada com SQ1 (12.5.9) antes da operação final."
+        "rule": "NR-12 12.5.4 / 12.5.7 / 12.5.9 / 12.5.11",
+        "severity": "PENDENTE_AJUSTE_FISICO",
+        "message": "Tampa existente abre sem ferramenta (proteção móvel 12.5.4 b): exige intertravamento funcional com SQ1 (12.5.7 a,b,c + avaliar inércia 12.5.9.1 e burla 12.5.11 g/k), OU fixação por parafusos que exijam ferramenta (proteção fixa 12.5.4 a)."
     })
 
     design_ok = (len(failures) == 0)
