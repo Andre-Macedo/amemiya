@@ -94,14 +94,17 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
     - Acumular janelas contínuas de 1.024 pontos nos eixos X, Y e Z para cálculo da Real FFT (RFFT) e extração de RMS, Kurtose e Fator de Crista.
   - [ ] **Aquisição Térmica OneWire (Dual DS18B20):**
     - Integrar leitura periódica dos sensores de temperatura de contato dos mancais dianteiro e traseiro via barramento 1-Wire (GPIO 10) com validação de CRC de 8 bits.
-- [ ] **Tacholess Speed Estimation (RPM Virtual):**
-  - [ ] Cálculo da Real FFT (RFFT) de 1024 pontos para o sinal radial.
-  - [ ] Busca do pico de máxima magnitude na banda síncrona $B1$ ($10\text{ Hz}$ a $65\text{ Hz}$).
-  - [ ] Interpolação parabólica de 3 pontos nos bins $[k-1, k, k+1]$ para precisão decimal ($\pm 1\text{ RPM}$):
+- [ ] **Tacholess Speed Estimation (RPM Virtual via Acelerômetro — sem `BG1` ligado ao ESP32):**
+  - *Contexto físico:* O sensor Hall `BG1` da bancada fica ligado **exclusivamente ao display local** (integração ao sistema prevista apenas via CLP em uma v3).
+  - [ ] Calcular RFFT em paralelo com **decimação para baixa frequência** (ex.: filtrar passa-baixa + decimar `3200 Hz` por `8x` para `400 Hz` com `N = 1024`, atingindo $\Delta f \approx 0{,}39\text{ Hz} \approx 23{,}4\text{ RPM/bin}$, em vez de $\Delta f = 3{,}125\text{ Hz} \approx 187{,}5\text{ RPM/bin}$) — ou janela `N >= 4096` — para manter o erro de RPM abaixo da tolerância de `2,5%` da cinemática de rolamentos quando o dimmer `TC1` variar a rotação.
+  - [ ] Aplicar **pontuação harmônica (`1X + 2X + 3X`) / HPS** na banda operacional esperada (`400–3800 RPM` / `6,7–63,3 Hz`) em vez de pegar cegamente o maior pico absoluto (evita confundir `2X` por desalinhamento ou ressonância de alta frequência com `1X`).
+  - [ ] Aplicar interpolação parabólica de 3 pontos nos bins $[k-1, k, k+1]$ para refinar a frequência estimada ($\pm 1\text{ RPM}$):
     $$\delta = \frac{A_{k+1} - A_{k-1}}{2(2A_k - A_{k-1} - A_{k+1})}, \quad \text{RPM} = 60 \cdot (k + \delta) \cdot \Delta f$$
-- [ ] **Processamento de Sinais na Borda (Edge DSP):**
+  - [ ] Enviar `rpm_estimated` (ou `rpm` com `"rpm_source": "accelerometer_firmware"`) + `peaks` (top picos espectrais detectados) no payload para o backend.
+- [ ] **Processamento de Sinais na Borda (Edge DSP & ISO 20816-3):**
+  - [ ] Calcular **`v_rms` (mm/s)** diretamente no firmware por **integração em banda larga (`10 Hz – 1000 Hz`)** no domínio da frequência ($V(f_k) = A(f_k) / 2\pi f_k$) e enviar no campo `features.v_rms` / `velocity_rms` (evita o fallback monofrequencial `1X` do backend).
   - [ ] Extração das features estatísticas e espectrais limpas de vibração: RMS, Kurtose, Fator de Crista e energias em 4 bandas de frequência ($B1, B2, B3, B4$).
-  - [ ] Vetor otimizado de features (sem o overhead das 12 colunas de áudio do microfone).
+  - [ ] Vetor otimizado de features (alinhando o modelo `ml_service` para não preencher 12 colunas ausentes de áudio com `0.0`).
 - [ ] **TinyML Embarcado:**
   - [ ] Inferência local via modelo XGBoost transcompilado em C (`embarcado_xgboost.h`).
   - [ ] Inércia temporal com buffer de 3 amostras consecutivas na memória RTC (`RTC_DATA_ATTR`) para evitar alarmes falsos.
@@ -119,8 +122,8 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
   - [ ] Desserializar os dados brutos e validar checksum do pacote.
 - [ ] **Enfileiramento e Publicação MQTT:**
   - [ ] Buffer circular seguro em RAM (`TAM_FILA 20` com seção crítica) para desacoplar a recepção LoRa do Wi-Fi.
-  - [ ] Conectar ao Wi-Fi e publicar a telemetria em formato JSON no broker Mosquitto em `leantech.andremacedo.dev.br:1883` nos tópicos `v1/gateways/{id}/nodes/{id}/telemetry`.
-  - [ ] Mapear campos reais no payload: `rpm`, `temp_celsius`, `v_bat`, `status_ia`, `confianca`, `rms_global`.
+  - [ ] Conectar ao Wi-Fi e publicar a telemetria em formato JSON via **MQTT TLS (`8883`)** no broker Mosquitto (substituindo texto claro `:1883` + `acl_file` por gateway) nos tópicos `v1/gateways/{id}/nodes/{id}/telemetry`.
+  - [ ] Mapear campos reais alinhados ao `ProcessTelemetryJob`: `rpm_estimated` (ou `rpm` + `rpm_source`), `velocity_rms` / `features.v_rms`, `peaks`, `temp_celsius`, `battery_voltage`, `status_ia`, `confianca`, `rms_global`.
 - [ ] **Handshake e Atuadores Locais:**
   - [ ] Escutar tópico de retorno MQTT e controlar os LEDs do painel (Verde = Normal, Amarelo = Em análise, Vermelho = Falha confirmada) e o Buzzer físico.
 
@@ -134,9 +137,9 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
   - [x] Conversão analítica de aceleração para velocidade $v_{RMS} = \frac{a_{RMS} \cdot 9806.65 \cdot 60}{2\pi \cdot \text{RPM}}$ em `ISO20816SeverityService.php`.
   - [x] Classificação estrita nas 4 Zonas de Severidade da norma (Zona A: Excelente, Zona B: Aceitável, Zona C: Alerta, Zona D: Crítico).
   - [x] Gravação estruturada nos logs (`IoTDeviceLog`) com tenant isolation e persistência das zonas.
-- [ ] **Módulo de Cinemática de Rolamentos (`BearingKinematicsService`):**
-  - [ ] Cadastro de rolamentos industriais (SKF 6204, UCP204, 2206) com $N$ esferas, diâmetro $d$, primitivo $D$ e ângulo $\alpha$.
-  - [ ] Cálculo automático em tempo de execução das frequências de falha: BPFO, BPFI, BSF e FTF alimentadas pelo RPM estimado.
+- [x] **Módulo de Cinemática de Rolamentos (`BearingKinematicsService`):**
+  - [x] Cadastro de rolamentos industriais (SKF 6204, UCP204, SKF 6205, SKF 6304, SKF 2206) com $N$ esferas, diâmetro $d$, primitivo $D$ e ângulo $\alpha$.
+  - [x] Cálculo automático em tempo de execução das frequências de falha (`BPFO`, `BPFI`, `BSF`, `FTF`) usando `resolveSpectralRpm()` alimentado pelo RPM medido, `rpm_estimated` do firmware ou estimação harmônica (`peaks`/`fft_x`) com registro de `rpm_source`.
 - [x] **Motor de Diagnóstico Prescritivo de Causa-Raiz (IA Especialista + Limites Físicos):**
   - [ ] O modelo XGBoost e as regras espectrais determinam a **Causa-Raiz da Falha** (Desbalanceamento, Desalinhamento, Folga Mecânica, Falha de Rolamento, Falta de Lubrificação).
   - [ ] A **Severidade do Ativo** é sempre atribuída pela norma técnica **ISO 20816-3 (Zonas A, B, C, D)** e pelo limite térmico do fabricante do rolamento (SKF: normal 45-70°C, alerta > 75°C, perigo > 90°C).
