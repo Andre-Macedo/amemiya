@@ -25,10 +25,17 @@ class MachineLearningService
         try {
             $url = (string) config('iot.ml_service_url', 'http://ml-service:8000/predict-anomalia');
 
-            Log::channel('iot_ml')->info('Enviando features para Cloud ML', ['features_count' => count($features)]);
+            $numericFeatures = [];
+            foreach ($features as $key => $value) {
+                if (is_numeric($value)) {
+                    $numericFeatures[(string) $key] = (float) $value;
+                }
+            }
+
+            Log::channel('iot_ml')->info('Enviando features para Cloud ML', ['features_count' => count($numericFeatures)]);
 
             $response = Http::timeout(10)->post($url, [
-                'features' => $features,
+                'features' => $numericFeatures,
             ]);
 
             if ($response->successful()) {

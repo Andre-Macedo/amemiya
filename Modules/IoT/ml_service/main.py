@@ -31,7 +31,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan, title="Metrology Cloud ML Service")
 
 class FeatureRequest(BaseModel):
-    features: Dict[str, float]
+    features: Dict[str, Any]
 
 # Lista exata das 36 features conforme esperado pelo modelo (Ordem é CRÍTICA)
 FEATURE_NAMES = [
@@ -48,13 +48,16 @@ async def predict_anomalia(request: FeatureRequest):
         raise HTTPException(status_code=503, detail="Modelo XGBoost não carregado no servidor")
 
     try:
-        # Extrair features na ordem correta
+        # Extrair features na ordem correta ignorando metadados não numéricos
         feat_dict = request.features
         feat_array = []
         
         for name in FEATURE_NAMES:
-            # Tenta pegar o valor, se não existir coloca 0.0
-            feat_array.append(float(feat_dict.get(name, 0.0)))
+            raw_val = feat_dict.get(name, 0.0)
+            try:
+                feat_array.append(float(raw_val) if raw_val is not None else 0.0)
+            except (TypeError, ValueError):
+                feat_array.append(0.0)
 
         # Converter para formato numpy esperado pelo XGBoost
         X = np.array([feat_array])

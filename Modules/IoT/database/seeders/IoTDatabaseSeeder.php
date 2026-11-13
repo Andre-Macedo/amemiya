@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\IoT\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Redis;
 use Modules\IoT\Models\IoTDeviceLog;
 use Modules\IoT\Models\IoTGateway;
 use Modules\IoT\Models\IoTNode;
@@ -28,6 +29,39 @@ class IoTDatabaseSeeder extends Seeder
         $injetora = Machine::where('code', 'INJ-01')->first();
         $bancada = Machine::where('code', 'BCD-01')->first();
         $camara = Machine::where('code', 'CAM-01')->first();
+
+        if ($bancada !== null) {
+            $bancada->update([
+                'metadata' => array_merge($bancada->metadata ?? [], [
+                    'bearing_model' => 'skf_6203',
+                    'iso_group' => 'small_machine',
+                    'foundation_type' => 'rigid',
+                    'nominal_rpm' => 1725,
+                ]),
+            ]);
+        }
+
+        if ($tornoCnc !== null) {
+            $tornoCnc->update([
+                'metadata' => array_merge($tornoCnc->metadata ?? [], [
+                    'bearing_model' => 'skf_6205',
+                    'iso_group' => 'group_2',
+                    'foundation_type' => 'rigid',
+                    'nominal_rpm' => 2200,
+                ]),
+            ]);
+        }
+
+        if ($injetora !== null) {
+            $injetora->update([
+                'metadata' => array_merge($injetora->metadata ?? [], [
+                    'bearing_model' => 'skf_6204',
+                    'iso_group' => 'group_2',
+                    'foundation_type' => 'rigid',
+                    'nominal_rpm' => 1450,
+                ]),
+            ]);
+        }
 
         // 1. Gateways Industriais
         $gwGalpao = IoTGateway::updateOrCreate(
@@ -139,11 +173,15 @@ class IoTDatabaseSeeder extends Seeder
                 $mlStatus = 'normal';
                 $mlConfidence = 0.98;
                 $isoZone = 'A';
+                $tempCelsius = 25.0;
+                $vbat = 3.90;
+                $rootCause = 'Operação Mecânica Estável';
+                $confirmationSource = 'normal';
                 $features = [];
 
                 if ($type === 'cnc') {
                     // Torno CNC em operação de usinagem
-                    $rpm = 2200 + rand(-100, 100);
+                    $rpm = 2200 + rand(-40, 40);
                     $rmsGlobal = 1.40 + (rand(-20, 30) / 100);
                     $rmsX = 0.85 + (rand(-10, 15) / 100);
                     $rmsY = 1.10 + (rand(-15, 20) / 100);
@@ -153,35 +191,62 @@ class IoTDatabaseSeeder extends Seeder
                     $kurtZ = 2.98;
                     $micRms = 54.0 + (rand(-20, 20) / 10);
                     $isoZone = $rmsGlobal > 1.8 ? 'B' : 'A';
-                    $mlStatus = 'normal';
+                    $mlStatus = 'saudavel';
                     $mlConfidence = 0.97;
+                    $tempCelsius = 43.5 + (rand(-10, 10) / 10);
+                    $vbat = 3.95;
+                    $rootCause = 'Operação Mecânica Estável';
+                    $confirmationSource = 'normal';
                     $features = [
-                        'temperature' => 43.5 + (rand(-10, 10) / 10),
+                        'temperature' => $tempCelsius,
+                        'probe_temperature' => $tempCelsius,
+                        'velocity_rms' => $rmsGlobal,
+                        'iso_zone' => $isoZone,
+                        'rpm' => $rpm,
+                        'rpm_source' => 'accelerometer_firmware',
+                        'battery_voltage' => $vbat,
+                        'vbat_mv' => $vbat * 1000.0,
+                        'root_cause' => $rootCause,
+                        'confirmation_source' => $confirmationSource,
                         'humidity' => 52.0 + (rand(-20, 20) / 10),
                         'peak_accel_g' => 3.2,
                         'crest_factor' => 2.3,
-                        'dominant_freq_hz' => 36.6,
+                        'dominant_freq_hz' => round($rpm / 60.0, 2),
                     ];
                 } elseif ($type === 'probe') {
-                    // Probe Tower (Bancada de metrologia dimensional - estática)
-                    $rpm = 0;
-                    $rmsGlobal = 0.03 + (rand(0, 20) / 1000);
-                    $rmsX = 0.015;
-                    $rmsY = 0.018;
-                    $rmsZ = 0.022;
-                    $micRms = 28.5 + (rand(-10, 10) / 10);
+                    // Probe Tower (Bancada Didática M1 - Motor WEG 1/4 CV, Rolamento 6203 em 1725 RPM)
+                    $rpm = 1725 + rand(-12, 12);
+                    $rmsGlobal = 0.42 + (rand(-5, 8) / 100);
+                    $rmsX = 0.31;
+                    $rmsY = 0.34;
+                    $rmsZ = 0.38;
+                    $micRms = 34.5 + (rand(-10, 10) / 10);
                     $isoZone = 'A';
-                    $mlStatus = 'normal';
+                    $mlStatus = 'saudavel';
                     $mlConfidence = 0.99;
+                    $tempCelsius = 36.4 + (rand(-4, 4) / 10);
+                    $vbat = 3.92;
+                    $rootCause = 'Operação Mecânica Estável';
+                    $confirmationSource = 'normal';
                     $features = [
-                        'temperature' => 20.1 + (rand(-2, 2) / 10),
+                        'temperature' => $tempCelsius,
+                        'probe_temperature' => $tempCelsius,
+                        'velocity_rms' => round($rmsGlobal * 2.3, 2),
+                        'iso_zone' => $isoZone,
+                        'rpm' => $rpm,
+                        'rpm_source' => 'accelerometer_firmware',
+                        'battery_voltage' => $vbat,
+                        'vbat_mv' => $vbat * 1000.0,
+                        'root_cause' => $rootCause,
+                        'confirmation_source' => $confirmationSource,
                         'humidity' => 49.5 + (rand(-10, 10) / 10),
-                        'probe_drift_um' => 0.04,
+                        'dominant_freq_hz' => round($rpm / 60.0, 2),
                     ];
                 } elseif ($type === 'injetora') {
                     // Injetora: degradação induzida nas últimas 8 horas para demonstrar alerta e ML
-                    $rpm = 1450 + rand(-50, 50);
+                    $rpm = 1450 + rand(-25, 25);
                     $isDegraded = $h >= 17;
+                    $vbat = 3.84;
 
                     if ($isDegraded) {
                         // Zona C (Insatisfatória / Alerta)
@@ -192,10 +257,22 @@ class IoTDatabaseSeeder extends Seeder
                         $kurtZ = 4.65 + (rand(0, 30) / 100); // Indicativo de impacto no rolamento
                         $micRms = 72.5 + (rand(-15, 20) / 10);
                         $isoZone = 'C';
-                        $mlStatus = 'desbalanceamento';
-                        $mlConfidence = 0.88;
+                        $mlStatus = 'falha_confirmada';
+                        $mlConfidence = 0.91;
+                        $tempCelsius = 67.8 + (($h - 16) * 0.4);
+                        $rootCause = 'Desgaste / Falha em Rolamento (possível região: pista externa (BPFO))';
+                        $confirmationSource = 'hybrid_kinematics_ml';
                         $features = [
-                            'temperature' => 67.8 + (($h - 16) * 0.4),
+                            'temperature' => $tempCelsius,
+                            'probe_temperature' => $tempCelsius,
+                            'velocity_rms' => $rmsGlobal,
+                            'iso_zone' => $isoZone,
+                            'rpm' => $rpm,
+                            'rpm_source' => 'accelerometer_firmware',
+                            'battery_voltage' => $vbat,
+                            'vbat_mv' => $vbat * 1000.0,
+                            'root_cause' => $rootCause,
+                            'confirmation_source' => $confirmationSource,
                             'humidity' => 46.0,
                             'bearing_health_index' => max(40, 85 - (($h - 16) * 5)),
                             'crest_factor' => 4.8,
@@ -209,16 +286,28 @@ class IoTDatabaseSeeder extends Seeder
                         $kurtZ = 3.10;
                         $micRms = 58.0 + (rand(-10, 10) / 10);
                         $isoZone = 'B';
-                        $mlStatus = 'normal';
+                        $mlStatus = 'saudavel';
                         $mlConfidence = 0.95;
+                        $tempCelsius = 54.0 + (rand(-10, 10) / 10);
+                        $rootCause = 'Operação Mecânica Estável';
+                        $confirmationSource = 'normal';
                         $features = [
-                            'temperature' => 54.0 + (rand(-10, 10) / 10),
+                            'temperature' => $tempCelsius,
+                            'probe_temperature' => $tempCelsius,
+                            'velocity_rms' => $rmsGlobal,
+                            'iso_zone' => $isoZone,
+                            'rpm' => $rpm,
+                            'rpm_source' => 'accelerometer_firmware',
+                            'battery_voltage' => $vbat,
+                            'vbat_mv' => $vbat * 1000.0,
+                            'root_cause' => $rootCause,
+                            'confirmation_source' => $confirmationSource,
                             'humidity' => 48.0,
                             'bearing_health_index' => 92,
                             'crest_factor' => 2.6,
                         ];
                     }
-                } elseif ($type === 'clima') {
+                } else {
                     // Monitor de Climatização do Laboratório
                     $rpm = 0;
                     $rmsGlobal = 0.01;
@@ -227,10 +316,23 @@ class IoTDatabaseSeeder extends Seeder
                     $rmsZ = 0.008;
                     $micRms = 22.0 + (rand(-5, 5) / 10);
                     $isoZone = 'A';
-                    $mlStatus = 'normal';
+                    $mlStatus = 'saudavel';
                     $mlConfidence = 0.99;
+                    $tempCelsius = 20.0 + (rand(-3, 3) / 10);
+                    $vbat = 4.05;
+                    $rootCause = 'Operação Mecânica Estável';
+                    $confirmationSource = 'normal';
                     $features = [
-                        'temperature' => 20.0 + (rand(-3, 3) / 10),
+                        'temperature' => $tempCelsius,
+                        'probe_temperature' => $tempCelsius,
+                        'velocity_rms' => 0.02,
+                        'iso_zone' => $isoZone,
+                        'rpm' => 0,
+                        'rpm_source' => 'machine_off',
+                        'battery_voltage' => $vbat,
+                        'vbat_mv' => $vbat * 1000.0,
+                        'root_cause' => $rootCause,
+                        'confirmation_source' => $confirmationSource,
                         'humidity' => 50.0 + (rand(-15, 15) / 10),
                         'air_pressure_hpa' => 1013.2,
                     ];
@@ -250,6 +352,7 @@ class IoTDatabaseSeeder extends Seeder
                     'kurt_y' => $kurtY,
                     'kurt_z' => $kurtZ,
                     'mic_rms' => $micRms,
+                    'temp_celsius' => $tempCelsius,
                     'features' => $features,
                     'fft_data' => [0.08, 0.25, 0.95, 0.65, 0.32, 0.18, 0.09, 0.04],
                     'ml_status' => $mlStatus,
@@ -258,6 +361,58 @@ class IoTDatabaseSeeder extends Seeder
                     'cloud_ml_confidence' => $mlConfidence,
                     'measured_at' => $timestamp,
                 ]);
+
+                if ($h === 24) {
+                    $isAnomaly = $mlStatus === 'falha_confirmada';
+                    $node->update([
+                        'last_seen_at' => $timestamp,
+                        'battery_voltage' => $vbat,
+                        'last_payload' => [
+                            'temperature' => $tempCelsius,
+                            'probe_temperature' => $tempCelsius,
+                            'battery_voltage' => $vbat,
+                            'vibration_rms' => (float) $features['velocity_rms'],
+                            'rms_global' => $rmsGlobal,
+                            'iso20816_severity' => $isoZone,
+                            'ml_status' => $mlStatus,
+                            'ml_confidence' => $mlConfidence,
+                            'ml_anomaly_probability' => $isAnomaly ? $mlConfidence : round(1.0 - $mlConfidence, 4),
+                            'rpm_measured' => $rpm,
+                            'rpm_source' => $features['rpm_source'],
+                            'root_cause' => $rootCause,
+                            'confirmation_source' => $confirmationSource,
+                            'created_at' => $timestamp->toIso8601String(),
+                        ],
+                    ]);
+
+                    if ($rpm > 0) {
+                        $fRot = round($rpm / 60.0, 2);
+                        $bpfo = round(3.0528 * $fRot, 2);
+                        $peaks = $isAnomaly
+                            ? [
+                                ['frequency_hz' => $fRot, 'amplitude' => 0.42, 'freq_hz' => $fRot, 'amp_g' => 0.42],
+                                ['frequency_hz' => $bpfo, 'amplitude' => 1.65, 'freq_hz' => $bpfo, 'amp_g' => 1.65],
+                                ['frequency_hz' => round(2.0 * $bpfo, 2), 'amplitude' => 0.78, 'freq_hz' => round(2.0 * $bpfo, 2), 'amp_g' => 0.78],
+                            ]
+                            : [
+                                ['frequency_hz' => $fRot, 'amplitude' => 0.26, 'freq_hz' => $fRot, 'amp_g' => 0.26],
+                                ['frequency_hz' => round(2.0 * $fRot, 2), 'amplitude' => 0.08, 'freq_hz' => round(2.0 * $fRot, 2), 'amp_g' => 0.08],
+                            ];
+
+                        try {
+                            $hwNodeId = (string) $node->getAttribute('node_id');
+                            Redis::setex("iot:node:{$hwNodeId}:spectrum:latest", 86400, json_encode([
+                                'sample_rate' => 3200,
+                                'rpm' => $rpm,
+                                'rpm_source' => 'accelerometer_firmware',
+                                'peaks' => $peaks,
+                                'timestamp' => $timestamp->toIso8601String(),
+                            ]));
+                        } catch (\Throwable) {
+                            // Ignora se Redis não estiver disponível durante seed offline
+                        }
+                    }
+                }
 
                 // Cria registros de log operacionais em iot_device_logs para eventos chave
                 if ($h % 4 === 0 || ($type === 'injetora' && $h >= 17)) {

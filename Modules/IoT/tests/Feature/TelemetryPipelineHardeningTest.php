@@ -9,9 +9,11 @@ use App\Models\Subscription;
 use App\Models\Tenant;
 use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Client\Request as HttpRequest;
 use Illuminate\Support\Facades\Http;
 use Laravel\Sanctum\Sanctum;
 use Mockery;
+use Modules\IoT\Database\Seeders\IoTDatabaseSeeder;
 use Modules\IoT\Jobs\ProcessTelemetryJob;
 use Modules\IoT\Models\IoTDeviceLog;
 use Modules\IoT\Models\IoTGateway;
@@ -284,5 +286,53 @@ class TelemetryPipelineHardeningTest extends TestCase
             ->assertJsonPath('data.0.iso_zone', 'D')
             ->assertJsonPath('data.0.battery_voltage', 3.88)
             ->assertJsonPath('data.0.root_cause', 'Desgaste / Falha em Rolamento (possível região: pista externa (BPFO))');
+    }
+
+    public function test_ml_service_strips_non_numeric_metadata_and_seeder_populates_last_payload(): void
+    {
+        Http::fake([
+            '*' => Http::response([
+                'status' => 'falha_confirmada',
+                'confidence' => 0.96,
+                'prob_defect' => 0.96,
+            ], 200),
+        ]);
+
+        $mlService = app(MachineLearningService::class);
+        $result = $mlService->predictAnomalia([
+            'z_rms' => 4.2,
+            'x_kurtosis' => 8.5,
+            'rpm_estimated' => 1725,
+            'rpm_source' => 'accelerometer_firmware',
+            'iso_zone' => 'D',
+        ]);
+
+        $this->assertSame('falha_confirmada', $result['status']);
+
+        Http::assertSent(function (HttpRequest $request): bool {
+            $sentFeatures = $request['features'] ?? [];
+
+            return isset($sentFeatures['z_rms'])
+                && $sentFeatures['z_rms'] === 4.2
+                && ! array_key_exists('rpm_source', $sentFeatures)
+                && ! array_key_exists('iso_zone', $sentFeatures);
+        });
+
+        Machine::create([
+            'tenant_id' => $this->tenant->id,
+            'station_id' => $this->gateway->station_id,
+            'name' => 'Bancada Didática M1',
+            'code' => 'BCD-01',
+            'status' => 'operational',
+        ]);
+
+        $this->seed(IoTDatabaseSeeder::class);
+
+        $probeNode = IoTNode::where('node_id', 'NODE-PROBE-01')->first();
+        $this->assertNotNull($probeNode);
+        $this->assertSame(3.92, $probeNode->battery_voltage);
+        $this->assertNotNull($probeNode->last_payload);
+        $this->assertSame('Operação Mecânica Estável', $probeNode->last_payload['root_cause'] ?? null);
+        $this->assertSame('skf_6203', $probeNode->machine->fresh()->metadata['bearing_model'] ?? null);
     }
 }
