@@ -104,7 +104,9 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
 - [ ] **Processamento de Sinais na Borda (Edge DSP & ISO 20816-3):**
   - [ ] Calcular **`v_rms` (mm/s)** diretamente no firmware por **integração em banda larga (`10 Hz – 1000 Hz`)** no domínio da frequência ($V(f_k) = A(f_k) / 2\pi f_k$) e enviar no campo `features.v_rms` / `velocity_rms` (evita o fallback monofrequencial `1X` do backend).
   - [ ] Extração das features estatísticas e espectrais limpas de vibração: RMS, Kurtose, Fator de Crista e energias em 4 bandas de frequência ($B1, B2, B3, B4$).
-  - [ ] Vetor otimizado de features (alinhando o modelo `ml_service` para não preencher 12 colunas ausentes de áudio com `0.0`).
+  - [ ] Validação de integridade na coleta antes do empacotamento LoRa: validar CRC do `DS18B20` e descartar sentinelas de erro (`-127.0 °C` / `85.0 °C` no boot), garantindo zero `NaN`/`Inf` e `rms_global >= 0`.
+  - [ ] Geração e envio do burst espectral (`peaks` top-K já interpolados + vetor `fft_x`/`fft_y`/`fft_z` com `sample_rate`) via JSON MQTT sob demanda ou em janela periódica para plotagem no `SpectrumStudio` sem sobrecarregar o link LoRa contínuo.
+  - [ ] Vetor otimizado de features (alinhando o modelo `ml_service` quando for tomada a decisão final sobre manter ou remover o microfone `INMP441`).
 - [ ] **TinyML Embarcado:**
   - [ ] Inferência local via modelo XGBoost transcompilado em C (`embarcado_xgboost.h`).
   - [ ] Inércia temporal com buffer de 3 amostras consecutivas na memória RTC (`RTC_DATA_ATTR`) para evitar alarmes falsos.
@@ -122,10 +124,11 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
   - [ ] Desserializar os dados brutos e validar checksum do pacote.
 - [ ] **Enfileiramento e Publicação MQTT:**
   - [ ] Buffer circular seguro em RAM (`TAM_FILA 20` com seção crítica) para desacoplar a recepção LoRa do Wi-Fi.
-  - [ ] Conectar ao Wi-Fi e publicar a telemetria em formato JSON via **MQTT TLS (`8883`)** no broker Mosquitto (substituindo texto claro `:1883` + `acl_file` por gateway) nos tópicos `v1/gateways/{id}/nodes/{id}/telemetry`.
-  - [ ] Mapear campos reais alinhados ao `ProcessTelemetryJob`: `rpm_estimated` (ou `rpm` + `rpm_source`), `velocity_rms` / `features.v_rms`, `peaks`, `temp_celsius`, `battery_voltage`, `status_ia`, `confianca`, `rms_global`.
+  - [ ] Conectar ao Wi-Fi e publicar a telemetria em formato JSON via **MQTT TLS (`8883`)** no broker Mosquitto embutindo o certificado raiz (`ca.crt`) na Flash do ESP32 (`WiFiClientSecure`) e autenticando como `gateway_user` (restrito via `acl_file`) nos tópicos `v1/gateways/{id}/nodes/{id}/telemetry`.
+  - [ ] Configurar cliente MQTT com **`QoS 1`**, `clean_session = false` e **LWT (*Last Will and Testament*)** para detectar desconexão abrupta em conjunto com o *watchdog* `last_seen_at` (`iot:mark-offline-devices`) no backend.
+  - [ ] Mapear campos reais alinhados ao `ProcessTelemetryJob` e `TelemetryPayloadValidator`: `device_id`, `node_id`, `rpm_estimated` (`rpm_source: "accelerometer_firmware"`), `velocity_rms` / `features.v_rms`, `peaks`, `fft_x`/`sample_rate`, `temp_celsius`, `battery_voltage`, `status_ia`, `confianca`, `rms_global`, `timestamp` (NTP sincronizado).
 - [ ] **Handshake e Atuadores Locais:**
-  - [ ] Escutar tópico de retorno MQTT e controlar os LEDs do painel (Verde = Normal, Amarelo = Em análise, Vermelho = Falha confirmada) e o Buzzer físico.
+  - [ ] Escutar o tópico de retorno `v1/gateways/{id}/nodes/{id}/commands` (`set_alarm_state` com `ttl_seconds`) e controlar exclusivamente a sinalização visual/sonora da bancada (`Verde = healthy`, `Amarelo = pending_analysis`, `Vermelho = fault_confirmed`, `Buzzer`), mantendo o acionamento de força isolado na lógica eletromecânica `NR-12`.
 
 ---
 
@@ -140,6 +143,7 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
 - [x] **Módulo de Cinemática de Rolamentos (`BearingKinematicsService`):**
   - [x] Cadastro de rolamentos industriais (SKF 6204, UCP204, SKF 6205, SKF 6304, SKF 2206) com $N$ esferas, diâmetro $d$, primitivo $D$ e ângulo $\alpha$.
   - [x] Cálculo automático em tempo de execução das frequências de falha (`BPFO`, `BPFI`, `BSF`, `FTF`) usando `resolveSpectralRpm()` alimentado pelo RPM medido, `rpm_estimated` do firmware ou estimação harmônica (`peaks`/`fft_x`) com registro de `rpm_source`.
+  - [ ] Suporte a catálogo extensível/customizado de rolamentos na máquina (`MachineForm` estruturado no Filament em vez de `metadata` livre) e modelagem da regra híbrida: **cinemática como indicação/localização espectral** (incluindo bandas laterais `BPFI ± 1X`) + **confirmação de anomalia via ML (`falha_confirmada`) ou severidade ISO (`C/D`)**.
 - [x] **Motor de Diagnóstico Prescritivo de Causa-Raiz (IA Especialista + Limites Físicos):**
   - [ ] O modelo XGBoost e as regras espectrais determinam a **Causa-Raiz da Falha** (Desbalanceamento, Desalinhamento, Folga Mecânica, Falha de Rolamento, Falta de Lubrificação).
   - [ ] A **Severidade do Ativo** é sempre atribuída pela norma técnica **ISO 20816-3 (Zonas A, B, C, D)** e pelo limite térmico do fabricante do rolamento (SKF: normal 45-70°C, alerta > 75°C, perigo > 90°C).
