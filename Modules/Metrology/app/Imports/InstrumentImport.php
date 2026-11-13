@@ -12,8 +12,7 @@ use Modules\System\Models\Supplier;
 class InstrumentImport implements ToModel, WithHeadingRow
 {
     /**
-     * @param array<string, mixed> $row
-     * @return Model|null
+     * @param  array<string, mixed>  $row
      */
     public function model(array $row): ?Model
     {

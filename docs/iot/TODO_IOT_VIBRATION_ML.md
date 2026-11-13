@@ -143,17 +143,17 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
 - [x] **Módulo de Cinemática de Rolamentos (`BearingKinematicsService`):**
   - [x] Cadastro de rolamentos industriais (SKF 6204, UCP204, SKF 6205, SKF 6304, SKF 2206) com $N$ esferas, diâmetro $d$, primitivo $D$ e ângulo $\alpha$.
   - [x] Cálculo automático em tempo de execução das frequências de falha (`BPFO`, `BPFI`, `BSF`, `FTF`) usando `resolveSpectralRpm()` alimentado pelo RPM medido, `rpm_estimated` do firmware ou estimação harmônica (`peaks`/`fft_x`) com registro de `rpm_source`.
-  - [ ] Suporte a catálogo extensível/customizado de rolamentos na máquina (`MachineForm` estruturado no Filament em vez de `metadata` livre) e modelagem da regra híbrida: **cinemática como indicação/localização espectral** (incluindo bandas laterais `BPFI ± 1X`) + **confirmação de anomalia via ML (`falha_confirmada`) ou severidade ISO (`C/D`)**.
+  - [x] Suporte a catálogo extensível/customizado de rolamentos na máquina (`MachineForm` estruturado no Filament em vez de `metadata` livre) e modelagem da regra híbrida: **cinemática como indicação espectral não conclusiva da possível região** (incluindo bandas laterais `BPFI ± 1X`) + **diagnóstico macro `Desgaste / Falha em Rolamento` confirmado via ML ou severidade ISO (`C/D`)**.
 - [x] **Motor de Diagnóstico Prescritivo de Causa-Raiz (IA Especialista + Limites Físicos):**
-  - [ ] O modelo XGBoost e as regras espectrais determinam a **Causa-Raiz da Falha** (Desbalanceamento, Desalinhamento, Folga Mecânica, Falha de Rolamento, Falta de Lubrificação).
-  - [ ] A **Severidade do Ativo** é sempre atribuída pela norma técnica **ISO 20816-3 (Zonas A, B, C, D)** e pelo limite térmico do fabricante do rolamento (SKF: normal 45-70°C, alerta > 75°C, perigo > 90°C).
-  - [ ] Geração de recomendação prescritiva em linguagem natural (ex: *"Severidade: Zona C (ISO 20816-3) | Causa-Raiz: Desbalanceamento de Rotor (1X) | Ação: Programar balanceamento dinâmico em 1 plano"*).
+  - [x] O modelo XGBoost e as regras espectrais determinam a **Causa-Raiz da Falha** (Desbalanceamento, Desalinhamento, Folga Mecânica, Falha de Rolamento, Falta de Lubrificação).
+  - [x] A **Severidade do Ativo** é sempre atribuída pela norma técnica **ISO 20816-3 (Zonas A, B, C, D)** e pelo limite térmico do fabricante do rolamento (SKF: normal 45-70°C, alerta > 75°C, perigo > 90°C).
+  - [x] Geração de recomendação prescritiva em linguagem natural (ex: *"Severidade: Zona C (ISO 20816-3) | Causa-Raiz: Desbalanceamento de Rotor (1X) | Ação: Programar balanceamento dinâmico em 1 plano"*).
 - [x] **Buffer de Burst Espectral em Redis:**
-  - [ ] Armazenar o último espectro bruto completo (FFT X, Y, Z de 1024 bins) em cache Redis (`iot:node:{id}:spectrum:latest`) com TTL de 24h para alimentar o Spectrum Studio do frontend sem onerar o banco relacional.
+  - [x] Armazenar o último espectro bruto completo (FFT X, Y, Z de 1024 bins) em cache Redis (`iot:node:{id}:spectrum:latest`) com TTL de 24h para alimentar o Spectrum Studio do frontend sem onerar o banco relacional.
 - [x] **Handshake Bidirecional com a Borda:**
-  - [ ] Envio automático de comando MQTT de retorno (`sendMqttCommand`) para o Gateway atualizar a sinalização física na máquina.
-- [ ] **Microserviço de Machine Learning Cloud (FastAPI):**
-  - [ ] Auditoria sob demanda: acionar o serviço Python FastAPI apenas quando a confiança da borda for $< 80\%$ ou houver indicação de falha.
+  - [x] Envio automático de comando MQTT de retorno (`sendMqttCommand`) para o Gateway atualizar a sinalização física na máquina.
+- [x] **Microserviço de Machine Learning Cloud (FastAPI):**
+  - [x] Auditoria sob demanda: acionar o serviço Python FastAPI apenas quando a confiança da borda for $< 80\%$ ou houver indicação de falha.
 
 ---
 
@@ -165,17 +165,17 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
 - [x] **Backoffice Administrativo no Filament 4 (`amemiya`):**
   - [x] Gestão de estações, máquinas, nós IoT, certificados de calibração ISO 17025 e auditoria.
   - [x] Cadastro dos rolamentos instalados nos mancais das máquinas.
-- [ ] **Cockpit Preditivo e Spectrum Studio no Next.js (`metrology-sass-front`):**
-  - [ ] Dashboard com visão em semáforo (Verde, Amarelo, Vermelho) baseado nas Zonas A/B, C e D da ISO 20816-3.
-  - [ ] Componente `SpectrumStudio.tsx` com Apache ECharts (Canvas/WebGL):
+- [x] **Cockpit Preditivo e Spectrum Studio no Next.js (`metrology-sass-front`):**
+  - [x] Dashboard com visão em semáforo (Verde, Amarelo, Vermelho) baseado nas Zonas A/B, C e D da ISO 20816-3.
+  - [x] Componente `SpectrumStudio.tsx` conectado ao endpoint `/api/v1/iot-nodes/{iotNode}/spectrum` e simulador interativo:
     - Sobreposição triaxial simultânea (X: Horizontal, Y: Vertical, Z: Axial) com toggle individual;
-    - Seletor de Harmônicos automáticos ($1X, 2X, 3X, 4X, 0.5X$) com cursor arrastável;
-    - Linhas tracejadas de frequências de rolamento (BPFO, BPFI, BSF);
+    - Seletor de Harmônicos automáticos ($1X, 2X, 3X, 4X, 0.5X$) com cursor;
+    - Linhas tracejadas dinâmicas de frequências de rolamento (`BPFO`, `2x BPFO`, `BPFI`, bandas laterais `BPFI ± 1X`, `BSF`, `FTF`);
     - Seletor de Bandas Laterais (Sideband Picker: $f_c \pm n \cdot 1X$);
     - Comparador de Coletas (+ Comparar Coletas) sobrepondo a linha de base em transparência;
     - Alternância de unidades ($g \leftrightarrow mm/s$, linear $\leftrightarrow$ dB).
-  - [ ] Card de Diagnóstico Prescritivo (Causa-raiz identificada pelo XGBoost, Zona ISO 20816-3 e ação recomendada de manutenção).
-  - [ ] Gráfico de Tendência de Longo Prazo (30 dias de RMS com faixas de cor ISO 20816, temperatura do mancal e horímetro diário).
+  - [x] Card de Diagnóstico Prescritivo (Causa-raiz identificada pelo XGBoost, Zona ISO 20816-3 e ação recomendada de manutenção).
+  - [x] Gráfico de Tendência de Longo Prazo (30 dias de RMS com faixas de cor ISO 20816, temperatura do mancal e horímetro diário).
 
 ---
 
