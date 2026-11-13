@@ -25,11 +25,13 @@ class IoTNode extends Model
         'status',
         'battery_voltage',
         'last_seen_at',
+        'last_payload',
     ];
 
     protected $casts = [
         'battery_voltage' => 'float',
         'last_seen_at' => 'datetime',
+        'last_payload' => 'array',
     ];
 
     /**

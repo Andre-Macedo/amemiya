@@ -223,15 +223,6 @@ class ProcessTelemetryJob implements ShouldQueue
             $tempCelsius = $validation['sanitized']['temp_celsius'];
             $batteryVoltage = $validation['sanitized']['battery_voltage'];
 
-            $nodeUpdateData = [
-                'last_seen_at' => now(),
-                'status' => $node->status === 'offline' ? 'active' : $node->status,
-            ];
-            if ($batteryVoltage !== null) {
-                $nodeUpdateData['battery_voltage'] = $batteryVoltage;
-            }
-            $node->update($nodeUpdateData);
-
             // 4.1 Cache de Burst Espectral no Redis (TTL: 24h)
             $spectrumPayload = $this->payload['spectrum'] ?? null;
             if ($spectrumPayload === null && (isset($this->payload['fft_x']) || isset($this->payload['features']['fft_x']) || ! empty($detectedPeaks))) {
@@ -283,6 +274,38 @@ class ProcessTelemetryJob implements ShouldQueue
                 $tempCelsius,
                 $matchedPeaks
             );
+
+            $effectiveMlStatus = $cloudMlStatus ?? $mlStatus;
+            $effectiveConfidence = (float) ($cloudMlConfidence ?? $mlConfidence);
+            $isMlAnomalyStatus = ! in_array($effectiveMlStatus, ['saudavel', 'normal', 'desligada', 'indeterminado'], true);
+            $mlAnomalyProbability = $isMlAnomalyStatus
+                ? round($effectiveConfidence, 4)
+                : round(max(0.0, 1.0 - $effectiveConfidence), 4);
+
+            $nodeUpdateData = [
+                'last_seen_at' => now(),
+                'status' => $node->status === 'offline' ? 'active' : $node->status,
+                'last_payload' => [
+                    'temperature' => $tempCelsius,
+                    'probe_temperature' => $tempCelsius,
+                    'battery_voltage' => $batteryVoltage ?? $node->battery_voltage,
+                    'vibration_rms' => $velocityRms,
+                    'rms_global' => $rmsInG,
+                    'iso20816_severity' => $isoEval['zone'] ?? null,
+                    'ml_status' => $effectiveMlStatus,
+                    'ml_confidence' => $effectiveConfidence,
+                    'ml_anomaly_probability' => $mlAnomalyProbability,
+                    'rpm_measured' => $rpm,
+                    'rpm_source' => $rpmResolution['rpm_source'],
+                    'root_cause' => $prescriptive['root_cause'],
+                    'confirmation_source' => $prescriptive['confirmation_source'],
+                    'created_at' => now()->toIso8601String(),
+                ],
+            ];
+            if ($batteryVoltage !== null) {
+                $nodeUpdateData['battery_voltage'] = $batteryVoltage;
+            }
+            $node->update($nodeUpdateData);
 
             $dto = new TelemetryDataDTO(
                 tenantId: $gateway->tenant_id,

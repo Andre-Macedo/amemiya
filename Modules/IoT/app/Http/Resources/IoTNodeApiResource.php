@@ -17,6 +17,7 @@ use Illuminate\Support\Carbon;
  * @property string $name
  * @property string $node_id
  * @property string $status
+ * @property float|null $battery_voltage
  * @property array|null $last_payload
  * @property Carbon|null $last_seen_at
  * @property Carbon|null $created_at
@@ -36,7 +37,9 @@ class IoTNodeApiResource extends JsonResource
             'name' => $this->name,
             'node_id' => $this->node_id,
             'status' => $this->status,
+            'battery_voltage' => $this->battery_voltage,
             'last_payload' => $this->last_payload,
+            'latest_telemetry' => $this->last_payload,
             'last_seen_at' => $this->last_seen_at?->toIso8601String(),
             'gateway' => $this->whenLoaded('gateway'),
             'machine' => $this->whenLoaded('machine'),

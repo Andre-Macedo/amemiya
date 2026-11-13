@@ -7,6 +7,7 @@ namespace Modules\System\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Carbon;
+use Modules\IoT\Http\Resources\IoTNodeApiResource;
 
 /**
  * Serialização padronizada de máquinas industriais monitoradas.
@@ -39,7 +40,7 @@ class MachineApiResource extends JsonResource
             'iso_group' => method_exists($this->resource, 'getIsoGroup') ? $this->getIsoGroup() : 'group_2',
             'foundation_type' => method_exists($this->resource, 'getFoundationType') ? $this->getFoundationType() : 'rigid',
             'station' => $this->whenLoaded('station'),
-            'nodes' => $this->whenLoaded('nodes'),
+            'nodes' => IoTNodeApiResource::collection($this->whenLoaded('nodes')),
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];

@@ -18,6 +18,9 @@ return new class extends Migration
             if (! Schema::hasColumn('iot_nodes', 'last_seen_at')) {
                 $table->timestamp('last_seen_at')->nullable()->after('battery_voltage');
             }
+            if (! Schema::hasColumn('iot_nodes', 'last_payload')) {
+                $table->json('last_payload')->nullable()->after('last_seen_at');
+            }
         });
     }
 };

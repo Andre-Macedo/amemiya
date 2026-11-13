@@ -54,6 +54,7 @@ class IoTHistoryApiResource extends JsonResource
             'accel_z' => (float) ($this->rms_z ?? 0.0),
             'iso_zone' => $features['iso_zone'] ?? 'A',
             'battery_mv' => $vbatMv,
+            'battery_voltage' => round($vbatMv > 20.0 ? $vbatMv / 1000.0 : $vbatMv, 2),
             'ml_status' => $this->ml_status ?? 'normal',
             'ml_confidence' => $confidence,
             'ml_anomaly_score' => $isAnomaly ? round(1 - $confidence, 4) : 0.02,

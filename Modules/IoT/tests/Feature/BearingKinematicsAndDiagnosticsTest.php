@@ -275,6 +275,12 @@ class BearingKinematicsAndDiagnosticsTest extends TestCase
         $this->assertContains('BPFO', $matchedFaults);
         $this->assertStringContainsString('Falha em Rolamento', $log->message);
         $this->assertStringContainsString('possível região: pista externa (BPFO)', $log->message);
+
+        $freshNode = $this->node->fresh();
+        $this->assertNotNull($freshNode?->last_payload);
+        $this->assertSame(1200, $freshNode->last_payload['rpm_measured'] ?? null);
+        $this->assertSame('C', $freshNode->last_payload['iso20816_severity'] ?? null);
+        $this->assertEquals(3.2, $freshNode->last_payload['vibration_rms'] ?? null);
     }
 
     public function test_prescriptive_diagnostics_does_not_default_unknown_zone_to_zone_a(): void
