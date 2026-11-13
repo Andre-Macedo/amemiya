@@ -19,6 +19,8 @@ import time
 import random
 import re
 import zipfile
+import hashlib
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -890,6 +892,317 @@ def cmd_iot_mock(args):
         }, indent=2))
 
 # -----------------------------------------------------------------------------
+# COMMAND: nr:sync & nr:check (Conformidade NR-10 / NR-12 / NBR 5410)
+# -----------------------------------------------------------------------------
+NR_SOURCES = {
+    "NR-10.pdf": {
+        "page_url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/norma-regulamentadora-no-10-nr-10",
+        "anchors": ["10.2.4", "10.4.13", "10.6.4", "10.7.7.1"],
+    },
+    "NR-12.pdf": {
+        "page_url": "https://www.gov.br/trabalho-e-emprego/pt-br/acesso-a-informacao/participacao-social/conselhos-e-orgaos-colegiados/comissao-tripartite-partitaria-permanente/normas-regulamentadora/normas-regulamentadoras-vigentes/norma-regulamentadora-no-12-nr-12",
+        "anchors": ["12.3.5", "12.5.4", "12.5.9", "12.6.1"],
+    },
+}
+
+def _inspect_nr_pdf(pdf_path, anchors):
+    """Inspeciona PDF oficial da NR: cabeçalho %PDF, SHA-256, páginas e cláusulas-chave."""
+    info = {
+        "exists": pdf_path.exists(),
+        "valid_pdf": False,
+        "size_bytes": 0,
+        "sha256": None,
+        "pages": None,
+        "anchors_found": {},
+    }
+    if not pdf_path.exists():
+        return info
+
+    raw = pdf_path.read_bytes()
+    info["size_bytes"] = len(raw)
+    info["valid_pdf"] = raw.startswith(b"%PDF")
+    info["sha256"] = hashlib.sha256(raw).hexdigest()
+
+    extracted_chunks = []
+    try:
+        import fitz  # PyMuPDF
+        doc = fitz.open(str(pdf_path))
+        info["pages"] = len(doc)
+        # Lê páginas iniciais relevantes (NR-10 tem 33p; NR-12 corpo principal até p.25)
+        for i in range(min(len(doc), 35)):
+            extracted_chunks.append(doc[i].get_text())
+        doc.close()
+    except Exception:
+        try:
+            from pypdf import PdfReader
+            reader = PdfReader(str(pdf_path))
+            info["pages"] = len(reader.pages)
+            for i in range(min(len(reader.pages), 35)):
+                extracted_chunks.append(reader.pages[i].extract_text() or "")
+        except Exception:
+            pass
+
+    full_text = "\n".join(extracted_chunks)
+    if full_text:
+        for anchor in anchors:
+            info["anchors_found"][anchor] = (anchor in full_text)
+
+    return info
+
+def _resolve_mte_pdf_url(page_url):
+    """Resolve link .pdf atual dentro da página oficial da NR no portal gov.br/MTE."""
+    req = urllib.request.Request(page_url, headers={"User-Agent": "Mozilla/5.0"})
+    html = urllib.request.urlopen(req, timeout=15).read().decode("utf-8", "ignore")
+    matches = re.findall(r'href=["\']([^"\']+\.pdf)["\']', html, re.IGNORECASE)
+    for m in matches:
+        if "nr-" in m.lower() or "nr_" in m.lower() or "norma" in m.lower():
+            return m
+    return matches[0] if matches else None
+
+def cmd_nr_sync(args):
+    """Verifica/baixa textos oficiais vigentes da NR-10 e NR-12 (MTE/gov.br) para amemiya-hardware/normas/."""
+    norms_dir = HW_REPO / "normas"
+    norms_dir.mkdir(parents=True, exist_ok=True)
+    results = {}
+    all_ok = True
+
+    for filename, meta in NR_SOURCES.items():
+        target = norms_dir / filename
+        action = "verified_local"
+        download_error = None
+
+        if not target.exists() or getattr(args, "force", False):
+            try:
+                pdf_url = _resolve_mte_pdf_url(meta["page_url"])
+                if not pdf_url:
+                    raise RuntimeError("Link PDF não encontrado na página oficial MTE")
+                req = urllib.request.Request(pdf_url, headers={"User-Agent": "Mozilla/5.0"})
+                data = urllib.request.urlopen(req, timeout=30).read()
+                if not data.startswith(b"%PDF"):
+                    raise RuntimeError("Conteúdo baixado não é um PDF válido")
+                target.write_bytes(data)
+                action = "downloaded_mte"
+            except Exception as exc:
+                download_error = str(exc)
+                if not target.exists():
+                    all_ok = False
+                action = "download_failed"
+
+        pdf_info = _inspect_nr_pdf(target, meta["anchors"])
+        if not pdf_info["valid_pdf"]:
+            all_ok = False
+
+        results[filename] = {
+            "path": str(target),
+            "action": action,
+            "download_error": download_error,
+            **pdf_info,
+        }
+
+    if args.json:
+        print(json.dumps({"ok": all_ok, "norms_dir": str(norms_dir), "files": results}, indent=2))
+        if not all_ok:
+            sys.exit(1)
+        return
+
+    print("=== SINCRONIZACAO DE NORMAS OFICIAIS (NR-10 / NR-12 - MTE) ===")
+    print(f"Diretório: {norms_dir}\n")
+    for fname, info in results.items():
+        st = "[OK]" if info["valid_pdf"] else "[ERRO]"
+        kb = round(info["size_bytes"] / 1024, 1)
+        sha_short = (info["sha256"] or "")[:12]
+        anchors_ok = sum(1 for v in info["anchors_found"].values() if v)
+        anchors_tot = len(info["anchors_found"])
+        print(f"{st} {fname:<12} | ação: {info['action']} | {kb} KB | {info['pages'] or '?'} págs | sha256:{sha_short} | cláusulas: {anchors_ok}/{anchors_tot}")
+        if info["download_error"]:
+            print(f"     Aviso download: {info['download_error']}")
+
+    if not all_ok:
+        sys.exit(1)
+
+def _evaluate_nr_compliance():
+    """Audita projeto amemiya_bancada_painel e normas locais frente à NR-10, NR-12 e NBR 5410."""
+    norms_dir = HW_REPO / "normas"
+    painel_dir = HW_REPO / "kicad" / "amemiya_bancada_painel"
+    gen_script = HW_REPO / "kicad" / "scripts" / "generate_bancada_painel_sch.py"
+
+    sch_file = painel_dir / "amemiya_bancada_painel.kicad_sch"
+    bom_md = painel_dir / "BOM_painel_eletrico_bancada.md"
+    bom_csv = painel_dir / "BOM_painel_eletrico_bancada.csv"
+    diag_md = painel_dir / "diagramas_eletricos_unifilar_multifilar_bancada_m1.md"
+    matriz_md = norms_dir / "MATRIZ_CONFORMIDADE_NR10_NR12.md"
+
+    failures = []
+    passed_checks = []
+    field_warnings = []
+
+    # 1. Textos oficiais NR-10 / NR-12 + Matriz
+    for fname, meta in NR_SOURCES.items():
+        p = norms_dir / fname
+        info = _inspect_nr_pdf(p, meta["anchors"])
+        if not info["exists"] or not info["valid_pdf"]:
+            failures.append(f"Texto oficial ausente ou inválido: {p}")
+        else:
+            missing_anchors = [a for a, found in info["anchors_found"].items() if not found]
+            if missing_anchors:
+                failures.append(f"Cláusulas não localizadas em {fname}: {', '.join(missing_anchors)}")
+            else:
+                passed_checks.append(f"{fname} válido ({info['pages']} págs, cláusulas {', '.join(meta['anchors'])} verificadas)")
+
+    if not matriz_md.exists():
+        failures.append(f"Matriz de conformidade ausente: {matriz_md}")
+    else:
+        passed_checks.append("MATRIZ_CONFORMIDADE_NR10_NR12.md presente")
+
+    # 2. Existência dos documentos de projeto da bancada
+    required_docs = [sch_file, bom_md, bom_csv, diag_md, gen_script]
+    for doc in required_docs:
+        if not doc.exists():
+            failures.append(f"Arquivo de projeto ausente: {doc}")
+
+    if not all(d.exists() for d in required_docs):
+        return {
+            "status": "FAIL",
+            "design_ok": False,
+            "passed": passed_checks,
+            "failures": failures,
+            "field_warnings": field_warnings,
+        }
+
+    sch_txt = sch_file.read_text(encoding="utf-8", errors="ignore")
+    diag_txt = diag_md.read_text(encoding="utf-8", errors="ignore")
+    bom_md_txt = bom_md.read_text(encoding="utf-8", errors="ignore")
+    bom_csv_txt = bom_csv.read_text(encoding="utf-8", errors="ignore")
+    gen_txt = gen_script.read_text(encoding="utf-8", errors="ignore")
+
+    # 3. ABNT NBR 5410 Tabela 47: Condutores de força [W01]-[W05] e [W08]-[W13] devem ser >= 2.5 mm²
+    force_ids = ["W01", "W02", "W03", "W04", "W05", "W08", "W09", "W10", "W11", "W12", "W13"]
+    bad_gauge_hits = []
+    for label, content in [("kicad_sch", sch_txt), ("diagramas_md", diag_txt), ("generator_py", gen_txt)]:
+        for wid in force_ids:
+            # Procura tag do fio com bitola 1.5mm na mesma linha
+            pat_15 = re.compile(rf'\[{wid}\][^\n\r]*?1\.5\s*(?:\\text\{{\s*)?mm', re.IGNORECASE)
+            if pat_15.search(content):
+                bad_gauge_hits.append(f"{label}:[{wid}]=1.5mm²")
+            pat_25 = re.compile(rf'\[{wid}\][^\n\r]*?2\.5\s*(?:\\text\{{\s*)?mm', re.IGNORECASE)
+            if not pat_25.search(content):
+                bad_gauge_hits.append(f"{label}:[{wid}] sem 2.5mm² explícito")
+
+    if bad_gauge_hits:
+        failures.append(f"NBR 5410 Tab.47 (Força >= 2.5 mm²): inconsistência em {', '.join(sorted(set(bad_gauge_hits)))}")
+    else:
+        passed_checks.append("NBR 5410 Tabela 47: todos os condutores de força [W01..W05, W08..W13] em 2.5 mm² no esquemático, gerador e diagramas")
+
+    # 4. NR-10 10.4.13: Coerência documental para 127V AC (sem resquício nominal 220V no motor/rede/dimmer)
+    stale_220_patterns = [
+        r"REDE_220V",
+        r"Motor[_\s]+Tanquinho[^\n\r]*220V",
+        r"Motor[^\n\r]{0,30}\b220V\b",
+        r"DIMMER\s+220V",
+        r"Dimmer_220V",
+        r"Dimmer_AC_220V",
+        r"FORCA\s*\(220V",
+        r"Força\s*220V",
+        r"Força\s*—\s*220V",
+        r"forca\s+220V",
+        r"(?<!/)220V\s*AC",
+        r"0-220V",
+    ]
+    stale_hits = []
+    for label, content in [("kicad_sch", sch_txt), ("diagramas_md", diag_txt), ("BOM_md", bom_md_txt), ("BOM_csv", bom_csv_txt), ("generator_py", gen_txt)]:
+        for pat in stale_220_patterns:
+            if re.search(pat, content, re.IGNORECASE):
+                stale_hits.append(f"{label}:/{pat}/")
+
+    if stale_hits:
+        failures.append(f"NR-10 10.4.13 (Tensão nominal): referências antigas de 220V encontradas em {', '.join(stale_hits)}")
+    else:
+        passed_checks.append("NR-10 10.4.13: tensão nominal 127V AC consistente em todos os artefatos (KiCad, BOM, diagramas e gerador)")
+
+    # 5. Elementos mínimos NR-10 / NR-12 no esquemático KiCad
+    required_symbols = {
+        "QM1": "Disjuntor geral bipolar 10A (NR-10 10.4.8)",
+        "KM1": "Contator c/ selo contra religamento automático (NR-12 12.4)",
+        "FU1": "Fusível fonte comando SELV (NR-10 10.4.8)",
+        "PS1": "Fonte isolada 24V DC (NR-10 10.2.4)",
+        "SB0": "Parada de emergência c/ retenção (NR-12 12.6)",
+        "TERRA_PE": "Barramento/linha de aterramento PE (NR-12 12.3.1)",
+        "REDE_127V_L1": "Net nominal 127V AC no esquemático",
+    }
+    missing_syms = [f"{sym} ({desc})" for sym, desc in required_symbols.items() if sym not in sch_txt]
+    if missing_syms:
+        failures.append(f"Elementos ausentes no esquemático KiCad: {'; '.join(missing_syms)}")
+    else:
+        passed_checks.append("NR-10/NR-12 esquemático: QM1, KM1 (selo), FU1/FU2, PS1 (24VDC), SB0 emergência e TERRA_PE verificados")
+
+    # 6. Sincronismo gerador -> repo amemiya-hardware
+    if r"\amemiya\hardware\kicad" in gen_txt:
+        failures.append("generate_bancada_painel_sch.py ainda aponta para caminho legado amemiya\\hardware\\kicad")
+    else:
+        passed_checks.append("generate_bancada_painel_sch.py aponta para amemiya-hardware/kicad")
+
+    # 7. Pendências físicas e exceções de campo (NUNCA silenciar)
+    field_warnings.append({
+        "rule": "NR-10 10.2.4 + 10.7.7.1 b) / NR-12 12.3.5 b)",
+        "severity": "PENDENTE_CAMPO",
+        "message": "127V AC (> 50V AC) NÃO é extra-baixa tensão e NÃO é isento: placa/adesivo de advertência 'PERIGO 127V' na porta do painel continua obrigatório."
+    })
+    field_warnings.append({
+        "rule": "NR-10 10.6.4",
+        "severity": "EXCECAO_DOCUMENTADA",
+        "message": "Painel sem IDR interno por decisão de projeto: utilizar exclusivamente em tomada/circuito predial protegido por DR 30 mA."
+    })
+    field_warnings.append({
+        "rule": "NR-12 12.5.4 / 12.5.9 / 12.5.11",
+        "severity": "PENDENTE_FISICO",
+        "message": "Proteção mecânica sobre a polia/eixo giratório ainda não instalada: fabricar proteção fixa parafusada (12.5.4) ou tampa móvel intertravada com SQ1 (12.5.9) antes da operação final."
+    })
+
+    design_ok = (len(failures) == 0)
+    status = ("PASS_WITH_WARNINGS" if field_warnings else "PASS") if design_ok else "FAIL"
+
+    return {
+        "status": status,
+        "design_ok": design_ok,
+        "passed": passed_checks,
+        "failures": failures,
+        "field_warnings": field_warnings,
+    }
+
+def cmd_nr_check(args):
+    """Audita conformidade NR-10 / NR-12 / NBR 5410 do projeto da bancada M1."""
+    report = _evaluate_nr_compliance()
+    strict_mode = bool(getattr(args, "strict", False))
+    strict_fail = strict_mode and len(report["field_warnings"]) > 0
+    ok = report["design_ok"] and not strict_fail
+
+    if args.json:
+        print(json.dumps({**report, "strict": strict_mode, "passed": ok}, indent=2))
+        if not ok:
+            sys.exit(1)
+        return
+
+    print("=== AUDITORIA NORMATIVA NR-10 / NR-12 / ABNT NBR 5410 ===")
+    print(f"Status Projeto/Docs: {report['status']}\n")
+
+    print("[VERIFICACOES DE PROJETO E DOCUMENTACAO]")
+    for item in report["passed"]:
+        print(f"  [OK]   {item}")
+    for err in report["failures"]:
+        print(f"  [FAIL] {err}")
+
+    if report["field_warnings"]:
+        print("\n[ALERTAS CRITICOS DE CAMPO / PENDENCIAS FISICAS]")
+        for w in report["field_warnings"]:
+            print(f"  [WARN] [{w['rule']}] ({w['severity']}): {w['message']}")
+
+    if not ok:
+        print("\nRESULTADO: [REPROVADO]")
+        sys.exit(1)
+    else:
+        print("\nRESULTADO: [PROJETO CONFORME COM ALERTAS DE CAMPO DOCUMENTADOS]")
+
+# -----------------------------------------------------------------------------
 # COMMAND: audit (Quality Gate Geral Completo)
 # -----------------------------------------------------------------------------
 def cmd_audit(args):
@@ -908,7 +1221,7 @@ def cmd_audit(args):
 
     # 1. Hardware DRC & ERC em ambas as placas
     if not args.json:
-        print("[1/5] Verificando Hardware DRC & ERC (main_node e probe_tower)...")
+        print("[1/6] Verificando Hardware DRC & ERC (main_node e probe_tower)...")
 
     hw_checks = {"drc": {}, "erc": {}}
     boards_to_check = [
@@ -976,7 +1289,7 @@ def cmd_audit(args):
 
     # 2. Sintaxe PHP em 100% dos arquivos de app/ e Modules/
     if not args.json:
-        print("[2/5] Verificando Sintaxe PHP em 100% dos arquivos do Core e Módulos...")
+        print("[2/6] Verificando Sintaxe PHP em 100% dos arquivos do Core e Módulos...")
     php_bin = shutil.which("php")
     if php_bin:
         all_php_files = []
@@ -1012,7 +1325,7 @@ def cmd_audit(args):
 
     # 3. Compilação do Frontend Vite Local
     if not args.json:
-        print("[3/5] Verificando Compilação Frontend Vite...")
+        print("[3/6] Verificando Compilação Frontend Vite...")
     npm_bin = get_npm()
     if npm_bin and (ROOT_DIR / "package.json").exists():
         res_vite = subprocess.run([npm_bin, "run", "build"], cwd=str(ROOT_DIR), capture_output=True, text=True)
@@ -1030,7 +1343,7 @@ def cmd_audit(args):
 
     # 4. TypeScript Typecheck nos Frontends Irmãos (Next.js e Expo)
     if not args.json:
-        print("[4/5] Verificando Tipagem TypeScript nos Projetos Web e Mobile...")
+        print("[4/6] Verificando Tipagem TypeScript nos Projetos Web e Mobile...")
     npx_bin = get_npx()
     ts_checks = {}
     ts_overall_ok = True
@@ -1056,7 +1369,7 @@ def cmd_audit(args):
 
     # 5. Integridade da Documentação e Contratos EGM.md
     if not args.json:
-        print("[5/5] Verificando Integridade dos Contratos EGM e Docs VitePress...")
+        print("[5/6] Verificando Integridade dos Contratos EGM e Docs VitePress...")
     
     # EGM Lint inline
     egm_ok = True
@@ -1098,6 +1411,18 @@ def cmd_audit(args):
 
     if not args.json:
         print(f"      -> Status: {'[OK]' if quality_docs_ok else '[FALHA]'} ({len(contracts)} contratos EGM validados, {egm_broken} links quebrados)")
+
+    # 6. Conformidade Normativa NR-10 / NR-12 / NBR 5410 (Painel Bancada M1)
+    if not args.json:
+        print("[6/6] Verificando Conformidade NR-10 / NR-12 / NBR 5410 (Bancada M1)...")
+    nr_report = _evaluate_nr_compliance()
+    nr_ok = nr_report["design_ok"]
+    audit_results["checks"]["nr_compliance"] = nr_report
+    if not nr_ok:
+        audit_results["ready_to_commit"] = False
+    if not args.json:
+        warn_cnt = len(nr_report["field_warnings"])
+        print(f"      -> Status: {'[OK]' if nr_ok else '[FALHA]'} ({len(nr_report['failures'])} erros de projeto, {warn_cnt} alertas de campo)")
 
     elapsed = round(time.time() - start_time, 2)
     audit_results["elapsed_seconds"] = elapsed
@@ -1228,6 +1553,16 @@ def main():
     # tcc:pack
     p_tpack = subparsers.add_parser("tcc:pack", parents=[common_parser], help="Sincroniza e regera o Pacote_TCC_Amemiya.zip")
     p_tpack.set_defaults(func=cmd_tcc_pack)
+
+    # nr:sync
+    p_nrsync = subparsers.add_parser("nr:sync", parents=[common_parser], help="Verifica/baixa textos oficiais da NR-10 e NR-12 (MTE/gov.br)")
+    p_nrsync.add_argument("--force", action="store_true", help="Força re-download dos PDFs oficiais a partir do portal gov.br")
+    p_nrsync.set_defaults(func=cmd_nr_sync)
+
+    # nr:check
+    p_nrcheck = subparsers.add_parser("nr:check", parents=[common_parser], help="Audita projeto da bancada M1 contra NR-10, NR-12 e ABNT NBR 5410")
+    p_nrcheck.add_argument("--strict", action="store_true", help="Falha também se houver alertas/pendências físicas em campo")
+    p_nrcheck.set_defaults(func=cmd_nr_check)
 
     # backend:test
     p_btest = subparsers.add_parser("backend:test", parents=[common_parser], help="Roda testes automatizados Pest/PHPUnit")
