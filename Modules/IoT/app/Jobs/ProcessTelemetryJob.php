@@ -124,18 +124,60 @@ class ProcessTelemetryJob implements ShouldQueue
                 $lastSentCommand = $this->sendMqttCommand($gateway->device_id, $node->node_id, $finalStatus, $mlConfidence, $msgId);
             }
 
-            // 4. DTO e Broadcast
-            // 4. Avaliação Metrológica ISO 20816-3 (Zonas de Severidade)
+            // 4. Resolução de RPM (Tacômetro ou Acelerômetro FFT) e Avaliação ISO 20816-3
+            $kinematicsService = app(BearingKinematicsService::class);
+            $machine = $node->machine;
+            $machineMeta = $machine !== null ? ($machine->metadata ?? []) : [];
+            $declaredRpmSource = $this->payload['rpm_source'] ?? $this->payload['features']['rpm_source'] ?? null;
+
+            $rawRpm = isset($this->payload['rpm']) ? (float) $this->payload['rpm'] : null;
+            $explicitRpm = ($rawRpm !== null && $declaredRpmSource !== 'accelerometer_firmware') ? $rawRpm : null;
+            $firmwareEstimatedRpm = $declaredRpmSource === 'accelerometer_firmware'
+                ? $rawRpm
+                : (isset($this->payload['rpm_estimated'])
+                    ? (float) $this->payload['rpm_estimated']
+                    : (isset($this->payload['features']['rpm_estimated'])
+                        ? (float) $this->payload['features']['rpm_estimated']
+                        : (isset($this->payload['features']['rpm']) ? (float) $this->payload['features']['rpm'] : null)));
+
+            $sampleRate = (float) ($this->payload['sample_rate'] ?? $this->payload['spectrum']['sample_rate'] ?? 3200);
+            $rawPeaks = is_array($this->payload['peaks'] ?? null) ? $this->payload['peaks'] : [];
+            $fftForRpm = $this->payload['spectrum']['fft_x']
+                ?? $this->payload['fft_x']
+                ?? $this->payload['features']['fft_x']
+                ?? $this->payload['spectrum']['fft_y']
+                ?? $this->payload['fft_y']
+                ?? $this->payload['features']['fft_y']
+                ?? $this->payload['spectrum']['fft_z']
+                ?? $this->payload['fft_z']
+                ?? $this->payload['features']['fft_z']
+                ?? [];
+
+            $rpmResolution = $mlStatus === 'desligada'
+                ? ['rpm' => 0.0, 'rpm_source' => 'machine_off', 'confidence' => null, 'extracted_peaks' => []]
+                : $kinematicsService->resolveSpectralRpm(
+                    explicitRpm: $explicitRpm,
+                    firmwareEstimatedRpm: $firmwareEstimatedRpm,
+                    peaks: $rawPeaks,
+                    fftMagnitudes: is_array($fftForRpm) ? $fftForRpm : [],
+                    sampleRate: $sampleRate,
+                    nominalRpmFallback: isset($machineMeta['nominal_rpm']) ? (float) $machineMeta['nominal_rpm'] : null,
+                    minRpm: (float) ($machineMeta['min_rpm'] ?? 400.0),
+                    maxRpm: (float) ($machineMeta['max_rpm'] ?? 3800.0),
+                );
+
+            $rpm = $rpmResolution['rpm'] > 0.0 ? (int) round($rpmResolution['rpm']) : null;
+            $detectedPeaks = ! empty($rawPeaks) ? $rawPeaks : $rpmResolution['extracted_peaks'];
+
             $isoService = app(ISO20816SeverityService::class);
             $rmsInG = isset($this->payload['rms_global']) ? (float) $this->payload['rms_global'] : null;
-            $rpm = isset($this->payload['rpm']) ? (int) $this->payload['rpm'] : null;
             $explicitVelo = isset($this->payload['features']['v_rms'])
                 ? (float) $this->payload['features']['v_rms']
                 : (isset($this->payload['velocity_rms']) ? (float) $this->payload['velocity_rms'] : null);
 
             $velocityRms = $isoService->calculateVelocityRms($rmsInG, $rpm, $explicitVelo);
-            $machineGroup = (string) ($node?->machine?->metadata['iso_group'] ?? 'group_2');
-            $foundation = (string) ($node?->machine?->metadata['foundation_type'] ?? 'rigid');
+            $machineGroup = (string) ($machineMeta['iso_group'] ?? 'group_2');
+            $foundation = (string) ($machineMeta['foundation_type'] ?? 'rigid');
             $isoEval = $isoService->evaluate($velocityRms, $machineGroup, $foundation);
 
             $tempCelsius = isset($this->payload['temp_celsius'])
@@ -158,15 +200,23 @@ class ProcessTelemetryJob implements ShouldQueue
 
             // 4.1 Cache de Burst Espectral no Redis (TTL: 24h)
             $spectrumPayload = $this->payload['spectrum'] ?? null;
-            if ($spectrumPayload === null && (isset($this->payload['fft_x']) || isset($this->payload['features']['fft_x']))) {
+            if ($spectrumPayload === null && (isset($this->payload['fft_x']) || isset($this->payload['features']['fft_x']) || ! empty($detectedPeaks))) {
                 $spectrumPayload = [
                     'fft_x' => $this->payload['fft_x'] ?? $this->payload['features']['fft_x'] ?? [],
                     'fft_y' => $this->payload['fft_y'] ?? $this->payload['features']['fft_y'] ?? [],
                     'fft_z' => $this->payload['fft_z'] ?? $this->payload['features']['fft_z'] ?? [],
+                    'peaks' => $detectedPeaks,
                     'rpm' => $rpm,
-                    'sample_rate' => $this->payload['sample_rate'] ?? 3200,
+                    'rpm_source' => $rpmResolution['rpm_source'],
+                    'rpm_confidence' => $rpmResolution['confidence'],
+                    'sample_rate' => $sampleRate,
                     'timestamp' => now()->toIso8601String(),
                 ];
+            } elseif (is_array($spectrumPayload)) {
+                $spectrumPayload['rpm'] = $spectrumPayload['rpm'] ?? $rpm;
+                $spectrumPayload['rpm_source'] = $spectrumPayload['rpm_source'] ?? $rpmResolution['rpm_source'];
+                $spectrumPayload['rpm_confidence'] = $spectrumPayload['rpm_confidence'] ?? $rpmResolution['confidence'];
+                $spectrumPayload['peaks'] = $spectrumPayload['peaks'] ?? $detectedPeaks;
             }
 
             if ($spectrumPayload !== null) {
@@ -178,14 +228,13 @@ class ProcessTelemetryJob implements ShouldQueue
             }
 
             // 4.2 Cinemática de Rolamento & Diagnóstico Prescritivo
-            $bearingPreset = (string) ($node?->machine?->metadata['bearing_model'] ?? 'skf_6204');
-            $kinematicsService = app(BearingKinematicsService::class);
+            $bearingPreset = (string) ($machineMeta['bearing_model'] ?? 'skf_6204');
             $matchedPeaks = [];
-            if (! empty($this->payload['peaks'])) {
+            if (! empty($detectedPeaks) && $rpmResolution['rpm'] > 0.0) {
                 try {
                     $matchedPeaks = $kinematicsService->matchSpectralPeaks(
-                        $this->payload['peaks'],
-                        (float) ($rpm ?? 1750),
+                        $detectedPeaks,
+                        $rpmResolution['rpm'],
                         $bearingPreset
                     );
                 } catch (\Throwable) {
@@ -282,6 +331,9 @@ class ProcessTelemetryJob implements ShouldQueue
                     'velocity_rms' => $velocityRms,
                     'iso_zone' => $isoEval['zone'] ?? null,
                     'iso_evaluation' => array_merge($isoEval, [
+                        'rpm_source' => $rpmResolution['rpm_source'],
+                        'rpm_confidence' => $rpmResolution['confidence'],
+                        'matched_peaks' => $matchedPeaks,
                         'prescriptive_diagnosis' => $prescriptive,
                     ]),
                     'raw_payload' => $this->payload,

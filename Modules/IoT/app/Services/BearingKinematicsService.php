@@ -237,8 +237,8 @@ class BearingKinematicsService
         $matches = [];
 
         foreach ($detectedPeaks as $peak) {
-            $freq = (float) ($peak['frequency_hz'] ?? 0.0);
-            $amp = (float) ($peak['amplitude'] ?? 0.0);
+            $freq = (float) $peak['frequency_hz'];
+            $amp = (float) $peak['amplitude'];
 
             if ($freq <= 0.0) {
                 continue;
@@ -273,5 +273,252 @@ class BearingKinematicsService
         }
 
         return $matches;
+    }
+
+    /**
+     * Extrai os picos espectrais dominantes de um espectro FFT unilateral com interpolação parabólica.
+     *
+     * @param  array<int, float|int>  $fftMagnitudes
+     * @return array<int, array{frequency_hz: float, amplitude: float}>
+     */
+    public function extractPeaksFromFft(
+        array $fftMagnitudes,
+        float $sampleRate = 3200.0,
+        float $minHz = 5.0,
+        float $maxHz = 1200.0,
+        int $maxPeaks = 12,
+        float $minAmplitude = 0.001
+    ): array {
+        $magnitudes = array_values(array_map(static fn (mixed $value): float => (float) $value, $fftMagnitudes));
+        $binCount = count($magnitudes);
+
+        if ($binCount < 3 || $sampleRate <= 0.0) {
+            return [];
+        }
+
+        $nyquistBins = ($binCount % 2 === 1)
+            ? ($binCount - 1)
+            : $binCount;
+
+        $df = ($sampleRate / 2.0) / $nyquistBins;
+        $peaks = [];
+
+        for ($i = 1; $i < $binCount - 1; $i++) {
+            $center = $magnitudes[$i];
+
+            if ($center < $minAmplitude) {
+                continue;
+            }
+
+            $left = $magnitudes[$i - 1];
+            $right = $magnitudes[$i + 1];
+
+            if ($center <= $left || $center < $right) {
+                continue;
+            }
+
+            $denominator = $left - (2.0 * $center) + $right;
+            $delta = abs($denominator) > 1e-12
+                ? max(-0.5, min(0.5, 0.5 * ($left - $right) / $denominator))
+                : 0.0;
+
+            $frequencyHz = ($i + $delta) * $df;
+
+            if ($frequencyHz < $minHz || $frequencyHz > $maxHz) {
+                continue;
+            }
+
+            $peaks[] = [
+                'frequency_hz' => round($frequencyHz, 2),
+                'amplitude' => round($center, 4),
+            ];
+        }
+
+        usort($peaks, static fn (array $a, array $b): int => $b['amplitude'] <=> $a['amplitude']);
+
+        return array_slice($peaks, 0, $maxPeaks);
+    }
+
+    /**
+     * Estima a rotação do eixo (RPM) a partir de picos de aceleração via pontuação harmônica (1X + 2X + 3X).
+     *
+     * @param  array<int, array{frequency_hz?: float|int, amplitude?: float|int}>  $peaks
+     * @return ?array{
+     *     rpm: float,
+     *     shaft_frequency_hz: float,
+     *     confidence: float,
+     *     harmonic_hits: int
+     * }
+     */
+    public function estimateRpmFromPeaks(
+        array $peaks,
+        float $minRpm = 400.0,
+        float $maxRpm = 3800.0,
+        float $tolerancePercent = 3.5,
+        float $minAmplitude = 0.001
+    ): ?array {
+        if (empty($peaks)) {
+            return null;
+        }
+
+        $minHz = max(1.0, $minRpm / 60.0);
+        $maxHz = max($minHz, $maxRpm / 60.0);
+
+        $validPeaks = [];
+
+        foreach ($peaks as $peak) {
+            $freq = (float) ($peak['frequency_hz'] ?? 0.0);
+            $amp = (float) ($peak['amplitude'] ?? 0.0);
+
+            if ($freq <= 0.0 || $amp < $minAmplitude) {
+                continue;
+            }
+
+            $validPeaks[] = ['frequency_hz' => $freq, 'amplitude' => $amp];
+        }
+
+        if (empty($validPeaks)) {
+            return null;
+        }
+
+        $candidates = [];
+
+        foreach ($validPeaks as $peak) {
+            $freq = $peak['frequency_hz'];
+
+            if ($freq >= $minHz && $freq <= $maxHz) {
+                $candidates[] = $freq;
+            }
+        }
+
+        if (empty($candidates)) {
+            return null;
+        }
+
+        $harmonicWeights = [1 => 1.0, 2 => 0.7, 3 => 0.4];
+        $bestFreq = null;
+        $bestScore = -1.0;
+        $bestHits = 0;
+        $totalScorePool = 0.0;
+
+        foreach ($candidates as $candidateHz) {
+            $score = 0.0;
+            $hits = 0;
+
+            foreach ($harmonicWeights as $order => $weight) {
+                $targetHz = $candidateHz * $order;
+                $bestMatchAmp = 0.0;
+
+                foreach ($validPeaks as $peak) {
+                    $percentDiff = (abs($peak['frequency_hz'] - $targetHz) / $targetHz) * 100.0;
+
+                    if ($percentDiff <= $tolerancePercent && $peak['amplitude'] > $bestMatchAmp) {
+                        $bestMatchAmp = $peak['amplitude'];
+                    }
+                }
+
+                if ($bestMatchAmp > 0.0) {
+                    $score += $bestMatchAmp * $weight;
+                    $hits++;
+                }
+            }
+
+            $totalScorePool += $score;
+
+            if ($score > $bestScore) {
+                $bestScore = $score;
+                $bestFreq = $candidateHz;
+                $bestHits = $hits;
+            }
+        }
+
+        if ($bestFreq === null || $bestScore <= 0.0) {
+            return null;
+        }
+
+        $dominance = $totalScorePool > 0.0
+            ? $bestScore / $totalScorePool
+            : 0.0;
+
+        $confidence = min(0.99, round((0.55 * $dominance) + (0.15 * min(3, $bestHits)), 2));
+
+        return [
+            'rpm' => round($bestFreq * 60.0, 1),
+            'shaft_frequency_hz' => round($bestFreq, 2),
+            'confidence' => $confidence,
+            'harmonic_hits' => $bestHits,
+        ];
+    }
+
+    /**
+     * Resolve o RPM efetivo priorizando medição direta, inferência pelo acelerômetro e fallback nominal.
+     *
+     * @param  array<int, array{frequency_hz?: float|int, amplitude?: float|int}>  $peaks
+     * @param  array<int, float|int>  $fftMagnitudes
+     * @return array{
+     *     rpm: float,
+     *     rpm_source: string,
+     *     confidence: ?float,
+     *     extracted_peaks: array<int, array{frequency_hz: float, amplitude: float}>
+     * }
+     */
+    public function resolveSpectralRpm(
+        ?float $explicitRpm = null,
+        ?float $firmwareEstimatedRpm = null,
+        array $peaks = [],
+        array $fftMagnitudes = [],
+        float $sampleRate = 3200.0,
+        ?float $nominalRpmFallback = null,
+        float $minRpm = 400.0,
+        float $maxRpm = 3800.0
+    ): array {
+        $extractedPeaks = empty($peaks) && ! empty($fftMagnitudes)
+            ? $this->extractPeaksFromFft($fftMagnitudes, $sampleRate)
+            : $peaks;
+
+        if ($explicitRpm !== null && $explicitRpm > 100.0) {
+            return [
+                'rpm' => round($explicitRpm, 1),
+                'rpm_source' => 'tachometer',
+                'confidence' => 1.0,
+                'extracted_peaks' => $extractedPeaks,
+            ];
+        }
+
+        if ($firmwareEstimatedRpm !== null && $firmwareEstimatedRpm > 100.0) {
+            return [
+                'rpm' => round($firmwareEstimatedRpm, 1),
+                'rpm_source' => 'accelerometer_firmware',
+                'confidence' => null,
+                'extracted_peaks' => $extractedPeaks,
+            ];
+        }
+
+        $estimated = $this->estimateRpmFromPeaks($extractedPeaks, $minRpm, $maxRpm);
+
+        if ($estimated !== null) {
+            return [
+                'rpm' => $estimated['rpm'],
+                'rpm_source' => 'accelerometer_fft',
+                'confidence' => $estimated['confidence'],
+                'extracted_peaks' => $extractedPeaks,
+            ];
+        }
+
+        if ($nominalRpmFallback !== null && $nominalRpmFallback > 100.0) {
+            return [
+                'rpm' => round($nominalRpmFallback, 1),
+                'rpm_source' => 'nominal_fallback',
+                'confidence' => null,
+                'extracted_peaks' => $extractedPeaks,
+            ];
+        }
+
+        return [
+            'rpm' => 1750.0,
+            'rpm_source' => 'default_fallback',
+            'confidence' => null,
+            'extracted_peaks' => $extractedPeaks,
+        ];
     }
 }

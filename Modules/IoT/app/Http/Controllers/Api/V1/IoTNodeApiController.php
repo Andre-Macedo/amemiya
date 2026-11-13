@@ -78,9 +78,27 @@ class IoTNodeApiController extends Controller
         }
 
         $spectrum = $cachedRaw ? json_decode((string) $cachedRaw, true) : null;
+        $machine = $iotNode->machine;
+        $machineMeta = $machine !== null ? ($machine->metadata ?? []) : [];
+        $bearingModel = (string) ($machineMeta['bearing_model'] ?? 'skf_6204');
 
-        $rpm = (float) ($spectrum['rpm'] ?? $iotNode->machine?->metadata['nominal_rpm'] ?? 1750.0);
-        $bearingModel = (string) ($iotNode->machine?->metadata['bearing_model'] ?? 'skf_6204');
+        $rpmResolution = $kinematicsService->resolveSpectralRpm(
+            explicitRpm: ($spectrum['rpm_source'] ?? null) === 'tachometer' && isset($spectrum['rpm'])
+                ? (float) $spectrum['rpm']
+                : null,
+            firmwareEstimatedRpm: ($spectrum['rpm_source'] ?? null) !== 'tachometer' && isset($spectrum['rpm'])
+                ? (float) $spectrum['rpm']
+                : null,
+            peaks: is_array($spectrum['peaks'] ?? null) ? $spectrum['peaks'] : [],
+            fftMagnitudes: is_array($spectrum['fft_x'] ?? null) ? $spectrum['fft_x'] : [],
+            sampleRate: (float) ($spectrum['sample_rate'] ?? 3200),
+            nominalRpmFallback: isset($machineMeta['nominal_rpm']) ? (float) $machineMeta['nominal_rpm'] : null,
+            minRpm: (float) ($machineMeta['min_rpm'] ?? 400.0),
+            maxRpm: (float) ($machineMeta['max_rpm'] ?? 3800.0),
+        );
+
+        $rpm = $rpmResolution['rpm'];
+        $rpmSource = $spectrum['rpm_source'] ?? $rpmResolution['rpm_source'];
 
         $bearingKinematics = null;
         try {
@@ -93,6 +111,7 @@ class IoTNodeApiController extends Controller
             'node_id' => $iotNode->node_id,
             'machine_id' => $iotNode->machine_id,
             'has_cached_spectrum' => $spectrum !== null,
+            'rpm_source' => $rpmSource,
             'spectrum' => $spectrum,
             'bearing_kinematics' => $bearingKinematics,
             'available_presets' => array_keys($kinematicsService->getPresets()),
