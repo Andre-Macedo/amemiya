@@ -36,24 +36,33 @@ Os tópicos seguem o padrão padronizado:
 
 Para evitar que dispositivos não autorizados publiquem dados corrompidos:
 
-1. Acesse o arquivo de configuração de senhas do Mosquitto em `.docker/mosquitto/config/mosquitto.conf`:
+1. Verifique as diretivas em `.docker/mosquitto/config/mosquitto.conf` (dev) ou `.docker/mosquitto/config/mosquitto.prod.conf` (produção com TLS `8883`):
    ```conf
    listener 1883
    allow_anonymous false
-   password_file /mosquitto/config/passwords
-   acl_file /mosquitto/config/acl
+   password_file /mosquitto/config/password_file
+   acl_file /mosquitto/config/acl_file
    ```
-2. Gere a chave criptografada para o novo gateway:
+2. Gere as chaves criptografadas no `password_file` para o backend e para o gateway:
    ```bash
-   docker exec -it amemiya-mqtt mosquitto_passwd -b /mosquitto/config/passwords gateway_01 "ChaveForteAleatoria123"
+   docker exec -it amemiya-mqtt mosquitto_passwd -b /mosquitto/config/password_file backend_service "ChaveBackendForte"
+   docker exec -it amemiya-mqtt mosquitto_passwd -b /mosquitto/config/password_file gateway_user "ChaveGatewayForte"
    ```
-3. Defina as permissões no arquivo de ACL (`/mosquitto/config/acl`):
+3. As permissões em `.docker/mosquitto/config/acl_file` seguem o princípio do menor privilégio por papel:
    ```conf
-   user gateway_01
-   topic write amemiya/telemetry/nodes/+
-   topic write amemiya/events/nodes/+
-   topic write amemiya/status/gateways/gateway_01
-   topic read amemiya/commands/nodes/+
+   user backend_service
+   topic read v1/gateways/+/nodes/+/telemetry
+   topic read sensors/+/telemetry
+   topic write v1/gateways/+/nodes/+/commands
+
+   user gateway_user
+   topic write v1/gateways/+/nodes/+/telemetry
+   topic write sensors/+/telemetry
+   topic read v1/gateways/+/nodes/+/commands
+   ```
+4. Em produção (`docker-compose.prod.yml`), gere os certificados TLS (`8883`) antes de subir o container:
+   ```bash
+   sh .docker/mosquitto/generate-certs.sh mqtt.seudominio.com.br
    ```
 
 ---

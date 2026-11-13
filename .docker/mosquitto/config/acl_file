@@ -1,0 +1,18 @@
+# Controle de Acesso MQTT (IEC 62443 - Principio do Menor Privilegio)
+#
+# Antes de subir em ambiente novo, cadastre o usuario do backend no password_file:
+#   docker run --rm -v "$PWD/.docker/mosquitto/config:/mosquitto/config" eclipse-mosquitto \
+#     mosquitto_passwd -b /mosquitto/config/password_file backend_service "<SENHA_FORTE>"
+# E configure no .env: MQTT_AUTH_USERNAME=backend_service
+
+# Backend (Laravel MqttBridge & Queue Worker): le telemetria e envia comandos
+user backend_service
+topic read v1/gateways/+/nodes/+/telemetry
+topic read sensors/+/telemetry
+topic write v1/gateways/+/nodes/+/commands
+
+# Gateway / Nos ESP32 em campo: apenas publica telemetria e recebe comandos de sinalizacao
+user gateway_user
+topic write v1/gateways/+/nodes/+/telemetry
+topic write sensors/+/telemetry
+topic read v1/gateways/+/nodes/+/commands

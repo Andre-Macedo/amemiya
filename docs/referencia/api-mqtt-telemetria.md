@@ -7,7 +7,7 @@ Esta página documenta a especificação das mensagens MQTT trocadas entre os ga
 ## 1. Tópico de Telemetria
 
 * **Padrão oficial:** `v1/gateways/{device_id}/nodes/{node_id}/telemetry` *(com suporte legado a `sensors/+/telemetry` no `MqttBridge`)*
-* **QoS:** `0` atual no `MqttBridge` *(meta de endurecimento: `1` com `acl_file` e TLS `8883`)*
+* **QoS:** `1` (`config('iot.mqtt_qos', 1)`) com `acl_file` por papel (`backend_service` vs `gateway_user`) e listener TLS `8883` em produção (`mosquitto.prod.conf`, sem exposição externa da porta `1883`)
 * **Retain:** `false`
 
 ### Exemplo de Payload JSON (Gateway → Broker → `ProcessTelemetryJob`)

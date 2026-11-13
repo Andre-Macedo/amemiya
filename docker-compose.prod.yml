@@ -27,10 +27,12 @@ services:
     container_name: amemiya-mqtt
     restart: always
     ports:
-      - "1883:1883"
+      - "8883:8883"
     volumes:
-      - ./.docker/mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./.docker/mosquitto/config/mosquitto.prod.conf:/mosquitto/config/mosquitto.conf:ro
       - ./.docker/mosquitto/config/password_file:/mosquitto/config/password_file:ro
+      - ./.docker/mosquitto/config/acl_file:/mosquitto/config/acl_file:ro
+      - ./.docker/mosquitto/certs:/mosquitto/certs:ro
     networks:
       - proxy-network
 
