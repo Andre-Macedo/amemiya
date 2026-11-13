@@ -64,35 +64,37 @@ class PrescriptiveDiagnosticsService
         $isMlAnomaly = ! in_array($mlStatus, [null, 'saudavel', 'normal', 'desligada', 'indeterminado'], true);
         $isAnomalyConfirmed = $isIsoDegraded || $isMlAnomaly;
 
-        $hasBpfo = false;
-        $hasBpfi = false;
-        $hasBsf = false;
-        $hasFtf = false;
+        $hasBearingPeak = false;
         $hasHigh1X = false;
         $hasHigh2X = false;
         $kinematicIndications = [];
+        $possibleRegions = [];
 
         foreach ($matchedPeaks as $peak) {
             $match = $peak['fault_match'];
             if (str_contains($match, 'BPFO')) {
                 $kinematicIndications[] = $match;
+                $possibleRegions[] = 'pista externa (BPFO)';
                 if ($isAnomalyConfirmed) {
-                    $hasBpfo = true;
+                    $hasBearingPeak = true;
                 }
             } elseif (str_contains($match, 'BPFI')) {
                 $kinematicIndications[] = $match;
+                $possibleRegions[] = 'pista interna (BPFI)';
                 if ($isAnomalyConfirmed) {
-                    $hasBpfi = true;
+                    $hasBearingPeak = true;
                 }
             } elseif (str_contains($match, 'BSF')) {
                 $kinematicIndications[] = $match;
+                $possibleRegions[] = 'elemento rolante (BSF)';
                 if ($isAnomalyConfirmed) {
-                    $hasBsf = true;
+                    $hasBearingPeak = true;
                 }
             } elseif (str_contains($match, 'FTF')) {
                 $kinematicIndications[] = $match;
+                $possibleRegions[] = 'gaiola (FTF)';
                 if ($isAnomalyConfirmed) {
-                    $hasFtf = true;
+                    $hasBearingPeak = true;
                 }
             } elseif ($match === '1X_SHAFT' && $isAnomalyConfirmed) {
                 $hasHigh1X = true;
@@ -102,6 +104,7 @@ class PrescriptiveDiagnosticsService
         }
 
         $kinematicIndications = array_values(array_unique($kinematicIndications));
+        $possibleRegions = array_values(array_unique($possibleRegions));
 
         // 3. Determinação da Causa-Raiz
         $confirmationSource = 'none';
@@ -118,8 +121,8 @@ class PrescriptiveDiagnosticsService
             $actions = ['Verificar acoplamento do sensor ADXL345 e transmissão de velocidade RMS (v_rms).'];
             $urgencyHours = 24;
         } elseif ($kinematicIndications !== [] && ! $isAnomalyConfirmed) {
-            $indicationList = implode(', ', $kinematicIndications);
-            $rootCause = "Operação Estável com Indicação Espectral em Rolamento ({$indicationList})";
+            $regionList = implode(', ', $possibleRegions);
+            $rootCause = "Operação Estável com Indicação Espectral em Rolamento (possível: {$regionList})";
             $actions = [
                 'Indicação cinemática observada no espectro sem confirmação por ML ou severidade ISO C/D; acompanhar tendência no Spectrum Studio.',
                 'Reavaliar harmônicos e bandas laterais na próxima janela de coleta.',
@@ -132,29 +135,27 @@ class PrescriptiveDiagnosticsService
             $urgencyHours = 720; // 30 dias
         }
 
-        if ($hasBpfo || $mlStatus === 'falha_rolamento_bpfo') {
-            $rootCause = 'Defeito na Pista Externa do Rolamento (BPFO)';
+        $isMlBearingFault = in_array($mlStatus, [
+            'falha_rolamento',
+            'bearing_defect',
+            'falha_rolamento_bpfo',
+            'falha_rolamento_bpfi',
+            'falha_rolamento_bsf',
+            'falha_rolamento_ftf',
+        ], true);
+
+        if ($hasBearingPeak || $isMlBearingFault) {
+            $regionSuffix = $possibleRegions !== []
+                ? ' (possível região: '.implode(', ', $possibleRegions).')'
+                : '';
+            $rootCause = "Desgaste / Falha em Rolamento{$regionSuffix}";
             $actions = [
-                'Inspecionar visualmente o anel externo e pista do rolamento.',
-                'Verificar presença de contaminação ou lascamento na pista externa.',
-                'Programar substituição preventiva do rolamento no próximo turno.',
+                'Programar substituição preventiva do rolamento completo no próximo turno.',
+                'Inspecionar estado de lubrificação (graxa), alinhamento e folga do alojamento do mancal.',
             ];
-            $urgencyHours = 48;
-        } elseif ($hasBpfi || $mlStatus === 'falha_rolamento_bpfi') {
-            $rootCause = 'Defeito na Pista Interna do Rolamento (BPFI)';
-            $actions = [
-                'Inspecionar acoplamento do eixo ao anel interno e folga radial.',
-                'Verificar ajuste com interferência no eixo para descartar escorregamento.',
-                'Programar substituição do rolamento.',
-            ];
-            $urgencyHours = 48;
-        } elseif ($hasBsf || $hasFtf) {
-            $faultCode = $hasBsf ? 'BSF' : 'FTF';
-            $rootCause = "Defeito em Corpo Rolante / Gaiola do Rolamento ({$faultCode})";
-            $actions = [
-                'Verificar lubrificação e presença de desgaste nos corpos rolantes ou gaiola.',
-                'Programar inspeção e substituição preventiva do rolamento.',
-            ];
+            if ($possibleRegions !== []) {
+                $actions[] = 'Indício espectral (não conclusivo): frequência compatível com '.implode(', ', $possibleRegions).'.';
+            }
             $urgencyHours = 48;
         } elseif ($hasHigh2X || $mlStatus === 'desalinhamento') {
             $rootCause = 'Desalinhamento Angular/Paralelo de Eixo (Harmônico 2X)';

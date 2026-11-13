@@ -156,9 +156,10 @@ class BearingKinematicsAndDiagnosticsTest extends TestCase
 
         $this->assertSame('C', $diagnosis['severity_zone']);
         $this->assertSame('warning', $diagnosis['thermal_status']);
-        $this->assertStringContainsString('Pista Externa', $diagnosis['root_cause']);
+        $this->assertStringContainsString('Falha em Rolamento', $diagnosis['root_cause']);
+        $this->assertStringContainsString('possível região: pista externa (BPFO)', $diagnosis['root_cause']);
         $this->assertNotEmpty($diagnosis['recommended_actions']);
-        $this->assertStringContainsString('substituição preventiva', $diagnosis['recommended_actions'][2]);
+        $this->assertStringContainsString('substituição preventiva do rolamento completo', $diagnosis['recommended_actions'][0]);
     }
 
     public function test_iot_node_spectrum_endpoint_returns_kinematics_and_catalog(): void
@@ -272,7 +273,8 @@ class BearingKinematicsAndDiagnosticsTest extends TestCase
         $this->assertSame(1200, $log->rpm);
         $this->assertSame('accelerometer_fft', $log->iso_evaluation['rpm_source'] ?? null);
         $this->assertContains('BPFO', $matchedFaults);
-        $this->assertStringContainsString('Pista Externa', $log->message);
+        $this->assertStringContainsString('Falha em Rolamento', $log->message);
+        $this->assertStringContainsString('possível região: pista externa (BPFO)', $log->message);
     }
 
     public function test_prescriptive_diagnostics_does_not_default_unknown_zone_to_zone_a(): void
@@ -374,7 +376,7 @@ class BearingKinematicsAndDiagnosticsTest extends TestCase
         );
 
         $this->assertSame('ml', $confirmedByMl['confirmation_source']);
-        $this->assertSame('Defeito na Pista Externa do Rolamento (BPFO)', $confirmedByMl['root_cause']);
+        $this->assertSame('Desgaste / Falha em Rolamento (possível região: pista externa (BPFO))', $confirmedByMl['root_cause']);
         $this->assertSame(48, $confirmedByMl['urgency_hours']);
     }
 
