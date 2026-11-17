@@ -109,7 +109,7 @@ graph TD
 | **NR-07** | PCMSO (Programas de Controle Médico) | ⚠️ Indireto — dados de ruído e vibração servem de evidência | Adicionar medição de ruído ambiental (dB SPL) com alertas de NHO-01 |
 | **NR-33** | Espaços confinados | ❌ Fora de escopo imediato |  |
 | **NHO-01 FUNDACENTRO** | Avaliação da exposição ocupacional ao ruído | ❌ Ausente | Sensor de dB ambiental + cálculo de dose diária de ruído (LEq, LCpeak) |
-| **NR-10** | Segurança em instalações elétricas | ⚠️ Indireto — dados de corrente elétrica do motor monitorados | Adicionar sensor de corrente (CT) e alertas de sobrecarga |
+| **NR-10** | Segurança em instalações elétricas | ✅ Atendida em projeto no painel da bancada (`amemiya_bancada_painel`); nó IoT V2 sem sensor de corrente (`SCT-013` removido) | Manter sinalização física `127V AC` na porta do quadro e DR 30 mA na tomada de laboratório (`MATRIZ_CONFORMIDADE_NR10_NR12.md`) |
 
 ---
 

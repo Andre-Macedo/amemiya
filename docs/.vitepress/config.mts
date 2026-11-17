@@ -81,9 +81,15 @@ export default defineConfig({
             { text: 'Inferência TinyML vs ML Cloud (XGBoost)', link: '/explicacoes/tinyml-vs-cloud' },
             { text: 'DSP de Vibração, FFT e Janelamento Hann', link: '/explicacoes/dsp-vibracao-fft' },
             { text: 'Norma ISO 20816-3 e Zonas de Severidade', link: '/explicacoes/norma-iso-20816' },
+            { text: 'Referências Científicas (DOIs)', link: '/explicacoes/referencias-cientificas' },
             { text: 'ADR-001: LoRa 915MHz vs ESP-NOW', link: '/explicacoes/ADR-001-lora-vs-espnow' },
             { text: 'ADR-002: Deep-Sleep & Power-Gating', link: '/explicacoes/ADR-002-deep-sleep-power-gating' },
-            { text: 'ADR-003: Alimentação Step-Up vs LDO', link: '/explicacoes/ADR-003-alimentacao-stepup-vs-ldo' }
+            { text: 'ADR-003: Alimentação Step-Up vs LDO', link: '/explicacoes/ADR-003-alimentacao-stepup-vs-ldo' },
+            { text: 'ADR-004: IHM TFT SPI vs OLED', link: '/explicacoes/ADR-004-ihm-tft-spi-vs-oled' },
+            { text: 'ADR-005: Remoção INMP441 & Tacômetro', link: '/explicacoes/ADR-005-remocao-inmp441-e-tacometro' },
+            { text: 'ADR-006: Bancada NR-12 & Falhas V2', link: '/explicacoes/ADR-006-bancada-experimental-nr12-e-modos-falha' },
+            { text: 'ADR-007: Espectro Híbrido Wi-Fi/LoRa', link: '/explicacoes/ADR-007-espectro-hibrido-wifi-e-fallback-lora' },
+            { text: 'ADR-008: ML Híbrido & Feedback HITL', link: '/explicacoes/ADR-008-ml-hibrido-isolation-forest-xgboost-hitl' }
           ]
         }
       ]

@@ -27,5 +27,7 @@
 - [ ] A análise estática via PHPStan/Larastan passou sem erros (`composer run analyse`).
 - [ ] Os testes automatizados (Pest) passaram com sucesso (`composer run test`).
 - [ ] Novas funcionalidades ou correções possuem testes de cobertura adequados.
+- [ ] Se houve alteração de pinagem, tópico MQTT, payload, schema ou decisão arquitetural, a documentação canônica/ADR correspondente foi atualizada no mesmo PR.
+- [ ] A integridade da documentação e dos contratos passou (`python dev.py docs:test` e `python dev.py egm:lint`).
 - [ ] Nenhuma credencial ou variável sensível foi commitada.
 - [ ] As mensagens de commit seguem o padrão Conventional Commits em português.

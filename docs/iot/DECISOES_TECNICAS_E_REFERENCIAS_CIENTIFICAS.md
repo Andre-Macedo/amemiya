@@ -11,18 +11,18 @@ O sistema Amemiya adota uma topologia de sensoriamento multi-modal e computaçã
 1. **Camada de Sensoriamento Físico (Sonda Cartucho / Mancal):**
    * Acelerômetro 3D MEMS (ADXL345 / MPU-6050 via I2C).
    * Termômetro Digital de Contato 1-Wire (DS18B20 TO-92, simples ou duplo na versão `amemiya_probe_tower_dual`).
-   * Conexão industrial blindada via conector circular **GX12**. *(Nota: o microfone acústico I2S INMP441 foi avaliado experimentalmente e descontinuado após auditoria XAI demonstrar apenas 0,30% de ganho de informação frente a 99,70% do acelerômetro triaxial).*
+   * Conexão industrial blindada via conector circular **GX16-5** (5 vias ativas). *(Nota: o microfone acústico I2S INMP441 foi avaliado experimentalmente e descontinuado após auditoria XAI demonstrar apenas 0,30% de ganho de informação frente a 99,70% do acelerômetro triaxial).*
 2. **Camada de Borda (Nó Principal ESP32-S3) e Bancada Didática:**
    * Tacômetro óptico/Hall de bancada (`KY-003` + display dedicado na placa `amemiya_bancada_painel`) operando como instrumento de referência visual independente para validação metrológica da rotação controlada pelo dimmer `TC1` (com previsão de integração via CLP em uma futura revisão v3).
    * Estimação de rotação sem tacômetro (*Tacholess RPM Estimation*) diretamente pelo espectro do acelerômetro via interpolação parabólica sub-bin e rastreamento de harmônicos ($1\times, 2\times, 3\times$).
-   * Entrada analógica para Alicate Amperométrico (SCT-013) com resistor de carga (*burden*) e amostragem ADC.
-   * Rádio LoRa (E220-900T22D) e Wi-Fi dual-core.
+   * Sensoriamento estritamente mecânico-térmico na revisão ativa V2 (**sem alicate amperométrico SCT-013** no nó ESP32-S3, priorizando instalação externa não invasiva sem passagem de cabo por fase do painel elétrico).
+   * Rádio LoRa (E32-915T20D) e Wi-Fi dual-core com transmissão espectral híbrida (ADR-007).
    * Processamento de borda: Extração de vetores estatísticos temporais (RMS, Curtose, Crista, Skewness), bandas espectrais FFT e severidade ISO 20816 / ISO 10816.
 3. **Camada de Inteligência e Nuvem (ML Microservice & Backend Laravel):**
    * Microserviço Python FastAPI com modelo ensemble (XGBoost / Random Forest) e detecção de novidade não supervisionada (Autoencoder / Isolation Forest).
    * Diagnóstico híbrido de rolamentos: equações cinemáticas determinísticas (`BPFO`, `BPFI`, `BSF`, `FTF`) atuam como **indicação espectral de possível região excitada**, enquanto o diagnóstico de **`Desgaste / Falha em Rolamento`** (cuja ação industrial prática é a troca integral do rolamento) exige confirmação pelo modelo de ML ou degradação normativa ISO 20816 (Zonas C/D).
    * Pipeline de ingestão MQTT via broker Mosquitto (TLS 8883 + ACL) e ponte assíncrona Laravel Queue + Redis.
-   * Visualização em tempo real via WebSockets (Laravel Reverb) e monitoramento espectral no `SpectrumStudio`.
+   * Visualização em tempo real via WebSockets (Laravel Reverb) e gráficos espectrais no front-end em Next.js.
 
 ---
 
@@ -43,7 +43,7 @@ Abaixo, detalha-se cada estudo referenciado pelo Sci-Bot, o resumo de suas desco
   * Fórmulas analíticas de frequências características de rolamento (`BPFO`, `BPFI`, `BSF`, `FTF`) e bandas laterais ($f_{BPFI} \pm f_r$) em `BearingKinematicsService.php`.
 * **O que adaptamos / não adotamos e justificativa:**
   * *Não diagnosticamos sub-componentes isolados do rolamento como certeza determinística:* Na manutenção industrial prática, o rolamento é um item substituível completo (*Line Replaceable Unit* — não se troca apenas uma gaiola ou uma esfera no chão de fábrica) e não há bancada com defeitos isolados usinados por eletroerosão em cada sub-elemento para treino supervisionado de sub-classes. Por isso, o sistema unifica o diagnóstico confirmado como **`Desgaste / Falha em Rolamento`** (cuja prescrição é a troca integral do rolamento) e exibe a coincidência cinemática (`possível região: pista externa [BPFO]`, `pista interna [BPFI]`, `elemento rolante [BSF]` ou `gaiola [FTF]`) apenas como **indício espectral complementar**, exigindo confirmação do modelo de ML ou severidade ISO 20816 (Zonas C/D).
-  * *Descontinuação do microfone INMP441:* Inicialmente avaliado para cobrir altas frequências, o microfone acústico demonstrou apenas **0,30%** de ganho de informação no classificador XGBoost contra **99,70%** do acelerômetro triaxial (ver [`Relatorio_Auditoria_XGBoost_Importancia_Features.md`](file:///C:/Users/andrl/OneDrive/Documentos/Projetos%20Pessoal/amemiya/docs/Relatorio_Auditoria_XGBoost_Importancia_Features.md) e Jakobsen, 2024, DOI: `10.1016/j.ohx.2024.e00525`), sendo removido para preservar a vedação mecânica da sonda.
+  * *Descontinuação do microfone INMP441:* Inicialmente avaliado para cobrir altas frequências, o microfone acústico demonstrou apenas **0,30%** de ganho de informação no classificador XGBoost contra **99,70%** do acelerômetro triaxial (ver [`Relatorio_Auditoria_XGBoost_Importancia_Features.md`](../Relatorio_Auditoria_XGBoost_Importancia_Features.md) e Jakobsen, 2024, DOI: [`10.1016/j.ohx.2024.e00525`](https://doi.org/10.1016/j.ohx.2024.e00525)), sendo removido para preservar a vedação mecânica da sonda.
 
 ---
 
@@ -69,11 +69,11 @@ Abaixo, detalha-se cada estudo referenciado pelo Sci-Bot, o resumo de suas desco
 * **Resumo:**
   Desenvolveu um nó de borda industrial com microcontrolador STM32F4 (ARM Cortex-M4), acelerômetro piezoelétrico, sensor de corrente PZEM-004T e sensor de temperatura MAX6675. O firmware executa FFT de 1024 a 8192 pontos via CMSIS-DSP, extrai valores RMS e classifica severidade ISO 10816 localmente antes de enviar dados via Modbus/RS-485 para um dashboard em nuvem.
 * **O que estamos usando:**
-  * Arquitetura multi-modal combinando **vibração + corrente elétrica + temperatura**.
-  * Processamento FFT de borda e disparo de alertas baseados em limites de severidade ISO.
+  * Arquitetura multi-modal baseada em **vibração triaxial (`ADXL345`) + temperatura de contato no mancal (`DS18B20`)**.
+  * Processamento FFT de borda e disparo de alertas baseados em limites de severidade ISO 20816-3.
 * **O que adaptamos / não adotamos e justificativa:**
-  * *Não adotamos o barramento RS-485/Modbus:* Cabear RS-485 em ambiente fabril eleva o custo de infraestrutura física.
-  * *Nossa adaptação:* Substituímos o STM32F4 pelo **ESP32-S3 dual-core**, utilizando um núcleo exclusivo para amostragem determinística e cálculo de FFT/RMS, e o segundo núcleo para transmissão sem fio híbrida (**Wi-Fi / MQTT + LoRaWAN**), permitindo instalação *plug-and-play* em máquinas sem necessidade de cabos de comunicação até o painel central.
+  * *Não adotamos o barramento RS-485/Modbus nem o medidor de corrente elétrica (`PZEM-004T` / alicate `SCT-013`) na revisão V2:* Cabear RS-485 e acoplar transformadores de corrente nos condutores de força elevam o custo de infraestrutura e exigem intervenção dentro do quadro elétrico.
+  * *Nossa adaptação:* Substituímos o STM32F4 pelo **ESP32-S3 dual-core**, mantendo um núcleo exclusivo para amostragem determinística e cálculo de FFT/RMS na sonda mecânico-térmica (`GX16-5`), e o segundo núcleo para transmissão sem fio híbrida (**LoRa 915 MHz + Wi-Fi/MQTT**), permitindo instalação *plug-and-play* não invasiva em máquinas.
 
 ---
 
@@ -82,15 +82,15 @@ Abaixo, detalha-se cada estudo referenciado pelo Sci-Bot, o resumo de suas desco
 * **Periódico:** *Electrical Engineering*, vol. 106, n. 3, pp. 3253–3268.
 * **DOI:** `10.1007/s00202-023-02148-z`
 * **Resumo:**
-  Investigou a fusão de dados de sensores de vibração e corrente elétrica para diagnosticar curto-circuito entre espiras em motores elétricos. Resultados comparativos:
+  Investigou a fusão de dados em nível de características com *Gradient Boosting* em motores elétricos. Resultados comparativos do artigo:
   * Apenas corrente: **43.4%** de acurácia.
   * Apenas vibração: **74.5%** de acurácia.
   * **Fusão vibração + corrente com Gradient Boosting:** **90.7% de acurácia (AUC = 95.1%)**.
 * **O que estamos usando:**
-  * **Fusão a nível de características (*Feature-Level Fusion*):** Concatenamos atributos estatísticos e espectrais de vibração com parâmetros de corrente alternada (medidos pelo alicate SCT-013).
-  * Uso do algoritmo **XGBoost (Gradient Boosting)** como classificador primário supervisionado no microserviço ML.
+  * **Fusão a nível de características (*Feature-Level Fusion*) adaptada:** Concatenamos atributos estatísticos e espectrais de vibração triaxial (`ADXL345`) com a leitura térmica de contato do mancal (`DS18B20`, em linha com Janssens et al., 2019), alimentando o pipeline de ML híbrido (**Isolation Forest** no *cold-start* + **XGBoost** supervisionado).
+  * Uso do algoritmo **XGBoost (*Gradient Boosting*)** como classificador primário supervisionado no microserviço ML.
 * **O que adaptamos / não adotamos e justificativa:**
-  * Al-Haddad focou exclusivamente em motores síncronos de ímã permanente (PMSM). Adaptamos o pipeline para motores de indução trifásicos convencionais (gaiola de esquilo), muito mais comuns na indústria em geral.
+  * *Remoção do alicate amperométrico (`SCT-013`) na revisão V2:* Al-Haddad et al. combinaram vibração com corrente de estator para diagnosticar curto entre espiras em PMSMs. No Amemiya V2, optamos por **não incluir o alicate `SCT-013`** no nó autônomo a bateria para evitar hardware ADC extra e intervenção invasiva no painel elétrico de força, concentrando a fusão de características em **vibração triaxial + temperatura de mancal** voltada a falhas mecânicas em motores de indução trifásicos (desbalanceamento, desalinhamento e desgaste de rolamento). Eventual telemetria elétrica de carga fica prevista apenas como extensão futura via CLP na etapa v3.
 
 ---
 
@@ -143,14 +143,8 @@ Abaixo, detalha-se cada estudo referenciado pelo Sci-Bot, o resumo de suas desco
 * **Resumo:**
   A transmissão de dados brutos de vibração (amostrados a vários kHz) via redes sem fio industriais de longo alcance (LoRaWAN) é inviável energeticamente e estoura as restrições de *Duty Cycle* e tamanho de pacote ($< 51 - 222\text{ bytes}$). Transmitir resumos de características (*Feature Vectors*) resulta em **$\sim 95\%$ de redução no volume de dados** e **$31\%$ de economia de energia na bateria**, sem perda de capacidade diagnóstica.
 * **O que estamos usando:**
-  * **Estratégia de Telemetria por Vetor de Características:** O nó de borda transmite apenas o vetor condensado de telemetria contendo:
-    * RMS triaxial ($X, Y, Z$) e global ($4 \times 4\text{ bytes}$).
-    * Curtose e Fator de Crista ($2 \times 4\text{ bytes}$).
-    * Energias das principais bandas espectrais ($4 \times 2\text{ bytes}$).
-    * Temperatura e RPM ($2 \times 2\text{ bytes}$).
-    * RMS de Corrente ($1 \times 4\text{ bytes}$).
-    * *Payload* total: $\sim 44\text{ bytes}$, perfeitamente compatível com uma única mensagem LoRaWAN ou pacote MQTT ultra-leve.
-  * Transmissão de forma de onda bruta (*Burst Raw Waveform*) fica reservada para diagnóstico sob demanda via Wi-Fi ou sob trigger de anomalia crítica.
+  * **Estratégia de Telemetria por Vetor de Características (Payload LoRa de 27 bytes):** No enlace LoRa contínuo (`AmemiyaTelemetryPayload_t`), o nó de borda transmite apenas o vetor binário condensado (`node_id`, `sequence_id`, `rpm` *tacholess*, `temp_celsius_x100`, `vrms_x/y/z`, `peak_accel_x100`, `crest_factor_x100`, `iso_zone`, `edge_alarm`, `vbat_mv`, `reserved` e `crc16`), totalizando **27 bytes fixos** (sem canal de corrente elétrica; ver [`ADR-001`](/explicacoes/ADR-001-lora-vs-espnow) e [`Payload LoRa Binário`](/referencia/payload-lora-binario)).
+  * **Transmissão Espectral Híbrida (Gráficos no Front-end Next.js & Cloud ML):** Conforme [`ADR-007`](/explicacoes/ADR-007-espectro-hibrido-wifi-e-fallback-lora), os picos espectrais e vetores de features completos são transmitidos prioritariamente via Wi-Fi/MQTT direto (quando disponível) ou por pacotes compactos de Top-K picos em fallback LoRa sob anomalia/demanda, sem trafegar forma de onda bruta continuamente no rádio Sub-GHz.
 
 ---
 
@@ -158,14 +152,14 @@ Abaixo, detalha-se cada estudo referenciado pelo Sci-Bot, o resumo de suas desco
 
 | Módulo / Camada | Técnica da Literatura | Decisão no Amemiya | Justificativa de Engenharia |
 |---|---|---|---|
-| **Acelerômetro & Rolamento** | Cinemática BPFO/BPFI/BSF/FTF (Randall & Antoni 2011; Sharma 2025) | MEMS ADXL345 / MPU-6050 + Indicação Cinemática + Confirmação ML | Diagnóstico macro de `Falha em Rolamento` (troca integral da peça) com possível região sugerida pelo espectro, confirmado pelo ML/ISO. |
-| **Fusão Sensorial** | Corrente + Vibração (Al-Haddad 2023) | SCT-013 (ADC) + Acelerômetro Triaxial | Permite distinguir falha mecânica de oscilação de carga elétrica sem vulnerabilidade acústica (Jakobsen 2024). |
+| **Acelerômetro & Rolamento** | Cinemática BPFO/BPFI/BSF/FTF (Randall & Antoni 2011; Sharma 2025) | MEMS ADXL345 + Indicação Cinemática + Confirmação ML | Diagnóstico macro de `Falha em Rolamento` (troca integral da peça) com possível região sugerida pelo espectro, confirmado pelo ML/ISO. |
+| **Fusão Sensorial & Boosting** | Feature-Level Fusion + Boosting (Al-Haddad 2023; Janssens 2019) | Acelerômetro Triaxial (`ADXL345`) + Temperatura (`DS18B20`) em XGBoost + Isolation Forest | Preserva ganho de classificação por fusão vibração+térmica sem alicate `SCT-013` (instalação não invasiva) nem microfone `INMP441` (Jakobsen 2024). |
 | **Temperatura** | Termografia Infravermelha (Janssens 2019) | Termômetro de contato direto DS18B20 | Redução de custo de US$ 500+ para US$ 1,50 mantendo sensibilidade térmica no mancal. |
 | **Rotação (RPM)** | *Tacholess Speed Estimation* (Lu et al. 2019; Wang 2011) | Inferência de RPM via FFT do Acelerômetro (Hall apenas no display da bancada) | Elimina cabeamento de tacômetro até o ESP32-S3, estimando $1\times\text{ RPM}$ por interpolação parabólica e relação harmônica. |
-| **Transmissão** | Streaming de Onda Bruta vs Vetores (Wang 2021) | Vetor de características (44 bytes) | Viabiliza operação por bateria/LoRa com 95% de redução de consumo e dados. |
-| **Modelos de ML** | Supervised Only (Roberts 2025) vs Unsupervised (Di Maggio 2025) | Híbrido: Autoencoder/Isolation Forest (Cold) + XGBoost (Warm) | Resolve o problema da ausência de rótulos de falha no início da operação fabril. |
+| **Transmissão** | Streaming de Onda Bruta vs Vetores (Wang 2021) | Payload LoRa binário (27 bytes) + Burst espectral híbrido (Wi-Fi / LoRa fallback) | Viabiliza operação por bateria/LoRa com redução expressiva de tempo no ar e suporte aos gráficos espectrais no front-end em Next.js. |
+| **Modelos de ML** | Supervised Only (Roberts 2025) vs Unsupervised (Di Maggio 2025) | Híbrido: Isolation Forest / Autoencoder (Cold) + XGBoost + HITL (Warm) | Resolve a ausência de rótulos de falha no início da operação fabril e evolui com retroalimentação técnica (ADR-008). |
 | **Conformidade Metrológica** | ISO 10816-3 / ISO 20816-3 (Kibrete 2024, Pedotti 2017) | Conversão analítica $v_{RMS}$ + Classificação Zonas A/B/C/D | Fornece autoridade normativa determinística independente de IA para laudos e auditorias ISO/IATF. |
 
 ---
 *Documento elaborado para fins de governança técnica, auditoria metrológica e embasamento científico do projeto Amemiya.*  
-*Consulte também as diretrizes de operação e MLOps em: [Regras de Negócio de Amostragem, Inferência e MLOps](file:///C:/Users/andrl/OneDrive/Documentos/Projetos%20Pessoal/amemiya/docs/iot/REGRAS_DE_NEGOCIO_MLOPS_E_AMOSTRAGEM.md).*
+*Consulte também as diretrizes de operação e MLOps em: [Regras de Negócio de Amostragem, Inferência e MLOps](./REGRAS_DE_NEGOCIO_MLOPS_E_AMOSTRAGEM.md).*

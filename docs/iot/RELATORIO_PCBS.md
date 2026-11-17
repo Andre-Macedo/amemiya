@@ -2,9 +2,9 @@
 
 Este relatório reúne a documentação técnica, parâmetros de fabricação e inspeção visual fotorrealista das placas desenvolvidas para o sistema de manutenção preditiva Amemiya IoT:
 
-1. **Sonda Cartucho Torre (`amemiya_probe_tower`)** — **24.0 mm × 48.0 mm** (Padrão vertical para Mancal UCP 204 estilo Tractian)
-2. **Sonda Horizontal (`amemiya_probe_sensor`)** — **46.0 mm × 40.0 mm** (Padrão horizontal de bancada)
-3. **Nó Principal de Aquisição (`amemiya_main_node`)** — **90.0 mm × 65.0 mm** (ESP32-S3 + LoRa Ra-02 + Display OLED + Entradas Analógicas e Tacômetro)
+1. **Sonda Torre Dual Ativa (`amemiya_probe_tower_dual`)** — **24.0 mm × 48.0 mm** (`ADXL345` + `DS18B20` + conector `JST-XH 5P`, sem `INMP441`)
+2. **Nó Principal de Aquisição (`amemiya_main_node`)** — **ESP32-S3 + LoRa E32 + Display TFT 3.2" SPI (`ILI9341` + `XPT2046`, `SPI_MOSI` em `GPIO7`) + Buzzer + LEDs RGB** *(sem OLED e sem tacômetro)*
+3. **Placas Legadas (`amemiya_probe_tower`, `amemiya_probe_sensor`)** — revisões anteriores (`24.0 × 48.0 mm` e `46.0 × 40.0 mm`, com `INMP441` / `OLED` / `Ra-02`) mantidas apenas para histórico.
 
 Todas as 3 placas foram projetadas em **100% Through-Hole (PTH)** (montagem manual fácil com ferros comuns de solda), em **2 camadas (Top / Bottom)** e aprovadas com **Zero Violações de DRC (KiCad 9.0 CLI)** e **Zero Itens Desconectados**.
 
@@ -12,9 +12,9 @@ Todas as 3 placas foram projetadas em **100% Through-Hole (PTH)** (montagem manu
 
 ## 1. Inspeção Visual 3D (Renders Oficiais KiCad 9)
 
-### A. Sonda Cartucho Torre (24 × 48 mm — para Mancal UCP 204)
+### A. Sonda Cartucho Torre (24 × 48 mm — Render Histórico v1)
 ![Sonda Torre Topo](/images/hardware/probe_tower_top.png)
-*Figura 1: Vista frontal da Sonda Torre com soquetes para ADXL345, jumpers do INMP441, conector GX12-8 no topo e DS18B20 na base.*
+*Figura 1: Render histórico da revisão v1 da Sonda Torre (que incluía jumpers para `INMP441` e conector `GX12-8`; na revisão ativa `amemiya_probe_tower_dual`, o microfone foi removido e padronizado para 5 vias `JST-XH 5P` / `GX16-5`).*
 
 ![Sonda Torre Fundo](/images/hardware/probe_tower_bot.png)
 *Figura 2: Vista traseira da Sonda Torre com trilhas de alimentação isoladas (3.3V na esquerda e GND na direita).*
@@ -30,9 +30,9 @@ Todas as 3 placas foram projetadas em **100% Through-Hole (PTH)** (montagem manu
 
 ---
 
-### C. Nó Principal ESP32-S3 (90 × 65 mm)
+### C. Nó Principal ESP32-S3 (90 × 65 mm — Render Histórico v1)
 ![Nó Principal Topo](/images/hardware/main_top.png)
-*Figura 5: Vista superior do Nó Principal com ESP32-S3, rádio LoRa, display OLED, SCT-013, tacômetro, barra RGB e buzzer.*
+*Figura 5: Render histórico da revisão v1 do Nó Principal (que contemplava `OLED`, `SCT-013` e entrada de tacômetro; na revisão ativa V2 `amemiya_main_node`, esses três itens foram removidos em favor de `TFT 3.2" SPI`, conector `GX16-5` e estimação *tacholess* via acelerômetro).*
 
 ![Nó Principal Fundo](/images/hardware/main_bot.png)
 *Figura 6: Vista inferior do Nó Principal com plano de potência e barramentos de alimentação.*

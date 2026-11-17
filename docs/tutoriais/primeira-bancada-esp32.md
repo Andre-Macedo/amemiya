@@ -12,13 +12,13 @@ A placa Carrier Board conecta-se à torre externa através do conector industria
 +-----------------------------------------------------------+
 |                   CARRIER BOARD (ESP32-S3)                |
 |                                                           |
-|  [J_PROBE]                                                |
+|  [J_PROBE -> Torre Dual JST-XH 5P]                        |
 |    Pin 1: +3V3_SW  ---------------------> VCC ADXL345     |
 |                                     `---> VCC DS18B20     |
 |    Pin 2: GND      ---------------------> GND (Comum)     |
-|    Pin 3: SDA (GPIO 8)  ----------------> SDA ADXL345     |
-|    Pin 4: SCL (GPIO 9)  ----------------> SCL ADXL345     |
-|    Pin 5: 1W_DQ (GPIO 14) --------------> Data DS18B20    |
+|    Pin 3: SDA (GPIO 41) ----------------> SDA ADXL345     |
+|    Pin 4: SCL (GPIO 42) ----------------> SCL ADXL345     |
+|    Pin 5: 1W_DQ (GPIO 5) ---------------> Data DS18B20    |
 +-----------------------------------------------------------+
 ```
 
@@ -56,7 +56,7 @@ Conecte a porta USB do ESP32-S3 ao seu computador e abra um monitor serial confi
 [DSP] Window: Hann. Computing FFT and RMS velocity (ISO 20816)...
       RMS Velocity: 1.25 mm/s (Zona A: Boa)
       Peak Accel: 0.82 g
-      RPM (Hall): 1785 RPM
+      RPM (Tacholess FFT): 1785 RPM
 [TX] Packing binary telemetry struct (27 bytes)...
 [TX] LoRa transmission completed in 42 ms.
 [POWER] Power-gating OFF. Entering Deep-Sleep for 60s...

@@ -520,49 +520,176 @@ def cmd_pcb_laser(args):
 # -----------------------------------------------------------------------------
 # COMMAND: tcc:sync & tcc:pack
 # -----------------------------------------------------------------------------
+def _build_tcc_offline_html(pacote_dir: Path):
+    """Gera LEIA_NO_NAVEGADOR.html autocontido e offline para leitura sem editor de Markdown."""
+    scripts_dir = str(ROOT_DIR / "scripts")
+    if scripts_dir not in sys.path:
+        sys.path.insert(0, scripts_dir)
+    from tcc_html_renderer import build_tcc_offline_html
+
+    return build_tcc_offline_html(pacote_dir, ROOT_DIR)
+
+
 def cmd_tcc_sync(args):
-    """Sincroniza os esquemáticos PDF/PNG atualizados para a pasta de entrega do TCC."""
-    pdf_name = "Esquematico_Main_Node_ESP32.pdf"
-    png_names = [
+    """Sincroniza os esquemáticos PDF/PNG ativos (sem microfone/fusíveis) para a entrega do TCC."""
+    docs_iot = ROOT_DIR / "docs" / "iot"
+    synced = []
+
+    main_pdf = "Esquematico_Main_Node_ESP32.pdf"
+    active_schematics = [
+        main_pdf,
         "Esquematico_Main_Node_Pag1_Root.png",
         "Esquematico_Main_Node_Pag2_Power_Supply.png",
         "Esquematico_Main_Node_Pag3_Sensors_AFE.png",
         "Esquematico_Main_Node_Pag4_MCU_ESP32S3.png",
-        "Esquematico_Main_Node_Pag5_Peripherals_LoRa.png"
+        "Esquematico_Main_Node_Pag5_Peripherals_LoRa.png",
+        "Esquematico_Probe_Tower_Dual.pdf",
+        "Esquematico_Probe_Tower_Dual.png",
+        "Esquematico_Painel_Bancada_M1.pdf",
+        "Esquematico_Painel_Bancada_M1.png",
+    ]
+    obsolete_files = [
+        "Esquematico_Probe_Tower_Com_Microfone.pdf",
+        "Esquematico_Probe_Tower_Com_Microfone.png",
+        "Esquematico_Probe_Sensor.pdf",
+        "Esquematico_Probe_Sensor.png",
+        "Esquematico_Carrier_Board.pdf",
+        "Esquematico_Carrier_Board.png",
     ]
 
-    docs_iot = ROOT_DIR / "docs" / "iot"
-    src_pdf = docs_iot / pdf_name
+    hw_main = HW_REPO / "kicad" / "amemiya_main_node"
+    src_main_pdf = docs_iot / main_pdf
+    if src_main_pdf.exists() and hw_main.exists():
+        shutil.copy2(src_main_pdf, hw_main / main_pdf)
+        synced.append(f"amemiya-hardware: {main_pdf}")
 
-    synced = []
+    if PACOTE_TCC_DIR.exists():
+        target_hw = PACOTE_TCC_DIR / "02_Hardware_Projetos_KiCad" / "Esquematicos_PDF"
+        target_hw.mkdir(parents=True, exist_ok=True)
 
-    if src_pdf.exists():
-        # 1. amemiya-hardware
-        hw_main = HW_REPO / "kicad" / "amemiya_main_node"
-        if hw_main.exists():
-            shutil.copy2(src_pdf, hw_main / pdf_name)
-            synced.append(f"amemiya-hardware: {pdf_name}")
+        for obs in obsolete_files:
+            obs_path = target_hw / obs
+            if obs_path.exists():
+                obs_path.unlink()
 
-        # 2. Pacote_TCC_Amemiya
-        if PACOTE_TCC_DIR.exists():
-            target_hw = PACOTE_TCC_DIR / "02_Hardware_Projetos_KiCad" / "Esquematicos_PDF"
-            target_hw.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(src_pdf, target_hw / pdf_name)
-            synced.append(f"Pacote_TCC_Amemiya (PDF): {pdf_name}")
+        for fname in active_schematics:
+            src_file = docs_iot / fname
+            if src_file.exists():
+                shutil.copy2(src_file, target_hw / fname)
+                synced.append(f"Pacote_TCC_Amemiya: {fname}")
 
-            for p in png_names:
-                src_png = docs_iot / p
-                if src_png.exists():
-                    shutil.copy2(src_png, target_hw / p)
-                    synced.append(f"Pacote_TCC_Amemiya (PNG): {p}")
+        # Espelhar fontes KiCad ativos (sem pastas com microfone/legado)
+        board_mirrors = [
+            ("amemiya_main_node", {".kicad_sch", ".kicad_pro", ".kicad_prl", ".kicad_sym"}, {"fp-lib-table", "sym-lib-table"}),
+            ("amemiya_probe_tower_dual", {".kicad_sch", ".kicad_pcb", ".kicad_pro", ".kicad_prl"}, set()),
+            ("amemiya_bancada_painel", {".kicad_sch", ".kicad_pro", ".kicad_prl", ".md", ".csv"}, set()),
+        ]
+        for board_name, exts, exact_names in board_mirrors:
+            src_board = HW_REPO / "kicad" / board_name
+            dst_board = PACOTE_TCC_DIR / "02_Hardware_Projetos_KiCad" / board_name
+            if src_board.exists():
+                dst_board.mkdir(parents=True, exist_ok=True)
+                for f in src_board.iterdir():
+                    if f.is_file() and (f.suffix in exts or f.name in exact_names):
+                        shutil.copy2(f, dst_board / f.name)
+                synced.append(f"Pacote_TCC_Amemiya: Fontes {board_name}")
 
-            # Espelhar fontes KiCad
-            pacote_kicad = PACOTE_TCC_DIR / "02_Hardware_Projetos_KiCad" / "amemiya_main_node"
-            if pacote_kicad.exists() and hw_main.exists():
-                for f in hw_main.iterdir():
-                    if f.suffix in [".kicad_sch", ".kicad_pro", ".kicad_prl"]:
-                        shutil.copy2(f, pacote_kicad / f.name)
-                synced.append("Pacote_TCC_Amemiya: Fontes KiCad espelhados")
+        # 3. Decisões arquiteturais (ADRs) e documentos conceituais / pinagem
+        docs_explicacoes = ROOT_DIR / "docs" / "explicacoes"
+        docs_ref = ROOT_DIR / "docs" / "referencia"
+        target_dec = PACOTE_TCC_DIR / "03_Documentacao_e_Decisoes_Arquiteturais"
+        target_dec.mkdir(parents=True, exist_ok=True)
+        for stale_dec in ["tinyml-vs-cloud.md"]:
+            p_stale = target_dec / stale_dec
+            if p_stale.exists():
+                p_stale.unlink()
+        for doc_src in [
+            *sorted(docs_explicacoes.glob("ADR-*.md")),
+            docs_explicacoes / "arquitetura-distribuida.md",
+            docs_explicacoes / "dsp-vibracao-fft.md",
+            docs_explicacoes / "norma-iso-20816.md",
+            docs_ref / "pinagem-hardware.md",
+            docs_ref / "payload-lora-binario.md",
+            docs_ref / "api-mqtt-telemetria.md",
+            docs_iot / "REGRAS_DE_NEGOCIO_MLOPS_E_AMOSTRAGEM.md",
+        ]:
+            if doc_src.exists():
+                shutil.copy2(doc_src, target_dec / doc_src.name)
+                synced.append(f"Pacote_TCC_Amemiya (Docs/ADR): {doc_src.name}")
+
+        # 4. Artigos científicos de referência (DOIs + PDFs reais), auditoria XGBoost e matriz NR-10/NR-12
+        target_art = PACOTE_TCC_DIR / "04_Artigos_e_Referencias_Cientificas"
+        target_art.mkdir(parents=True, exist_ok=True)
+        for stale_art in ["referencias-cientificas.md"]:
+            p_stale = target_art / stale_art
+            if p_stale.exists():
+                p_stale.unlink()
+        for art_src in [
+            docs_iot / "DECISOES_TECNICAS_E_REFERENCIAS_CIENTIFICAS.md",
+            ROOT_DIR / "docs" / "Relatorio_Auditoria_XGBoost_Importancia_Features.md",
+            ROOT_DIR / "docs" / "grafico_importancia_xgboost_amemiya.png",
+            HW_REPO / "normas" / "MATRIZ_CONFORMIDADE_NR10_NR12.md",
+            HW_REPO / "normas" / "NR-10.pdf",
+            HW_REPO / "normas" / "NR-12.pdf",
+        ]:
+            if art_src.exists():
+                shutil.copy2(art_src, target_art / art_src.name)
+                synced.append(f"Pacote_TCC_Amemiya (Ref/Artigos): {art_src.name}")
+
+        # 4b. Copiar PDFs válidos dos artigos científicos com nomes legíveis (filtrando HTMLs corrompidos e duplicatas por SHA-256)
+        import hashlib
+        pdfs_art_dst = target_art / "PDFs_Artigos"
+        pdfs_art_dst.mkdir(parents=True, exist_ok=True)
+        pdf_rename_map = {
+            "Jakobsen2024_HardwareX_Microfone_MEMS_Mancal.pdf": "Jakobsen2024_HardwareX_MEMS_LoRa_Mancal.pdf",
+            "Janssens2019-Thermal-imaging-and-vibration-based-multisensor-fault-detection.pdf": "Janssens2019_Thermal_Imaging_Vibration_Fault_Detection.pdf",
+            "1-s2.0-S2590123026033918-main.pdf": "Kibrete2026_Vibration_Condition_Monitoring_Fault_Diagnosis.pdf",
+            "Vibration-based-rotation-speed-estimation-for-Industrial-IoT.pdf": "Gildish2024_Vibration_Rotation_Speed_Estimation_IIoT.pdf",
+            "ARC2026-Tacholess-RPM-Estimation-arXiv.pdf": "Hua2026_ARC_Tacholess_RPM_Estimation.pdf",
+            "A-containerized-Edge-AI-predictive-maintenance-infrastructure-for-rotating-components-using.pdf": "Keshavarz2025_Containerized_Edge_AI_Predictive_Maintenance.pdf",
+            "A-Detailed-Study-on-Algorithms-for-Predictive-Maintenance-in-Smart-Manufacturing-Chip-Form.pdf": "Lazzaro2024_Edge_ML_Predictive_Maintenance.pdf",
+            "A-multisensory-time-frequency-features-fusion-method-for-rotating-machinery-fault-diagnosis.pdf": "Liu2024_Multisensory_Time_Frequency_Fusion_Fault_Diagnosis.pdf",
+            "Multi-sensor-open-set-cross-domain-intelligent-diagnostics-for-rotating-machinery-under-variable.pdf": "Zhang2023_Multisensor_OpenSet_Diagnostics_Rotating_Machinery.pdf",
+            "christou2020.pdf": "Christou2020_EndToEnd_IIoT_Predictive_Maintenance.pdf",
+            "Driving-Industry-4-0-with-Digital-Twins-Enhancing-Predictive-Maintenance-and-Operational.pdf": "Ahmed2025_Industry4_Digital_Twins_Predictive_Maintenance_IoT_ML.pdf",
+            "EDGE-AI BASED VIBRATION MONITORING.pdf": "Muruganandam2025_EdgeAI_Vibration_Monitoring_Anomaly.pdf",
+            "jardine2006.pdf": "Jardine2006_Review_Machinery_Diagnostics_Prognostics_CBM.pdf",
+            "lin2014.pdf": "Lin_Zhao2014_Review_Diagnosis_Speed_Varying_Machinery.pdf",
+            "rvol27no03-9-0013-236-243-2.pdf": "Brandao_Costa2022_Fault_Diagnosis_Rotary_Machines_ML.pdf",
+            "Using-machine-learning-and-deep-learning-algorithms-for-downtime-minimization-in-manufacturing.pdf": "Shahin2023_ML_DL_Early_Failure_Detection_Manufacturing.pdf",
+            "US-Datasheet-SmartTracUltra-gen2.pdf": "Tractian_Datasheet_SmartTrac_Ultra_Gen2.pdf",
+        }
+        pdf_sources = []
+        jak_pdf = ROOT_DIR / "docs" / "Jakobsen2024_HardwareX_Microfone_MEMS_Mancal.pdf"
+        if jak_pdf.exists():
+            pdf_sources.append(jak_pdf)
+        hw_artigos = HW_REPO / "artigos"
+        if hw_artigos.exists():
+            pdf_sources.extend(sorted(hw_artigos.glob("*.pdf")))
+
+        seen_hashes = set()
+        kept_pdf_names = set()
+        for pdf_src in pdf_sources:
+            raw_bytes = pdf_src.read_bytes()
+            if not raw_bytes.startswith(b"%PDF-"):
+                continue
+            digest = hashlib.sha256(raw_bytes).hexdigest()
+            if digest in seen_hashes:
+                continue
+            seen_hashes.add(digest)
+            dst_name = pdf_rename_map.get(pdf_src.name, pdf_src.name)
+            shutil.copy2(pdf_src, pdfs_art_dst / dst_name)
+            kept_pdf_names.add(dst_name)
+            synced.append(f"Pacote_TCC_Amemiya (PDF Artigo): {dst_name}")
+
+        for old_pdf in pdfs_art_dst.glob("*.pdf"):
+            if old_pdf.name not in kept_pdf_names:
+                old_pdf.unlink()
+
+        # 5. Portal HTML offline único para leitura fácil pelo grupo no navegador
+        html_out = _build_tcc_offline_html(PACOTE_TCC_DIR)
+        if html_out:
+            synced.append(f"Pacote_TCC_Amemiya (Portal Offline): {html_out.name}")
 
     result = {
         "status": "success",
@@ -1181,8 +1308,8 @@ def _evaluate_nr_compliance():
     bom_csv_txt = bom_csv.read_text(encoding="utf-8", errors="ignore")
     gen_txt = gen_script.read_text(encoding="utf-8", errors="ignore")
 
-    # 3. ABNT NBR 5410 Tabela 47: Condutores de força [W01]-[W05] e [W08]-[W13] devem ser >= 2.5 mm²
-    force_ids = ["W01", "W02", "W03", "W04", "W05", "W08", "W09", "W10", "W11", "W12", "W13"]
+    # 3. ABNT NBR 5410 Tabela 47: Condutores de força/127V AC + PE [W01]-[W13], [W16] devem ser >= 2.5 mm²
+    force_ids = [f"W{i:02d}" for i in range(1, 17) if i not in (14, 15)]
     bad_gauge_hits = []
     for label, content in [("kicad_sch", sch_txt), ("diagramas_md", diag_txt), ("generator_py", gen_txt)]:
         for wid in force_ids:
@@ -1197,10 +1324,10 @@ def _evaluate_nr_compliance():
     if bad_gauge_hits:
         failures.append(f"NBR 5410 Tab.47 (Força >= 2.5 mm²): inconsistência em {', '.join(sorted(set(bad_gauge_hits)))}")
     else:
-        passed_checks.append("NBR 5410 Tabela 47: todos os condutores de força [W01..W05, W08..W13] em 2.5 mm² no esquemático, gerador e diagramas")
+        passed_checks.append("NBR 5410 Tabela 47: todos os condutores 127V AC e PE [W01..W13, W16] em 2.5 mm² no esquemático, gerador e diagramas")
 
-    # 3b. As-built Comando 24V DC em 1.0 mm² ([W17]-[W39]) - NR-10 10.4.13
-    cmd24_ids = [f"W{i}" for i in range(17, 40)]
+    # 3b. As-built Comando 24V DC em 1.0 mm² ([W17]-[W39], exceto W25/W29 unificados em Ilhós Duplo) - NR-10 10.4.13
+    cmd24_ids = [f"W{i}" for i in range(17, 40) if i not in (25, 29)]
     bad_cmd24_hits = []
     for label, content in [("kicad_sch", sch_txt), ("diagramas_md", diag_txt), ("generator_py", gen_txt)]:
         for wid in cmd24_ids:
@@ -1242,7 +1369,6 @@ def _evaluate_nr_compliance():
     required_symbols = {
         "QM1": "Disjuntor geral bipolar 10A (NR-10 10.4.8)",
         "KM1": "Contator c/ selo contra religamento automático (NR-12 12.4)",
-        "FU1": "Fusível fonte comando SELV (NR-10 10.4.8)",
         "PS1": "Fonte isolada 24V DC (NR-10 10.2.4)",
         "SB0": "Parada de emergência c/ retenção (NR-12 12.6)",
         "TERRA_PE": "Barramento/linha de aterramento PE (NR-12 12.3.1)",
@@ -1252,7 +1378,7 @@ def _evaluate_nr_compliance():
     if missing_syms:
         failures.append(f"Elementos ausentes no esquemático KiCad: {'; '.join(missing_syms)}")
     else:
-        passed_checks.append("NR-10/NR-12 esquemático: QM1, KM1 (selo), FU1/FU2, PS1 (24VDC), SB0 emergência e TERRA_PE verificados")
+        passed_checks.append("NR-10/NR-12 esquemático: QM1, KM1 (selo), PS1 (24VDC direta s/ fusíveis), SB0 emergência e TERRA_PE verificados")
 
     # 6. Sincronismo gerador -> repo amemiya-hardware
     if r"\amemiya\hardware\kicad" in gen_txt:

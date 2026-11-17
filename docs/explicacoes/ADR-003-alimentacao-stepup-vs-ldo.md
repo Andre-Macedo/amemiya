@@ -1,48 +1,48 @@
-# ADR-003: Arquitetura de Alimentação: Regulador Chaveado Step-Down vs LDO
+# ADR-003: Arquitetura de Alimentação do Nó Sensor: Bateria Li-Ion + Step-Up `MT3608` (`5V`) + LDO (`3,3V`)
 
 * **Status:** Aceito
-* **Data:** 2026-10-20
+* **Data:** 2026-11-16
 * **Decisores:** André Macedo, Equipe de Engenharia Lean Tech
 
 ---
 
 ## Contexto
 
-A placa Carrier Board necessita operar em dois cenários distintos de instalação:
-1. **Alimentação Industrial Fixa (Bancada ou Painel):** Alimentada por fonte externa de $12\text{V}$ ou $24\text{V CC}$, com capacidade de corrente ilimitada.
-2. **Alimentação por Bateria Autônoma:** Alimentada por pack de bateria química Li-Ion / LiFePO4 ($3{,}2\text{V}$ a $4{,}2\text{V}$).
+O painel de comando e segurança da bancada (`amemiya_bancada_painel`) possui uma fonte chaveada `PS1` de `24V DC` destinada **exclusivamente** aos dispositivos de comando industrial (contator `KM1`, botões/sinaleiros NR-12 e tacômetro `PA1`). O nó sensor IoT (`amemiya_main_node`) precisa operar de forma **independente e eletricamente desacoplada** desse quadro de força, permitindo posicionamento livre próximo aos mancais monitorados.
 
-O microcontrolador ESP32-S3 e os periféricos operam a uma tensão nominal rigorosamente estabilizada de $3{,}3\text{V CC}$. Picos de corrente de até $400\text{ mA}$ ocorrem durante transmissões via rádio.
+Para o nó principal (`ESP32-S3 DevKitC-1`, rádio LoRa `E32`, display TFT `3.2"` e sonda `ADXL345` + `DS18B20`), a tensão de bateria `1S2P` Li-Ion (`3,0V` a `4,2V`) precisa gerar `+5,00V` estáveis na entrada `J_BAT` do DevKit e `+3,3V` limpos para lógica e sensores, mesmo durante picos de corrente de rádio e backlight.
 
 ---
 
 ## Decisão
 
-Adotou-se uma **arquitetura de regulação híbrida em 2 estágios em cascata**:
-1. **Estágio 1 (Para fontes industriais 9V a 24V):** Conversor chaveado síncrono *Buck/Step-Down* de alta eficiência derivando barramento primário de **$+5\text{V CC}$**.
-2. **Estágio 2 (Regulação Final para o ESP32 e Sensores):** Regulador linear de baixa queda (*Low-Dropout - LDO*) de alta precisão derivando o barramento ultra-estável de **$+3{,}3\text{V CC}$**.
+Adotou-se na folha `01_Power_Supply.kicad_sch` (repositório irmão `amemiya-hardware`) a seguinte cadeia de alimentação em **2 estágios a partir de bateria 1S2P**, completamente isolada do `24V` do painel:
+
+1. **Banco Primário e Proteção:** 2× células `18650` Li-Ion em paralelo (`3,7V` nominais, faixa `3,0V–4,2V`, $\sim 5200\text{ mAh}$), com carregador/BMS **`TP4056` USB-C** (`1,0 A` CC/CV) e chave alavanca geral (`250V 3A`).
+2. **Estágio 1 — Conversor Boost / Step-Up (`MT3608`):** eleva a tensão variável da bateria (`3,0V–4,2V`) para um barramento regulado de **`+5,00V CC`** conectado ao borne **`J_BAT` (`JST-XH 2P`)**, com capacitores de entrada/desacoplamento (`10 µF + 100 nF`).
+3. **Estágio 2 — Regulador Linear LDO (`ESP32-S3 DevKitC-1`):** deriva o barramento lógico **`+3,3V CC`** (filtrado por `10 µF + 100 nF`) para o microcontrolador, rádio LoRa e sensores.
+4. **Supervisão Real de Carga (`J_BAT_SENSE`):** tomada direta da tensão bruta **antes do Step-Up** (`0V–4,2V`) conectada ao divisor simétrico `1:2` (`100 kΩ / 100 kΩ 1%`) com filtro passa-baixa RC (`100 nF`) no pino `GPIO1` (`VBAT_ADC`).
 
 ---
 
 ## Justificativa Técnica
 
-1. **Eficiência Térmica sob Entrada de 24V:**
-   - Se utilizássemos um LDO diretamente de $24\text{V}$ para $3{,}3\text{V}$, a queda de tensão seria de $\Delta V = 20{,}7\text{V}$.
-   - Com uma corrente ativa de $150\text{ mA}$, a potência dissipada em forma de calor puro seria:
-     $$P_{dissipada} = 20{,}7\text{V} \cdot 0{,}15\text{A} \approx 3{,}1\text{ Watts}$$
-     Isso exigiria dissipadores de calor de alumínio volumosos e aqueceria o interior do invólucro estanque (IP65), alterando a leitura térmica dos sensores.
-   - O regulador chaveado síncrono atinge eficiência de $88\%$ a $92\%$, dissipando menos de $0{,}08\text{ W}$.
-
-2. **Ruído de Chaveamento e Ruído Metrológico:**
-   - Conversores chaveados introduzem *ripple* de alta frequência ($300\text{ kHz}$ a $1{,}5\text{ MHz}$) nas linhas de alimentação.
-   - Esse ruído chaveado afeta negativamente o conversor analógico-digital (ADC) do ESP32 e o ruído de fundo do acelerômetro ADXL345.
-   - O regulador LDO no Estágio 2 oferece alto índice de rejeição de fonte de alimentação (*Power Supply Rejection Ratio - PSRR* $> 65\text{ dB}$), fornecendo uma linha limpa de ruído para as medições metrológicas.
+1. **Prevenção de *Brownout* com Célula Li-Ion 1S:**
+   - O regulador LDO linear embarcado no `ESP32-S3 DevKitC-1` (típico `AMS1117-3.3`) possui *dropout* acima de `~1,0 V`, exigindo $\ge 4{,}5\text{V}$ na entrada `5V` para manter `3,3V` estáveis.
+   - Ligar uma bateria `18650` (`3,0V–4,2V`) diretamente no pino `5V` causaria queda imediata de tensão e reinícios (*brownout*) assim que o rádio LoRa ou o TFT puxassem pico de corrente. O **`MT3608`** mantém `5,00V` constantes até o corte de subtensão do BMS.
+2. **Atenuação de *Ripple* de Chaveamento via LDO:**
+   - Conversores *Step-Up* chaveados introduzem *ripple* de alta frequência na saída de `5V`. Manter o LDO como segundo estágio filtra esse ruído antes de alimentar o ADC (`GPIO1`), o acelerômetro `ADXL345` e o módulo `LoRa`.
+3. **Independência entre Bancada (`24V`) e Nó Sensor:**
+   - Desacoplar a alimentação do ESP32 da fonte `24V` do painel evita passar chicote extra de energia e ruído do circuito de potência até o nó portátil, além de manter compatibilidade direta com operação em campo a bateria ou recarga via USB-C (`TP4056`).
 
 ---
 
 ## Consequências
 
 * **Positivas:**
-  - Placa compacta sem aquecimento mecânico e sem dissipadores de calor.
-  - Imunidade a ruídos elétricos com conformidade EMC/EMI industrial.
-  - Tensão estável garantindo repetibilidade de medição em conformidade com ISO 17025.
+  * Operação portátil e estável durante toda a curva de descarga da bateria `18650` (`4,2V` até `~3,0V`).
+  * Arquitetura simples de montar em placa caseira usando módulos comerciais (`TP4056` + `MT3608` + `DevKitC-1`).
+  * Monitoramento fiel do estado de carga via `J_BAT_SENSE` antes do Step-Up (já que após o `MT3608` a tensão permanece fixa em `5,00V`).
+* **Negativas / Cuidados:**
+  * O módulo `MT3608` conectado continuamente junto ao LDO do `DevKitC-1` possui corrente quiescente na faixa de miliampères, reduzindo a autonomia prática em bateria em comparação ao cálculo ideal apenas do chip ESP32 em *Deep-Sleep* ([ADR-002](/explicacoes/ADR-002-deep-sleep-power-gating)); para instalações em bancada contínua, recomenda-se manter alimentação/recarga USB-C no `TP4056`.
+  * Caso se deseje autonomia multi-anual exclusivamente em bateria em uma revisão futura, será necessário substituir o conjunto `MT3608 + DevKitC-1` por módulo ESP32-S3 puro com bateria `LiFePO4` (`3,2V`) ou regulador *buck-boost* de ultra-baixo $I_q$ (`< 10 µA`).

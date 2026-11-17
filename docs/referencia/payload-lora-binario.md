@@ -58,7 +58,7 @@ typedef struct __attribute__((packed)) {
 
 ---
 
-## 4. Limite do Enlace LoRa vs. Burst Espectral (`Spectrum Studio` e Cloud ML)
+## 4. Limite do Enlace LoRa vs. Burst Espectral (Gráficos no Front-end Next.js e Cloud ML)
 
 O frame binário de **27 bytes** atende à telemetria resumida de campo (velocidade RMS triaxial, RPM estimado, temperatura e bateria). Ele **não** transporta o vetor completo `fft_x/fft_y/fft_z` (1024 *bins*) nem as 36 features espectrais exigidas pelo microserviço `ml-service`:
 

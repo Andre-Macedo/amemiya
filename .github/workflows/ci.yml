@@ -108,12 +108,17 @@ jobs:
         run: npm run build
 
   docs-quality:
-    name: Documentation Quality (VitePress Build)
+    name: Documentation & Contracts Quality (VitePress + EGM)
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -124,8 +129,11 @@ jobs:
       - name: Install NPM dependencies
         run: npm ci
 
-      - name: Validate VitePress Documentation Build
-        run: npm run docs:build
+      - name: Validate Markdown, Links & VitePress Build
+        run: python dev.py docs:test
+
+      - name: Validate EGM Contracts Integrity
+        run: python dev.py egm:lint
 
   backend-tests:
     name: Tests (${{ matrix.suite.name }})

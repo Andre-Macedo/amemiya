@@ -15,8 +15,8 @@ O **Sistema de Metrologia Lean Tech** é uma plataforma ciberfísica distribuíd
 ```mermaid
 flowchart TD
     subgraph HW["1. Camada de Borda & Instrumentação (amemiya-hardware)"]
-        PROBE["Torre de Sensores Dual\n(Mancal de Teste)\n• ADXL345 (Vibração I2C Fast-Mode)\n• INMP441 (Acústica I2S 24 bits - opcional)\n• DS18B20 (Temperatura 1-Wire)"]
-        CHICOTE["Chicote Industrial Blindado\n(Conector GX16-8)"]
+        PROBE["Torre de Sensores Dual\n(Mancal de Teste)\n• ADXL345 (Vibração I2C Fast-Mode)\n• DS18B20 (Temperatura 1-Wire)"]
+        CHICOTE["Chicote da Sonda (5 Vias Ativas)\n(JST-XH 5P / GX16)"]
         CARRIER["Nó Principal (ESP32-S3 DevKitC-1)\n• Power-Gating (AO3401A com Pull-up & RTC Hold)\n• Driver Backlight N-MOSFET (GPIO2 PWM)\n• Fuel Gauge (Divisor 100k/100k - GPIO1)\n• Transceptor LoRa (E32-TTL-100)\n• 2x 18650 Li-Ion + Boost MT3608"]
         IHM["IHM Local de Bancada\n• Display TFT 3.2\" SPI ILI9341 (240x320)\n• Touch Screen Resistivo XPT2046\n• LEDs RGB (Zonas ISO 20816) + Buzzer\n• Sensor Hall BG1 (apenas display local; CLP na v3)"]
         
@@ -68,7 +68,7 @@ flowchart TD
 O hardware do Nó Principal (`amemiya_main_node`) foi consolidado na versão **v37.0**, eliminando o tacômetro óptico e o display OLED, e integrando o display gráfico TFT de 3.2":
 
 * **Barramento SPI Gráfico (Display & Touch):**
-  * `GPIO11`: `SPI_MOSI` (Master Out Slave In compartilhado entre ILI9341 e XPT2046)
+  * `GPIO7`: `SPI_MOSI` (Master Out Slave In compartilhado entre ILI9341 e XPT2046; `GPIO11` mantido `NC` após curto constatado na unidade de bancada)
   * `GPIO12`: `SPI_SCK` (Serial Clock até 40 MHz compartilhado)
   * `GPIO13`: `SPI_MISO` (Master In Slave Out vindo do XPT2046)
   * `GPIO10`: `LCD_CS` (Chip Select do controlador gráfico ILI9341)
@@ -78,14 +78,12 @@ O hardware do Nó Principal (`amemiya_main_node`) foi consolidado na versão **v
   * `GPIO4`: `TOUCH_CS` (Chip Select do controlador de toque XPT2046)
   * `GPIO3`: `TOUCH_IRQ` (Interrupção ativa baixa de toque)
 
-* **Barramento de Sensores Multimodais (Chicote GX16-8):**
+* **Barramento de Sensores (Torre Dual — 5 Vias Ativas, sem `INMP441`):**
   * `GPIO41`: `I2C_SDA` (Acelerômetro ADXL345, Fast-Mode 400 kHz, Pull-up $4{,}7\text{k}\Omega$)
   * `GPIO42`: `I2C_SCL` (Clock I2C ADXL345, Pull-up $4{,}7\text{k}\Omega$)
-  * `GPIO6`: `I2S_SD` (Microfone MEMS INMP441 - Dados Seriais 24 bits)
-  * `GPIO7`: `I2S_SCK` (Microfone MEMS INMP441 - Continuous Bit Clock)
-  * `GPIO8`: `I2S_WS` (Microfone MEMS INMP441 - Word Select / L-R Sync)
   * `GPIO5`: `1W_DQ` (Termômetro Digital DS18B20, Pull-up $4{,}7\text{k}\Omega$)
   * `GPIO21`: `PWR_GATE_EN` (Chaveamento de energia $+3\text{V}3\text{\_SWITCHED}$ via P-MOSFET AO3401A com pull-up de $100\text{k}\Omega$ ao $+3\text{V}3$ e retenção de estado via `rtc_gpio_hold_en`)
+  * *Livres/Reserva:* `GPIO6` e `GPIO8` livres após remoção definitiva do `INMP441`; `GPIO11` mantido `NC`.
 
 * **Transceptor LoRa E32-TTL-100 (915 MHz):**
   * `GPIO44`: `LORA_RX` (Recepção serial UART @ 9600 bps)

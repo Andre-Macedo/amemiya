@@ -8,7 +8,7 @@
 
 ## 1. Visão Geral do Sistema IoT
 
-O subsistema de IoT da plataforma **Amemiya** foi desenvolvido para monitorar a integridade mecânica de máquinas operatrizes (tornos mecânicos, fresadoras e centros de usinagem CNC). A solução coleta grandezas físicas críticas (**vibração triaxial via ADXL345, assinatura acústica por microfone MEMS INMP441 e temperatura de contato dos mancais via DS18B20**), exibe telemetria em tempo real no painel frontal através de **Display TFT LCD 3.2" SPI com Touch Screen (ILI9341 + XPT2046)**, processa descritores estatísticos e espectrais na borda (*Edge Computing*), transmite os pacotes via rádio de longo alcance (*LoRa 915 MHz*) e orquestra a classificação preditiva de falhas em tempo real (*XGBoost* e norma *ISO 20816*).
+O subsistema de IoT da plataforma **Amemiya** foi desenvolvido para monitorar a integridade mecânica de máquinas operatrizes (tornos mecânicos, fresadoras e centros de usinagem CNC). A solução coleta grandezas físicas críticas (**vibração triaxial via ADXL345 e temperatura de contato dos mancais via DS18B20**), exibe telemetria em tempo real no painel frontal através de **Display TFT LCD 3.2" SPI com Touch Screen (ILI9341 + XPT2046)**, processa descritores estatísticos e espectrais na borda (*Edge Computing*), transmite os pacotes via rádio de longo alcance (*LoRa 915 MHz*) e orquestra a classificação preditiva de falhas em tempo real (*XGBoost* e norma *ISO 20816*).
 
 ---
 
@@ -20,7 +20,6 @@ A arquitetura adota o padrão de microsserviços e mensageria assíncrona orient
 flowchart TD
     subgraph EDGE["1. Camada de Borda (Edge Sensing, DSP & IHM Local)"]
         S_VIB["Acelerômetro Digital\n(ADXL345 - I2C Fast-Mode)"] --> ESP["ESP32-S3 (Edge Core)\n• DSP: FFT 1024 pts\n• RMS Triaxial + Kurtose\n• Power-Gating (AO3401A)\n• Bateria 18650 / Deep Sleep"]
-        S_MIC["Microfone Acústico MEMS\n(INMP441 - I2S Digital)"] --> ESP
         S_TMP["Temperatura de Mancal\n(DS18B20 - 1-Wire DQ)"] --> ESP
         ESP <--> TFT["IHM Local: Display TFT 3.2 Pol SPI\n(ILI9341 240x320 + Touch XPT2046)\nLEDs de Status (RGB) + Buzzer"]
         ESP --> LoRa_TX["Transmissor LoRa\n(E32-TTL-100 / 915 MHz)"]
@@ -58,10 +57,10 @@ flowchart TD
 
 1. **Camada de Borda (Edge Sensing, DSP & IHM Local):**
    * **Microcontrolador:** ESP32-S3 operando em extrabaixa tensão, energizado por células Li-Ion 18650 com rotinas de *Deep Sleep* e circuito de comutação *Power-Gate* (P-MOSFET AO3401A via `GPIO21`).
-   * **Sensing Multimodal (Torre Dual - Conector GX16-8):** 
+   * **Sensing na Sonda (Torre Dual - 5 Vias Ativas):** 
      * **ADXL345:** Aceleração triaxial em faixa de ±16g, amostragem a 3,2 kHz via I2C Fast-Mode (`GPIO41`/`GPIO42`).
-     * **INMP441:** Microfone MEMS com barramento digital I2S de 24 bits (`GPIO6`/`GPIO7`/`GPIO8`) para assinatura acústica de atrito e cavitação.
      * **DS18B20:** Sensor de temperatura 1-Wire (`GPIO5`) com contato térmico direto na carcaça do mancal.
+     * *(O microfone MEMS `INMP441` foi removido definitivamente conforme ADR-005 após ganho marginal de apenas 0,30% na auditoria XGBoost).*
    * **IHM Local no Painel da Máquina:**
      * **Display TFT LCD 3.2" SPI (ILI9341 240x320) + Touch Screen Resistivo (XPT2046):** Exibe leituras instantâneas, curvas espectrais e status operacional na própria máquina.
      * **Atuadores e Sinalização:** LEDs de Status RGB (Verde, Laranja, Azul) para sinalização visual das Zonas ISO 20816 e Buzzer sonoro ativo para alarmes críticos.
@@ -284,11 +283,11 @@ Tabela analítica de séries temporais de alta densidade que registra cada pacot
 * `id` (`CHAR(26)`, PK): Identificador universal (ULID).
 * `node_id` (`CHAR(26)`, FK): Nó emissor da leitura.
 * `msg_id` (`BIGINT`): Contador sequencial de pacotes para rastreamento de perda de sinal de rádio.
-* `rpm` (`INT`): Rotação por minuto real da máquina medida pelo sensor de efeito Hall KY-003.
+* `rpm` (`INT`): Rotação por minuto estimada via DSP (*tacholess* no `ADXL345`, ou Hall na v3 com CLP).
 * `rms_global` (`DECIMAL(10,4)`): Valor eficaz de velocidade de vibração em mm/s (ponderação triaxial).
 * `rms_x`, `rms_y`, `rms_z` (`DECIMAL(10,4)`): Velocidade RMS individual em cada eixo cartesiano.
 * `kurt_x`, `kurt_y`, `kurt_z` (`DECIMAL(10,4)`): Kurtose estatística para detecção de impactos de rolamento.
-* `mic_rms` (`DECIMAL(10,4)`): Nível de pressão sonora capturado pelo microfone MEMS digital INMP441.
+* `mic_rms` (`DECIMAL(10,4)`): *(Depreciado / Nulo após ADR-005 — mantido apenas por compatibilidade de esquema; o microfone `INMP441` foi removido).*
 * `temp_celsius` (`DECIMAL(6,2)`): Temperatura da carcaça do mancal lida pela sonda DS18B20 em °C.
 * `fft_data` (`JSON`): Vetor contendo amplitudes dos harmônicos de rotação (1X, 2X, 3X, 4X RPM e ruído de fundo).
 * `ml_status` (`VARCHAR(50)`): Diagnóstico de falha gerado pelo modelo na borda.

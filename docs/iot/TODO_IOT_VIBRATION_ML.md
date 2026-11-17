@@ -47,8 +47,8 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
 ### ETAPA 1: Hardware, Bancada Física e Validação Elétrica (Protoboard & Sonda)
 > *Pré-requisito para qualquer linha de código: montar e validar o circuito elétrico e a autonomia.*
 - [ ] **Montagem dos Componentes (Alinhada à Pinagem Oficial `amemiya_main_node`):**
-  - [ ] Interligar ESP32-S3 DevKitC-1 ao conector da sonda (`+3V3_SWITCHED`, `GND`, `I2C_SDA`, `I2C_SCL`, `1W_DQ` com pull-ups de $4{,}7\text{ k}\Omega$, além de linhas I2S opcionais para `INMP441`).
-  - [ ] Conectar o ADXL345 (`I2C`: `GPIO41` SDA / `GPIO42` SCL) e a sonda térmica DS18B20 (`1-Wire`: `GPIO5`). *(Microfone `INMP441` nos `GPIO6/7/8` permanece opcional; sensor Hall `BG1` fica ligado apenas ao display local da bancada, sem conexão ao ESP32).*
+  - [ ] Interligar ESP32-S3 DevKitC-1 ao conector da sonda (`+3V3_SWITCHED`, `GND`, `I2C_SDA`, `I2C_SCL`, `1W_DQ` com pull-ups de $4{,}7\text{ k}\Omega$, padrão `JST-XH 5P` sem `INMP441` conforme ADR-005).
+  - [ ] Conectar o ADXL345 (`I2C`: `GPIO41` SDA / `GPIO42` SCL) e a sonda térmica DS18B20 (`1-Wire`: `GPIO5`). *(O microfone `INMP441` foi removido; `SPI_MOSI` do TFT utiliza `GPIO7`, mantendo `GPIO11` desconectado e `GPIO6`/`GPIO8` livres; o sensor Hall `BG1` fica ligado apenas ao display local da bancada, sem conexão ao ESP32).*
   - [ ] Conectar o transceptor LoRa (`UART`: `GPIO43` TX / `GPIO44` RX) com capacitores de desacoplamento ($470\ \mu\text{F}$ eletrolítico + $100\text{ nF}$ cerâmico) no barramento de alimentação.
   - [ ] Ligar os pinos de controle do LoRa conforme PCB (`M0` no `GPIO38`, `M1` no `GPIO39` com pull-up $10\text{ k}\Omega$ e `AUX` no `GPIO47` — mantendo `GPIO45` livre por ser *strapping pin* de `VDD_SPI`).
   - [ ] Ligar o pino de interrupção `INT1` do ADXL345 à GPIO de RTC do ESP32 (GPIO 3) para habilitar o despertar híbrido por choque mecânico (EXT0).
@@ -105,8 +105,8 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
   - [ ] Calcular **`v_rms` (mm/s)** diretamente no firmware por **integração em banda larga (`10 Hz – 1000 Hz`)** no domínio da frequência ($V(f_k) = A(f_k) / 2\pi f_k$) e enviar no campo `features.v_rms` / `velocity_rms` (evita o fallback monofrequencial `1X` do backend).
   - [ ] Extração das features estatísticas e espectrais limpas de vibração: RMS, Kurtose, Fator de Crista e energias em 4 bandas de frequência ($B1, B2, B3, B4$).
   - [ ] Validação de integridade na coleta antes do empacotamento LoRa: validar CRC do `DS18B20` e descartar sentinelas de erro (`-127.0 °C` / `85.0 °C` no boot), garantindo zero `NaN`/`Inf` e `rms_global >= 0`.
-  - [ ] Geração e envio do burst espectral (`peaks` top-K já interpolados + vetor `fft_x`/`fft_y`/`fft_z` com `sample_rate`) via JSON MQTT sob demanda ou em janela periódica para plotagem no `SpectrumStudio` sem sobrecarregar o link LoRa contínuo.
-  - [ ] Vetor otimizado de features (alinhando o modelo `ml_service` quando for tomada a decisão final sobre manter ou remover o microfone `INMP441`).
+  - [ ] Geração e envio do burst espectral (`peaks` top-K já interpolados + vetor `fft_x`/`fft_y`/`fft_z` com `sample_rate`) via JSON MQTT sob demanda ou em janela periódica para plotagem dos gráficos espectrais no front-end Next.js sem sobrecarregar o link LoRa contínuo.
+  - [ ] Vetor otimizado de features (`ADXL345` + `DS18B20`), alinhado ao modelo `ml_service` sem dependências acústicas do `INMP441` (ADR-005).
 - [ ] **TinyML Embarcado:**
   - [ ] Inferência local via modelo XGBoost transcompilado em C (`embarcado_xgboost.h`).
   - [ ] Inércia temporal com buffer de 3 amostras consecutivas na memória RTC (`RTC_DATA_ATTR`) para evitar alarmes falsos.
@@ -158,16 +158,16 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
 ---
 
 ### ETAPA 6: Telemetria em Tempo Real & Interfaces Web (Next.js Cockpit + Filament Backoffice)
-> *Separação arquitetural: Filament 4 para Backoffice administrativo e Next.js para Cockpit Operacional e Spectrum Studio.*
+> *Separação arquitetural: Filament 4 para Backoffice administrativo e Next.js para Cockpit Operacional e Gráficos Espectrais.*
 - [x] **WebSockets com Laravel Reverb:**
   - [x] Evento `SensorDataReceived` transmitindo no canal `tenant.{slug}.iot` com nome `sensor.data`.
   - [x] Evento `AnomalyDetected` disparando alertas push imediatos em anomalias ou Zonas ISO C/D.
 - [x] **Backoffice Administrativo no Filament 4 (`amemiya`):**
   - [x] Gestão de estações, máquinas, nós IoT, certificados de calibração ISO 17025 e auditoria.
   - [x] Cadastro dos rolamentos instalados nos mancais das máquinas.
-- [x] **Cockpit Preditivo e Spectrum Studio no Next.js (`metrology-sass-front`):**
+- [x] **Cockpit Preditivo e Gráficos Espectrais no Front-end Next.js (`metrology-sass-front`):**
   - [x] Dashboard com visão em semáforo (Verde, Amarelo, Vermelho) baseado nas Zonas A/B, C e D da ISO 20816-3.
-  - [x] Componente `SpectrumStudio.tsx` conectado ao endpoint `/api/v1/iot-nodes/{iotNode}/spectrum` e simulador interativo:
+  - [x] Gráficos espectrais (`SpectrumStudio.tsx`) conectados ao endpoint `/api/v1/iot-nodes/{iotNode}/spectrum` e simulador interativo:
     - Sobreposição triaxial simultânea (X: Horizontal, Y: Vertical, Z: Axial) com toggle individual;
     - Seletor de Harmônicos automáticos ($1X, 2X, 3X, 4X, 0.5X$) com cursor;
     - Linhas tracejadas dinâmicas de frequências de rolamento (`BPFO`, `2x BPFO`, `BPFI`, bandas laterais `BPFI ± 1X`, `BSF`, `FTF`);
@@ -193,7 +193,7 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
     - [x] `emitir-certificado-web.md`: Cadastro metrológico e emissão de laudo PDF com incerteza $U$.
     - [x] `configurar-broker-mqtt.md`: Pareamento de novos gateways e chaves de segurança.
   - [x] **Quadrante 3 — Referência Técnica (Consultas Secas & Fatos):**
-    - [x] `pinagem-hardware.md`: Pinout completo do ESP32-S3, LoRa E32 e conector GX16-10.
+    - [x] `pinagem-hardware.md`: Pinout completo do ESP32-S3 (`SPI_MOSI` em `GPIO7`, `GPIO11` `NC`), LoRa E32 e conector `J_PROBE`.
     - [x] `payload-lora-binario.md`: Especificação da struct C de 27 bytes (campos, tipos e escalas).
     - [x] `dicionario-dados-er.md`: DDL do MySQL, tabelas, ULIDs e relacionamentos.
     - [x] `api-mqtt-telemetria.md`: Estrutura JSON e tópicos do Mosquitto.
@@ -205,6 +205,15 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
     - [x] `ADR-001-lora-vs-espnow.md`: Justificativa da adoção de LoRa 915 MHz com payload binário.
     - [x] `ADR-002-deep-sleep-power-gating.md`: Estratégia de sono profundo e chaveamento de alimentação.
     - [x] `ADR-003-alimentacao-stepup-vs-ldo.md`: Análise de consumo de repouso e escolha do regulador.
+    - [x] `ADR-004-ihm-tft-spi-vs-oled.md`: Adoção do TFT 3.2" SPI (`ILI9341` + `XPT2046` via `LovyanGFX`) e `SPI_MOSI` em `GPIO7`.
+    - [x] `ADR-005-remocao-inmp441-e-tacometro.md`: Remoção definitiva do `INMP441` (I2S) e tacômetro no nó, padronizando sonda de 5 vias.
+    - [x] `ADR-006-bancada-experimental-nr12-e-modos-falha.md`: Painel NR-10/NR-12 (sem fusíveis) e indução de desbalanceamento, desalinhamento e rolamento defeituoso.
+    - [x] `ADR-007-espectro-hibrido-wifi-e-fallback-lora.md`: Telemetria LoRa 27B vs burst espectral Wi-Fi MQTT e fallback LoRa (Top-12 picos / 0–1000 Hz).
+    - [x] `ADR-008-ml-hibrido-isolation-forest-xgboost-hitl.md`: Arquitetura `Isolation Forest` + `XGBoost` + triagem *Human-in-the-Loop* e lacunas pendentes no `ml_service`.
+    - [x] `referencias-cientificas.md`: Página centralizada com DOIs dos artigos científicos e normas.
+  - [ ] **Governança Contínua da Documentação:**
+    - [x] Adicionar checagem de ADR órfão e sincronismo KiCad ↔ `pinagem-hardware.md` em `scripts/test_docs.py` + hooks `pre-push` locais (`amemiya` e `amemiya-hardware`).
+    - [ ] **Ativar Branch Protection Rules no GitHub (`Andre-Macedo/amemiya`):** em *Settings → Branches* (`main` e `develop`), marcar *Require status checks to pass before merging* e exigir **`Documentation & Contracts Quality (VitePress + EGM)`** (job `docs-quality` de `.github/workflows/ci.yml`).
 - [x] **Camada 2: Documentação Automatizada de API com Dedoc Scramble:**
   - [x] Instalar o pacote oficial no Laravel: `composer require dedoc/scramble`.
   - [x] Configurar rotas da API em `config/scramble.php` para inspecionar rotas `/api/...`, Form Requests e API Resources.
@@ -230,9 +239,9 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
   - [ ] Parafusar arruela de massa excêntrica no disco e verificar se o $1X$ RPM sobe proporcionalmente na telemetria.
   - [ ] Comprovar que a IA na borda detecta o desbalanceamento, atualiza a Zona ISO para C/D, acende o LED vermelho na bancada e dispara o alarme no dashboard.
 - [ ] **Fechamento e Produção dos Gerbers (`amemiya_main_node`):**
-  - [ ] Atualizar esquemáticos KiCad (`02_Sensors_AFE.kicad_sch`): remoção definitiva de entrada `J_TACHO` no ESP32 (`BG1` segue apenas no display local; CLP na v3) e definição final sobre manter ou remover o `INMP441`.
-  - [ ] Consolidar conector da Sonda Externa (`J_PROBE`: 8 pinos GX16-8 com `INMP441` ou 5 pinos caso opcional acústico seja removido) com pull-ups de $4{,}7\text{ k}\Omega$.
-  - [ ] Manter periféricos de bancada: Buzzer (`J_BUZ`), 3 LEDs de status (`J_LEDS`: Normal, Alerta, Falha) e conector OLED (`J_OLED`).
+  - [x] Atualizar esquemáticos KiCad (`02_Sensors_AFE.kicad_sch` / `03_MCU_ESP32S3.kicad_sch`): remoção definitiva de `J_TACHO` e do `INMP441` (ADR-005), e remapeamento de `SPI_MOSI` para `GPIO7` (`GPIO11` `NC`).
+  - [x] Consolidar conector da Sonda Externa (`J_PROBE`: 5 pinos `GX16-5` / `JST-XH 5P` 1-para-1 com `amemiya_probe_tower_dual`) com pull-ups de $4{,}7\text{ k}\Omega$.
+  - [ ] Manter periféricos de bancada: Buzzer (`J_BUZ`), 3 LEDs de status (`J_LEDS`: Normal, Alerta, Falha) e conector TFT SPI (`J_TFT` 1x14 — `ILI9341` + `XPT2046`, ADR-004).
   - [ ] Executar checagem de regras de design (DRC) e exportar os arquivos Gerber/Drill para fabricação em placa compacta 100% DIP.
 
 ---

@@ -6,31 +6,41 @@ Esta seção detalha o projeto de arquitetura de software e hardware em 5 camada
 
 ## 1. Visão Geral das 5 Camadas
 
-```
-+-------------------------------------------------------------+
-| Camada 5: Visualização, Painel Filament & Portal VitePress  |
-+-------------------------------------------------------------+
-                              | (HTTPS / WebSockets Reverb)
-+-------------------------------------------------------------+
-| Camada 4: Aplicação Backend Modular (Laravel 12 + BCMath)   |
-+-------------------------------------------------------------+
-        |                                       |
-  (Redis Queue)                           (HTTP REST)
-        v                                       v
-+-------------------------------+   +-------------------------+
-| Camada 3: Processamento & ML  |   | MySQL 8.0 Multi-Tenant  |
-| (Workers + Python XGBoost)    |   | (Séries Temporais / ER) |
-+-------------------------------+   +-------------------------+
-        ^
-        | (MQTT TCP / ACLs)
-+-------------------------------------------------------------+
-| Camada 2: Concentrador & Gateway de Borda (ESP32 Gateway)   |
-+-------------------------------------------------------------+
-        ^
-        | (LoRa 915 MHz / Payload Binário 27 bytes)
-+-------------------------------------------------------------+
-| Camada 1: Sensoriamento & DSP Local (ESP32-S3 + ADXL345)    |
-+-------------------------------------------------------------+
+```mermaid
+flowchart BT
+    subgraph L1["Camada 1 · Sensoriamento & DSP na Borda"]
+        NODE["ESP32-S3 + TFT 3.2&quot; SPI + Sonda GX16-5 (ADXL345 3,2 kHz + DS18B20)<br/>RFFT Hann · V_RMS ISO 20816-3 · RPM Tacholess · TinyML"]
+    end
+
+    subgraph L2["Camada 2 · Concentrador & Enlace Híbrido (ADR-007)"]
+        GW["Gateway ESP32 (LoRa 915 MHz 27B ↔ MQTT) &nbsp;|&nbsp; Canal Direto Wi-Fi (Burst Espectral)"]
+    end
+
+    subgraph L3["Camada 3 · Mensageria & ML Preditivo"]
+        direction LR
+        MQTT["Mosquitto TLS 8883<br/>+ Laravel MQTT Bridge"] -->|"QoS 1"| REDIS[("Redis Buffer & Queue<br/>spectrum:latest")]
+        REDIS <-->|"36 features"| ML["ML Service (FastAPI)<br/>Isolation Forest + XGBoost + HITL"]
+    end
+
+    subgraph L4["Camada 4 · Backend Modular & Banco de Dados"]
+        direction LR
+        API["Laravel 12 + BCMath<br/>IoT · Metrology · System"] <-->|"Eloquent ORM"| DB[("MySQL 8.0 Multi-Tenant<br/>Séries Temporais & Laudos")]
+    end
+
+    subgraph L5["Camada 5 · Apresentação & Governança"]
+        UI["Painel Filament 4 · Front-end Next.js (Gráficos Espectrais) · Portal VitePress · App Mobile"]
+    end
+
+    L1 -->|"LoRa 915 MHz (27B / Top-K) ou Wi-Fi"| L2
+    L2 -->|"v1/gateways/.../telemetry"| L3
+    L3 -->|"ProcessTelemetryJob"| L4
+    L4 <-->|"HTTPS REST + WebSockets Reverb"| L5
+
+    style L5 fill:#eff6ff,stroke:#2563eb,stroke-width:1.5px,color:#0f172a
+    style L4 fill:#f0fdf4,stroke:#16a34a,stroke-width:1.5px,color:#0f172a
+    style L3 fill:#faf5ff,stroke:#7c3aed,stroke-width:1.5px,color:#0f172a
+    style L2 fill:#fffbeb,stroke:#d97706,stroke-width:1.5px,color:#0f172a
+    style L1 fill:#f8fafc,stroke:#334155,stroke-width:1.5px,color:#0f172a
 ```
 
 ---

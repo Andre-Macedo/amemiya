@@ -47,7 +47,7 @@ Este módulo responde à pergunta: *"O produto está bom?"* e *"Qual instrumento
 Este módulo responde à pergunta: *"A máquina e o ambiente estão propícios para produzir com qualidade?"*.
 
 ### 2.1. Monitoramento de Máquinas (Preventiva/Preditiva)
-*   **Sensores:** Vibração (Acelerômetro), Temperatura do Motor, Corrente Elétrica.
+*   **Sensores:** Vibração Triaxial (`ADXL345`) e Temperatura de Contato do Mancal (`DS18B20`) *(sem alicate de corrente `SCT-013` nem microfone `INMP441` na V2)*.
 *   **Regra de Negócio:**
     *   Se `Vibração > Limite`: Gerar Alerta de Manutenção.
     *   Se `Vibração > Crítico`: Bloquear criação de novos Lotes no `QualityControl`.

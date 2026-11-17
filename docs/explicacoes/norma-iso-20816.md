@@ -57,3 +57,12 @@ IsoSeverityZone_t evaluateIso20816(float vrms_max_axis) {
 ```
 
 O valor resultante é transmitido no byte 19 da estrutura binária e refletido visualmente no dashboard Filament via gráficos codificados em cores oficiais (Verde, Azul, Amarelo e Vermelho).
+
+---
+
+## 4. Referências Científicas e Normativas
+
+* **ISO 20816-3:2022:** *Mechanical vibration — Measurement and evaluation of machine vibration — Industrial machines with nominal power above 15 kW*.
+* **Pedotti, L. A. S.; Zago, R. M.; Fruett, F. (2017):** *Fault diagnostics in rotary machines through spectral vibration analysis using low-cost MEMS devices*, *IEEE I&M Magazine* — [`doi:10.1109/mim.2017.8121950`](https://doi.org/10.1109/mim.2017.8121950)
+* **Pagar, N.; Gawde, S.; Sanap, S. (2023):** *Online condition monitoring system for rotating machine elements using edge computing* — [`doi:10.1080/14484846.2023.2215493`](https://doi.org/10.1080/14484846.2023.2215493)
+* Veja também [Referências Científicas e Normativas](/explicacoes/referencias-cientificas).

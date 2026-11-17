@@ -52,3 +52,12 @@ $$V(f) = \frac{A(f)}{2\pi f}$$
 O valor RMS global é então integrado na faixa de $10\text{ Hz}$ a $1000\text{ Hz}$:
 
 $$V_{RMS} = \sqrt{\sum_{f = 10\text{ Hz}}^{1000\text{ Hz}} |V(f)|^2}$$
+
+---
+
+## 4. Referências Científicas e Normativas
+
+* **Randall, R. B.; Antoni, J. (2011):** *Rolling element bearing diagnostics—A tutorial*, *MSSP* — [`doi:10.1016/j.ymssp.2010.07.017`](https://doi.org/10.1016/j.ymssp.2010.07.017)
+* **Sharma, A. et al. (2025):** *MEMS Approach for Rolling Bearing Fault Diagnosis Using Vibration Signal Analysis* — [`doi:10.1007/s42417-024-01730-4`](https://doi.org/10.1007/s42417-024-01730-4)
+* **Lu, S. et al. (2019):** *Tacholess Speed Estimation in Order Tracking: A Review* — [`doi:10.1109/tim.2019.2902806`](https://doi.org/10.1109/tim.2019.2902806)
+* Veja a bibliografia completa na página [Referências Científicas e Normativas](/explicacoes/referencias-cientificas).

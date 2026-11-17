@@ -36,3 +36,11 @@ Durante a qualificação da bancada:
 1. Varie a rotação pelo Dimmer `TC1` em 5 patamares dentro da faixa operacional (ex.: `600`, `900`, `1200`, `1500` e `1750 RPM`).
 2. Compare a leitura do **display local `BG1`** (ou tacômetro óptico padrão calibrado) com o valor `rpm` estimado na telemetria IoT.
 3. Confirme que o desvio relativo permanece abaixo da tolerância de **`2,5%`** exigida pelo casamento de frequências de rolamento (`BPFO`, `BPFI`, `BSF`, `FTF`).
+
+---
+
+## 4. Referências Científicas
+
+* **Lu, S. et al. (2019):** *Tacholess Speed Estimation in Order Tracking: A Review With Application to Rotating Machine Fault Diagnosis*, *IEEE Trans. Instrum. Meas.* — [`doi:10.1109/tim.2019.2902806`](https://doi.org/10.1109/tim.2019.2902806)
+* **Wang, K. S.; Heyns, P. S. (2011):** *Application of computed order tracking, Vold-Kalman filtering and EMD in rotating machine vibration*, *MSSP* — [`doi:10.1016/j.ymssp.2010.09.003`](https://doi.org/10.1016/j.ymssp.2010.09.003)
+* Veja também [Referências Científicas e Normativas](/explicacoes/referencias-cientificas) e a [ADR-005](/explicacoes/ADR-005-remocao-inmp441-e-tacometro).

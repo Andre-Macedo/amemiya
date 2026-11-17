@@ -16,7 +16,7 @@ Embora o ESP32-S3 possua modos de baixo consumo (*Deep-Sleep* com corrente resid
 
 ## Decisão
 
-Adotou-se uma arquitetura de **chaveamento de potência por hardware (*Power-Gating*)** acionada pelo pino `GPIO 7` (`PWR_SW_EN`), controlando um MOSFET de potência canal P (ou chave de carga integrada de alta eficiência com slew-rate controlado).
+Adotou-se uma arquitetura de **chaveamento de potência por hardware (*Power-Gating*)** acionada pelo pino `GPIO 21` (`PWR_GATE_EN`), controlando um MOSFET de potência canal P (ou chave de carga integrada de alta eficiência com slew-rate controlado).
 
 ---
 
@@ -25,7 +25,7 @@ Adotou-se uma arquitetura de **chaveamento de potência por hardware (*Power-Gat
 1. **Topologia do Circuito de Power-Gating:**
    - A linha de alimentação dos sensores foi isolada em um barramento separado denominado `+3V3_SW`.
    - Um transistor bipolar ou canal N pequeno atua como driver de gate para o MOSFET canal P de baixa resistência $R_{DS(on)} < 50\text{ m}\Omega$.
-   - Quando o ESP32-S3 entra em *Deep-Sleep*, o pino `GPIO 7` vai para nível baixo, cortando fisicamente a alimentação de todos os sensores da torre externa e dos circuitos de condicionamento.
+   - Quando o ESP32-S3 entra em *Deep-Sleep*, o pino `GPIO 21` mantém o gate em nível alto via pull-up de $100\text{ k}\Omega$ / `rtc_gpio_hold_en`, cortando fisicamente a alimentação de todos os sensores da torre externa e dos circuitos de condicionamento.
 
 2. **Balanço de Correntes e Ciclo de Trabalho (*Duty Cycle*):**
    - **Fase de Aquisição e Transmissão (Ativo):**

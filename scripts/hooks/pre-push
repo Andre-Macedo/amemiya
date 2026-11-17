@@ -1,0 +1,16 @@
+#!/bin/sh
+set -e
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+PYTHON_BIN="python"
+if ! command -v "$PYTHON_BIN" >/dev/null 2>&1; then
+    PYTHON_BIN="python3"
+fi
+
+echo "[pre-push] Verificando contratos EGM.md..."
+"$PYTHON_BIN" dev.py egm:lint
+
+echo "[pre-push] Verificando integridade de docs, ADRs e pinagem KiCad..."
+"$PYTHON_BIN" scripts/test_docs.py --skip-build

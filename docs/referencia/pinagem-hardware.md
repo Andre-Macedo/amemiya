@@ -12,17 +12,17 @@ O barramento foi alocado considerando isolamento de ruído RF, controle PWM de i
 | :--- | :--- | :--- | :--- |
 | **J1: 04** | `GPIO4` | Touch Screen XPT2046 | Saída Digital: Chip Select do digitalizador resistivo (`TOUCH_CS`) |
 | **J1: 05** | `GPIO5` | DS18B20 (Temperatura) | 1-Wire Open-Drain: Barramento de dados da sonda térmica de mancal (`1W_DQ`, Pull-up $4{,}7\text{ k}\Omega$) |
-| **J1: 06** | `GPIO6` | INMP441 (Microfone MEMS) | I2S Serial Data: Entrada serial de áudio digital de 24 bits (`I2S_SD`) |
-| **J1: 07** | `GPIO7` | INMP441 (Microfone MEMS) | I2S Continuous Clock: Bit Clock contínuo de amostragem acústica (`I2S_SCK`) |
+| **J1: 06** | `GPIO6` | Reserva / Livre | Pino livre após remoção definitiva do `INMP441` (ADR-005) |
+| **J1: 07** | `GPIO7` | Barramento SPI Gráfico | SPI MOSI: Master Out Slave In compartilhado entre ILI9341 e XPT2046 (`SPI_MOSI`) |
 | **J1: 08** | `GPIO15` | LED Status Verde | Saída Digital ($3{,}3\text{V}$, limitador $330\Omega$): Sinalização de nó saudável / Zona A-B ISO 20816 (`GPIO_LED_GRN`) |
 | **J1: 09** | `GPIO16` | LED Status Laranja | Saída Digital ($3{,}3\text{V}$, limitador $330\Omega$): Alerta de manutenção preventiva / Zona C ISO 20816 (`GPIO_LED_ORG`) |
 | **J1: 10** | `GPIO17` | LED Status Azul | Saída Digital ($3{,}3\text{V}$, limitador $330\Omega$): Transmissão ativa de telemetria LoRa / Conexão Wi-Fi (`GPIO_LED_BLU`) |
 | **J1: 11** | `GPIO18` | Buzzer Piezolétrico Ativo | Saída Digital ($3{,}3\text{V}$, limitador $100\Omega$): Alarme acústico industrial para Zona D ISO 20816 (`GPIO_BUZZER`) |
-| **J1: 12** | `GPIO8` | INMP441 (Microfone MEMS) | I2S Word Select: Sincronismo de canal Left/Right (`I2S_WS`) |
+| **J1: 12** | `GPIO8` | Reserva / Livre | Pino livre após remoção definitiva do `INMP441` (ADR-005) |
 | **J1: 15** | `GPIO3` | Touch Screen XPT2046 | Entrada Digital com Interrupção: Notificação de toque ativo no painel (`TOUCH_IRQ`) |
 | **J1: 17** | `GPIO9` | Display TFT ILI9341 | Saída Digital: Seleção de Dados / Comando do controlador gráfico (`LCD_DC`) |
 | **J1: 18** | `GPIO10` | Display TFT ILI9341 | Saída Digital: Chip Select dedicado do display LCD (`LCD_CS`) |
-| **J1: 19** | `GPIO11` | Barramento SPI Gráfico | SPI MOSI: Master Out Slave In compartilhado entre ILI9341 e XPT2046 (`SPI_MOSI`) |
+| **J1: 19** | `GPIO11` | Não Conectado (`NC`) | Mantido desconectado (`NC`) após curto interno para `GND` constatado na unidade de bancada |
 | **J1: 20** | `GPIO12` | Barramento SPI Gráfico | SPI SCK: Clock de alta velocidade até 40 MHz compartilhado (`SPI_SCK`) |
 | **J1: 21** | `GPIO13` | Barramento SPI Gráfico | SPI MISO: Master In Slave Out vindo do digitalizador Touch XPT2046 (`SPI_MISO`) |
 | **J1: 22** | `GPIO14` | Display TFT ILI9341 | Saída Digital: Reset por hardware do controlador gráfico (`LCD_RST`) |
@@ -35,7 +35,7 @@ O barramento foi alocado considerando isolamento de ruído RF, controle PWM de i
 | **J3: 37** | `GPIO43` | Transceptor LoRa E32 | UART1 TX: Transmissão assíncrona serial a 9600 bps para o rádio (`LORA_TX`) |
 | **J3: 38** | `GPIO21` | Power-Gating (+3V3_SWITCHED) | Saída Digital ativa baixa: Aciona o P-MOSFET AO3401A para cortar energia dos sensores no Deep-Sleep (`PWR_GATE_EN`) |
 | **J3: 39** | `GPIO2` | Backlight Display TFT | Saída Digital / PWM: Controle de brilho da tela via resistor limitador `R_BL` de $10\Omega$ 1206 (`LCD_BL`) |
-| **J3: 40** | `GPIO1` | Fuel Gauge da Bateria | Entrada Analógica ADC1_CH0 (Atenuação 11 dB, faixa $0 - 3{,}1\text{V}$): Divisor simétrico 1:2 ($100\text{ k}\Omega / 100\text{ k}\Omega$) |
+| **J3: 40** | `GPIO1` | Fuel Gauge da Bateria | Entrada Analógica ADC1_CH0 (Atenuação 11 dB, faixa $0 - 3{,}1\text{V}$): Divisor simétrico 1:2 ($100\text{ k}\Omega / 100\text{ k}\Omega$) (`VBAT_ADC`) |
 
 ---
 
@@ -50,32 +50,34 @@ Conector para encaixe direto do **Display TFT LCD 3.2" SPI (240x320 RGB) com Tou
 | **3** | `CS` | `LCD_CS` (`GPIO10`) | Chip Select ativo baixo do LCD |
 | **4** | `RESET` | `LCD_RST` (`GPIO14`) | Reset por hardware do display |
 | **5** | `DC` | `LCD_DC` (`GPIO9`) | Seleção Data/Command (0: Comando, 1: Dados de Pixel) |
-| **6** | `SDI (MOSI)` | `SPI_MOSI` (`GPIO11`) | Entrada serial de dados gráficos |
+| **6** | `SDI (MOSI)` | `SPI_MOSI` (`GPIO7`) | Entrada serial de dados gráficos |
 | **7** | `SCK` | `SPI_SCK` (`GPIO12`) | Clock serial do barramento SPI (até 40 MHz) |
 | **8** | `LED` | `TFT_BL_A` (via `R_BL` $10\Omega$) | Ânodo da retroiluminação LED (Backlight ~100mA, acionado pelo `GPIO2`) |
-| **9** | `SDO (MISO)` | `SPI_MISO` (`GPIO13`) | Saída de dados do LCD (não utilizada na escrita gráfica) |
+| **9** | `SDO (MISO)` | `SPI_MISO` (`GPIO13`) | Saída de dados do LCD (manter desconectada na bancada se interferir no `T_DO`) |
 | **10** | `T_CLK` | `SPI_SCK` (`GPIO12`) | Clock SPI compartilhado para o digitalizador XPT2046 |
 | **11** | `T_CS` | `TOUCH_CS` (`GPIO4`) | Chip Select ativo baixo do controlador de toque |
-| **12** | `T_DIN` | `SPI_MOSI` (`GPIO11`) | Entrada de comandos de conversão analógico-digital (eixos X/Y) |
+| **12** | `T_DIN` | `SPI_MOSI` (`GPIO7`) | Entrada de comandos de conversão analógico-digital (eixos X/Y) |
 | **13** | `T_DO` | `SPI_MISO` (`GPIO13`) | Retorno das coordenadas digitalizadas de toque (12 bits) |
 | **14** | `T_IRQ` | `TOUCH_IRQ` (`GPIO3`) | Interrupção ativa baixa quando a caneta ou dedo pressiona a tela |
 
+::: warning Alimentação `J1` (3,3 V vs 5 V) e Calibração (`LovyanGFX`)
+* **Jumper `J1` no verso do módulo TFT:** a placa `amemiya_main_node` alimenta o pino 1 (`VCC`) com **`+3V3`**. É obrigatório **fechar o jumper `J1` com solda** atrás do display para contornar o regulador `U1` (e nunca mais ligar o módulo em `5V` após fechá-lo). Em testes isolados de protoboard com `J1` aberto, alimentar em `5V`.
+* **Biblioteca e calibração validadas (`setRotation(1)`):** usar **`LovyanGFX`** (`SPI2_HOST`) com vetor `calData[8] = { 3757, 490, 3790, 3893, 328, 504, 390, 3865 }`.
+:::
+
 ---
 
-## 3. Conector Industrial da Sonda Externa (`J_PROBE` / GX16-8)
+## 3. Conector da Sonda Externa (`J_PROBE` / `GX16-5` — `JST-XH 5P`)
 
-A interligação entre a Carrier Board e a **Torre de Sensores Dual** no mancal é realizada através de chicote blindado com conector metálico roscado de 8 pinos:
+A interligação entre a Carrier Board e a **Torre de Sensores Dual (`amemiya_probe_tower_dual`)** utiliza conector **5 vias (`JST-XH 5P` interno + `GX16-5` de painel)**, com mapeamento 1-para-1 direto:
 
 | Pino | Sinal | Tensão Nominal | Função / Transdutor Conectado |
 | :---: | :--- | :---: | :--- |
 | **1** | `+3V3_SWITCHED` | $+3{,}3\text{V CC}$ | Alimentação comutada dos sensores (cortada pelo P-MOSFET em Deep-Sleep) |
-| **2** | `GND` | $0\text{V}$ | Referência de terra e malha de blindagem contra EMI de motores |
+| **2** | `GND` | $0\text{V}$ | Referência de terra comum do chicote blindado |
 | **3** | `1W_DQ` | $0 - 3{,}3\text{V}$ | Linha bidirecional 1-Wire do termômetro digital DS18B20 |
-| **4** | `I2S_SD` | $0 - 3{,}3\text{V}$ | Linha de dados seriais de áudio do microfone MEMS INMP441 |
-| **5** | `I2S_SCK` | $0 - 3{,}3\text{V}$ | Bit Clock contínuo de amostragem acústica do INMP441 |
-| **6** | `I2S_WS` | $0 - 3{,}3\text{V}$ | Word Select (sincronismo de canal) do INMP441 |
-| **7** | `I2C_SCL` | $0 - 3{,}3\text{V}$ | Clock serial I2C (400 kHz) para o acelerômetro triaxial ADXL345 |
-| **8** | `I2C_SDA` | $0 - 3{,}3\text{V}$ | Dados seriais bidirecionais I2C para o acelerômetro triaxial ADXL345 |
+| **4** | `I2C_SCL` | $0 - 3{,}3\text{V}$ | Clock serial I2C (400 kHz) para o acelerômetro triaxial ADXL345 |
+| **5** | `I2C_SDA` | $0 - 3{,}3\text{V}$ | Dados seriais bidirecionais I2C para o acelerômetro triaxial ADXL345 |
 
 ---
 
