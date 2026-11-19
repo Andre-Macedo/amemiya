@@ -30,9 +30,9 @@ jobs:
               cd /var/www/amemiya
 
               echo '==> 2. A puxar o código mais recente (backend e frontend)...'
-              git -c core.fileMode=false pull origin main
+              git -c safe.directory=/var/www/amemiya -c core.fileMode=false pull origin main
               if [ -d /var/www/metrology-sass-front/.git ]; then
-                git -c core.fileMode=false -C /var/www/metrology-sass-front pull origin main
+                git -c safe.directory=/var/www/metrology-sass-front -c core.fileMode=false -C /var/www/metrology-sass-front pull origin main
               fi
 
               echo '==> 3. A construir a nova imagem da aplicação...'

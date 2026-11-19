@@ -89,6 +89,13 @@ def check_markdown_files():
             else:
                 cand = (f.parent / href).resolve()
                 cand_md = (f.parent / (href + ".md")).resolve()
+                # Links para repositórios irmãos (ex: ../../../amemiya-app/...) só são validados
+                # quando o repositório irmão está presente localmente (ausente em CI isolado).
+                if not cand.is_relative_to(ROOT_DIR):
+                    if cand.is_relative_to(ROOT_DIR.parent):
+                        sibling_parts = cand.relative_to(ROOT_DIR.parent).parts
+                        if sibling_parts and not (ROOT_DIR.parent / sibling_parts[0]).exists():
+                            continue
                 if not (cand.exists() or cand_md.exists()):
                     results["errors"].append(f"{rel}: Link relativo quebrado: {href}")
 
