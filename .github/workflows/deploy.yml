@@ -29,8 +29,11 @@ jobs:
               echo '==> 1. Conectado! A aceder ao diretório do projeto...'
               cd /var/www/amemiya
 
-              echo '==> 2. A puxar o código mais recente...'
-              git pull origin main
+              echo '==> 2. A puxar o código mais recente (backend e frontend)...'
+              git -c core.fileMode=false pull origin main
+              if [ -d /var/www/metrology-sass-front/.git ]; then
+                git -c core.fileMode=false -C /var/www/metrology-sass-front pull origin main
+              fi
 
               echo '==> 3. A construir a nova imagem da aplicação...'
               # (Construímos a imagem primeiro)

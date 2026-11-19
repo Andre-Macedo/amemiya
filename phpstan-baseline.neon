@@ -133,6 +133,18 @@ parameters:
 			path: Modules/IoT/app/Http/Controllers/Api/V1/IoTMLModelApiController.php
 
 		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTNode\:\:\$machine_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/app/Http/Controllers/Api/V1/IoTNodeApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTNode\:\:\$node_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/IoT/app/Http/Controllers/Api/V1/IoTNodeApiController.php
+
+		-
 			message: '#^Parameter \#1 \$view of function view expects view\-string\|null, string given\.$#'
 			identifier: argument.type
 			count: 3
@@ -151,6 +163,12 @@ parameters:
 			path: Modules/IoT/app/Http/Requests/UpdateIoTNodeRequest.php
 
 		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$battery_voltage\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
+
+		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
 			identifier: property.notFound
 			count: 2
@@ -159,7 +177,7 @@ parameters:
 		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$machine\.$#'
 			identifier: property.notFound
-			count: 2
+			count: 1
 			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
 
 		-
@@ -171,13 +189,25 @@ parameters:
 		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$node_id\.$#'
 			identifier: property.notFound
-			count: 7
+			count: 10
+			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
 			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
 
 		-
 			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTGateway\:\:\$device_id\.$#'
 			identifier: property.notFound
-			count: 3
+			count: 6
+			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTGateway\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
 			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
 
 		-
@@ -193,8 +223,8 @@ parameters:
 			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
 
 		-
-			message: '#^Match arm comparison between ''off'' and ''off'' is always true\.$#'
-			identifier: match.alwaysTrue
+			message: '#^Offset ''confidence'' on array\{status\: string, confidence\: float, prob_defect\?\: mixed\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
 			count: 1
 			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
 
@@ -213,12 +243,6 @@ parameters:
 		-
 			message: '#^Right side of \|\| is always false\.$#'
 			identifier: booleanOr.rightAlwaysFalse
-			count: 1
-			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
-
-		-
-			message: '#^Static method PhpMqtt\\Client\\Facades\\MQTT\:\:connection\(\) invoked with 2 parameters, 0\-1 required\.$#'
-			identifier: arguments.count
 			count: 1
 			path: Modules/IoT/app/Jobs/ProcessTelemetryJob.php
 
@@ -287,6 +311,126 @@ parameters:
 			identifier: nullsafe.neverNull
 			count: 4
 			path: Modules/IoT/database/seeders/IoTDatabaseSeeder.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTDeviceLog\:\:\$message\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/IoT/tests/Feature/BearingKinematicsAndDiagnosticsTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTDeviceLog\:\:\$rpm\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/tests/Feature/BearingKinematicsAndDiagnosticsTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTGateway\:\:\$device_id\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/IoT/tests/Feature/BearingKinematicsAndDiagnosticsTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTNode\:\:\$last_payload\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/tests/Feature/BearingKinematicsAndDiagnosticsTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTNode\:\:\$node_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/tests/Feature/BearingKinematicsAndDiagnosticsTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTDeviceLog\:\:\$cloud_ml_status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/tests/Feature/TelemetryPipelineHardeningTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTDeviceLog\:\:\$level\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/tests/Feature/TelemetryPipelineHardeningTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTGateway\:\:\$device_id\.$#'
+			identifier: property.notFound
+			count: 5
+			path: Modules/IoT/tests/Feature/TelemetryPipelineHardeningTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTGateway\:\:\$last_seen_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/tests/Feature/TelemetryPipelineHardeningTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTGateway\:\:\$station_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/tests/Feature/TelemetryPipelineHardeningTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTGateway\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 2
+			path: Modules/IoT/tests/Feature/TelemetryPipelineHardeningTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTNode\:\:\$battery_voltage\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/IoT/tests/Feature/TelemetryPipelineHardeningTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTNode\:\:\$last_payload\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/tests/Feature/TelemetryPipelineHardeningTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTNode\:\:\$last_seen_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/tests/Feature/TelemetryPipelineHardeningTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTNode\:\:\$machine_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/tests/Feature/TelemetryPipelineHardeningTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTNode\:\:\$node_id\.$#'
+			identifier: property.notFound
+			count: 6
+			path: Modules/IoT/tests/Feature/TelemetryPipelineHardeningTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTNode\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/IoT/tests/Feature/TelemetryPipelineHardeningTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\IoT\\Models\\IoTSensorData\:\:\$temp_celsius\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/IoT/tests/Feature/TelemetryPipelineHardeningTest.php
+
+		-
+			message: '#^Call to an undefined method Mockery\\ExpectationInterface\|Mockery\\HigherOrderMessage\:\:twice\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: Modules/IoT/tests/Feature/TelemetryPipelineHardeningTest.php
+
+		-
+			message: '#^Offset ''iso_applicable'' does not exist on array\{severity_zone\: string\|null, severity_label\: string, thermal_status\: string, root_cause\: ''Operação Mecânica…'', confirmation_source\: string, kinematic_indications\: array\<int, string\>, confidence\: float, urgency_hours\: int, \.\.\.\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: Modules/IoT/tests/Unit/ISO20816SeverityTest.php
 
 		-
 			message: '#^Access to an undefined property Modules\\Metrology\\DTOs\\InstrumentChecklistSubmissionData\:\:\$checklist_template_id\.$#'
@@ -499,6 +643,12 @@ parameters:
 			path: Modules/Metrology/app/Actions/CreateChecklistAction.php
 
 		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/ExportInstrumentAuditDossierAction.php
+
+		-
 			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Attachment\:\:\$file_name\.$#'
 			identifier: property.notFound
 			count: 1
@@ -513,6 +663,18 @@ parameters:
 		-
 			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Instrument\:\:\$nonConformities\.$#'
 			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Actions/ExportInstrumentAuditDossierAction.php
+
+		-
+			message: '#^Parameter \#1 \$callback of method Illuminate\\Database\\Eloquent\\Collection\<int,Modules\\Metrology\\Models\\InstrumentMovement\>\:\:map\(\) contains unresolvable type\.$#'
+			identifier: argument.unresolvableType
+			count: 1
+			path: Modules/Metrology/app/Actions/ExportInstrumentAuditDossierAction.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
 			count: 1
 			path: Modules/Metrology/app/Actions/ExportInstrumentAuditDossierAction.php
 
@@ -869,6 +1031,30 @@ parameters:
 			identifier: staticMethod.notFound
 			count: 1
 			path: Modules/Metrology/app/Filament/Clusters/Metrology/MetrologyCluster.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Instrument\:\:\$nfc_tag\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Pages/InstrumentCustodyPage.php
+
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 2
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Pages/InstrumentCustodyPage.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 3
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Pages/InstrumentCustodyPage.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\ReferenceStandard\:\:\$last_calibration_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Filament/Clusters/Metrology/Pages/RecallSimulatorPage.php
 
 		-
 			message: '#^Match expression does not handle remaining value\: string$#'
@@ -2401,10 +2587,76 @@ parameters:
 			path: Modules/Metrology/app/Services/CalibrationValidator.php
 
 		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Instrument\:\:\$location\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Services/LogisticsService.php
+
+		-
 			message: '#^Access to an undefined property Modules\\System\\Models\\User\:\:\$station_id\.$#'
 			identifier: property.notFound
 			count: 1
 			path: Modules/Metrology/app/Services/LogisticsService.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Services/LogisticsService.php
+
+		-
+			message: '#^Parameter \#1 \$array \(list\<float\>\) of array_values is already a list, call has no effect\.$#'
+			identifier: arrayValues.list
+			count: 1
+			path: Modules/Metrology/app/Services/MatrixReadingParserService.php
+
+		-
+			message: '#^Variable \$lines in empty\(\) always exists and is not falsy\.$#'
+			identifier: empty.variable
+			count: 1
+			path: Modules/Metrology/app/Services/MatrixReadingParserService.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\ReferenceStandard\:\:\$last_calibration_date\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/app/Services/StandardRecallSimulatorService.php
+
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 1
+			path: Modules/Metrology/app/Services/StandardRecallSimulatorService.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between Modules\\Metrology\\Enums\\CalibrationResult and ''approved'' will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: Modules/Metrology/app/Services/StandardRecallSimulatorService.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between Modules\\Metrology\\Enums\\CalibrationResult and ''approved_with…'' will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: Modules/Metrology/app/Services/StandardRecallSimulatorService.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between Modules\\Metrology\\Enums\\CalibrationResult and ''pass'' will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: Modules/Metrology/app/Services/StandardRecallSimulatorService.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: Modules/Metrology/app/Services/StandardRecallSimulatorService.php
+
+		-
+			message: '#^Offset ''uncertainty'' on array\{name\?\: string, actual_value\?\: float, uncertainty\: float, k\?\: float\} on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
+			count: 1
+			path: Modules/Metrology/app/Services/UncertaintyCalculator.php
 
 		-
 			message: '#^Trait Modules\\Metrology\\Traits\\HasAuditLogs is used zero times and is not analysed\.$#'
@@ -2595,19 +2847,19 @@ parameters:
 		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
 			identifier: property.notFound
-			count: 4
+			count: 9
 			path: Modules/Metrology/tests/Feature/CalibrationCalculateApiTest.php
 
 		-
 			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\Instrument\.$#'
 			identifier: staticMethod.protected
-			count: 1
+			count: 2
 			path: Modules/Metrology/tests/Feature/CalibrationCalculateApiTest.php
 
 		-
 			message: '#^Call to protected static method factory\(\) of class Modules\\Metrology\\Models\\ReferenceStandardType\.$#'
 			identifier: staticMethod.protected
-			count: 1
+			count: 2
 			path: Modules/Metrology/tests/Feature/CalibrationCalculateApiTest.php
 
 		-
@@ -2957,6 +3209,12 @@ parameters:
 			identifier: staticMethod.protected
 			count: 3
 			path: Modules/Metrology/tests/Feature/InstrumentApiTest.php
+
+		-
+			message: '#^Access to an undefined property Modules\\Metrology\\Models\\Instrument\:\:\$location\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/InstrumentCustodyTest.php
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
@@ -3349,6 +3607,12 @@ parameters:
 			path: Modules/Metrology/tests/Feature/WorkOrderTest.php
 
 		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$original_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/Metrology/tests/Feature/WorkOrderTest.php
+
+		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$status\.$#'
 			identifier: property.notFound
 			count: 1
@@ -3387,7 +3651,7 @@ parameters:
 		-
 			message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase\:\:postJson\(\)\.$#'
 			identifier: method.notFound
-			count: 1
+			count: 2
 			path: Modules/Metrology/tests/Feature/WorkOrderTest.php
 
 		-
@@ -3691,6 +3955,12 @@ parameters:
 			path: Modules/System/app/Http/Controllers/Api/V1/AuthApiController.php
 
 		-
+			message: '#^Instanceof between Modules\\System\\Models\\User and Modules\\System\\Models\\User will always evaluate to true\.$#'
+			identifier: instanceof.alwaysTrue
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/AuthApiController.php
+
+		-
 			message: '#^Method Stancl\\Tenancy\\Tenancy\:\:impersonate\(\) invoked with 0 parameters, 3\-4 required\.$#'
 			identifier: arguments.count
 			count: 1
@@ -3739,6 +4009,60 @@ parameters:
 			path: Modules/System/app/Http/Controllers/Api/V1/CertificateApiController.php
 
 		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$gateway\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/MachineApiController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$gateway_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/MachineApiController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/MachineApiController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$node_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/MachineApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Models\\Machine\:\:\$code\.$#'
+			identifier: property.notFound
+			count: 3
+			path: Modules/System/app/Http/Controllers/Api/V1/MachineApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Models\\Machine\:\:\$status\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/MachineApiController.php
+
+		-
+			message: '#^Access to an undefined property Modules\\System\\Models\\Machine\:\:\$tenant_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/MachineApiController.php
+
+		-
+			message: '#^Static method PhpMqtt\\Client\\Facades\\MQTT\:\:connection\(\) invoked with 2 parameters, 0\-1 required\.$#'
+			identifier: arguments.count
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/MachineApiController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>name" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 2
+			path: Modules/System/app/Http/Controllers/Api/V1/MachineApiController.php
+
+		-
 			message: '#^Call to method execute\(\) on an unknown class Modules\\System\\app\\Actions\\CreateStationAction\.$#'
 			identifier: class.notFound
 			count: 1
@@ -3785,6 +4109,18 @@ parameters:
 			identifier: class.notFound
 			count: 1
 			path: Modules/System/app/Http/Controllers/Api/V1/SupplierApiController.php
+
+		-
+			message: '#^Property Modules\\System\\Models\\User\:\:\$two_factor_confirmed_at \(string\|null\) does not accept Illuminate\\Support\\Carbon\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: Modules/System/app/Http/Controllers/Api/V1/TwoFactorApiController.php
+
+		-
+			message: '#^Property Modules\\System\\Models\\User\:\:\$two_factor_recovery_codes \(string\|null\) does not accept array\<int, string\>\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: Modules/System/app/Http/Controllers/Api/V1/TwoFactorApiController.php
 
 		-
 			message: '#^Call to method execute\(\) on an unknown class Modules\\System\\app\\Actions\\CreateUserAction\.$#'
@@ -4231,6 +4567,18 @@ parameters:
 			path: Modules/System/app/Services/AuditChainService.php
 
 		-
+			message: '#^Strict comparison using \=\=\= between false and false will always evaluate to true\.$#'
+			identifier: identical.alwaysTrue
+			count: 1
+			path: Modules/System/app/Services/TwoFactorAuthenticationService.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: Modules/System/app/Services/TwoFactorAuthenticationService.php
+
+		-
 			message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase\:\:\$tenant\.$#'
 			identifier: property.notFound
 			count: 1
@@ -4307,6 +4655,30 @@ parameters:
 			identifier: method.notFound
 			count: 1
 			path: Modules/System/tests/Feature/SystemSettingsTest.php
+
+		-
+			message: '#^Parameter \#2 \$haystack of method PHPUnit\\Framework\\Assert\:\:assertCount\(\) expects Countable\|iterable, string\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: Modules/System/tests/Feature/TwoFactorAuthenticationTest.php
+
+		-
+			message: '#^Parameter \#2 \$haystack of method PHPUnit\\Framework\\Assert\:\:assertNotContains\(\) expects iterable, string\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Modules/System/tests/Feature/TwoFactorAuthenticationTest.php
+
+		-
+			message: '#^Property Modules\\System\\Models\\User\:\:\$two_factor_confirmed_at \(string\|null\) does not accept Illuminate\\Support\\Carbon\.$#'
+			identifier: assign.propertyType
+			count: 4
+			path: Modules/System/tests/Feature/TwoFactorAuthenticationTest.php
+
+		-
+			message: '#^Property Modules\\System\\Models\\User\:\:\$two_factor_recovery_codes \(string\|null\) does not accept array\<int, string\>\.$#'
+			identifier: assign.propertyType
+			count: 2
+			path: Modules/System/tests/Feature/TwoFactorAuthenticationTest.php
 
 		-
 			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$id\.$#'

@@ -15,6 +15,39 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
 
 ---
 
+## 🗓️ Sprint Imediato (Corte Laser + Fechamento Software + Feriado na Bancada)
+
+### Amanhã (Quinta) — Corte Laser & Fechamento de Software
+- [ ] **Corte da Caixa Acrílico:** Validar `#Plano_Corte_Unificado_Finger_Joints_Encaixado_Linha_Comum.dxf` com os técnicos e cortar em passada única.
+- [ ] **Python ML (`Modules/IoT/ml_service/main.py`):** Remover as 12 features acústicas legadas (`mic_*`, removidas na ADR-005), integrar o **`Isolation Forest`** em produção no FastAPI e alinhar classificação multiclasse com o Laravel.
+- [ ] **Segurança & Integridade IoT (`amemiya` Backend):**
+  - [ ] Habilitar **MQTT TLS (`8883`)** + `acl_file` por gateway no Mosquitto (fechar porta `1883` em produção).
+  - [ ] Validar *drift* de timestamp **NTP** no `ProcessTelemetryJob`, ativar `LogsActivity` em `IoTGateway`/`IoTNode` e vincular calibração/incerteza do `IoTNode` ao `Modules/Metrology`.
+- [ ] **Frontend & Governança (`metrology-sass-front` / GitHub):**
+  - [x] Inserir link `"Documentação & Ajuda"` no Navbar e rodapé do Next.js apontando para o VitePress (e alinhar tema industrial Lean Tech em `globals.css`/`app-sidebar.tsx`/`layout.tsx`).
+  - [ ] Ativar *Branch Protection Rules* no GitHub (`docs-quality`) e finalizar pendências de Storybook / TSDoc / `03-STATE_AND_DATA.md`.
+- [ ] **Preparação do Firmware (`amemiya-hardware/firmware/`):** Escrever o código integrado do **Nó (`ESP32-S3`)** (FFT medindo taxa real via `micros()`, decimação para RPM *tacholess*, `v_rms` banda larga `10–1000 Hz`, TinyML, pacote `27 bytes` + coleta diária `24h` com gate de máquina ativa) e do **Gateway (`ESP32`)** (`LoRa 27B -> MQTT TLS 8883`), deixando pronto para gravar na sexta.
+
+### Sexta-feira (Feriado) — Bancada de Eletrônica
+- [x] **Tela Touch (`ILI9341` + `XPT2046` via `LovyanGFX`):** Validada na bancada.
+- [x] **Acelerômetro `ADXL345` (`GPIO41/42`):** Validado I2C `400 kHz` + FIFO (`~3.010 Hz` reais, `0` overruns) e calibração estática 6 posições (`|a| = 1.0003–1.0090 g`; coeficientes salvos em `amemiya-hardware/firmware/README.md`).
+- [ ] **1. Termômetro `DS18B20` (`GPIO5`, quando chegar o plugue):**
+  - [ ] Adaptar plugue 3 vias polarizado (`JST-XH 3P` / `GX12-3` — evitar P2/TRS) no cabo longo com pull-up `4,7 kΩ` para `+3V3` (sem modo parasita).
+  - [ ] Validar ROM 64-bit, temperatura `°C` e CRC8 com `amemiya-hardware/firmware/test_ds18b20_1wire/test_ds18b20_1wire.ino`.
+- [ ] **2. Rádio `LoRa E32-915T20D` (Par Nó + Gateway):**
+  - [ ] **Obrigatório antes de energizar:** rosquear as antenas `915 MHz` nos dois módulos e montar `470 µF + 100 nF` no `+3V3`.
+  - [ ] Conectar UART `GPIO43` (TX) / `GPIO44` (RX) + `M0=GPIO38`, `M1=GPIO39`, `AUX=GPIO47` (usar porta `USB` nativa do `ESP32-S3 DevKitC-1` com `USB CDC On Boot: Enabled` para não conflitar com `UART0`).
+  - [ ] Testar comunicação ponto-a-ponto Nó $\leftrightarrow$ Gateway com pacote binário de `27 bytes`.
+- [ ] **3. Power Gating (`AO3401A` no adaptador `SOT23`):**
+  - [ ] Soldar `AO3401A` no adaptador `0,95 mm` (Pino 1 `G` $\to$ Furo `1`; Pino 2 `S` $\to$ Furo `3`; Pino 3 `D` $\to$ Furo `9`) com pull-up `100 kΩ` (`GPIO21`).
+  - [ ] Testar corte de `+3V3_SWITCHED` para `ADXL345` + `DS18B20` durante o `Deep Sleep`.
+- [ ] **4. Alimentação Bateria (`BMS TP4056` + `Mini Boost` + `GPIO1`):**
+  - [ ] **Obrigatório no Mini Boost sem trimpot:** dessoldar os jumpers **`A` e `B` (`A=0, B=0`)** e confirmar **`5,0 V`** no multímetro antes de ligar no `J_BAT`.
+  - [ ] Equalizar as 2× `18650` (`ΔV < 0,05 V`) antes de colocar em paralelo (`1S2P`), ligar `J_BAT_SENSE` (`100 kΩ / 100 kΩ` no `GPIO1`) na saída do BMS (antes do boost) e medir consumo em `Deep Sleep`.
+- [ ] **5. Periféricos de Bancada:** Testar LEDs de status (`GPIO15/16/17`, `330 Ω`) e Buzzer (`GPIO18`, `100 Ω`), e conferir montagem física do quadro elétrico conforme checklist em `amemiya-hardware/normas/TODO_BANCADA_NR10_NR12.md`.
+
+---
+
 ## 🚀 Roteiro de Execução Sequencial
 
 ```
@@ -62,10 +95,10 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
 
 ### ETAPA 2: Calibração Metrológica dos Sensores (ISO 17025 & Rastreabilidade)
 > *Pré-requisito para aquisição de dados confiáveis: calibrar e caracterizar os sensores antes do processamento.*
-- [ ] **Calibração Estática do Acelerômetro ADXL345 ($\pm 1g$):**
-  - [ ] Posicionar o sensor sobre superfície retificada com nível de precisão nas 6 orientações ortogonais ($+X, -X, +Y, -Y, +Z, -Z$).
-  - [ ] Calcular os offsets de zero ($Offset_i$) e fatores de escala ($Ganho_i$) para cada eixo.
-  - [ ] Gravar os coeficientes de compensação nos registradores de hardware do ADXL345 (`OFSX 0x1E`, `OFSY 0x1F`, `OFSZ 0x20`) ou na Flash NVS.
+- [x] **Calibração Estática Inicial do Acelerômetro ADXL345 ($\pm 1g$ na bancada):**
+  - [x] Coletar 6 orientações ortogonais ($+Z, -Z, +X, -X, +Y, -Y$) com `amemiya-hardware/firmware/calib_adxl345_6pos/calib_adxl345_6pos.ino` (`|a| = 1.0003 g` a `1.0090 g`).
+  - [x] Calcular offsets (`1.270 / 4.559 / -18.104 LSB`) e fatores de escala (`0.003879 / 0.003886 / 0.004005 g/LSB`, taxa FIFO real `~3.010 Hz`).
+  - [ ] Repetir calibração na torre definitiva (`amemiya_probe_tower_dual` em superfície retificada/esquadro) e gravar coeficientes finais na Flash NVS.
 - [ ] **Validação Metrológica da Estimação de RPM (Tacholess):**
   - [ ] Comparar a rotação calculada matematicamente pelo algoritmo do ESP32 com Tacômetro Óptico Digital calibrado em 5 patamares de velocidade (ex: 900, 1200, 1500, 1800 e 3600 RPM).
   - [ ] Determinar o erro de indicação e a incerteza do algoritmo de interpolação parabólica sub-bin.
@@ -110,8 +143,13 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
 - [ ] **TinyML Embarcado:**
   - [ ] Inferência local via modelo XGBoost transcompilado em C (`embarcado_xgboost.h`).
   - [ ] Inércia temporal com buffer de 3 amostras consecutivas na memória RTC (`RTC_DATA_ATTR`) para evitar alarmes falsos.
-- [ ] **Transmissão LoRa e Gerenciamento de Energia:**
-  - [ ] Transmissão serial do LoRa E32-915T20D com pacote binário compacto contendo: status IA, RPM estimado, temperatura do mancal, vibração RMS triaxial e $V_{\text{bat}}$.
+- [ ] **Transmissão LoRa, Coleta Diária Garantida e Gerenciamento de Energia:**
+  - [ ] Transmissão serial do LoRa E32-915T20D com pacote binário compacto (`27 bytes`, `~38 ms` em SF9) contendo: status IA, RPM estimado, temperatura do mancal, vibração RMS triaxial e $V_{\text{bat}}$.
+  - [ ] **Coleta Diária Completa Garantida (1x/24h com *Gate* de Máquina Ligada — auditoria humana mesmo com `Isolation Forest` normal):**
+    - [ ] Persistir `last_full_capture_at` na NVS/RTC e ativar flag de pendência ao completar 24h; **nunca** disparar por horário fixo (ex.: 14:00) para não gravar máquina desligada (`0 g`).
+    - [ ] Executar o snapshot completo na primeira acordada em que a máquina estiver comprovadamente em regime ativo (`v_rms` / `a_rms` acima do piso de máquina parada por alguns segundos), evitando *baseline poisoning* sem visibilidade e alimentando o comparador histórico no frontend.
+    - [ ] **Modo Wi-Fi Local (roteador LAN até o broker MQTT, sem exigir internet externa):** transmitir 1x/dia a forma de onda bruta `3 × 1024` (`6.144 bytes` em `int16` ou `12.288 bytes` em `float32`) + FFT completa (`fft_x`/`fft_y`/`fft_z`).
+    - [ ] **Modo Somente LoRa (`E32-915T20D`, ~50 bytes úteis no buffer de `58 bytes`):** no snapshot diário automático, enviar o **espectro reduzido `0–1000 Hz` quantizado em `uint8` do eixo dominante** (`~320 bins` $\approx$ `~7` subpacotes LoRa, `< 2 s` no ar), em vez da onda bruta de 3 eixos (`~123` subpacotes / `~35–55 s` a `2.4 kbps`); reservar onda bruta multi-eixo via LoRa apenas para comando manual sob demanda ou anomalia severa com ACK.
   - [ ] Rotina de sono: passar M0 e M1 para nível HIGH (Sleep Mode do E32), desligar o Power Gate dos sensores e chamar `esp_deep_sleep_start()`.
   - [ ] Lógica de despertar híbrido: Timer adaptativo (15 min $\to$ 30 min) + interrupção externa por aceleração crítica no pino `INT1` do ADXL345 (EXT0).
 
@@ -154,6 +192,16 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
   - [x] Envio automático de comando MQTT de retorno (`sendMqttCommand`) para o Gateway atualizar a sinalização física na máquina.
 - [x] **Microserviço de Machine Learning Cloud (FastAPI):**
   - [x] Auditoria sob demanda: acionar o serviço Python FastAPI apenas quando a confiança da borda for $< 80\%$ ou houver indicação de falha.
+- [ ] **Evolução para ML Agnóstico à Rotação e à Máquina (Order-Domain + Cross-Machine):**
+  - [ ] **Download e revisão dos estudos-base (`amemiya-hardware/artigos/`):**
+    - [x] Baixados localmente: `Risca2025_Continual_Learning_CrossDomain_Rotating_Machinery.pdf`, `Wang2026_YOTOnet_ZeroShot_CrossDomain_Fault_Diagnosis.pdf`, `Rico2026_CrossDomain_Heterogeneous_Industrial_TimeSeries.pdf`.
+    - [ ] **Zhao et al. (2026) — PGDA-Net** (*Applied Sciences* MDPI, Open Access — baixar no navegador, bloqueia script com `403`): [PDF direto](https://www.mdpi.com/2076-3417/16/21/10802/pdf)
+    - [ ] **Lin et al. (2026) — Counterfactual Robust Order-Domain Generalization** (*Machines* MDPI, Open Access): [DOI 10.3390/machines14111268](https://doi.org/10.3390/machines14111268)
+    - [ ] **Yu, Feng & Zhang (2022) — Adaptive High-Resolution Order Spectrum** (*MSSP*, Elsevier / via CAPES ou ResearchGate): [DOI 10.1016/j.ymssp.2022.109194](https://doi.org/10.1016/j.ymssp.2022.109194) | [ResearchGate](https://www.researchgate.net/publication/361817346_Adaptive_high-resolution_order_spectrum_for_complex_signal_analysis_of_rotating_machinery_Principle_and_applications)
+    - [ ] **Qi et al. (2025) — Order Spectrum-Assisted Sparse Learning** (*Renewable Energy*, Elsevier / via CAPES): [DOI 10.1016/j.renene.2025.123659](https://doi.org/10.1016/j.renene.2025.123659)
+  - [ ] **Normalização no Domínio de Ordens (Agnóstico à Velocidade):** converter espectros e faixas de falha de Hz fixo para múltiplos da fundamental ($0{,}5\times, 1\times, 2\times, 3\times, 4\times, \text{BPFO}/1\times, \text{BPFI}/1\times, \text{BSF}/1\times, \text{FTF}/1\times$) a partir de `rpm_estimated`.
+  - [ ] **Separação de papéis + Features relativas ao ativo (Agnóstico à Máquina):** manter `Isolation Forest` **por ativo/regime** (anomalia intra-máquina) e evoluir o `XGBoost` para usar descritores adimensionais/relativos ao *baseline* saudável do ativo (razão contra linha de base, Kurtose, Fator de Crista, distribuição energética em ordens), evitando que uma assinatura normal de bomba d'água (ex.: passagem de pás) ou torno (corte/engrenamento) gere falso alarme.
+  - [ ] **Validação Cross-Machine & Persistência da Coleta Diária:** armazenar os snapshots diários (`1x/24h` com gate de máquina ativa) no histórico para auditar *baseline poisoning*, treinar/validar transferência entre máquinas distintas e fechar o ciclo *Human-in-the-Loop*.
 
 ---
 
@@ -224,8 +272,8 @@ Este documento consolida o plano de ação técnico em uma **sequência lógica 
   - [ ] Embutir iframes/componentes interativos do Storybook (ex: `ISO20816SeverityGauge.tsx`, medidores e tabelas) dentro das páginas conceituais do VitePress.
   - [ ] Padronizar anotações **TSDoc** (`/** ... */`) nas interfaces de `Props` dos componentes centrais de medição e formulários para auto-documentação na IDE.
   - [ ] Documentar no guia de arquitetura de estado (`03-STATE_AND_DATA.md`) o fluxo reativo entre **TanStack Query** e WebSockets (**Laravel Reverb**).
-- [ ] **Camada 4: Integração de Atalhos nos Sistemas (Next.js & Filament):**
-  - [ ] **No Frontend SaaS Next.js (`metrology-sass-front`):** Inserir link no Navbar e rodapé (`"Documentação & Ajuda"`) abrindo o portal VitePress em nova aba.
+- [x] **Camada 4: Integração de Atalhos nos Sistemas (Next.js & Filament):**
+  - [x] **No Frontend SaaS Next.js (`metrology-sass-front`):** Inserir link no Navbar e rodapé (`"Documentação & Ajuda"`) abrindo o portal VitePress em nova aba.
   - [x] **No Backoffice Filament (`amemiya`):** Registrar item de navegação global com ícone `heroicon-o-book-open` (`"Documentação da API"`) direcionando para `/docs/api`.
 
 

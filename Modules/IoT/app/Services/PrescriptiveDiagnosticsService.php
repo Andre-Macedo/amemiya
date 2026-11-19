@@ -48,6 +48,7 @@ class PrescriptiveDiagnosticsService
     ): array {
         $zone = $isoEvaluation['zone'] ?? null;
         $vRms = $isoEvaluation['velocity_rms'] ?? null;
+        $isoApplicable = (bool) ($isoEvaluation['iso_applicable'] ?? ($zone !== null));
 
         // 1. Avaliação Térmica
         $thermalStatus = 'normal';
@@ -116,7 +117,7 @@ class PrescriptiveDiagnosticsService
             $confirmationSource = 'iso';
         }
 
-        if ($zone === null) {
+        if ($vRms === null && $zone === null) {
             $rootCause = 'Dados de Vibração Insuficientes para Diagnóstico';
             $actions = ['Verificar acoplamento do sensor ADXL345 e transmissão de velocidade RMS (v_rms).'];
             $urgencyHours = 24;
@@ -199,15 +200,20 @@ class PrescriptiveDiagnosticsService
             $urgencyHours = min($urgencyHours, 12);
         }
 
-        $severityText = $zone !== null
-            ? "Zona {$zone} ({$vRms} mm/s)"
-            : 'Não Determinada';
+        if ($zone !== null) {
+            $severityText = "Zona {$zone} ({$vRms} mm/s)";
+        } elseif (! $isoApplicable && $vRms !== null) {
+            $severityText = "{$vRms} mm/s (Baseline / IA)";
+        } else {
+            $severityText = 'Não Determinada';
+        }
 
         $summaryText = "Severidade: {$severityText} | Causa-Raiz: {$rootCause} | Ação: {$actions[0]}";
 
         return [
             'severity_zone' => $zone,
             'severity_label' => $isoEvaluation['label'] ?? ($zone !== null ? "Zona {$zone}" : 'Não Determinado'),
+            'iso_applicable' => $isoApplicable,
             'thermal_status' => $thermalStatus,
             'root_cause' => $rootCause,
             'confirmation_source' => $confirmationSource,

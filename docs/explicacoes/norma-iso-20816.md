@@ -6,10 +6,14 @@ Esta página apresenta os critérios normativos da **ISO 20816-3:2022** (*Mechan
 
 ## 1. Escopo e Classificação de Grupos de Máquinas
 
-A norma ISO 20816-3 se aplica a conjuntos industriais com potência nominal superior a $15\text{ kW}$ e velocidades operacionais entre $120\text{ RPM}$ e $30.000\text{ RPM}$. As máquinas são categorizadas em grupos conforme seu tipo e potência:
+A norma **ISO 20816-3** se aplica exclusivamente a conjuntos industriais com potência nominal superior a $15\text{ kW}$ e velocidades operacionais entre $120\text{ RPM}$ e $30.000\text{ RPM}$. As máquinas são categorizadas em grupos conforme seu tipo e potência:
 
 * **Grupo 1:** Grandes máquinas com potência acima de $300\text{ kW}$ (ex: turbogeradores, motores elétricos pesados com altura de eixo $H \ge 315\text{ mm}$).
 * **Grupo 2:** Máquinas de porte médio com potência nominal entre $15\text{ kW}$ e $300\text{ kW}$ (ou motores elétricos com altura de eixo $160\text{ mm} \le H < 315\text{ mm}$).
+
+Para ativos fora dessa faixa de potência ($< 15\text{ kW}$):
+* **Motores fracionários / bancada didática (`baseline_only` — ex.: motor $1/4\text{ CV} \approx 0{,}18\text{ kW}$):** A norma ISO 20816-3 **não se aplica**. O sistema continua calculando e exibindo continuamente a **velocidade RMS ($V_{RMS}$ em $\text{mm/s}$)** no painel e nos logs, mas **oculta a régua fixa de zonas ISO (A–D)** e delega a avaliação de severidade à linha de base do ativo + modelos de IA (`Isolation Forest` / `XGBoost`).
+* **Referência opcional para pequenas máquinas (`small_machine`, $1\text{–}15\text{ kW}$):** Caso o gestor habilite explicitamente no cadastro da máquina, adota-se o critério histórico da **ISO 10816-1 Classe I** ($0{,}71 / 1{,}80 / 4{,}50\text{ mm/s}$ em base rígida).
 
 A classe da fundação mecânica também determina os limites:
 * **Suporte Rígido (*Rigid Support*):** A primeira frequência natural do conjunto montado é maior que a frequência fundamental de rotação em pelo menos $25\%$.
@@ -17,9 +21,9 @@ A classe da fundação mecânica também determina os limites:
 
 ---
 
-## 2. Limites de Severidade Vibracional (Grupo 2 - Suporte Rígido)
+## 2. Limites de Severidade Vibracional (ISO 20816-3 · Grupo 2 - Suporte Rígido)
 
-Para a bancada de ensaio e máquinas do Grupo 2 em suporte rígido (típico da maioria dos motores e mancais industriais em estudo), os limites de velocidade RMS ($V_{RMS}$) entre $10\text{ Hz}$ e $1000\text{ Hz}$ são:
+Quando o ativo pertence ao escopo normativo de máquinas industriais ($\ge 15\text{ kW}$, Grupo 2 em suporte rígido), a régua de severidade e os limites de velocidade RMS ($V_{RMS}$) entre $10\text{ Hz}$ e $1000\text{ Hz}$ são exibidos conforme a tabela abaixo:
 
 | Zona | Faixa de Velocidade ($V_{RMS}$) | Significado Operacional | Ação Recomendada pelo Sistema |
 | :---: | :---: | :--- | :--- |
@@ -30,19 +34,23 @@ Para a bancada de ensaio e máquinas do Grupo 2 em suporte rígido (típico da m
 
 ---
 
-## 3. Implementação Algorítmica no Nó Amemiya
+## 3. Implementação no Nó Amemiya e no Backend
 
-O classificador embutido no firmware do ESP32-S3 executa a avaliação diretamente após o cálculo da FFT:
+O firmware calcula e envia sempre a velocidade RMS em banda larga (`10 Hz – 1000 Hz`, em `mm/s`), independentemente do porte da máquina. A classificação em Zonas A–D só é ativada quando o ativo está configurado em um grupo normativo aplicável (`group_2`, `group_1` ou referência `small_machine`):
 
 ```c
 typedef enum {
+    ISO_NOT_APPLICABLE = 0, // Motores fracionários (< 15 kW): usa apenas v_rms (mm/s) + IA/Baseline
     ISO_ZONE_A = 1,
     ISO_ZONE_B = 2,
     ISO_ZONE_C = 3,
     ISO_ZONE_D = 4
 } IsoSeverityZone_t;
 
-IsoSeverityZone_t evaluateIso20816(float vrms_max_axis) {
+IsoSeverityZone_t evaluateIso20816Group2(float vrms_max_axis, bool iso_applicable) {
+    if (!iso_applicable) {
+        return ISO_NOT_APPLICABLE;
+    }
     if (vrms_max_axis <= 1.40f) {
         return ISO_ZONE_A;
     }
@@ -56,7 +64,7 @@ IsoSeverityZone_t evaluateIso20816(float vrms_max_axis) {
 }
 ```
 
-O valor resultante é transmitido no byte 19 da estrutura binária e refletido visualmente no dashboard Filament via gráficos codificados em cores oficiais (Verde, Azul, Amarelo e Vermelho).
+A velocidade em `mm/s` é sempre persistida e mostrada nos dashboards e gráficos temporais; a régua visual de Zonas (Verde, Azul, Amarelo e Vermelho) no frontend Next.js aparece apenas quando a norma se aplica ao perfil da máquina.
 
 ---
 

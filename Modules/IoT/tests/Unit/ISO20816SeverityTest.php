@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Modules\IoT\Tests\Unit;
 
 use Modules\IoT\Services\ISO20816SeverityService;
+use Modules\IoT\Services\PrescriptiveDiagnosticsService;
 use Tests\TestCase;
 
 class ISO20816SeverityTest extends TestCase
@@ -98,5 +99,24 @@ class ISO20816SeverityTest extends TestCase
             'zone_c_max' => 4.0,
         ]);
         $this->assertSame('B', $invalid['zone']);
+    }
+
+    public function test_it_preserves_velocity_in_mms_when_iso_is_not_applicable_for_fractional_machines(): void
+    {
+        $eval = $this->service->evaluate(1.35, 'baseline_only', 'rigid');
+
+        $this->assertNull($eval['zone']);
+        $this->assertSame(1.35, $eval['velocity_rms']);
+        $this->assertFalse($eval['iso_applicable']);
+        $this->assertSame('not_applicable', $eval['status']);
+        $this->assertFalse($eval['action_required']);
+        $this->assertStringContainsString('mm/s', $eval['standard']);
+
+        $diagnostics = new PrescriptiveDiagnosticsService($this->service);
+        $prescriptive = $diagnostics->generateDiagnosis($eval, 'saudavel', 0.94, 42.0);
+
+        $this->assertSame('Operação Mecânica Estável', $prescriptive['root_cause']);
+        $this->assertFalse($prescriptive['iso_applicable']);
+        $this->assertStringContainsString('1.35 mm/s', $prescriptive['summary_text']);
     }
 }

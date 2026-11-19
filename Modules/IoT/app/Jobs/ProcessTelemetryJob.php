@@ -294,6 +294,8 @@ class ProcessTelemetryJob implements ShouldQueue
                     'vibration_rms' => $velocityRms,
                     'rms_global' => $rmsInG,
                     'iso20816_severity' => $isoEval['zone'] ?? null,
+                    'iso_applicable' => (bool) ($isoEval['iso_applicable'] ?? false),
+                    'iso_group' => $machineGroup,
                     'ml_status' => $effectiveMlStatus,
                     'ml_confidence' => $effectiveConfidence,
                     'ml_anomaly_probability' => $mlAnomalyProbability,
@@ -349,7 +351,10 @@ class ProcessTelemetryJob implements ShouldQueue
                 isoZone: $isoEval['zone'] ?? null,
                 tempCelsius: $tempCelsius,
                 batteryVoltage: $batteryVoltage,
-                prescriptiveDiagnosis: $prescriptive
+                prescriptiveDiagnosis: $prescriptive,
+                isoApplicable: (bool) ($isoEval['iso_applicable'] ?? false),
+                isoGroup: $machineGroup,
+                isoEvaluation: $isoEval
             );
 
             event(new SensorDataReceived($dto));

@@ -56,11 +56,12 @@ class MachineForm
                         Select::make('metadata.iso_group')
                             ->label('Classe ISO 20816 / 10816')
                             ->options([
-                                'small_machine' => 'Máquina Pequena < 15 kW (ex: 1/4 CV)',
-                                'group_2' => 'Grupo 2 (15 kW a 300 kW)',
-                                'group_1' => 'Grupo 1 (300 kW a 50 MW)',
+                                'baseline_only' => 'Baseline / IA apenas (< 15 kW — Sem Zonas ISO)',
+                                'small_machine' => 'Referência ISO 10816-1 Classe I (< 15 kW)',
+                                'group_2' => 'ISO 20816-3 Grupo 2 (15 kW a 300 kW)',
+                                'group_1' => 'ISO 20816-3 Grupo 1 (> 300 kW)',
                             ])
-                            ->default('small_machine'),
+                            ->default('baseline_only'),
                         Select::make('metadata.foundation_type')
                             ->label('Base Mecânica')
                             ->options([

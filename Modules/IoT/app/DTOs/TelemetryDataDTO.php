@@ -39,7 +39,10 @@ class TelemetryDataDTO
         public ?string $isoZone = null,
         public ?float $tempCelsius = null,
         public ?float $batteryVoltage = null,
-        public ?array $prescriptiveDiagnosis = null
+        public ?array $prescriptiveDiagnosis = null,
+        public bool $isoApplicable = true,
+        public ?string $isoGroup = null,
+        public ?array $isoEvaluation = null
     ) {}
 
     public function toArray(): array
@@ -52,6 +55,9 @@ class TelemetryDataDTO
             'rms_global' => $this->rmsGlobal,
             'velocity_rms' => $this->velocityRms,
             'iso_zone' => $this->isoZone,
+            'iso_applicable' => $this->isoApplicable,
+            'iso_group' => $this->isoGroup,
+            'iso_evaluation' => $this->isoEvaluation,
             'time_domain' => $this->timeDomain,
             'mic_rms' => $this->micRms,
             'temp_celsius' => $this->tempCelsius,

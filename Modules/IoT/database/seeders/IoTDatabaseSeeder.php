@@ -34,7 +34,7 @@ class IoTDatabaseSeeder extends Seeder
             $bancada->update([
                 'metadata' => array_merge($bancada->metadata ?? [], [
                     'bearing_model' => 'skf_6203',
-                    'iso_group' => 'small_machine',
+                    'iso_group' => 'baseline_only',
                     'foundation_type' => 'rigid',
                     'nominal_rpm' => 1725,
                 ]),

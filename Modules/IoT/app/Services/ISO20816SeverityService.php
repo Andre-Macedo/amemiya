@@ -96,6 +96,9 @@ class ISO20816SeverityService
             return [
                 'zone' => null,
                 'velocity_rms' => null,
+                'iso_applicable' => $machineGroup !== 'baseline_only',
+                'machine_group' => $machineGroup,
+                'foundation' => $foundation,
                 'status' => 'unknown',
                 'label' => 'Não Determinado',
                 'color' => '#6b7280',
@@ -104,14 +107,36 @@ class ISO20816SeverityService
             ];
         }
 
-        $baseLimits = self::THRESHOLDS[$machineGroup][$foundation] ?? self::THRESHOLDS['group_2']['rigid'];
+        if ($machineGroup === 'baseline_only') {
+            return [
+                'zone' => null,
+                'velocity_rms' => $velocityRms,
+                'iso_applicable' => false,
+                'machine_group' => 'baseline_only',
+                'foundation' => $foundation,
+                'status' => 'not_applicable',
+                'label' => 'Sem Enquadramento ISO (< 15 kW)',
+                'color' => '#6b7280',
+                'badge' => 'secondary',
+                'description' => 'Ativo fora do escopo de potência da ISO 20816-3 (>= 15 kW). A severidade é acompanhada por velocidade RMS (mm/s), linha de base e IA.',
+                'action_required' => false,
+                'standard' => 'Monitoramento mm/s + Baseline/IA (Fora de escopo ISO 20816-3)',
+            ];
+        }
+
+        $resolvedGroup = array_key_exists($machineGroup, self::THRESHOLDS) ? $machineGroup : 'group_2';
+        $baseLimits = self::THRESHOLDS[$resolvedGroup][$foundation] ?? self::THRESHOLDS['group_2']['rigid'];
         $limits = $this->mergeCustomThresholds($baseLimits, $customThresholds);
-        $standardLabel = $this->formatStandardLabel($machineGroup, $foundation, $customThresholds);
+        $standardLabel = $this->formatStandardLabel($resolvedGroup, $foundation, $customThresholds);
 
         if ($velocityRms <= $limits['zone_a_max']) {
             return [
                 'zone' => 'A',
                 'velocity_rms' => $velocityRms,
+                'iso_applicable' => true,
+                'machine_group' => $resolvedGroup,
+                'foundation' => $foundation,
+                'thresholds' => $limits,
                 'status' => 'excellent',
                 'label' => 'Zona A - Excelente',
                 'color' => '#10b981', // emerald-500
@@ -126,6 +151,10 @@ class ISO20816SeverityService
             return [
                 'zone' => 'B',
                 'velocity_rms' => $velocityRms,
+                'iso_applicable' => true,
+                'machine_group' => $resolvedGroup,
+                'foundation' => $foundation,
+                'thresholds' => $limits,
                 'status' => 'acceptable',
                 'label' => 'Zona B - Aceitável',
                 'color' => '#3b82f6', // blue-500
@@ -140,6 +169,10 @@ class ISO20816SeverityService
             return [
                 'zone' => 'C',
                 'velocity_rms' => $velocityRms,
+                'iso_applicable' => true,
+                'machine_group' => $resolvedGroup,
+                'foundation' => $foundation,
+                'thresholds' => $limits,
                 'status' => 'warning',
                 'label' => 'Zona C - Alerta de Manutenção',
                 'color' => '#f59e0b', // amber-500
@@ -153,6 +186,10 @@ class ISO20816SeverityService
         return [
             'zone' => 'D',
             'velocity_rms' => $velocityRms,
+            'iso_applicable' => true,
+            'machine_group' => $resolvedGroup,
+            'foundation' => $foundation,
+            'thresholds' => $limits,
             'status' => 'critical',
             'label' => 'Zona D - Perigo / Parada Imediata',
             'color' => '#ef4444', // red-500
